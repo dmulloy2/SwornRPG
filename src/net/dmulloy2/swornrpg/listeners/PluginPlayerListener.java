@@ -283,6 +283,9 @@ public class PluginPlayerListener
             str = str + args[i] + " ";
           }
           this.plugin.sendAdminMessage(player.getName(), str);
+        }else{
+        	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+        	System.out.println("[SwornRPG] " + player.getName() + " was denied access to admin chat");
         }
       }
 
@@ -291,7 +294,7 @@ public class PluginPlayerListener
     	  player.sendMessage(ChatColor.DARK_RED + "/swornrpg" + ChatColor.GOLD + " (srpg) " + ChatColor.YELLOW + "Displays this help menu");
     	  //player.sendMessage(ChatColor.DARK_RED + "/srpg " + ChatColor.GOLD + "level" + ChatColor.YELLOW + " Displays your current level");
     	  if (player.hasPermission("srpg.ride")){
-    		  player.sendMessage(ChatColor.DARK_RED + "/ride " + ChatColor.YELLOW + "Ride another player");}
+    		  player.sendMessage(ChatColor.DARK_RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
     	  player.sendMessage(ChatColor.DARK_RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
     	  if (player.hasPermission("srpg.adminchat")){
     		  player.sendMessage(ChatColor.DARK_RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
@@ -301,37 +304,42 @@ public class PluginPlayerListener
         	  player.sendMessage(ChatColor.DARK_RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");
     	  }
       }
-      if ((label.equalsIgnoreCase("ride")) && 
-        (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) && 
-        (args.length == 1)) {
-        Player to = Util.MatchPlayer(args[0]);
-        to.setPassenger(player);
+      if (((label.equalsIgnoreCase("ride")) || (label.equalsIgnoreCase("unride"))) && (args.length == 1)){
+        if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {
+        	Player to = Util.MatchPlayer(args[0]);
+        	to.setPassenger(player);
+        }else{
+        	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+        	System.out.println("[SwornRPG] " + player.getName() + " was denied a trip on a player");
+        }
       }
 
-      if ((label.equalsIgnoreCase("unride")) && 
-        (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) && 
-        (args.length == 1)) {
-        Player to = Util.MatchPlayer(args[0]);
-        to.setPassenger(null);
+      if (label.equalsIgnoreCase("adm")){
+    	  if (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm)){
+    		  int amt = args.length;
+    		  String str = "";
+    		  for (int i = 0; i < amt; i++) {
+    			  str = str + args[i] + " ";
+    		  }
+    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Announcement" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + str);
+      }else{
+    	  player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+    	  System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
       }
-      if ((label.equalsIgnoreCase("adm")) && 
-    	  (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm))){
-    	  int amt = args.length;
-    	  String str = "";
-    	  for (int i = 0; i < amt; i++) {
-    	  str = str + args[i] + " ";
-        }
-        this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Announcement" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + str);
       }
 
-      if ((label.equalsIgnoreCase("dmu")) && 
-        (player.getName().contains("dmulloy2"))) {
-        int amt = args.length;
-        String str = "";
-        for (int i = 0; i < amt; i++) {
-          str = str + args[i] + " ";
+      if ((label.equalsIgnoreCase("dmu"))){
+        if (player.getName().contains("dmulloy2")) {
+        	int amt = args.length;
+        	String str = "";
+        	for (int i = 0; i < amt; i++) {
+        		str = str + args[i] + " ";
+        	}
+        	this.plugin.sendMessageAll(ChatColor.AQUA + "[" + ChatColor.DARK_GRAY + "Announcement" + ChatColor.AQUA + "] " + ChatColor.AQUA + str);
+        }else{
+        	player.sendMessage(ChatColor.RED + "Only dmulloy can use this command c:");
+        	System.out.println("[SwornRPG] " + player.getName() + " tried to use dmulloy's command");
         }
-        this.plugin.sendMessageAll(ChatColor.AQUA + "[" + ChatColor.DARK_GRAY + "Announcement" + ChatColor.AQUA + "] " + ChatColor.AQUA + str);
       }
 
       if (label.equalsIgnoreCase("hat"))
