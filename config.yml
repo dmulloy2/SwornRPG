@@ -1,0 +1,23 @@
+#SwornRPG Config File
+#Created by dmulloy2
+debug: false
+drops:
+  #Likelyhood that a rare drop will come from a block
+  #Must be a value between 1 and 100
+  nether_rack: 20
+  stone: 25
+  endstone: 15
+frenzy:
+  on: true
+  duration:
+    #In seconds how long the default frenzy mode will last
+level-up-rewards:
+  on: true
+level-up-methods:
+  mob-xp: true
+  online-time: false
+  player-kills: true
+  ore-mining: false
+  #More to come soon
+max-levels: 25
+

@@ -1,0 +1,47 @@
+name: SwornRPG
+main: net.dmulloy2.swornrpg.main
+version: 0.4
+author: dmulloy2
+description: A better version of McMMO.
+softdepend: [TagAPI]
+commands: 
+  a:
+    description: Admin chat.
+    usage:
+  ride:
+    description: Get on someones head.
+    usage:
+  unride:
+    description: Get off someones head.
+    usage:
+  hat:
+    description: Lets you put the block in you hand on your head.
+    usage:
+  dmu:
+    description: dmulloy's special chat.
+    usage:
+  adm:
+    description: Alternate admin say command.
+    usage:
+  srpg:
+    description: Root command
+    usage:
+    aliases: [swornrpg]
+permissions:
+  srpg.admin:
+    description: Gives access to features meant for server admins.
+    children:
+      srpg.moderator: true
+      srpg.asay: true
+  srpg.moderator:
+    description: Gives access to features meant for server moderators.
+    children:
+      srpg.guard: true
+      srpg.ride: true
+  srpg.guard:
+    description: Gives access to features meant for server guards.
+    children:
+      srpg.adminchat: true
+  srpg.hat:
+    description: Changes your hat.
+    default: true
