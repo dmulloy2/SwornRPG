@@ -17,12 +17,14 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
+/**
+ * @author orange451
+ * @editor dmulloy2
+ */
+
 public class PluginEntityListener
   implements Listener {
-	/**
-	 * @author orange451
-	 * @editor dmulloy2
-	 */
+
   main plugin;
 
   public PluginEntityListener(main plugin)

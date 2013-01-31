@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornrpg.main;
+
 import net.dmulloy2.swornrpg.PermissionsInterface.PermissionInterface;
 import net.dmulloy2.swornrpg.util.InventoryHelper;
 import net.dmulloy2.swornrpg.util.Util;
@@ -20,12 +21,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * @author orange451
+ * @editor dmulloy2
+ */
+
 public class PluginPlayerListener
   implements Listener {
-	/**
-	 * @author orange451
-	 * @editor dmulloy2
-	 */
+
   private main plugin;
   int ChestMax = 8;
   int LegsMax = 7;

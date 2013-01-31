@@ -13,12 +13,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+/**
+ * @author orange451
+ * @editor dmulloy2
+ */
+
 public class PluginBlockListener
   implements Listener {
-	/**
-	 * @author orange451
-	 * @editor dmulloy2
-	 */
+
   public PluginBlockListener(main plugin)
   {
   }
