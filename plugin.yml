@@ -1,6 +1,6 @@
 name: SwornRPG
-main: net.dmulloy2.swornrpg.main
-version: 0.5
+main: net.dmulloy2.swornrpg.SwornRPG
+version: 0.6
 author: dmulloy2
 description: A better version of McMMO.
 softdepend: [TagAPI]
@@ -31,6 +31,7 @@ permissions:
     children:
       srpg.moderator: true
       srpg.asay: true
+      srpg.aclear: true
   srpg.moderator:
     description: Gives access to features meant for server moderators.
     children:
@@ -40,6 +41,3 @@ permissions:
     description: Gives access to features meant for server guards.
     children:
       srpg.adminchat: true
-  srpg.hat:
-    description: Changes your hat.
-    default: true

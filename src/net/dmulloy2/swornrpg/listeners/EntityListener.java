@@ -1,6 +1,6 @@
 package net.dmulloy2.swornrpg.listeners;
 
-import net.dmulloy2.swornrpg.main;
+import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.ChatColor;
@@ -22,12 +22,12 @@ import org.bukkit.util.Vector;
  * @editor dmulloy2
  */
 
-public class PluginEntityListener
+public class EntityListener
   implements Listener {
 
-  main plugin;
+  SwornRPG plugin;
 
-  public PluginEntityListener(main plugin)
+  public EntityListener(SwornRPG plugin)
   {
     this.plugin = plugin;
   }

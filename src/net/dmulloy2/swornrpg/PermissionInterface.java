@@ -1,4 +1,4 @@
-package net.dmulloy2.swornrpg.PermissionsInterface;
+package net.dmulloy2.swornrpg;
 
 import org.bukkit.entity.Player;
 

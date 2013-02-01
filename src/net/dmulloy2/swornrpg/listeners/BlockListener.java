@@ -1,6 +1,6 @@
 package net.dmulloy2.swornrpg.listeners;
 
-import net.dmulloy2.swornrpg.main;
+import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.Material;
@@ -18,10 +18,10 @@ import org.bukkit.material.MaterialData;
  * @editor dmulloy2
  */
 
-public class PluginBlockListener
+public class BlockListener
   implements Listener {
 
-  public PluginBlockListener(main plugin)
+  public BlockListener(SwornRPG plugin)
   {
   }
 

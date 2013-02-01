@@ -1,8 +1,8 @@
 package net.dmulloy2.swornrpg.listeners;
 
-import net.dmulloy2.swornrpg.main;
+import net.dmulloy2.swornrpg.PermissionInterface;
+import net.dmulloy2.swornrpg.SwornRPG;
 
-import net.dmulloy2.swornrpg.PermissionsInterface.PermissionInterface;
 import net.dmulloy2.swornrpg.util.InventoryHelper;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -26,10 +26,10 @@ import org.bukkit.inventory.ItemStack;
  * @editor dmulloy2
  */
 
-public class PluginPlayerListener
+public class PlayerListener
   implements Listener {
 
-  private main plugin;
+  private SwornRPG plugin;
   int ChestMax = 8;
   int LegsMax = 7;
   int HelmMax = 5;
@@ -38,7 +38,7 @@ public class PluginPlayerListener
   int ironMax = 155;
   int diamondMax = 155;
 
-  public PluginPlayerListener(main plugin) {
+  public PlayerListener(SwornRPG plugin) {
     this.plugin = plugin;
   }
 
@@ -290,9 +290,13 @@ public class PluginPlayerListener
       }
 
       if (((label.equalsIgnoreCase("srpg"))) || ((label.equalsIgnoreCase("swornrpg")))){
+    	  if(args.length == 0){
     	  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
-    	  player.sendMessage(ChatColor.DARK_RED + "/swornrpg" + ChatColor.GOLD + " (srpg) " + ChatColor.YELLOW + "Displays this help menu");
-    	  //player.sendMessage(ChatColor.DARK_RED + "/srpg " + ChatColor.GOLD + "level" + ChatColor.YELLOW + " Displays your current level");
+    	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " <args> ");
+    	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " help " + ChatColor.YELLOW + "Displays this help menu");
+    	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " level " + ChatColor.YELLOW + "Displays your current level");
+    	  if (player.hasPermission("srpg.aclear")){
+    		  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level");}
     	  if (player.hasPermission("srpg.ride")){
     		  player.sendMessage(ChatColor.DARK_RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
     	  player.sendMessage(ChatColor.DARK_RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
@@ -301,8 +305,53 @@ public class PluginPlayerListener
     	  if (player.hasPermission("srpg.asay")){
     		  player.sendMessage(ChatColor.DARK_RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
     	  if (player.getName().contains("dmulloy2")){
-        	  player.sendMessage(ChatColor.DARK_RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");
+        	  player.sendMessage(ChatColor.DARK_RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+      }
+    	  else if (args[0].equals("level")){
+    		  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "This command has not been implimented yet");
     	  }
+    	  else if (args[0].equals("levelr")){
+    		  if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)) {
+    			  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "This command has not been implimented yet");
+    		  }else{
+    			  player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+    			  System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
+    		  }
+    		  
+    	  }
+    	  else if (args[0].equals("help")){
+    		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
+        	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " <args> ");
+        	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " help " + ChatColor.YELLOW + "Displays this help menu");
+        	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " level " + ChatColor.YELLOW + "Displays your current level");
+        	  if (player.hasPermission("srpg.aclear")){
+        		  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+        	  if (player.hasPermission("srpg.ride")){
+        		  player.sendMessage(ChatColor.DARK_RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
+        	  player.sendMessage(ChatColor.DARK_RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
+        	  if (player.hasPermission("srpg.adminchat")){
+        		  player.sendMessage(ChatColor.DARK_RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+        	  if (player.hasPermission("srpg.asay")){
+        		  player.sendMessage(ChatColor.DARK_RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
+        	  if (player.getName().contains("dmulloy2")){
+            	  player.sendMessage(ChatColor.DARK_RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+      }else{
+    	  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
+    	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " <args> ");
+    	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " help " + ChatColor.YELLOW + "Displays this help menu");
+    	  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " level " + ChatColor.YELLOW + "Displays your current level");
+    	  if (player.hasPermission("srpg.aclear")){
+    		  player.sendMessage(ChatColor.DARK_RED + "/srpg" + ChatColor.GOLD + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+    	  if (player.hasPermission("srpg.ride")){
+    		  player.sendMessage(ChatColor.DARK_RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
+    	  player.sendMessage(ChatColor.DARK_RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
+    	  if (player.hasPermission("srpg.adminchat")){
+    		  player.sendMessage(ChatColor.DARK_RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+    	  if (player.hasPermission("srpg.asay")){
+    		  player.sendMessage(ChatColor.DARK_RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
+    	  if (player.getName().contains("dmulloy2")){
+        	  player.sendMessage(ChatColor.DARK_RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+      	}
       }
       if (((label.equalsIgnoreCase("ride")) || (label.equalsIgnoreCase("unride"))) && (args.length == 1)){
         if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {
@@ -321,7 +370,7 @@ public class PluginPlayerListener
     		  for (int i = 0; i < amt; i++) {
     			  str = str + args[i] + " ";
     		  }
-    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Announcement" + ChatColor.DARK_PURPLE + "] " + ChatColor.DARK_PURPLE + str);
+    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Admin" + ChatColor.DARK_PURPLE + "]: " + ChatColor.DARK_PURPLE + str);
       }else{
     	  player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
     	  System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
@@ -335,9 +384,9 @@ public class PluginPlayerListener
         	for (int i = 0; i < amt; i++) {
         		str = str + args[i] + " ";
         	}
-        	this.plugin.sendMessageAll(ChatColor.AQUA + "[" + ChatColor.DARK_GRAY + "Announcement" + ChatColor.AQUA + "] " + ChatColor.AQUA + str);
+        	this.plugin.sendMessageAll(ChatColor.AQUA + "[" + ChatColor.DARK_GRAY + "dmulloy" + ChatColor.AQUA + "]: " + ChatColor.AQUA + str);
         }else{
-        	player.sendMessage(ChatColor.RED + "Only dmulloy can use this command c:");
+        	player.sendMessage(ChatColor.RED + "Only dmulloy can use this command");
         	System.out.println("[SwornRPG] " + player.getName() + " tried to use dmulloy's command");
         }
       }

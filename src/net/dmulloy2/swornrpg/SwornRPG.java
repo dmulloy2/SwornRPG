@@ -3,10 +3,9 @@ package net.dmulloy2.swornrpg;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.swornrpg.PermissionsInterface.PermissionInterface;
-import net.dmulloy2.swornrpg.listeners.PluginBlockListener;
-import net.dmulloy2.swornrpg.listeners.PluginEntityListener;
-import net.dmulloy2.swornrpg.listeners.PluginPlayerListener;
+import net.dmulloy2.swornrpg.listeners.BlockListener;
+import net.dmulloy2.swornrpg.listeners.EntityListener;
+import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.listeners.TagListener;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -24,11 +23,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @editor dmulloy2
  */
 
-public class main extends JavaPlugin
+public class SwornRPG extends JavaPlugin
 {
-  private PluginEntityListener entityListener = new PluginEntityListener(this);
-  private PluginPlayerListener playerListener = new PluginPlayerListener(this);
-  private PluginBlockListener blockListener = new PluginBlockListener(this);
+  private EntityListener entityListener = new EntityListener(this);
+  private PlayerListener playerListener = new PlayerListener(this);
+  private BlockListener blockListener = new BlockListener(this);
   private TagListener tagListener = new TagListener(this);
   public List<String> adminchaters = new ArrayList<String>();
   private String pluginName = "SwornRPG";
@@ -37,7 +36,7 @@ public class main extends JavaPlugin
   public String adminAbilitiesPerm = "srpg.abilities";
   public String adminRidePerm = "srpg.ride";
   public String adminSayPerm = "srpg.asay";
-  //public String adminClearPerm = "srpg.aclear";
+  public String adminClearPerm = "srpg.aclear";
 
   public void onDisable()
   {

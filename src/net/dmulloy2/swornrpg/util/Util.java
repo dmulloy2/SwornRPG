@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.dmulloy2.swornrpg.main;
-
+import net.dmulloy2.swornrpg.SwornRPG;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -16,11 +15,11 @@ public class Util {
 	 * @author orange451
 	 * @editor dmulloy2
 	 */
-  public static main plugin;
+  public static SwornRPG plugin;
   public static World world;
   public static Server server;
 
-  public static void Initialize(main plugin)
+  public static void Initialize(SwornRPG plugin)
   {
     Util.plugin = plugin;
     server = plugin.getServer();
