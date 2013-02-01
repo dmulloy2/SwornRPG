@@ -26,6 +26,7 @@ permissions:
     children:
       srpg.moderator: true
       srpg.asay: true
+	  srpg.aclear: true
   srpg.moderator:
     description: Gives access to features meant for server moderators.
     children:
@@ -35,8 +36,8 @@ permissions:
     description: Gives access to features meant for server guards.
     children:
       srpg.adminchat: true
-  srpg.hat:
-    description: Changes your hat.
-    default: true
-More to come in future releases ;3
-*Denotes a feature yet to come c:
+*Denotes a feature yet to come.
+Optional TagAPI integration:
+	If you are an experienced coder, you might want to take a look at the class "TagListener"
+	This listener lays the framework for changing the Tag above your head, just plug in your IGN and then what you want it to show up as.
+	Considering the way that Bukkit handles nametags, the output nametag must be the same as your IGN or you will show up as steve.
