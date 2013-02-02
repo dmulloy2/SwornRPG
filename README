@@ -20,6 +20,10 @@ Commands:
     aliases: /swornrpg
     permission: n/a
     description: Root command
+  frenzy:
+    command: /frenzy
+	permission: n/a
+	Description: Enter BeastMode
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.
