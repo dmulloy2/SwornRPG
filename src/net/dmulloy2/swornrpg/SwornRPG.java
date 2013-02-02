@@ -3,11 +3,13 @@ package net.dmulloy2.swornrpg;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.swornrpg.commands.CmdAdm;
+import net.dmulloy2.swornrpg.commands.CmdAChat;
 import net.dmulloy2.swornrpg.commands.CmdDmu;
+import net.dmulloy2.swornrpg.commands.CmdHat;
+//import net.dmulloy2.swornrpg.commands.CmdFrenzy;
 import net.dmulloy2.swornrpg.commands.CmdRide;
 import net.dmulloy2.swornrpg.commands.CmdUnride;
-import net.dmulloy2.swornrpg.commands.CmdA;
+import net.dmulloy2.swornrpg.commands.CmdASay;
 import net.dmulloy2.swornrpg.commands.CmdHelp;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
@@ -62,8 +64,10 @@ public class SwornRPG extends JavaPlugin
 	this.getCommand("ride").setExecutor(new CmdRide (this));
 	this.getCommand("unride").setExecutor(new CmdUnride (this));
 	this.getCommand("dmu").setExecutor(new CmdDmu (this));
-	this.getCommand("adm").setExecutor(new CmdAdm (this));
-	this.getCommand("a").setExecutor(new CmdA (this));
+	this.getCommand("adm").setExecutor(new CmdASay (this));
+	this.getCommand("a").setExecutor(new CmdAChat (this));
+	//this.getCommand("frenzy").setExecutor(new CmdFrenzy (this));
+	this.getCommand("hat").setExecutor(new CmdHat (this));
     Util.Initialize(this);
     Plugin p = Bukkit.getPluginManager().getPlugin("TagAPI");
     if (p != null) {

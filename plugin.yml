@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.7.1
+version: 0.7.2
 author: dmulloy2
 description: A better version of McMMO.
 softdepend: [TagAPI]
@@ -25,6 +25,9 @@ commands:
     description: Root command
     usage:
     aliases: [swornrpg]
+  frenzy:
+    description: Enters beast mode
+    usage:
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.

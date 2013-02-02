@@ -15,7 +15,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -259,46 +258,7 @@ public class PlayerListener
 
     return ret;
   }
-
-  @EventHandler(priority=EventPriority.NORMAL)
-  public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-    try {
-      Player player = event.getPlayer();
-      String[] split = event.getMessage().split(" ");
-      split[0] = split[0].substring(1);
-      String label = split[0];
-      String[] args = new String[split.length - 1];
-      for (int i = 1; i < split.length; i++) {
-        args[(i - 1)] = split[i];
-      }
-
-      if (label.equalsIgnoreCase("hat"))
-        try {
-          ItemStack itm = player.getItemInHand();
-          ItemStack toHead = itm.clone();
-          toHead.setAmount(1);
-          int type = itm.getTypeId();
-          if (type < 256) {
-            if (itm.getAmount() > 1) {
-              itm.setAmount(itm.getAmount() - 1);
-              player.setItemInHand(itm);
-            } else {
-              player.setItemInHand(null);
-            }
-            player.getInventory().setHelmet(toHead);
-          } else {
-            player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Error: This is not a block!");
-          }
-        }
-        catch (Exception localException)
-        {
-        }
-    }
-    catch (Exception localException1)
-    {
-    }
-  }
-
+  
   @EventHandler(priority=EventPriority.NORMAL)
   public void onPlayerChat(AsyncPlayerChatEvent event) {
     try {

@@ -29,9 +29,10 @@ public class CmdHelp implements CommandExecutor{
 	    		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
-	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	        	  if (player.hasPermission("srpg.aclear")){
-	        		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
+	        	  //if (player.hasPermission("srpg.aclear")){
+	        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+	        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
 	        	  if (player.hasPermission("srpg.ride")){
 	        		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
 	        	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
@@ -58,9 +59,10 @@ public class CmdHelp implements CommandExecutor{
 	    		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
-	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	        	  if (player.hasPermission("srpg.aclear")){
-	        		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
+	        	  //if (player.hasPermission("srpg.aclear")){
+	        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+	        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
 	        	  if (player.hasPermission("srpg.ride")){
 	        		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
 	        	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
@@ -71,21 +73,22 @@ public class CmdHelp implements CommandExecutor{
 	        	  if (player.getName().contains("dmulloy2")){
 	            	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
 	      }else{
-	    	  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
-	    	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
-	    	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
-	    	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	    	  if (player.hasPermission("srpg.aclear")){
-	    		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
-	    	  if (player.hasPermission("srpg.ride")){
-	    		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
-	    	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
-	    	  if (player.hasPermission("srpg.adminchat")){
-	    		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
-	    	  if (player.hasPermission("srpg.asay")){
-	    		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
-	    	  if (player.getName().contains("dmulloy2")){
-	        	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+    		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
+        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
+        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
+        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
+        	  //if (player.hasPermission("srpg.aclear")){
+        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
+        	  if (player.hasPermission("srpg.ride")){
+        		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
+        	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
+        	  if (player.hasPermission("srpg.adminchat")){
+        		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+        	  if (player.hasPermission("srpg.asay")){
+        		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
+        	  if (player.getName().contains("dmulloy2")){
+            	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
 	      	}
 			return false;
 	  }

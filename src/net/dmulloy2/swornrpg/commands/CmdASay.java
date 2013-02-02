@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class CmdAdm implements CommandExecutor{
+public class CmdASay implements CommandExecutor{
 	
 	public SwornRPG plugin;
-	  public CmdAdm(SwornRPG plugin)  {
+	  public CmdASay(SwornRPG plugin)  {
 	    this.plugin = plugin;
 
 	  }
