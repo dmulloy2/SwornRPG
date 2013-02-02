@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.6
+version: 0.7
 author: dmulloy2
 description: A better version of McMMO.
 softdepend: [TagAPI]
