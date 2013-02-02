@@ -8,6 +8,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdAdm implements CommandExecutor{
 	
 	public SwornRPG plugin;

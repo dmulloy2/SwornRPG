@@ -9,10 +9,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SRPG implements CommandExecutor{
+/**
+ * @author dmulloy2
+ */
+
+public class CmdHelp implements CommandExecutor{
 	
 	public SwornRPG plugin;
-	  public SRPG(SwornRPG plugin)  {
+	  public CmdHelp (SwornRPG plugin)  {
 	    this.plugin = plugin;
 
 	  }

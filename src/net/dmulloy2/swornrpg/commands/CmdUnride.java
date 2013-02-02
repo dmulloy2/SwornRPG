@@ -10,6 +10,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ * Note: Once i figure out aliases, i will remove this class.
+ */
+
 public class CmdUnride implements CommandExecutor{
 	
 	public SwornRPG plugin;
