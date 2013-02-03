@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
- * Functionality coming soon.
+ * Unimplimented. Plan to add functionality.
  */
 
 @SuppressWarnings("unused")
@@ -25,7 +25,7 @@ public class CmdFrenzy implements CommandExecutor{
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
-		    player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not yet been implimented");
+		    player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " Now entering BeastMode");
 			return false;
 	  }
 }

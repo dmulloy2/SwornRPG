@@ -215,7 +215,7 @@ public class PlayerListener
           amtIron -= 1.0D;
           if (amtIron > 0.0D)
             try {
-              pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " gold(s)");
+              pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " gold ingot(s)");
               Inventory inv = pl.getInventory();
               inv.removeItem(new ItemStack[] { item });
               Material give = Material.GOLD_INGOT;
