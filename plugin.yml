@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.8
+version: 0.8.1
 author: dmulloy2
 description: A better version of McMMO.
 softdepend: [TagAPI]
@@ -8,19 +8,22 @@ commands:
   a:
     description: Admin chat.
     usage:
+    permission: srpg.adminchat
   ride:
     description: Get on someones head.
     usage:
     aliases: [unride]
+    permission: srpg.ride
   hat:
     description: Lets you put the block in you hand on your head.
-    usage:
+    usage: 
   dmu:
     description: dmulloy's special chat.
     usage:
   adm:
     description: Alternate admin say command.
     usage:
+    permission: srpg.asay
   srpg:
     description: Root command
     usage:
@@ -28,6 +31,10 @@ commands:
   frenzy:
     description: Enters beast mode
     usage:
+  hc:
+    description: High Council Chat
+    usage:
+    permission: srpg.council
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.

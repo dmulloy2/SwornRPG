@@ -268,6 +268,10 @@ public class PlayerListener
         this.plugin.sendAdminMessage(player.getName(), msg);
         event.setCancelled(true);
       }
+      if (this.plugin.isCouncilChatting(player.getName())) {
+          this.plugin.sendCouncilMessage(player.getName(), msg);
+          event.setCancelled(true);
+      }
     }
     catch (Exception localException)
     {

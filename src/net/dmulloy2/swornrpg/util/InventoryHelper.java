@@ -5,6 +5,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+/**
+ * @author orange451
+ * @editor dmulloy2
+ */
+
 public class InventoryHelper
 {
   public static int amtItem(Inventory inventory, int itemid)

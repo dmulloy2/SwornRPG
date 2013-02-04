@@ -10,11 +10,13 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+/**
+ * @author orange451
+ * @editor dmulloy2
+ */
+
 public class Util {
-	/**
-	 * @author orange451
-	 * @editor dmulloy2
-	 */
+
   public static SwornRPG plugin;
   public static World world;
   public static Server server;

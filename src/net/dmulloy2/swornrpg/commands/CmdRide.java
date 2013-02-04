@@ -21,19 +21,24 @@ public class CmdRide implements CommandExecutor{
 	    this.plugin = plugin;
 
 	  }
+	  
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
 		    Player player = null;
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
-	        if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {
-	        	Player to = Util.MatchPlayer(args[0]);
-	        	to.setPassenger(player);
-	        }else{
-	        	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
-	        	System.out.println("[SwornRPG] " + player.getName() + " was denied a trip on a player");
-	        }
+		    if((label.equalsIgnoreCase("ride"))||(label.equalsIgnoreCase("unride"))){
+		    	
+		    	if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {
+		    		Player to = Util.MatchPlayer(args[0]);
+		    		to.setPassenger(player);
+		    		
+		    	}else{
+		    		player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+		    		System.out.println("[SwornRPG] " + player.getName() + " was denied a trip on a player");
+	        		}
+		    	}
 
-			return false;
-	  }
+				return false;
+	  	}
 }
