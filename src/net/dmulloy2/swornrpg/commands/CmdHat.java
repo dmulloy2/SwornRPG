@@ -69,12 +69,6 @@ public class CmdHat implements CommandExecutor{
 						player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
 					}
 				}
-			return false;
+			return true;
 	  }	
 }
-
-//hatArmor=\u00a74Error, you cannot use this item as a hat!
-//hatEmpty=\u00a74You are not wearing a hat.
-//hatFail=\u00a74You must have something to wear in your hand.
-//hatPlaced=\u00a76Enjoy your new hat!
-//hatRemoved=\u00a76Your hat has been removed.

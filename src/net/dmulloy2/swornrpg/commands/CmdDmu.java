@@ -34,6 +34,6 @@ public class CmdDmu implements CommandExecutor{
 	        	player.sendMessage(ChatColor.RED + "Only dmulloy can use this command");
 	        	System.out.println("[SwornRPG] " + player.getName() + " tried to use dmulloy's command");
 	        }
-			return false;
+			return true;
 	  }
 }

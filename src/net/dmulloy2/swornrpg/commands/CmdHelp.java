@@ -30,14 +30,16 @@ public class CmdHelp implements CommandExecutor{
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	        	  //if (player.hasPermission("srpg.aclear")){
+	        	  //if if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
 	        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
 	        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
-	        	  if (player.hasPermission("srpg.ride")){
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)){
 	        		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
 	        	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
-	        	  if (player.hasPermission("srpg.adminchat")){
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminChatPerm)){
 	        		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)){
+	        		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
 	        	  if (player.hasPermission("srpg.asay")){
 	        		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
 	        	  if (player.getName().contains("dmulloy2")){
@@ -60,14 +62,16 @@ public class CmdHelp implements CommandExecutor{
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	        	  //if (player.hasPermission("srpg.aclear")){
+	        	  //if if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
 	        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
 	        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
-	        	  if (player.hasPermission("srpg.ride")){
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)){
 	        		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
 	        	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
-	        	  if (player.hasPermission("srpg.adminchat")){
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminChatPerm)){
 	        		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)){
+	        		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
 	        	  if (player.hasPermission("srpg.asay")){
 	        		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
 	        	  if (player.getName().contains("dmulloy2")){
@@ -77,19 +81,21 @@ public class CmdHelp implements CommandExecutor{
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
         	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-        	  //if (player.hasPermission("srpg.aclear")){
+        	  //if if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
         		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
         	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
-        	  if (player.hasPermission("srpg.ride")){
+        	  if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)){
         		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
         	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
-        	  if (player.hasPermission("srpg.adminchat")){
+        	  if (PermissionInterface.checkPermission(player, this.plugin.adminChatPerm)){
         		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+        	  if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)){
+        		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
         	  if (player.hasPermission("srpg.asay")){
         		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
         	  if (player.getName().contains("dmulloy2")){
             	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
 	      	}
-			return false;
+			return true;
 	  }
 }

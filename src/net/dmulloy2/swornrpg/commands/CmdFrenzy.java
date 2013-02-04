@@ -26,6 +26,7 @@ public class CmdFrenzy implements CommandExecutor{
 		      player = (Player) sender;
 		    }
 		    player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " Now entering BeastMode");
-			return false;
+			
+		    return true;
 	  }
 }
