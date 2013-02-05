@@ -30,19 +30,21 @@ public class CmdRide implements CommandExecutor{
 		    if (label.equalsIgnoreCase("ride")){
 		    			    	
 		    	if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {
-		    		if(args.length > 1){
+		    		
+		    		if(args.length < 1){
+		    			player.sendMessage(ChatColor.RED + "Error, too few arguments");
+		    			player.leaveVehicle();
+		    		}else{
 		    			Player to = Util.MatchPlayer(args[0]);
 		    			to.setPassenger(player);
-		    		}else{
-		    			player.sendMessage(ChatColor.RED + "Error, too few arguments");
+		    			player.sendMessage(ChatColor.GOLD + "You are now riding " + to);
 		    		}
 		    	
 		    	}else{
 		    		player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
-		    		System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
-	        		
+		    		System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");	
+		    		}
 		    	}
-		    }
 		    
 		   if (label.equalsIgnoreCase("unride")){
 			   if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {
