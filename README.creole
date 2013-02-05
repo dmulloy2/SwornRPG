@@ -1,6 +1,8 @@
 == SwornRPG ==
 ==== Introducing SwornRPG, the fully functional alternative to McMMO! This plugin currently features such things as admin chat, rare drops, the ability to ride other players, and the ability to make any block your hat! ====
 
+=== Download SwornRPG on Bukkit Dev! ===
+[[http://dev.bukkit.org/server-mods/swornrpg/]]
 === Commands ===
   *admin chat: 
   **Usage: /a <message>
@@ -31,5 +33,3 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 **Grants access to features meant for Moderators (admin chat and ride)
 *srpg.guard:
 **Grants access to admin chat
-=== SwornRPG is Open Sourced! ===
-Check out our repository on GitHub: [[https://github.com/dmulloy2/SwornRPG]]
