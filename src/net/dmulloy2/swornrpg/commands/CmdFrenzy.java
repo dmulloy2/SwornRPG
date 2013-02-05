@@ -1,6 +1,5 @@
 package net.dmulloy2.swornrpg.commands;
 
-import net.dmulloy2.swornrpg.PermissionInterface;
 import net.dmulloy2.swornrpg.SwornRPG;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
  * Unimplimented. Plan to add functionality.
  */
 
-@SuppressWarnings("unused")
 public class CmdFrenzy implements CommandExecutor{
 	
 	public SwornRPG plugin;

@@ -33,7 +33,7 @@ public class CmdHighCouncil implements CommandExecutor{
 	            this.plugin.sendCouncilMessage(player.getName(), str);
 	          }else{
 	          	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
-	          	System.out.println("[SwornRPG] " + player.getName() + " was denied access to council chat");
+	          	System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
 	          }
 			return true;
 	  }

@@ -33,7 +33,7 @@ public class CmdAChat implements CommandExecutor{
 	            this.plugin.sendAdminMessage(player.getName(), str);
 	          }else{
 	          	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
-	          	System.out.println("[SwornRPG] " + player.getName() + " was denied access to admin chat");
+	          	System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
 	          }
 			return true;
 	  }

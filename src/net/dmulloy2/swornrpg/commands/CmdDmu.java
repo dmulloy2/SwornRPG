@@ -31,8 +31,8 @@ public class CmdDmu implements CommandExecutor{
 	        	}
 	        	this.plugin.sendMessageAll(ChatColor.AQUA + "[" + ChatColor.DARK_GRAY + "dmulloy" + ChatColor.AQUA + "]: " + ChatColor.AQUA + str);
 	        }else{
-	        	player.sendMessage(ChatColor.RED + "Only dmulloy can use this command");
-	        	System.out.println("[SwornRPG] " + player.getName() + " tried to use dmulloy's command");
+	        	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+	        	System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");
 	        }
 			return true;
 	  }

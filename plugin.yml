@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.8.2
+version: 0.8.3
 author: dmulloy2
 description: A better version of McMMO.
 softdepend: [TagAPI]
@@ -14,7 +14,11 @@ commands:
     description: Get on someones head.
     usage: |
       /<command> <player>
-    aliases: [unride]
+    permission: srpg.ride
+  unride:
+    description: Gets off someone's head.
+    usage: |
+      /<command>
     permission: srpg.ride
   hat:
     description: Lets you put the block in you hand on your head.

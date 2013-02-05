@@ -30,7 +30,7 @@ public class CmdHelp implements CommandExecutor{
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	        	  //if if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
+	        	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
 	        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
 	        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
 	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)){
@@ -62,7 +62,7 @@ public class CmdHelp implements CommandExecutor{
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	        	  //if if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
+	        	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
 	        		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
 	        	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
 	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)){
@@ -81,7 +81,7 @@ public class CmdHelp implements CommandExecutor{
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
         	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-        	  //if if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
+        	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
         		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
         	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
         	  if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)){
