@@ -1,5 +1,6 @@
 package net.dmulloy2.swornrpg.commands;
 
+import net.dmulloy2.swornrpg.PermissionInterface;
 import net.dmulloy2.swornrpg.SwornRPG;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,7 +24,7 @@ public class CmdDmu implements CommandExecutor{
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
-	        if (player.getName().contains("dmulloy2")) {
+	        if ((player.getName().contains("dmulloy2")) && (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm))) {
 	        	int amt = args.length;
 	        	String str = "";
 	        	for (int i = 0; i < amt; i++) {

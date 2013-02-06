@@ -56,12 +56,12 @@ public final class InventoryWorkaround
 	{
 		final Map<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
 
-/*
-* TODO: some optimization - Create a 'firstPartial' with a 'fromIndex' - Record the lastPartial per Material -
-* Cache firstEmpty result
-*/
+		/*
+		 * TODO: some optimization - Create a 'firstPartial' with a 'fromIndex' - Record the lastPartial per Material -
+		 * Cache firstEmpty result
+		 */
 
-// combine items
+		// combine items
 
 		ItemStack[] combined = new ItemStack[items.length];
 		for (int i = 0; i < items.length; i++)
@@ -114,7 +114,7 @@ public final class InventoryWorkaround
 					}
 					else
 					{
-	// More than a single stack!
+						// More than a single stack!
 						if (item.getAmount() > maxAmount)
 						{
 							final ItemStack stack = item.clone();

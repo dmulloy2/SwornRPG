@@ -37,7 +37,7 @@ public class CmdRide implements CommandExecutor{
 		    		}else{
 		    			Player to = Util.MatchPlayer(args[0]);
 		    			to.setPassenger(player);
-		    			player.sendMessage(ChatColor.GOLD + "You are now riding " + to);
+		    			player.sendMessage(ChatColor.GOLD + "You are now riding " + to.getName());
 		    		}
 		    	
 		    	}else{
