@@ -40,10 +40,8 @@ public class CmdHelp implements CommandExecutor{
 	        		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
 	        	  if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)){
 	        		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
-	        	  if (player.hasPermission("srpg.asay")){
-	        		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
-	        	  if (player.getName().contains("dmulloy2")){
-	            	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm)){
+	        		  player.sendMessage(ChatColor.RED + "/asay " + ChatColor.YELLOW + "Alternate admin say command");}
 	      }
 	    	  else if (args[0].equals("level")){
 	    		  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "This command has not been implimented yet");
@@ -72,10 +70,8 @@ public class CmdHelp implements CommandExecutor{
 	        		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
 	        	  if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)){
 	        		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
-	        	  if (player.hasPermission("srpg.asay")){
-	        		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
-	        	  if (player.getName().contains("dmulloy2")){
-	            	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm)){
+	        		  player.sendMessage(ChatColor.RED + "/asay " + ChatColor.YELLOW + "Alternate admin say command");}
 	      }else{
     		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
@@ -91,10 +87,8 @@ public class CmdHelp implements CommandExecutor{
         		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
         	  if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)){
         		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
-        	  if (player.hasPermission("srpg.asay")){
-        		  player.sendMessage(ChatColor.RED + "/adm " + ChatColor.YELLOW + "Alternate admin say command");}
-        	  if (player.getName().contains("dmulloy2")){
-            	  player.sendMessage(ChatColor.RED + "/dmu " + ChatColor.YELLOW + "dmulloy's special chat");}
+        	  if (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm)){
+        		  player.sendMessage(ChatColor.RED + "/asay " + ChatColor.YELLOW + "Alternate admin say command");}
 	      	}
 			return true;
 	  }

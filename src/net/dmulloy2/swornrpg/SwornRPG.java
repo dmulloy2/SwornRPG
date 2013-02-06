@@ -9,7 +9,6 @@ import net.dmulloy2.swornrpg.commands.CmdFrenzy;
 import net.dmulloy2.swornrpg.commands.CmdRide;
 import net.dmulloy2.swornrpg.commands.CmdASay;
 import net.dmulloy2.swornrpg.commands.CmdHelp;
-import net.dmulloy2.swornrpg.commands.CmdDmu;
 import net.dmulloy2.swornrpg.commands.CmdHighCouncil;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
@@ -54,6 +53,7 @@ public class SwornRPG extends JavaPlugin
   {
     System.out.println("[SwornRPG] " + this.pluginName + " v " + getDescription().getVersion() + " has been disabled");
     this.adminchaters.clear();
+    this.councilchaters.clear();
   }
 
   public void onEnable()
@@ -69,15 +69,11 @@ public class SwornRPG extends JavaPlugin
 	this.getCommand("srpg").setExecutor(new CmdHelp (this));
 	this.getCommand("ride").setExecutor(new CmdRide (this));
 	this.getCommand("unride").setExecutor(new CmdRide (this));
-	this.getCommand("adm").setExecutor(new CmdASay (this));
+	this.getCommand("asay").setExecutor(new CmdASay (this));
 	this.getCommand("a").setExecutor(new CmdAChat (this));
 	this.getCommand("frenzy").setExecutor(new CmdFrenzy (this));
 	this.getCommand("hat").setExecutor(new CmdHat (this));
 	this.getCommand("hc").setExecutor(new CmdHighCouncil (this));
-	this.getCommand("dmu").setExecutor(new CmdDmu (this));
-	
-	getConfig().addDefault("frenzy-enabled", true);
-	saveConfig();
 	
 	Util.Initialize(this);
     Plugin p = Bukkit.getPluginManager().getPlugin("TagAPI");

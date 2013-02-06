@@ -9,30 +9,22 @@ commands:
     description: Admin chat.
     usage: |
       /<command> <message>
-    permission: srpg.adminchat
   ride:
     description: Get on someones head.
     usage: |
       /<command> <player>
-    permission: srpg.ride
   unride:
     description: Gets off someone's head.
     usage: |
       /<command>
-    permission: srpg.ride
   hat:
     description: Lets you put the block in you hand on your head.
     usage: |
       /<command> <remove>
-  dmu:
-    description: dmulloy's special chat.
-    usage: |
-      /<command> <message>
-  adm:
+  asay:
     description: Alternate admin say command.
     usage: |
       /<command> <message>
-    permission: srpg.asay
   srpg:
     description: Root command
     usage: |
@@ -46,7 +38,6 @@ commands:
     description: High Council Chat
     usage: |
       /<command> <message>
-    permission: srpg.council
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.
