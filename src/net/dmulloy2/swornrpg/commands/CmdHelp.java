@@ -28,6 +28,8 @@ public class CmdHelp implements CommandExecutor{
 		    if(args.length == 0){
 	    		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
+	        	  if ((player.hasPermission("srpg.admin")) || player.isOp()){
+	        		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");}
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
 	        	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
@@ -43,7 +45,11 @@ public class CmdHelp implements CommandExecutor{
 	        	  if (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm)){
 	        		  player.sendMessage(ChatColor.RED + "/asay " + ChatColor.YELLOW + "Alternate admin say command");}
 	      }
-	    	  else if (args[0].equals("level")){
+		      else if (args[0].equals("reload")){
+		    	  plugin.reloadConfig();
+		    	  player.sendMessage(ChatColor.GREEN + "Config reloaded");
+		      }
+		      else if (args[0].equals("level")){
 	    		  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "This command has not been implimented yet");
 	    	  }
 	    	  else if (args[0].equals("levelr")){
@@ -58,6 +64,8 @@ public class CmdHelp implements CommandExecutor{
 	    	  else if (args[0].equals("help")){
 	    		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
+	        	  if ((player.hasPermission("srpg.admin")) || player.isOp()){
+	        		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");}
 	        	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	        	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
 	        	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
@@ -75,6 +83,8 @@ public class CmdHelp implements CommandExecutor{
 	      }else{
     		  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
+        	  if ((player.hasPermission("srpg.admin")) || player.isOp()){
+        		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");}
         	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
         	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
         	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){

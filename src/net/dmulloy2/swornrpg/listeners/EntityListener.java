@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
 public class EntityListener
   implements Listener {
 
-  SwornRPG plugin;
+  public SwornRPG plugin;
 
   public EntityListener(SwornRPG plugin)
   {
@@ -40,7 +40,7 @@ public class EntityListener
   {
   }
 
-  @EventHandler(priority=EventPriority.NORMAL)
+  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onEntityDamage(EntityDamageEvent event)
   {
     try {
@@ -50,16 +50,24 @@ public class EntityListener
       Entity att = ((EntityDamageByEntityEvent)event).getDamager();
       LivingEntity defender = (LivingEntity)event.getEntity();
       if ((att instanceof Arrow)) {
-        if (Util.random(10) == 0) {
-          defender.setFireTicks(128);
-          if ((((Arrow)att).getShooter() instanceof Player))
-            ((Player)((Arrow)att).getShooter()).sendMessage(ChatColor.GOLD + "Fire Damage!");
-        }
-      }
+    		  if (Util.random(10) == 0) {
+    			  defender.setFireTicks(128);
+        		  //Checks to see if arrow fire is enabled in the config
+    			  boolean arrowfire = plugin.getConfig().getBoolean("arrowfire");
+        		  if (arrowfire == true){
+    			  if ((((Arrow)att).getShooter() instanceof Player))
+    				  ((Player)((Arrow)att).getShooter()).sendMessage(ChatColor.GOLD + "Fire Damage!");  
+    			  }
+    		  }
+    	  }
+      
       else if ((att instanceof Player)) {
         Player p = (Player)att;
         String gun = p.getItemInHand().getType().toString().toLowerCase();
         if (gun.contains("_axe")) {
+  		  //Checks to see if axe knockback is enabled in the config
+          boolean axekb = plugin.getConfig().getBoolean("axekb");
+  		  if (axekb == true){
           int randomBlowBack = Util.random(9);
           if (randomBlowBack == 0) {
             double distance = Util.point_distance(att.getLocation(), defender.getLocation());
@@ -84,9 +92,10 @@ public class EntityListener
             catch (Exception localException)
             {
             }
+           }
           }
-        }
-      }
+         }
+       }
     }
     catch (Exception localException1)
     {

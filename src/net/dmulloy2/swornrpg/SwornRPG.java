@@ -2,7 +2,6 @@ package net.dmulloy2.swornrpg;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.dmulloy2.swornrpg.commands.CmdAChat;
 import net.dmulloy2.swornrpg.commands.CmdHat;
 import net.dmulloy2.swornrpg.commands.CmdFrenzy;
@@ -26,8 +25,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * @author orange451
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public class SwornRPG extends JavaPlugin
@@ -82,6 +80,8 @@ public class SwornRPG extends JavaPlugin
     	} else {
     		System.out.println("[SwornRPG] Could not hook into TagAPI. Disabling TagAPI related features.");
     	}
+    //Saves the default config if one does not exist
+    this.saveDefaultConfig();
   }
 
   public boolean isAdminChatting(String str)
@@ -93,6 +93,7 @@ public class SwornRPG extends JavaPlugin
     }
     return false;
   }
+  
   public boolean isCouncilChatting(String str)
   {
     for (int i = 0; i < this.councilchaters.size(); i++) {
@@ -108,6 +109,7 @@ public class SwornRPG extends JavaPlugin
       getServer().getOnlinePlayers()[i].playEffect(l, e, num);
   }
 
+  //Sends a message to all players with the admin chat perm
   public void sendAdminMessage(String str, String str2)
   {
     List<Player> arr = Util.Who();
@@ -118,6 +120,7 @@ public class SwornRPG extends JavaPlugin
     }
   }
   
+  //Sends a message to all players with the council chat perm
   public void sendCouncilMessage(String str, String str2)
   {
     List<Player> arr = Util.Who();
@@ -128,6 +131,7 @@ public class SwornRPG extends JavaPlugin
     }
   }
 
+  //Sends a message to all players on the server
   public void sendMessageAll(String str)
   {
     List<Player> arr = Util.Who();

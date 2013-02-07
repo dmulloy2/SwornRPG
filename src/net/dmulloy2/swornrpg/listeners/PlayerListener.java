@@ -49,8 +49,8 @@ public class PlayerListener
     return false;
   }
 
-  @SuppressWarnings("deprecation")
-@EventHandler(priority=EventPriority.NORMAL)
+@SuppressWarnings("deprecation")
+@EventHandler(priority = EventPriority.NORMAL)
   public void onPlayerInteract(PlayerInteractEvent event) {
     try {
       if (!event.hasBlock()) {
@@ -100,7 +100,7 @@ public class PlayerListener
           System.out.println(amtIron);
           if (amtIron > 0.0D)
             try {
-              pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " iron ingot(s)");
+              pl.sendMessage(ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " iron ingot(s)");
               Inventory inv = pl.getInventory();
               inv.removeItem(new ItemStack[] { item });
               Material give = Material.IRON_INGOT;
@@ -122,7 +122,7 @@ public class PlayerListener
               e.printStackTrace();
             }
           else
-            pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "'" + mitem + "' is not a type of iron gear");
+            pl.sendMessage(ChatColor.GRAY + "'" + mitem + "' is not a type of iron gear");
         }
       } else if (block.getType().equals(Material.DIAMOND_BLOCK)) {
         if ((BlockNear(Material.FURNACE, block, -1, 0, 0)) || (BlockNear(Material.FURNACE, block, 1, 0, 0)) || (BlockNear(Material.FURNACE, block, 0, 0, -1)) || (BlockNear(Material.FURNACE, block, 0, 0, 1))) {
@@ -158,7 +158,7 @@ public class PlayerListener
           amtIron -= 1.0D;
           if (amtIron > 0.0D)
             try {
-              pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " diamond(s)");
+              pl.sendMessage(ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " diamond(s)");
               Inventory inv = pl.getInventory();
               inv.removeItem(new ItemStack[] { item });
               Material give = Material.DIAMOND;
@@ -179,7 +179,7 @@ public class PlayerListener
             {
             }
           else
-            pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "'" + mitem + "' is not a type of diamond gear");
+            pl.sendMessage(ChatColor.GRAY + "'" + mitem + "' is not a type of diamond gear");
         }
       } else if (block.getType().equals(Material.GOLD_BLOCK))
         if ((BlockNear(Material.FURNACE, block, -1, 0, 0)) || (BlockNear(Material.FURNACE, block, 1, 0, 0)) || (BlockNear(Material.FURNACE, block, 0, 0, -1)) || (BlockNear(Material.FURNACE, block, 0, 0, 1))) {
@@ -215,7 +215,7 @@ public class PlayerListener
           amtIron -= 1.0D;
           if (amtIron > 0.0D)
             try {
-              pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " gold ingot(s)");
+              pl.sendMessage(ChatColor.GRAY + "You have salvaged '" + mitem + "' for " + amtIron + " gold ingot(s)");
               Inventory inv = pl.getInventory();
               inv.removeItem(new ItemStack[] { item });
               Material give = Material.GOLD_INGOT;
@@ -236,7 +236,7 @@ public class PlayerListener
             {
             }
           else
-            pl.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GRAY + "'" + mitem + "' is not a type of gold gear");
+            pl.sendMessage(ChatColor.GRAY + "'" + mitem + "' is not a type of gold gear");
         }
     }
     catch (Exception localException3)
@@ -259,7 +259,7 @@ public class PlayerListener
     return ret;
   }
   
-  @EventHandler(priority=EventPriority.NORMAL)
+  @EventHandler(priority = EventPriority.NORMAL)
   public void onPlayerChat(AsyncPlayerChatEvent event) {
     try {
       String msg = event.getMessage();

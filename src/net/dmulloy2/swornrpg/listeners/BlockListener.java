@@ -20,10 +20,12 @@ import org.bukkit.material.MaterialData;
 
 public class BlockListener
   implements Listener {
-
-  public BlockListener(SwornRPG plugin)
-  {
-  }
+	
+	public SwornRPG plugin;
+	
+  public BlockListener(SwornRPG plugin){
+	  this.plugin = plugin;
+	  }
 
   public Item drop(Block block, int id)
   {
@@ -44,19 +46,23 @@ public class BlockListener
     return i;
   }
 
-  @EventHandler(priority=EventPriority.NORMAL)
+  @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
   public void onBlockBreak(BlockBreakEvent event) {
     try {
       Block block = event.getBlock();
       Material blockType = block.getType();
-      if (blockType.equals(Material.IRON_DOOR_BLOCK)) {
-        event.setCancelled(true);
-        return;
-      }
+    	  if (blockType.equals(Material.IRON_DOOR_BLOCK)) {
+    	      //Checks the config to make sure iron door protection is enabled
+    		  boolean irondoorprotect = plugin.getConfig().getBoolean("irondoorprotect");
+    		  if (irondoorprotect == true){
+    	    	  event.setCancelled(true);
+    		  }
+    		  return;
+    	  }
 
       if (!event.isCancelled())
       {
-        if ((blockType.equals(Material.CLAY)) || 
+    	  if ((blockType.equals(Material.CLAY)) || 
           (blockType.equals(Material.SAND)) || 
           (blockType.equals(Material.STONE)) || 
           (blockType.equals(Material.WOOD)) || 
@@ -88,6 +94,9 @@ public class BlockListener
           if (r399 == 0) drop(block, 399); 
           if (r266 == 0) drop(block, 266);
           if (r265 == 0) drop(block, 265);
+          //Checks the config to make sure random drops are enabled
+          boolean randomdrops = plugin.getConfig().getBoolean("randomdrops");
+          if (randomdrops == true){
           if (blockType.equals(Material.CLAY)) {
             int r341 = Util.random(20);
             int r287 = Util.random(20);
@@ -180,6 +189,7 @@ public class BlockListener
             if (r338 == 0) drop(block, 338);
             if (r32 == 0) drop(block, 32);
             if (r127 == 0) drop(block, 127);
+          	}
           }
         }
       }

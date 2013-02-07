@@ -1,23 +1,26 @@
 #SwornRPG Config File
 #Created by dmulloy2
-debug: false
-frenzy:
-  on: true
-  duration: 10
-    #Time (in seconds) how long the default frenzy mode will last
-level-up-rewards:
-  on: true
-level-up-methods:
-  mob-xp: true
-  online-time: false
-  player-kills: true
-  ore-mining: false
-  #More to come soon
-max-levels: 25
-bonus-up:
-  on: true
-  ##Bonus plugin XP
-double-up:
-  on: true
-  ##Bonus MC XP
+#Detailed explanation here: http://dev.bukkit.org/server-mods/swornrpg/pages/configuration/
+
+irondoorprotect: true
+#Enables/disables the protection of iron doors
+randomdrops: true
+#Enables/disables the random chance that a random drop will drop from a block
+axekb: true
+#Enables/disables the random chance that players can get knocked back by axes
+arrowfire: true
+#Enables/disables the random chance that players can catch fire when shot by arrows
+
+#Features for future versions:
+#frenzy:
+ #enabled: true
+#levelingmethods:
+ #onlinetime: true
+ #mining: false
+ #playerkills: true
+ #mobkills: true
+#levelrewards:
+ #money: true
+ #items: true
+
 
