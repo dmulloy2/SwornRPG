@@ -30,7 +30,7 @@ public class CmdASay implements CommandExecutor{
 	    		  for (int i = 0; i < amt; i++) {
 	    			  str = str + args[i] + " ";
 	    		  }
-	    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.RED + "Admin" + ChatColor.DARK_PURPLE + "]:" + str);
+	    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Admin" + ChatColor.DARK_PURPLE + "]: " + str);
 	      }else{
 	    	  player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
 	    	  System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");

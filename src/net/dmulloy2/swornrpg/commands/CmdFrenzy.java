@@ -23,7 +23,7 @@ public class CmdFrenzy implements CommandExecutor{
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
-		    player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " Now entering BeastMode");
+		    player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
 			
 		    return true;
 	  }

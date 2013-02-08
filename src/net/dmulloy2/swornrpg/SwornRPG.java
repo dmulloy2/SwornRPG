@@ -7,7 +7,7 @@ import net.dmulloy2.swornrpg.commands.CmdHat;
 import net.dmulloy2.swornrpg.commands.CmdFrenzy;
 import net.dmulloy2.swornrpg.commands.CmdRide;
 import net.dmulloy2.swornrpg.commands.CmdASay;
-import net.dmulloy2.swornrpg.commands.CmdHelp;
+import net.dmulloy2.swornrpg.commands.CmdSRPG;
 import net.dmulloy2.swornrpg.commands.CmdHighCouncil;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -64,7 +65,7 @@ public class SwornRPG extends JavaPlugin
     pm.registerEvents(this.blockListener, this);
     pm.registerEvents(this.tagListener, this);
 
-	this.getCommand("srpg").setExecutor(new CmdHelp (this));
+	this.getCommand("srpg").setExecutor(new CmdSRPG (this));
 	this.getCommand("ride").setExecutor(new CmdRide (this));
 	this.getCommand("unride").setExecutor(new CmdRide (this));
 	this.getCommand("asay").setExecutor(new CmdASay (this));
@@ -139,5 +140,26 @@ public class SwornRPG extends JavaPlugin
       Player p = (Player)arr.get(i);
       p.sendMessage(str);
     }
+  }
+  public void displayHelp(CommandSender player){
+	  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
+	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
+	  if (player.hasPermission("srpg.admin")){
+		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " resetconfig " + ChatColor.YELLOW + "Resets your config file");
+		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");}
+	  	player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
+	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
+	  //if (PermissionInterface.checkPermission(player, this.plugin.adminClearPerm)){
+		  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+	  //player.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters beast mode");
+	  if (player.hasPermission("srpg.ride")){
+		  player.sendMessage(ChatColor.RED + "/ride" + ChatColor.GOLD + " (unride) " + ChatColor.YELLOW + "Ride another player");}
+	  player.sendMessage(ChatColor.RED + "/hat " + ChatColor.YELLOW + "Get a new hat!");
+	  if (player.hasPermission("srpg.adminchat")){
+		  player.sendMessage(ChatColor.RED + "/a " + ChatColor.YELLOW + "Talk in admin chat");}
+	  if (player.hasPermission("srpg.council")){
+		  player.sendMessage(ChatColor.RED + "/hc " + ChatColor.YELLOW + "Talk in council chat");}
+	  if (player.hasPermission("srpg.asay")){
+		  player.sendMessage(ChatColor.RED + "/asay " + ChatColor.YELLOW + "Alternate admin say command");}
   }
 }

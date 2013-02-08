@@ -40,7 +40,7 @@ public class EntityListener
   {
   }
 
-  @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
   public void onEntityDamage(EntityDamageEvent event)
   {
     try {

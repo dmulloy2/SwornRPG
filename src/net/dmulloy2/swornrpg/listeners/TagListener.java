@@ -14,7 +14,10 @@ import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 public class TagListener implements Listener {
 	
+	public SwornRPG plugin;
+	
 	public TagListener(SwornRPG plugin) {
+		this.plugin = plugin;
 	}
 
 	@EventHandler
