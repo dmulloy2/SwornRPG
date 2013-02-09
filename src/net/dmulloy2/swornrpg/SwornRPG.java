@@ -145,7 +145,6 @@ public class SwornRPG extends JavaPlugin
 	  player.sendMessage(ChatColor.DARK_RED + "======" + ChatColor.GOLD + " SwornRPG " + ChatColor.DARK_RED + "======");
 	  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
 	  if (player.hasPermission("srpg.admin")){
-		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " resetconfig " + ChatColor.YELLOW + "Resets your config file");
 		  player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");}
 	  	player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 	  //player.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");

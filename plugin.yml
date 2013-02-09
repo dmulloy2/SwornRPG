@@ -2,7 +2,7 @@ name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
 version: 0.9.1
 author: dmulloy2
-description: A better version of McMMO.
+description: The MCMMO Alternative
 softdepend: [TagAPI]
 commands: 
   a:
@@ -54,3 +54,6 @@ permissions:
     description: Gives access to features meant for server guards.
     children:
       srpg.adminchat: true
+  srpg.council:
+    description: Gives access to council chat
+    default: false

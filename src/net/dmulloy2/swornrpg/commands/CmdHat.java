@@ -48,16 +48,25 @@ public class CmdHat implements CommandExecutor{
 				{
 					if (player.getItemInHand().getType() != Material.AIR)
 					{
-						final ItemStack hand = player.getItemInHand().clone();
+						final ItemStack hand = player.getItemInHand();
 						if (hand.getType().getMaxDurability() == 0)
 						{
 							final PlayerInventory inv = player.getInventory();
 							final ItemStack head = inv.getHelmet();
-							hand.setAmount(1);
-							inv.remove(hand);
-							inv.setHelmet(hand);
-							inv.setItemInHand(head);
-							player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+					        ItemStack itm = player.getItemInHand();
+					        ItemStack toHead = itm.clone();
+					        toHead.setAmount(1);
+							if (hand.getAmount() > 1){
+								hand.setAmount(hand.getAmount() - 1);
+								player.getInventory().setHelmet(toHead);
+								player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+							}else{
+								hand.setAmount(1);
+								inv.remove(hand);
+								inv.setHelmet(hand);
+								inv.setItemInHand(head);
+								player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+							}
 						}
 						else
 						{
