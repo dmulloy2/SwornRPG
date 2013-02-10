@@ -147,13 +147,13 @@ public class SwornRPG extends JavaPlugin
 	  if (p.hasPermission("srpg.admin")){
 		  p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");}
 	  p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
-	  p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-	  if (p.hasPermission("srpg.clear")){
-		  p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
-	  p.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters Frenzy mode.");
+	  //p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
+	  //if (p.hasPermission("srpg.clear")){
+		  //p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");}
+	  //p.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters Frenzy mode.");
 	  if (p.hasPermission("srpg.ride")){
 		  p.sendMessage(ChatColor.RED + "/ride" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Ride another player");
-		  p.sendMessage(ChatColor.RED + "/unride" + ChatColor.YELLOW + "Stop riding another player");}
+		  p.sendMessage(ChatColor.RED + "/unride" + ChatColor.YELLOW + " Stop riding another player");}
 	  p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");
 	  if (p.hasPermission("srpg.adminchat")){
 		  p.sendMessage(ChatColor.RED + "/a" + ChatColor.DARK_RED + " <message> "+ ChatColor.YELLOW + "Talk in admin chat");}

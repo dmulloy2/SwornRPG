@@ -17,8 +17,8 @@ public class CmdHighCouncil implements CommandExecutor{
 	public SwornRPG plugin;
 	  public CmdHighCouncil(SwornRPG plugin)  {
 	    this.plugin = plugin;
-
 	  }
+	  
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
 		    Player player = null;
 		    if (sender instanceof Player) {

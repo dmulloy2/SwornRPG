@@ -1,4 +1,4 @@
-/*
+/**
 * Essentials - a bukkit plugin
 * Copyright (C) 2011 Essentials Team
 *
