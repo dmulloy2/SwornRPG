@@ -55,6 +55,7 @@ public class EntityListener
         		  //Checks to see if arrow fire is enabled in the config
     			  boolean arrowfire = plugin.getConfig().getBoolean("arrowfire");
         		  if (arrowfire == true){
+        		  //Causes fire damage  
     			  if ((((Arrow)att).getShooter() instanceof Player))
     				  ((Player)((Arrow)att).getShooter()).sendMessage(ChatColor.GOLD + "Fire Damage!");  
     			  }
@@ -68,7 +69,9 @@ public class EntityListener
   		  //Checks to see if axe knockback is enabled in the config
           boolean axekb = plugin.getConfig().getBoolean("axekb");
   		  if (axekb == true){
-          int randomBlowBack = Util.random(9);
+          //TODO: Either nerf blowback or make the distance configurable
+  		  //Blows the player back
+  		  int randomBlowBack = Util.random(9);
           if (randomBlowBack == 0) {
             double distance = Util.point_distance(att.getLocation(), defender.getLocation());
             double mult = 0.75D;

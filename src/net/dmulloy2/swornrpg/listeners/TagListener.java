@@ -8,8 +8,7 @@ import org.bukkit.event.Listener;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
 
 /**
- * @author t7seven7t
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public class TagListener implements Listener {
@@ -33,6 +32,9 @@ public class TagListener implements Listener {
 		}
 		if (event.getNamedPlayer().getName().equals("shortbandit")) {
 			event.setTag(ChatColor.AQUA + "short" + ChatColor.DARK_BLUE + "bandit");
+		}
+		if (event.getNamedPlayer().getName().equals("vinnie109")) {
+			event.setTag(ChatColor.BLUE + "vinn" + ChatColor.YELLOW + "nie109");
 		}
 	}
 }

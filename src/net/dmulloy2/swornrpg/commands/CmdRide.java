@@ -27,6 +27,7 @@ public class CmdRide implements CommandExecutor{
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
+		    
 		    if (label.equalsIgnoreCase("ride")){
 		    			    	
 		    	if (PermissionInterface.checkPermission(player, this.plugin.adminRidePerm)) {

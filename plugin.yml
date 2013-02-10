@@ -7,37 +7,38 @@ softdepend: [TagAPI]
 commands: 
   a:
     description: Admin chat.
-    usage: |
-      /<command> <message>
+    permission: srpg.adminchat
+    usage: /<command> <message>
   ride:
     description: Get on someones head.
-    usage: |
-      /<command> <player>
+    permission: srpg.ride
+    usage: /<command> <player>
   unride:
-    description: Gets off someone's head.
-    usage: |
-      /<command>
+    description: Get off someone's head.
+    permission: srpg.ride
+    usage: /<command>
   hat:
-    description: Lets you put the block in you hand on your head.
+    description: Puts the block in your hand on your head.
+    permission: srpg.hat
     usage: |
+      /<command> 
       /<command> <remove>
   asay:
     description: Alternate admin say command.
-    usage: |
-      /<command> <message>
+    permission: srpg.asay
+    usage: /<command> <message>
   srpg:
-    description: Root command
-    usage: |
-      /<command> <args>
-    aliases: [swornrpg]
-  frenzy:
-    description: Enters beast mode
+    description: SwornRPG root command.
     usage: |
       /<command>
+      /<command> <args>
+  frenzy:
+    description: Gives special abilities based on level.
+    usage: /<command>
   hc:
-    description: High Council Chat
-    usage: |
-      /<command> <message>
+    description: High Council Chat.
+    permission: srpg.council
+    usage: /<command> <message>
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.
@@ -45,6 +46,8 @@ permissions:
       srpg.moderator: true
       srpg.asay: true
       srpg.aclear: true
+      srpg.council: true
+      srpg.guard: true
   srpg.moderator:
     description: Gives access to features meant for server moderators.
     children:
@@ -54,6 +57,3 @@ permissions:
     description: Gives access to features meant for server guards.
     children:
       srpg.adminchat: true
-  srpg.council:
-    description: Gives access to council chat
-    default: false

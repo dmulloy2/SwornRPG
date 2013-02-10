@@ -20,15 +20,17 @@ public class CmdSRPG implements CommandExecutor{
 	    this.plugin = plugin;
 
 	  }
+	  
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
 		    Player player = null;
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
+		    
 		    if(args.length == 0){
 		    	plugin.displayHelp(sender);
-		    	return true;
-	      }
+		    }
+		    
 		      else if (args[0].equals("reload")){
 		    	  if (player.hasPermission("srpg.admin")){
 		    		  plugin.reloadConfig();
@@ -55,10 +57,9 @@ public class CmdSRPG implements CommandExecutor{
 		    
 	    	  else if (args[0].equals("help")){
 	    		  plugin.displayHelp(sender);
-	    		  return true;
+	    		  
 	      }else{
 	    	  plugin.displayHelp(sender);
-	    	  return true;
 	      	}
 			return true;
 	  }

@@ -24,6 +24,7 @@ public class CmdHighCouncil implements CommandExecutor{
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
+		    
 	        if (PermissionInterface.checkPermission(player, this.plugin.councilChatPerm)) {
 	            int amt = args.length;
 	            String str = "";
@@ -31,6 +32,7 @@ public class CmdHighCouncil implements CommandExecutor{
 	              str = str + args[i] + " ";
 	            }
 	            this.plugin.sendCouncilMessage(player.getName(), str);
+	            
 	          }else{
 	          	player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
 	          	System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");

@@ -1,12 +1,7 @@
 == SwornRPG ==
-==== Introducing SwornRPG, the fully functional alternative to McMMO! This plugin currently features such things as admin chat, rare drops, the ability to ride other players, and the ability to make any block your hat! ====
-
-=== SwornRPG is On BukkitDev! ===
-[[http://dev.bukkit.org/server-mods/swornrpg/]]
-
+Introducing SwornRPG, the fully functional alternative to McMMO! This plugin currently features such things as admin chat, rare drops, the ability to ride other players, and the ability to make any block your hat!
 === Will this plugin break with 1.5? ===
 No, provided that Bukkit does not make any major changes to their Developer API (which is separate from CraftBukkit)
-
 === Commands ===
   *admin chat: 
   **Usage: /a <message>
@@ -26,23 +21,15 @@ No, provided that Bukkit does not make any major changes to their Developer API 
   *admin say:
    **usage: /asay <message>
    **This sends a colored message to the whole server ([Admin]:) Can only be sent when the sender has srpg.asay
-   
 === Salvaging ===
 This plugin allows for the salvaging of used armor. Salvaging the used armor gives the player SOME of the ingots back, but it is designed to be inefficient. For example: If you salvage a full set of unused diamond armor, you will only get 20 diamonds back. If the armor is used, the plugin calculates how many ingots the player should receive based on how used the armor is.
-
-=== TagAPI Integration ===
-Optional TagAPI integration: If you have experience developing plugins, you may want to take a look at the class "TagListener". In short, TagAPI allows you to color the name above your head. This feature requires a few things to function. 1) You must download the plugin "TagAPI" here: [[http://dev.bukkit.org/server-mods/tag/]] 2) You must fork this plugin and put in the names of the players whose tags you would like to change.
-Currently it colors the names of the following players: dmulloy2, irene325, shortbandit, and minermac8521. These are used as examples in case you would like to color your name. I am planning on adding much easier customization in a future update.
-
 === Other Features ===
 *Protects Iron doors from being directly broken
 *Certain blocks have a random chance of dropping random materials.
 *Arrows have a random chance of setting the player on fire
 *Axes have a random chance of blowing the player back
-
 === Planned Features ===
 *A fully functional, fully customizable leveling system with benefits like block and money rewards, double xp, frenzy mode, and more!
-
 === Permissions ===
 *srpg.admin:
 **Grants access to all SwornRPG (op default)
@@ -50,7 +37,6 @@ Currently it colors the names of the following players: dmulloy2, irene325, shor
 **Grants access to features meant for Moderators (admin chat and ride)
 *srpg.guard:
 **Grants access to admin chat
-
 === Configuration ===
 *A detailed configuration guide can be found here: [[http://dev.bukkit.org/server-mods/swornrpg/pages/configuration/]]
 *Note: When updating the plugin, it is always a good idea to delete your config.yml and let it regen. 

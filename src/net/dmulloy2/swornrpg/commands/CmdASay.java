@@ -17,13 +17,14 @@ public class CmdASay implements CommandExecutor{
 	public SwornRPG plugin;
 	  public CmdASay(SwornRPG plugin)  {
 	    this.plugin = plugin;
-
 	  }
+	  
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
 		    Player player = null;
 		    if (sender instanceof Player) {
 		      player = (Player) sender;
 		    }
+		    
 		   	  if (PermissionInterface.checkPermission(player, this.plugin.adminSayPerm)){
 	    		  int amt = args.length;
 	    		  String str = "";
@@ -31,6 +32,7 @@ public class CmdASay implements CommandExecutor{
 	    			  str = str + args[i] + " ";
 	    		  }
 	    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Admin" + ChatColor.DARK_PURPLE + "]: " + str);
+	    		  
 	      }else{
 	    	  player.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
 	    	  System.out.println("[SwornRPG] " + player.getName() + " was denied access to a command");

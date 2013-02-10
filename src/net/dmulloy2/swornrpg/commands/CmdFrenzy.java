@@ -18,6 +18,7 @@ public class CmdFrenzy implements CommandExecutor{
 	  public CmdFrenzy(SwornRPG plugin)  {
 	    this.plugin = plugin;
 	  }
+	  
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
 		    Player player = null;
 		    if (sender instanceof Player) {

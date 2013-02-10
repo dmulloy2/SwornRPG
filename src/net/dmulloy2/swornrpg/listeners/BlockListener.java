@@ -55,11 +55,13 @@ public class BlockListener
     	      //Checks the config to make sure iron door protection is enabled
     		  boolean irondoorprotect = plugin.getConfig().getBoolean("irondoorprotect");
     		  if (irondoorprotect == true){
+    			  //Stops the iron door from being broken
     	    	  event.setCancelled(true);
     		  }
     		  return;
     	  }
 
+      //Random Block Drops
       if (!event.isCancelled())
       {
     	  if ((blockType.equals(Material.CLAY)) || 
