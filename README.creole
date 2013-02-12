@@ -1,5 +1,7 @@
 == SwornRPG ==
 Introducing SwornRPG, the fully functional alternative to McMMO! This plugin currently features such things as admin chat, rare drops, the ability to ride other players, and the ability to make any block your hat!
+=== SwornRPG is on BukkitDev! ===
+Check it out here: [[http://dev.bukkit.org/server-mods/swornrpg/]]
 === Will this plugin break with 1.5? ===
 No, provided that Bukkit does not make any major changes to their Developer API (which is separate from CraftBukkit)
 === Commands ===
@@ -13,7 +15,7 @@ No, provided that Bukkit does not make any major changes to their Developer API 
     **usage: /hat [remove]
     **Self explanatory, it makes the block in your hand go to your helmet slot
   *srpg:
-    **usage: /srpg <help/level>
+    **usage: /srpg <helpl>
     **The plugin's help menu (only shows commands that you have access to)
   *hc:
     **usage: /hc <message>
@@ -31,12 +33,13 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 === Planned Features ===
 *A fully functional, fully customizable leveling system with benefits like block and money rewards, double xp, frenzy mode, and more!
 === Permissions ===
-*srpg.admin:
+*srpg.admin (or srpg.*):
 **Grants access to all SwornRPG (op default)
 *srpg.moderator:
-**Grants access to features meant for Moderators (admin chat and ride)
+**Grants access to features meant for Moderators
 *srpg.guard:
-**Grants access to admin chat
+**Grants access to features meant for Guards
+*Individual nodes can be found here: [[https://github.com/dmulloy2/SwornRPG/blob/master/plugin.yml]]
 === Configuration ===
 *A detailed configuration guide can be found here: [[http://dev.bukkit.org/server-mods/swornrpg/pages/configuration/]]
-*Note: When updating the plugin, it is always a good idea to delete your config.yml and let it regen. 
+*Note: When updating the plugin, it is always a good idea to delete your config.yml and let it regenerate. I am working on having the plugin make edits as needed
