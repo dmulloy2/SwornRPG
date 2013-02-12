@@ -46,7 +46,7 @@ public class BlockListener
     return i;
   }
 
-  @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+  @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
   public void onBlockBreak(BlockBreakEvent event) {
     try {
       Block block = event.getBlock();
@@ -62,9 +62,7 @@ public class BlockListener
     	  }
 
       //Random Block Drops
-      if (!event.isCancelled())
-      {
-    	  if ((blockType.equals(Material.CLAY)) || 
+      if ((blockType.equals(Material.CLAY)) || 
           (blockType.equals(Material.SAND)) || 
           (blockType.equals(Material.STONE)) || 
           (blockType.equals(Material.WOOD)) || 
@@ -191,7 +189,6 @@ public class BlockListener
             if (r338 == 0) drop(block, 338);
             if (r32 == 0) drop(block, 32);
             if (r127 == 0) drop(block, 127);
-          	}
           }
         }
       }
