@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.9.1
+version: 0.9.2
 author: dmulloy2
 description: The MCMMO Alternative
 softdepend: [TagAPI]
@@ -42,18 +42,37 @@ commands:
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.
+    default: op
     children:
       srpg.moderator: true
       srpg.asay: true
       srpg.aclear: true
       srpg.council: true
-      srpg.guard: true
+  srpg.*:
+    description: Just an alias for srpg.admin
+    default: op
+    children:
+      srpg.admin: true
   srpg.moderator:
     description: Gives access to features meant for server moderators.
+    default: false
     children:
       srpg.guard: true
       srpg.ride: true
   srpg.guard:
     description: Gives access to features meant for server guards.
+    default: false
     children:
       srpg.adminchat: true
+  srpg.hat:
+    default: true
+  srpg.ride:
+    default: false
+  srpg.asay:
+    default: false
+  srpg.council:
+    default: false
+  srpg.aclear:
+    default: false
+  srpg.adminchat:
+    default: false

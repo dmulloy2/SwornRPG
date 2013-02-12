@@ -62,7 +62,11 @@ public class BlockListener
     	  }
 
       //Random Block Drops
+<<<<<<< HEAD
       if ((blockType.equals(Material.CLAY)) || 
+=======
+    	  if ((blockType.equals(Material.CLAY)) || 
+>>>>>>> 0.9.2
           (blockType.equals(Material.SAND)) || 
           (blockType.equals(Material.STONE)) || 
           (blockType.equals(Material.WOOD)) || 
@@ -190,7 +194,6 @@ public class BlockListener
             if (r32 == 0) drop(block, 32);
             if (r127 == 0) drop(block, 127);
           }
-        }
       }
     }
     catch (Exception localException)

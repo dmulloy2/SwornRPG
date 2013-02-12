@@ -1,7 +1,10 @@
 package net.dmulloy2.swornrpg;
 
+//Java Imports
 import java.util.ArrayList;
 import java.util.List;
+
+//Plugin imports
 import net.dmulloy2.swornrpg.commands.CmdAChat;
 import net.dmulloy2.swornrpg.commands.CmdHat;
 import net.dmulloy2.swornrpg.commands.CmdFrenzy;
@@ -15,6 +18,7 @@ import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.listeners.TagListener;
 import net.dmulloy2.swornrpg.util.Util;
 
+//Bukkit imports
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -29,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SwornRPG extends JavaPlugin
 {
+  //Define some stuff
   private EntityListener entityListener = new EntityListener(this);
   private PlayerListener playerListener = new PlayerListener(this);
   private BlockListener blockListener = new BlockListener(this);
@@ -43,6 +48,7 @@ public class SwornRPG extends JavaPlugin
   public String adminClearPerm = "srpg.aclear";
   public String councilChatPerm = "srpg.council";
   
+  //What the plugin does when it is disabled
   public void onDisable()
   {
     System.out.println("[SwornRPG] " + getDescription().getFullName() + " has been disabled");
@@ -50,6 +56,7 @@ public class SwornRPG extends JavaPlugin
     this.councilchaters.clear();
   }
 
+  //What the plugin does when it is enabled
   public void onEnable()
   {
     System.out.println("[SwornRPG] " + getDescription().getFullName() + " has been enabled");
@@ -61,8 +68,9 @@ public class SwornRPG extends JavaPlugin
     pm.registerEvents(this.blockListener, this);
     
     //Registers TagAPI events if TagAPI is enabled
-	if (getServer().getPluginManager().isPluginEnabled("TagAPI"))
-		pm.registerEvents(this.tagListener, this);
+    boolean tagapi = this.getConfig().getBoolean("tagapi");
+	if ((getServer().getPluginManager().isPluginEnabled("TagAPI")) && (tagapi == true)){
+		pm.registerEvents(this.tagListener, this);}
 
 	//Initializes all SwornRPG commands
 	this.getCommand("srpg").setExecutor(new CmdSRPG (this));
@@ -79,6 +87,9 @@ public class SwornRPG extends JavaPlugin
 
     //Saves the default config if one does not exist
     this.saveDefaultConfig();
+    
+    //Copys defaults if they do not exist
+    this.getConfig().options().copyDefaults(true);
   }
 
   //Players who are admin chatting

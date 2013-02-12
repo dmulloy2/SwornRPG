@@ -34,7 +34,7 @@ public class TagListener implements Listener {
 			event.setTag(ChatColor.AQUA + "short" + ChatColor.DARK_BLUE + "bandit");
 		}
 		if (event.getNamedPlayer().getName().equals("vinnie109")) {
-			event.setTag(ChatColor.BLUE + "vinn" + ChatColor.YELLOW + "nie109");
+			event.setTag(ChatColor.DARK_BLUE + "vinn" + ChatColor.YELLOW + "ie109");
 		}
 	}
 }
