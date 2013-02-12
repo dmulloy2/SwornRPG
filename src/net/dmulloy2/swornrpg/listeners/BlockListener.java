@@ -62,11 +62,7 @@ public class BlockListener
     	  }
 
       //Random Block Drops
-<<<<<<< HEAD
       if ((blockType.equals(Material.CLAY)) || 
-=======
-    	  if ((blockType.equals(Material.CLAY)) || 
->>>>>>> 0.9.2
           (blockType.equals(Material.SAND)) || 
           (blockType.equals(Material.STONE)) || 
           (blockType.equals(Material.WOOD)) || 
