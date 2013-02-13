@@ -15,7 +15,8 @@ import org.bukkit.entity.Player;
  * @editor dmulloy2
  */
 
-public class Util {
+public class Util 
+{
 
   public static SwornRPG plugin;
   public static World world;
@@ -31,7 +32,8 @@ public class Util {
   public static Player MatchPlayer(String player) {
     List<Player> players = server.matchPlayer(player);
 
-    if (players.size() == 1) {
+    if (players.size() == 1) 
+    {
       return (Player)players.get(0);
     }
     return null;
@@ -41,20 +43,23 @@ public class Util {
   {
     Player[] players = server.getOnlinePlayers();
     List<Player> players1 = new ArrayList<Player>();
-    for (int i = 0; i < players.length; i++) {
+    for (int i = 0; i < players.length; i++) 
+    {
       players1.add(players[i]);
     }
     return players1;
   }
 
-  public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2) {
+  public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2) 
+  {
     int xdist = x1 - x2;
     int ydist = y1 - y2;
     int zdist = z1 - z2;
     return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist);
   }
 
-  public static int point_distance(Location loc1, Location loc2) {
+  public static int point_distance(Location loc1, Location loc2)
+  {
     int p1x = (int)loc1.getX();
     int p1y = (int)loc1.getY();
     int p1z = (int)loc1.getZ();
@@ -65,22 +70,27 @@ public class Util {
     return (int)magnitude(p1x, p1y, p1z, p2x, p2y, p2z);
   }
 
-  public static int random(int x) {
+  public static int random(int x)
+  {
     Random rand = new Random();
     return rand.nextInt(x);
   }
 
-  public static double lengthdir_x(double len, double dir) {
+  public static double lengthdir_x(double len, double dir)
+  {
     return len * Math.cos(Math.toRadians(dir));
   }
 
-  public static double lengthdir_y(double len, double dir) {
+  public static double lengthdir_y(double len, double dir)
+  {
     return -len * Math.sin(Math.toRadians(dir));
   }
 
-  public static double point_direction(double x1, double y1, double x2, double y2) {
+  public static double point_direction(double x1, double y1, double x2, double y2)
+  {
     double d;
-    try {
+    try 
+    {
       d = Math.toDegrees(Math.atan((y2 - y1) / (x2 - x1)));
     }
     catch (Exception e)

@@ -12,20 +12,30 @@ import org.bukkit.entity.Player;
  * Unimplimented. Plan to add functionality.
  */
 
-public class CmdFrenzy implements CommandExecutor{
+public class CmdFrenzy implements CommandExecutor
+{
 	
 	public SwornRPG plugin;
-	  public CmdFrenzy(SwornRPG plugin)  {
+	  public CmdFrenzy(SwornRPG plugin)  
+	  {
 	    this.plugin = plugin;
 	  }
 	  
-	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
+	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
+	  {    
 		    Player player = null;
-		    if (sender instanceof Player) {
+		    if (sender instanceof Player) 
+		    {
 		      player = (Player) sender;
 		    }
-		    player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
-			
+		    if (args.length < 0)
+		    {
+		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
+		    }
+		    else
+		    {
+		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+		    }
 		    return true;
 	  }
 }

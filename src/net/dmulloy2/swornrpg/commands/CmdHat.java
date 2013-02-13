@@ -98,6 +98,7 @@ public class CmdHat implements CommandExecutor{
 						player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
 					}
 				}
+			
 			return true;
 	  }	
 }

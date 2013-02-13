@@ -10,8 +10,6 @@ axekb: true
 #Enables/disables the random chance that players can get knocked back by axes
 arrowfire: true
 #Enables/disables the random chance that players can catch fire when shot by arrows
-tagapi: false
-#Enables/disables TagAPI integration. Currently worthless.
 
 #Features for future versions:
 #frenzy:

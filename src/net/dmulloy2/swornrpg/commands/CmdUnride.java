@@ -11,10 +11,11 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class CmdASay implements CommandExecutor
+public class CmdUnride implements CommandExecutor
 {
+	
 	public SwornRPG plugin;
-	  public CmdASay(SwornRPG plugin)  
+	  public CmdUnride(SwornRPG plugin)  
 	  {
 	    this.plugin = plugin;
 	  }
@@ -26,20 +27,16 @@ public class CmdASay implements CommandExecutor
 		    {
 		      player = (Player) sender;
 		    }
-		    if (args.length > 0)
-		    {
-	    		  int amt = args.length;
-	    		  String str = "";
-	    		  for (int i = 0; i < amt; i++) 
-	    		  {
-	    			  str = str + args[i] + " ";
-	    		  }
-	    		  this.plugin.sendMessageAll(ChatColor.DARK_PURPLE + "[" + ChatColor.DARK_RED + "Admin" + ChatColor.DARK_PURPLE + "]: " + str);
-		    }
-		    else
+		    
+		    if(args.length > 0)
 		    {
 		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
 		    }
+		    else
+		    {
+		    	player.leaveVehicle();
+		    }
+		    
 			return true;
 	  }
 }

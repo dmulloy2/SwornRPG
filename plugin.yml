@@ -3,7 +3,6 @@ main: net.dmulloy2.swornrpg.SwornRPG
 version: 0.9.2
 author: dmulloy2
 description: The MCMMO Alternative
-softdepend: [TagAPI]
 commands: 
   a:
     description: Admin chat.
@@ -42,7 +41,7 @@ commands:
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.
-    default: op
+    default: false
     children:
       srpg.moderator: true
       srpg.asay: true

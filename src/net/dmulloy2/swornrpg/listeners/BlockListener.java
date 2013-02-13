@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.listeners;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -12,20 +13,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.entity.Player;
 
 /**
  * @author orange451
  * @editor dmulloy2
  */
 
-public class BlockListener
-  implements Listener {
+public class BlockListener implements Listener 
+{
 	
 	public SwornRPG plugin;
 	
-  public BlockListener(SwornRPG plugin){
+  public BlockListener(SwornRPG plugin)
+  {
 	  this.plugin = plugin;
-	  }
+  }
 
   public Item drop(Block block, int id)
   {
@@ -35,32 +38,41 @@ public class BlockListener
   public Item drop(Block block, int id, byte type)
   {
     Item i;
-    if (type > 0) {
+    if (type > 0)
+    {
       MaterialData data = new MaterialData(id);
       data.setData(type);
       ItemStack itm = data.toItemStack(1);
       i = block.getWorld().dropItem(block.getLocation(), itm);
-    } else {
+    } 
+    else
+    {
       i = block.getWorld().dropItem(block.getLocation(), new ItemStack(id, 1));
     }
     return i;
   }
 
   @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-  public void onBlockBreak(BlockBreakEvent event) {
-    try {
+  public void onBlockBreak(BlockBreakEvent event) 
+  {
+    try 
+    {
       Block block = event.getBlock();
       Material blockType = block.getType();
-    	  if (blockType.equals(Material.IRON_DOOR_BLOCK)) {
+      Player player = event.getPlayer();
+    	  if (blockType.equals(Material.IRON_DOOR_BLOCK)) 
+    	  {
     	      //Checks the config to make sure iron door protection is enabled
     		  boolean irondoorprotect = plugin.getConfig().getBoolean("irondoorprotect");
-    		  if (irondoorprotect == true){
+    		  if (irondoorprotect == true)
+    		  {
     			  //Stops the iron door from being broken
     	    	  event.setCancelled(true);
     		  }
     		  return;
     	  }
-
+      if (player.getGameMode() == (GameMode.SURVIVAL))
+      {
       //Random Block Drops
       if ((blockType.equals(Material.CLAY)) || 
           (blockType.equals(Material.SAND)) || 
@@ -71,7 +83,8 @@ public class BlockListener
           (blockType.equals(Material.NETHERRACK)) || 
           (blockType.equals(Material.DIRT)) || 
           (blockType.equals(Material.GRASS)) || 
-          (blockType.equals(Material.GRAVEL))) {
+          (blockType.equals(Material.GRAVEL))) 
+      {
           int r2258 = Util.random(10000);
           int r2267 = Util.random(10000);
           int r2262 = Util.random(10000);
@@ -96,8 +109,10 @@ public class BlockListener
           if (r265 == 0) drop(block, 265);
           //Checks the config to make sure random drops are enabled
           boolean randomdrops = plugin.getConfig().getBoolean("randomdrops");
-          if (randomdrops == true){
-          if (blockType.equals(Material.CLAY)) {
+          if (randomdrops == true)
+          {
+          if (blockType.equals(Material.CLAY)) 
+          {
             int r341 = Util.random(20);
             int r287 = Util.random(20);
             int r318 = Util.random(20);
@@ -108,7 +123,8 @@ public class BlockListener
             if (r318 == 0) drop(block, 318);
             if (r30 == 0) drop(block, 30);
           }
-          if (blockType.equals(Material.GRASS)) {
+          if (blockType.equals(Material.GRASS)) 
+          {
             int r361 = Util.random(30);
             int r392 = Util.random(30);
             int r391 = Util.random(30);
@@ -117,7 +133,8 @@ public class BlockListener
             if (r392 == 0) drop(block, 392);
             if (r391 == 0) drop(block, 391);
           }
-          if (blockType.equals(Material.DIRT)) {
+          if (blockType.equals(Material.DIRT)) 
+          {
             int r392 = Util.random(30);
             int r357 = Util.random(30);
             int r395 = Util.random(100);
@@ -128,7 +145,8 @@ public class BlockListener
             if (r395 == 0) drop(block, 395);
             if (r89 == 0) drop(block, 330);
           }
-          if (blockType.equals(Material.GRAVEL)) {
+          if (blockType.equals(Material.GRAVEL)) 
+          {
             int r289 = Util.random(15);
             int r352 = Util.random(10);
             int r87 = Util.random(50);
@@ -137,7 +155,8 @@ public class BlockListener
             if (r352 == 0) drop(block, 352);
             if (r87 == 0) drop(block, r87);
           }
-          if (blockType.equals(Material.SAND)) {
+          if (blockType.equals(Material.SAND)) 
+          {
             int r88 = Util.random(50);
             int r362 = Util.random(100);
             int r371 = Util.random(100);
@@ -145,7 +164,8 @@ public class BlockListener
             if (r362 == 0) drop(block, 362);
             if (r371 == 0) drop(block, 371);
           }
-          if (blockType.equals(Material.STONE)) {
+          if (blockType.equals(Material.STONE)) 
+          {
             int r15 = Util.random(75);
             int r16 = Util.random(25);
             int r14 = Util.random(200);
@@ -154,7 +174,8 @@ public class BlockListener
             if (r16 == 0) drop(block, 16);
             if (r14 == 0) drop(block, 14);
           }
-          if (blockType.equals(Material.NETHERRACK)) {
+          if (blockType.equals(Material.NETHERRACK))
+          {
             int r385 = Util.random(15);
             int r372 = Util.random(25);
             int r112 = Util.random(10);
@@ -163,7 +184,8 @@ public class BlockListener
             if (r372 == 0) drop(block, 372);
             if (r112 == 0) drop(block, 112);
           }
-          if (blockType.equals(Material.ENDER_STONE)) {
+          if (blockType.equals(Material.ENDER_STONE)) 
+          {
             int r388 = Util.random(100);
             int r116 = Util.random(150);
             int r368 = Util.random(20);
@@ -172,7 +194,8 @@ public class BlockListener
             if (r116 == 0) drop(block, 116);
             if (r368 == 0) drop(block, 368);
           }
-          if (blockType.equals(Material.COBBLESTONE)) {
+          if (blockType.equals(Material.COBBLESTONE))
+          {
             int r389 = Util.random(20);
             int r145 = Util.random(200);
             int r386 = Util.random(100);
@@ -181,7 +204,8 @@ public class BlockListener
             if (r145 == 0) drop(block, 145);
             if (r386 == 0) drop(block, 386);
           }
-          if (blockType.equals(Material.WOOD)) {
+          if (blockType.equals(Material.WOOD)) 
+          {
             int r338 = Util.random(20);
             int r32 = Util.random(200);
             int r127 = Util.random(100);
@@ -190,6 +214,8 @@ public class BlockListener
             if (r32 == 0) drop(block, 32);
             if (r127 == 0) drop(block, 127);
           }
+          }
+      }
       }
     }
     catch (Exception localException)
