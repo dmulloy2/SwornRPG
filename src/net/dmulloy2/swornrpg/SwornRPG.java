@@ -80,6 +80,15 @@ public class SwornRPG extends JavaPlugin
 		this.getCommand("hat").setExecutor(new CmdHat (this));
 		this.getCommand("hc").setExecutor(new CmdHighCouncil (this));
 		this.getCommand("unride").setExecutor(new CmdUnride (this));
+		
+		//Permissions Messages
+		this.getCommand("ride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		this.getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		this.getCommand("asay").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		this.getCommand("a").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		this.getCommand("hat").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		this.getCommand("hc").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		this.getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 	
 		//Initializes the Util class
 		Util.Initialize(this);
@@ -172,7 +181,7 @@ public class SwornRPG extends JavaPlugin
 			p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");
 		}
 		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
-		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
+		//p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
 		//if (p.hasPermission("srpg.clear"))
 		//{
 			//p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");

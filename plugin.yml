@@ -1,17 +1,17 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.9.2
+version: 0.9.3
 author: dmulloy2
 description: The MCMMO Alternative
 commands: 
   a:
     description: Admin chat.
     permission: srpg.adminchat
-    usage: /<command> <message>
+    usage: /<command> <message>   
   ride:
     description: Get on someones head.
     permission: srpg.ride
-    usage: /<command> <player>
+    usage: /<command> <player> 
   unride:
     description: Get off someone's head.
     permission: srpg.ride
