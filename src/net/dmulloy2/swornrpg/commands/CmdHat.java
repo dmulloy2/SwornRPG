@@ -15,7 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -35,70 +34,77 @@ import org.bukkit.inventory.PlayerInventory;
  * @editor dmulloy2
  */
 
-public class CmdHat implements CommandExecutor{
-	
+public class CmdHat implements CommandExecutor
+{
+		
 	public SwornRPG plugin;
-	  public CmdHat(SwornRPG plugin)  {
-	    this.plugin = plugin;
-	  }
+	public CmdHat(SwornRPG plugin)  
+	{
+		this.plugin = plugin;
+	}
 	  
-	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {    
-		    Player player = null;
-		    if (sender instanceof Player) {
-		      player = (Player) sender;
-		    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
+	{    
+		Player player = null;
+		if (sender instanceof Player) 
+		{
+			player = (Player) sender;
+		}
 		    
-			if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
+		if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
+		{
+			final PlayerInventory inv = player.getInventory();
+			final ItemStack head = inv.getHelmet();
+			if (head == null || head.getType() == Material.AIR)
+			{
+				player.sendMessage(ChatColor.RED + "You are not wearing a hat.");
+			}
+			else
+			{
+				final ItemStack air = new ItemStack(Material.AIR);
+				inv.setHelmet(air);
+				InventoryWorkaround.addItems(player.getInventory(), head);
+				player.sendMessage(ChatColor.GOLD + "Your hat has been removed");
+			}
+		}
+		else
+		{
+			if (player.getItemInHand().getType() != Material.AIR)
+			{
+				final ItemStack hand = player.getItemInHand();
+				if (hand.getType().getMaxDurability() == 0)
 				{
-				final PlayerInventory inv = player.getInventory();
-				final ItemStack head = inv.getHelmet();
-				if (head == null || head.getType() == Material.AIR)
-				{
-					player.sendMessage(ChatColor.RED + "You are not wearing a hat.");
-				}
-				else
-				{
-					final ItemStack air = new ItemStack(Material.AIR);
-					inv.setHelmet(air);
-					InventoryWorkaround.addItems(player.getInventory(), head);
-					player.sendMessage(ChatColor.GOLD + "Your hat has been removed");
-				}
-				}
-				else
-				{
-					if (player.getItemInHand().getType() != Material.AIR)
+					final PlayerInventory inv = player.getInventory();
+					final ItemStack head = inv.getHelmet();
+					ItemStack itm = player.getItemInHand();
+					ItemStack toHead = itm.clone();
+					toHead.setAmount(1);
+					if (hand.getAmount() > 1)
 					{
-						final ItemStack hand = player.getItemInHand();
-						if (hand.getType().getMaxDurability() == 0)
-						{
-							final PlayerInventory inv = player.getInventory();
-							final ItemStack head = inv.getHelmet();
-					        ItemStack itm = player.getItemInHand();
-					        ItemStack toHead = itm.clone();
-					        toHead.setAmount(1);
-							if (hand.getAmount() > 1){
-								hand.setAmount(hand.getAmount() - 1);
-								player.getInventory().setHelmet(toHead);
-								player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
-							}else{
-								hand.setAmount(1);
-								inv.remove(hand);
-								inv.setHelmet(hand);
-								inv.setItemInHand(head);
-								player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
-							}
-						}
-						else
-						{
-							player.sendMessage(ChatColor.RED + "Error, you cannot use this item as a hat!");
-						}
+						hand.setAmount(hand.getAmount() - 1);
+						player.getInventory().setHelmet(toHead);
+						player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
 					}
 					else
 					{
-						player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
+						hand.setAmount(1);
+						inv.remove(hand);
+						inv.setHelmet(hand);
+						inv.setItemInHand(head);
+						player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
 					}
 				}
-			
-			return true;
-	  }	
+				else
+				{
+					player.sendMessage(ChatColor.RED + "Error, you cannot use this item as a hat!");
+				}
+			}
+			else
+			{
+				player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
+			}
+		}
+		
+		return true;
+	}	
 }

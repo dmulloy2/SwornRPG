@@ -27,7 +27,6 @@ public class CmdUnride implements CommandExecutor
 		    {
 		      player = (Player) sender;
 		    }
-		    
 		    if(args.length > 0)
 		    {
 		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");

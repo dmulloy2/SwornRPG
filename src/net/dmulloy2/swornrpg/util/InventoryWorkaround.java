@@ -26,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Essentials
- * @editor dmulloy2
  */
 
 public final class InventoryWorkaround

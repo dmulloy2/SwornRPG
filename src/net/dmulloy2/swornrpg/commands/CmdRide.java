@@ -27,21 +27,21 @@ public class CmdRide implements CommandExecutor
 		    Player player = null;
 		    if (sender instanceof Player) 
 		    {
-		      player = (Player) sender;
+		    	player = (Player) sender;
+		    }
+		    if(args.length < 1)
+		    {
+		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+		    	player.leaveVehicle();
+		    }
+		    else
+		    {
+		    	Player target = Util.matchPlayer(args[0]);
+		    	((Player)sender).teleport(target);
+		    	target.setPassenger(player);
+		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "You are now riding " + target.getName());
 		    }
 		    
-		    		if(args.length < 1)
-		    		{
-				    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
-		    			player.leaveVehicle();
-		    		}
-		    		else
-		    		{
-		    			Player to = Util.MatchPlayer(args[0]);
-		    			to.setPassenger(player);
-		    			player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "You are now riding " + to.getName());
-		    		}
-		    		
-			return true;
-	  	}
+		    return true;
+	  }
 }

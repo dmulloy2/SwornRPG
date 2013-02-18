@@ -1,7 +1,5 @@
 package net.dmulloy2.swornrpg.commands;
 
-import java.util.logging.Logger;
-
 import net.dmulloy2.swornrpg.PermissionInterface;
 import net.dmulloy2.swornrpg.SwornRPG;
 
@@ -18,7 +16,6 @@ import org.bukkit.entity.Player;
 public class CmdSRPG implements CommandExecutor
 {
 	public SwornRPG plugin;
-	private static Logger log;
 	  public CmdSRPG (SwornRPG plugin)  
 	  {
 	    this.plugin = plugin;
@@ -33,7 +30,7 @@ public class CmdSRPG implements CommandExecutor
 		    }
 		    if(args.length == 0)
 		    {
-		    	plugin.displayHelp(sender);
+		    	plugin.displayHelp(player);
 		    }
 		    else if (args[0].equals("reload"))
 		    {
@@ -41,7 +38,7 @@ public class CmdSRPG implements CommandExecutor
 		    	{
 		    		plugin.reloadConfig();
 		    		player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GREEN + "Configuration reloaded");
-		    		log.info("[SwornRPG] Configuration reloaded");
+		    		SwornRPG.outConsole("Configuration reloaded");
 		    	}
 		    	else
 		    	{
@@ -65,11 +62,11 @@ public class CmdSRPG implements CommandExecutor
 		    }
 		    else if (args[0].equals("help"))
 		    {
-		    	plugin.displayHelp(sender);	  
+		    	plugin.displayHelp(player);	  
 		    }
 		    else
 		    {
-		    	plugin.displayHelp(sender);
+		    	plugin.displayHelp(player);
 		    }
 		    
 		    return true;

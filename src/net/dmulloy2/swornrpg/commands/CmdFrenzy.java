@@ -28,7 +28,7 @@ public class CmdFrenzy implements CommandExecutor
 		    {
 		      player = (Player) sender;
 		    }
-		    if (args.length < 0)
+		    if (args.length == 0)
 		    {
 		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
 		    }

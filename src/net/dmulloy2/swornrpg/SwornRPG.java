@@ -24,7 +24,7 @@ import net.dmulloy2.swornrpg.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,24 +43,33 @@ public class SwornRPG extends JavaPlugin
 
 	public List<String> adminchaters = new ArrayList<String>();
 	public List<String> councilchaters = new ArrayList<String>();
-  
+	public List<Material> allowedBlocks = new ArrayList<Material>();
+
+	public boolean irondoorprotect;
+	public boolean randomdrops;
+	public boolean axekb;
+	public boolean arrowfire;
+
 	public String adminChatPerm = "srpg.adminchat";
 	public String adminRidePerm = "srpg.ride";
 	public String adminSayPerm = "srpg.asay";
 	public String adminClearPerm = "srpg.aclear";
 	public String councilChatPerm = "srpg.council";
+	public String adminReloadPerm = "srpg.reload";
+
   
 	//What the plugin does when it is disabled
 	public void onDisable()
 	{
 		outConsole(getDescription().getFullName() + " has been disabled");
-		this.adminchaters.clear();
-		this.councilchaters.clear();
+		adminchaters.clear();
+		councilchaters.clear();
 	}
 
 	//What the plugin does when it is enabled
 	public void onEnable()
 	{
+		//Console logging
 		log = Logger.getLogger("Minecraft");
 		outConsole(getDescription().getFullName() + " has been enabled");
     
@@ -71,33 +80,36 @@ public class SwornRPG extends JavaPlugin
 		pm.registerEvents(this.blockListener, this);
 
 		//Initializes all SwornRPG commands
-		this.getCommand("srpg").setExecutor(new CmdSRPG (this));
-		this.getCommand("ride").setExecutor(new CmdRide (this));
-		this.getCommand("unride").setExecutor(new CmdRide (this));
-		this.getCommand("asay").setExecutor(new CmdASay (this));
-		this.getCommand("a").setExecutor(new CmdAChat (this));
-		this.getCommand("frenzy").setExecutor(new CmdFrenzy (this));
-		this.getCommand("hat").setExecutor(new CmdHat (this));
-		this.getCommand("hc").setExecutor(new CmdHighCouncil (this));
-		this.getCommand("unride").setExecutor(new CmdUnride (this));
+		getCommand("srpg").setExecutor(new CmdSRPG (this));
+		getCommand("ride").setExecutor(new CmdRide (this));
+		getCommand("unride").setExecutor(new CmdRide (this));
+		getCommand("asay").setExecutor(new CmdASay (this));
+		getCommand("a").setExecutor(new CmdAChat (this));
+		getCommand("frenzy").setExecutor(new CmdFrenzy (this));
+		getCommand("hat").setExecutor(new CmdHat (this));
+		getCommand("hc").setExecutor(new CmdHighCouncil (this));
+		getCommand("unride").setExecutor(new CmdUnride (this));
 		
 		//Permissions Messages
-		this.getCommand("ride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		this.getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		this.getCommand("asay").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		this.getCommand("a").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		this.getCommand("hat").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		this.getCommand("hc").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		this.getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("ride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("asay").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("a").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("hat").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("hc").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 	
 		//Initializes the Util class
 		Util.Initialize(this);
 
 		//Saves the default config if one does not exist
-		this.saveDefaultConfig();
-    
+		saveDefaultConfig();
+		    
 		//Copys defaults if they do not exist
-		this.getConfig().options().copyDefaults(true);
+		getConfig().options().copyDefaults(true);
+		
+		//Loads the config file
+		loadConfig();
   }
 
 	//Players who are admin chatting
@@ -139,7 +151,7 @@ public class SwornRPG extends JavaPlugin
 		for (int i = 0; i < arr.size(); i++) 
 		{
 			Player p = (Player)arr.get(i);
-			if (PermissionInterface.checkPermission(p, this.adminChatPerm))
+			if (PermissionInterface.checkPermission(p, adminChatPerm))
 			{
 				p.sendMessage(ChatColor.GRAY + str + ": " + ChatColor.AQUA + str2);
 			}
@@ -153,7 +165,7 @@ public class SwornRPG extends JavaPlugin
 		for (int i = 0; i < arr.size(); i++) 
 		{
 			Player p = (Player)arr.get(i);
-			if (PermissionInterface.checkPermission(p, this.councilChatPerm))
+			if (PermissionInterface.checkPermission(p, councilChatPerm))
 			{
 				p.sendMessage(ChatColor.GOLD + str + ": " + ChatColor.RED + str2);
 			}
@@ -172,36 +184,36 @@ public class SwornRPG extends JavaPlugin
 	}
   
 	//Help menu
-	public void displayHelp(CommandSender p)
+	public void displayHelp(Player p)
 	{
 		p.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + getDescription().getFullName() + ChatColor.DARK_RED + " ======");
 		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
-		if (p.hasPermission("srpg.admin"))
+		if (PermissionInterface.checkPermission(p, adminReloadPerm))
 		{
 			p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");
 		}
 		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
 		//p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-		//if (p.hasPermission("srpg.clear"))
+		//if (PermissionInterface.checkPermission(p, adminResetPerm))
 		//{
 			//p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");
 		//}
 		//p.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters Frenzy mode.");
-		if (p.hasPermission("srpg.ride"))
+		if (PermissionInterface.checkPermission(p, adminRidePerm))
 		{
 			p.sendMessage(ChatColor.RED + "/ride" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Ride another player");
 			p.sendMessage(ChatColor.RED + "/unride" + ChatColor.YELLOW + " Stop riding another player");
 		}
 		p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");
-		if (p.hasPermission("srpg.adminchat"))
+		if (PermissionInterface.checkPermission(p, adminChatPerm))
 		{
 			p.sendMessage(ChatColor.RED + "/a" + ChatColor.DARK_RED + " <message> "+ ChatColor.YELLOW + "Talk in admin chat");
 		}
-		if (p.hasPermission("srpg.council"))
+		if (PermissionInterface.checkPermission(p, councilChatPerm))
 		{
 			p.sendMessage(ChatColor.RED + "/hc" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Talk in council chat");
 		}
-		if (p.hasPermission("srpg.asay"))
+		if (PermissionInterface.checkPermission(p, adminSayPerm))
 		{
 			p.sendMessage(ChatColor.RED + "/asay" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Alternate admin say command");
 		}
@@ -211,5 +223,14 @@ public class SwornRPG extends JavaPlugin
 	public static void outConsole(String s)
 	{
 		log.log(Level.INFO, "[SwornRPG] " + s);
+	}
+	
+	//Loads the configuration
+	private void loadConfig() 
+	{
+		irondoorprotect = getConfig().getBoolean("irondoorprotect");
+		randomdrops = getConfig().getBoolean("randomdrops");
+		axekb = getConfig().getBoolean("axekb");
+		arrowfire = getConfig().getBoolean("arrowfire");
 	}
 }
