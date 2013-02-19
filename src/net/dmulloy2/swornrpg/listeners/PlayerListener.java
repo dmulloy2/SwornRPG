@@ -24,10 +24,6 @@ import org.bukkit.inventory.ItemStack;
  * @contributor Minesworn
  */
 
-/**
- * TODO: Make salvaging multiworld
- */
-	
 public class PlayerListener implements Listener 
 {
 
@@ -80,7 +76,7 @@ public class PlayerListener implements Listener
 
 			if (block.getType().equals(Material.IRON_BLOCK))
 			{
-				if ((BlockNear(Material.FURNACE, block, -1, 0, 0)) || (BlockNear(Material.FURNACE, block, 1, 0, 0)) || (BlockNear(Material.FURNACE, block, 0, 0, -1)) || (BlockNear(Material.FURNACE, block, 0, 0, 1))) 
+				if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE))) 
 				{
 					ItemStack item = pl.getItemInHand();
 					Material mitem = item.getType();
@@ -122,7 +118,7 @@ public class PlayerListener implements Listener
 						try
 					{
 							pl.sendMessage(ChatColor.GRAY + "You have salvaged an " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
-							System.out.println("[SwornRPG] " + pl.getName() + " salvaged an " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
+							System.out.println("[SwornRPG] " + pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
 							Material give = Material.IRON_INGOT;
@@ -152,7 +148,7 @@ public class PlayerListener implements Listener
 			} 
 			else if (block.getType().equals(Material.DIAMOND_BLOCK)) 
 			{
-				if ((BlockNear(Material.FURNACE, block, -1, 0, 0)) || (BlockNear(Material.FURNACE, block, 1, 0, 0)) || (BlockNear(Material.FURNACE, block, 0, 0, -1)) || (BlockNear(Material.FURNACE, block, 0, 0, 1)))
+				if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE)))
 				{
 					ItemStack item = pl.getItemInHand();
 					Material mitem = item.getType();
@@ -196,7 +192,7 @@ public class PlayerListener implements Listener
 						try 
 					{
 							pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
-							System.out.println("[SwornRPG] " + pl.getName() + " salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
+							System.out.println("[SwornRPG] " + pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
 							Material give = Material.DIAMOND;
@@ -223,7 +219,7 @@ public class PlayerListener implements Listener
 				}
 			} 
 			else if (block.getType().equals(Material.GOLD_BLOCK))
-				if ((BlockNear(Material.FURNACE, block, -1, 0, 0)) || (BlockNear(Material.FURNACE, block, 1, 0, 0)) || (BlockNear(Material.FURNACE, block, 0, 0, -1)) || (BlockNear(Material.FURNACE, block, 0, 0, 1)))
+				if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE)))
 				{
 					ItemStack item = pl.getItemInHand();
 					Material mitem = item.getType();
@@ -267,7 +263,7 @@ public class PlayerListener implements Listener
 						try 
 					{
 							pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
-							System.out.println("[SwornRPG] " + pl.getName() + " salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
+							System.out.println("[SwornRPG] " + pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
 							Material give = Material.GOLD_INGOT;

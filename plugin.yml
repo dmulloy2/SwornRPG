@@ -38,6 +38,10 @@ commands:
     description: High Council Chat.
     permission: srpg.council
     usage: /<command> <message>
+  eject:
+    description: Kick someone off your head.
+    permission: srpg.ride
+    usage: /<command>
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins.

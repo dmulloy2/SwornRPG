@@ -48,63 +48,66 @@ public class CmdHat implements CommandExecutor
 		Player player = null;
 		if (sender instanceof Player) 
 		{
-			player = (Player) sender;
-		}
-		    
-		if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
-		{
-			final PlayerInventory inv = player.getInventory();
-			final ItemStack head = inv.getHelmet();
-			if (head == null || head.getType() == Material.AIR)
+			player = (Player) sender;   
+			if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
 			{
-				player.sendMessage(ChatColor.RED + "You are not wearing a hat.");
+				final PlayerInventory inv = player.getInventory();
+				final ItemStack head = inv.getHelmet();
+				if (head == null || head.getType() == Material.AIR)
+				{
+					player.sendMessage(ChatColor.RED + "You are not wearing a hat.");
+				}
+				else
+				{
+					final ItemStack air = new ItemStack(Material.AIR);
+					inv.setHelmet(air);
+					InventoryWorkaround.addItems(player.getInventory(), head);
+					player.sendMessage(ChatColor.GOLD + "Your hat has been removed");
+				}
 			}
 			else
 			{
-				final ItemStack air = new ItemStack(Material.AIR);
-				inv.setHelmet(air);
-				InventoryWorkaround.addItems(player.getInventory(), head);
-				player.sendMessage(ChatColor.GOLD + "Your hat has been removed");
-			}
-		}
-		else
-		{
-			if (player.getItemInHand().getType() != Material.AIR)
-			{
-				final ItemStack hand = player.getItemInHand();
-				if (hand.getType().getMaxDurability() == 0)
+				if (player.getItemInHand().getType() != Material.AIR)
 				{
-					final PlayerInventory inv = player.getInventory();
-					final ItemStack head = inv.getHelmet();
-					ItemStack itm = player.getItemInHand();
-					ItemStack toHead = itm.clone();
-					toHead.setAmount(1);
-					if (hand.getAmount() > 1)
+					final ItemStack hand = player.getItemInHand();
+					if (hand.getType().getMaxDurability() == 0)
 					{
-						hand.setAmount(hand.getAmount() - 1);
-						player.getInventory().setHelmet(toHead);
-						player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+						final PlayerInventory inv = player.getInventory();
+						final ItemStack head = inv.getHelmet();
+						ItemStack itm = player.getItemInHand();
+						ItemStack toHead = itm.clone();
+						toHead.setAmount(1);
+						if (hand.getAmount() > 1)
+						{
+							hand.setAmount(hand.getAmount() - 1);
+							player.getInventory().setHelmet(toHead);
+							player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+						}
+						else
+						{
+							hand.setAmount(1);
+							inv.remove(hand);
+							inv.setHelmet(hand);
+							inv.setItemInHand(head);
+							player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+						}
 					}
 					else
 					{
-						hand.setAmount(1);
-						inv.remove(hand);
-						inv.setHelmet(hand);
-						inv.setItemInHand(head);
-						player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+						player.sendMessage(ChatColor.RED + "Error, you cannot use this item as a hat!");
 					}
 				}
 				else
 				{
-					player.sendMessage(ChatColor.RED + "Error, you cannot use this item as a hat!");
+					player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
 				}
 			}
-			else
-			{
-				player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
-			}
+		}
+		else
+		{
+			sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
 		}
 		
 		return true;
-	}	
+	}
 }

@@ -23,19 +23,24 @@ public class CmdFrenzy implements CommandExecutor
 	  
 	  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
 	  {    
-		    Player player = null;
-		    if (sender instanceof Player) 
-		    {
-		      player = (Player) sender;
-		    }
-		    if (args.length == 0)
-		    {
-		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
-		    }
-		    else
-		    {
-		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
-		    }
-		    return true;
+		  Player player = null;
+		  if (sender instanceof Player) 
+		  {
+			  player = (Player) sender;
+			  if (args.length == 0)
+			  {
+				  player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
+			  }
+			  else
+			  {
+				  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+			  }
+		  }
+		  else
+		  {
+			  sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
+		  }
+		  
+		return true;
 	  }
 }

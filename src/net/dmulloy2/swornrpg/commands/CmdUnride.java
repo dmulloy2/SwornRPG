@@ -25,15 +25,19 @@ public class CmdUnride implements CommandExecutor
 		    Player player = null;
 		    if (sender instanceof Player) 
 		    {
-		      player = (Player) sender;
-		    }
-		    if(args.length > 0)
-		    {
-		    	player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+		    	player = (Player) sender;
+		    	if(args.length > 0)
+		    	{
+		    		player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+		    	}
+		    	else
+		    	{
+		    		player.leaveVehicle();
+		    	}
 		    }
 		    else
 		    {
-		    	player.leaveVehicle();
+		    	sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
 		    }
 		    
 			return true;
