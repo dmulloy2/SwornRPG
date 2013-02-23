@@ -15,7 +15,6 @@
 * You should have received a copy of the GNU General Public License
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
 package net.dmulloy2.swornrpg.util;
 
 import java.util.HashMap;
@@ -73,7 +72,7 @@ public final class InventoryWorkaround
 	{
 		final Map<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
 
-		/*
+		/**
 		 * TODO: some optimization - Create a 'firstPartial' with a 'fromIndex' - Record the lastPartial per Material -
 		 * Cache firstEmpty result
 		 */

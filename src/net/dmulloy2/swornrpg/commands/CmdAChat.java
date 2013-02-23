@@ -38,15 +38,17 @@ public class CmdAChat implements CommandExecutor
 			  if (sender instanceof Player)
 			  {
 				  this.plugin.sendAdminMessage(player.getName(), str);
+				  System.out.println("[AdminChat] " + player.getName() + ": " + str);
 			  }
 			  else
 			  {
 				  this.plugin.sendAdminMessage("Console", str);
+				  System.out.println("[AdminChat] " + "Console" + ": " + str);
 			  }
 		  }
 		  else
 		  {
-			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/a <message)");
 		  }
 
 		  return true;

@@ -46,33 +46,30 @@ public class EntityListener implements Listener
 			}
 			Entity att = ((EntityDamageByEntityEvent)event).getDamager();
 			LivingEntity defender = (LivingEntity)event.getEntity();
-			
-			//Checks to see if arrow fire is enabled in the config
-			if (plugin.arrowfire == true)
+
+			if (att instanceof Arrow)
 			{
-				if ((att instanceof Arrow)) 
+				if (plugin.arrowfire == true)
 				{
 					if (Util.random(10) == 0) 
 					{
+						//Causes fire damage
 						defender.setFireTicks(128);
-						//Causes fire damage  
 						if ((((Arrow)att).getShooter() instanceof Player))
-							((Player)((Arrow)att).getShooter()).sendMessage(ChatColor.GOLD + "Fire Damage!");  
+							((Player)((Arrow)att).getShooter()).sendMessage(ChatColor.GOLD + "Fire Damage!"); 
+						if (((Player)defender) instanceof Player)
+							((Player)defender).sendMessage(ChatColor.GOLD + "Fire Damage!");
 					}
 				}
 			}
-      
-			else if ((att instanceof Player))
+			else if (att instanceof Player)
 			{
-				Player p = (Player)att;
-				String gun = p.getItemInHand().getType().toString().toLowerCase();
-				if (gun.contains("_axe"))
+				if (plugin.axekb == true)
 				{
-					//Checks to see if axe knockback is enabled in the config
-					if (plugin.axekb == true)
+					Player p = (Player)att;
+					String gun = p.getItemInHand().getType().toString().toLowerCase();
+					if (gun.contains("_axe")) 
 					{
-						//TODO: Either nerf blowback or make the distance configurable
-						//Blows the player back
 						int randomBlowBack = Util.random(9);
 						if (randomBlowBack == 0) 
 						{
@@ -90,14 +87,15 @@ public class EntityListener implements Listener
 								mult = 1.125D;
 							Vector v = defender.getLocation().add(0.0D, 0.875D, 0.0D).subtract(att.getLocation()).toVector();
 							Vector v2 = new Vector(v.getX() * mult, v.getY() * mult, v.getZ() * mult);
-							if (v2.getY() > 1.0D) 
+							if (v2.getY() > 1.0D)
 							{
 								v2.setY(1.0D);
 							}
 							defender.setVelocity(v2.multiply(0.8D));
 							try 
 							{ 
-								((Player)defender).sendMessage(ChatColor.GRAY + ((Player)att).getName() + " has blown you back with his axe"); 
+								((Player)defender).sendMessage(ChatColor.GRAY + ((Player)att).getName() + " has blown you back with his " + gun.replaceAll("_", " "));
+								((Player)att).sendMessage(ChatColor.GRAY + "You have blown back " + ((Player)defender).getName() + " with your " + gun.replaceAll("_", " "));
 							}
 							catch (Exception localException)
 							{

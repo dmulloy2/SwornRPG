@@ -31,33 +31,25 @@ public class CmdRide implements CommandExecutor
 		    	player = (Player) sender;
 		    	if (args.length == 0)
 		    	{
-		    		player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+		    		player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/ride <player>)");
+		    		player.leaveVehicle();
 		    	}
 		    	else
 		    	{
-		    		if (args.length == 0)
-		    		{
-		    			player.leaveVehicle();
-		    		}
-		    		else
-		    		{
-		    			final Player target = Util.matchPlayer(args[0]);
-		    			final Player player1 = (Player) sender;
-		    			Location targetLocation = target.getLocation();
-		    			player1.teleport(targetLocation);
+		    		final Player target = Util.matchPlayer(args[0]);
+		    		final Player player1 = (Player) sender;
+		    		Location targetLocation = target.getLocation();
+		    		player1.teleport(targetLocation);
 		    			
-		    			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		    		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		    		{
+		    			@Override
+		    			public void run()
 		    			{
-							@Override
-							public void run()
-							{
-								target.setPassenger(player1);
-								
-							}
-		    				
-		    			},20);
-		    			player1.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "You are now riding " + target.getName());
-		    		}
+		    				target.setPassenger(player1);
+		    				player1.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "You are now riding " + target.getName());
+		    			}				
+		    		},20);
 		    	}
 		    }
 		    else
@@ -65,6 +57,6 @@ public class CmdRide implements CommandExecutor
 		    	sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
 		    }
 		    
-			return true;
+		    return true;
 	  }
 }

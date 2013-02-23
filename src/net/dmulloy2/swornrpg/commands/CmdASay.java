@@ -33,7 +33,7 @@ public class CmdASay implements CommandExecutor
 		  }
 		  else
 		  {
-			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/asay <message>)");
 		  }
 		  return true;
 	  }

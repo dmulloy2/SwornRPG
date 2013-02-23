@@ -1,3 +1,20 @@
+/**
+* SwornRPG - a bukkit plugin
+* Copyright (C) 2013 dmulloy2
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 package net.dmulloy2.swornrpg;
 
 //Java Imports
@@ -10,6 +27,7 @@ import java.util.logging.Logger;
 import net.dmulloy2.swornrpg.commands.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.swornrpg.util.VersionChecker;
 
 //Bukkit imports
 import org.bukkit.ChatColor;
@@ -17,6 +35,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,11 +53,14 @@ public class SwornRPG extends JavaPlugin
 
 	public List<String> adminchaters = new ArrayList<String>();
 	public List<String> councilchaters = new ArrayList<String>();
+	
+	VersionChecker vc = new VersionChecker(this);
+	PluginDescriptionFile pdfFile;
 
-	public boolean irondoorprotect;
-	public boolean randomdrops;
-	public boolean axekb;
-	public boolean arrowfire;
+	public boolean irondoorprotect, randomdrops, axekb, arrowfire;
+//	public boolean frenzyenabled, onlinetime, mining, items, mcxp;
+//	public boolean playerkills, mobkills, money;
+//	public int frenzyduration;
 
 	public String adminChatPerm = "srpg.adminchat";
 	public String adminRidePerm = "srpg.ride";
@@ -47,6 +69,7 @@ public class SwornRPG extends JavaPlugin
 	public String councilChatPerm = "srpg.council";
 	public String adminReloadPerm = "srpg.reload";
 	public String hatPerm = "srpg.hat";
+	public String matchPerm = "srpg.match";
 
   
 	//What the plugin does when it is disabled
@@ -81,6 +104,7 @@ public class SwornRPG extends JavaPlugin
 		getCommand("hc").setExecutor(new CmdHighCouncil (this));
 		getCommand("unride").setExecutor(new CmdUnride (this));
 		getCommand("eject").setExecutor(new CmdEject (this));
+		getCommand("match").setExecutor(new CmdMatch (this));
 		
 		//Permissions Messages
 		getCommand("ride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
@@ -91,18 +115,17 @@ public class SwornRPG extends JavaPlugin
 		getCommand("hc").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 		getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 		getCommand("eject").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("match").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 	
 		//Initializes the Util class
 		Util.Initialize(this);
 
-		//Saves the default config if one does not exist
+		//Configuration Stuff
 		saveDefaultConfig();
-		    
-		//Copys defaults if they do not exist
 		getConfig().options().copyDefaults(true);
-		
-		//Loads the config file
 		loadConfig();
+		this.pdfFile = getDescription();
+		this.vc.versionChecker(this.pdfFile);
   }
 
 	//Players who are admin chatting
@@ -147,7 +170,6 @@ public class SwornRPG extends JavaPlugin
 			if (PermissionInterface.checkPermission(p, adminChatPerm))
 			{
 				p.sendMessage(ChatColor.GRAY + str + ": " + ChatColor.AQUA + str2);
-				System.out.println("[AdminChat] " + str + ": " + str2);
 			}
 		}	
 	}
@@ -162,7 +184,6 @@ public class SwornRPG extends JavaPlugin
 			if (PermissionInterface.checkPermission(p, councilChatPerm))
 			{
 				p.sendMessage(ChatColor.GOLD + str + ": " + ChatColor.RED + str2);
-				System.out.println("[CouncilChat] " + str + ": " + str2);
 			}
 		}	
 	}
@@ -182,7 +203,7 @@ public class SwornRPG extends JavaPlugin
 	public void displayHelp(CommandSender p)
 	{
 		p.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + getDescription().getFullName() + ChatColor.DARK_RED + " ======");
-		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " <args> ");
+		p.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
 		if (PermissionInterface.checkPermission(p, adminReloadPerm))
 		{
 			p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");
@@ -216,6 +237,10 @@ public class SwornRPG extends JavaPlugin
 		{
 			p.sendMessage(ChatColor.RED + "/asay" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Alternate admin say command");
 		}
+		if (PermissionInterface.checkPermission(p, matchPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Match online and offline players");
+		}
 	}
   
 	//Console logging
@@ -231,5 +256,14 @@ public class SwornRPG extends JavaPlugin
 		randomdrops = getConfig().getBoolean("randomdrops");
 		axekb = getConfig().getBoolean("axekb");
 		arrowfire = getConfig().getBoolean("arrowfire");
+//		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
+//		onlinetime = getConfig().getBoolean("leveling-methods.onlinetime");
+//		mining = getConfig().getBoolean("leveling-methods.mining");
+//		playerkills = getConfig().getBoolean("leveling-methods.playerkills");
+//		mobkills = getConfig().getBoolean("leveling-methods.mobkills");
+//		money = getConfig().getBoolean("levelingrewards.money");
+//		items = getConfig().getBoolean("levelingrewards.items");
+//		mcxp = getConfig().getBoolean("levelingrewards.minecraft-xp");
+//		frenzyduration = getConfig().getInt("frenzy.baseduration");
 	}
 }

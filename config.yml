@@ -1,26 +1,48 @@
-#SwornRPG Config File
-#Created by dmulloy2
-#Detailed explanation here: http://dev.bukkit.org/server-mods/swornrpg/pages/configuration/
+################################################################################################
+#                                                                                              #
+#                                  SwornRPG Configuration File                                 #
+#                                      Created by dmulloy2                                     #
+#  Detailed explanation here: http://dev.bukkit.org/server-mods/swornrpg/pages/configuration/  #
+#                                                                                              #
+################################################################################################
+
+Version: 0.9.5
+#########################################################################
+#   Do not change unless you want your configuration regenerated.       #
+#  If the plugin finds that the configuration is out of date, it will   #
+#  Save your current configuration to /plugins/SwornRPG/old_config.yml  #
+#  And regenerate the configuration. You can then customize the config  #
+#            And use /srpg reload (Still experimental)                  #
+#########################################################################
 
 irondoorprotect: true
 #Enables/disables the protection of iron doors
+
 randomdrops: true
 #Enables/disables the random chance that a random drop will drop from a block
+
 axekb: true
 #Enables/disables the random chance that players can get knocked back by axes
+
 arrowfire: true
 #Enables/disables the random chance that players can catch fire when shot by arrows
 
-#Features for future versions:
 #frenzy:
- #enabled: true
-#levelingmethods:
- #onlinetime: true
- #mining: false
- #playerkills: true
- #mobkills: true
+  #enabled: true
+  #Is frenzy enabled?
+  #baseduration: 30
+  #How long is the base duration? (In seconds)
+  
+#leveling-methods:
+#How can players level up?
+  #onlinetime: true
+  #mining: true
+  #playerkills: true
+  #mobkills: true
+  
 #levelrewards:
- #money: true
- #items: true
-
+#What do players receieve for leveling up?
+  #money: true
+  #minecraft-xp: false
+  #items: true
 

@@ -38,15 +38,17 @@ public class CmdHighCouncil implements CommandExecutor
 			  if (sender instanceof Player)
 			  {
 				  this.plugin.sendCouncilMessage(player.getName(), str);
+				  System.out.println("[CouncilChat] " + player.getName() + ": " + str);
 			  }
 			  else
 			  {
 				  this.plugin.sendCouncilMessage("Console", str);
+				  System.out.println("[CouncilChat] " + "Console" + ": " + str);
 			  }
 		  }
 		  else
 		  {
-			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/hc <message>)");
 		  }
 
 		  return true;

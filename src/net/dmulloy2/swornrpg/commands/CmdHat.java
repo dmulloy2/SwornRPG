@@ -80,7 +80,8 @@ public class CmdHat implements CommandExecutor
 						if (hand.getAmount() > 1)
 						{
 							hand.setAmount(hand.getAmount() - 1);
-							player.getInventory().setHelmet(toHead);
+							inv.setHelmet(toHead);
+							InventoryWorkaround.addItems(player.getInventory(), head);
 							player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
 						}
 						else

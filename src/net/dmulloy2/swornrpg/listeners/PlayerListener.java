@@ -1,12 +1,9 @@
 package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-
 import net.dmulloy2.swornrpg.util.InventoryHelper;
-import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -41,18 +38,7 @@ public class PlayerListener implements Listener
 		this.plugin = plugin;
 	}
 
-	public boolean BlockNear(Material mat, Block block, int x, int y, int z) 
-	{
-		Location loc = new Location(Util.world, block.getX() + x, block.getY() + y, block.getZ() + z);
-		Block block2 = Util.world.getBlockAt(loc);
-		if (block2.getType() == mat) 
-		{
-			return true;
-		}
-		return false;
-	}
-
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") //player.updateInventory()
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) 
 	{

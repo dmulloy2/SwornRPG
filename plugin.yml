@@ -1,50 +1,59 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.9.3
+version: 0.9.5
 author: dmulloy2
-description: The MCMMO Alternative
-commands: 
+description: The mcMMO Alternative
+commands:
   a:
-    description: Admin chat.
+    description: Admin only chat
     permission: srpg.adminchat
-    usage: /<command> <message>   
+    usage: /<command> <message>
+    aliases: [adminchat, staff, staffchat, sc]
   ride:
-    description: Get on someones head.
+    description: Get on someones head
     permission: srpg.ride
-    usage: /<command> <player> 
+    usage: /<command> <player>
   unride:
-    description: Get off someone's head.
+    description: Get off someone's head
     permission: srpg.ride
     usage: /<command>
   hat:
-    description: Puts the block in your hand on your head.
+    description: Puts the block in your hand on your head
     permission: srpg.hat
     usage: |
-      /<command> 
+      /<command>
       /<command> <remove>
   asay:
-    description: Alternate admin say command.
+    description: Alternate admin say command
     permission: srpg.asay
     usage: /<command> <message>
+    aliases: [adm, adminsay]
   srpg:
-    description: SwornRPG root command.
+    description: SwornRPG root command
     usage: |
       /<command>
       /<command> <args>
   frenzy:
-    description: Gives special abilities based on level.
+    description: Gives special abilities based on level
     usage: /<command>
+    aliases: [beastmode]
   hc:
-    description: High Council Chat.
+    description: High Council Chat
     permission: srpg.council
     usage: /<command> <message>
+    aliases: [council, highcouncil]
   eject:
-    description: Kick someone off your head.
+    description: Kick someone off your head
     permission: srpg.ride
     usage: /<command>
+  match:
+    description: Match online and offline players
+    permission: srpg.match
+    usage: /<command> <player>
+    aliases: [matchplayer]
 permissions:
   srpg.admin:
-    description: Gives access to features meant for server admins.
+    description: Gives access to features meant for server admins
     default: false
     children:
       srpg.moderator: true
@@ -57,13 +66,14 @@ permissions:
     children:
       srpg.admin: true
   srpg.moderator:
-    description: Gives access to features meant for server moderators.
+    description: Gives access to features meant for server moderators
     default: false
     children:
       srpg.guard: true
       srpg.ride: true
+      srpg.match: true
   srpg.guard:
-    description: Gives access to features meant for server guards.
+    description: Gives access to features meant for server guards
     default: false
     children:
       srpg.adminchat: true

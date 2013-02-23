@@ -33,7 +33,7 @@ public class CmdFrenzy implements CommandExecutor
 			  }
 			  else
 			  {
-				  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count");
+				  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/frenzy)");
 			  }
 		  }
 		  else
