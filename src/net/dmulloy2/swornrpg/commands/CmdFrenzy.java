@@ -29,16 +29,16 @@ public class CmdFrenzy implements CommandExecutor
 			  player = (Player) sender;
 			  if (args.length == 0)
 			  {
-				  player.sendMessage(ChatColor.GOLD + "[SwornRPG]" + ChatColor.YELLOW + " This command has not been implimented yet");
+				  player.sendMessage(plugin.prefix + ChatColor.YELLOW + " This command has not been implimented yet");
 			  }
 			  else
 			  {
-				  player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/frenzy)");
+				  player.sendMessage(plugin.invalidargs + "(/frenzy)");
 			  }
 		  }
 		  else
 		  {
-			  sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
+			  sender.sendMessage(plugin.mustbeplayer);
 		  }
 		  
 		return true;

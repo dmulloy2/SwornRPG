@@ -10,6 +10,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdMatch implements CommandExecutor
 {
 	
@@ -28,25 +32,25 @@ public class CmdMatch implements CommandExecutor
 		  }
 		  if (args.length == 0)
 		  {
-			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/match <player>)");
+			  sender.sendMessage(plugin.prefix + plugin.invalidargs + "(/match <player>)");
 		  }
 		  else
 		  {
 			  Player match = Util.matchPlayer(args[0]);
 			  if (match != null)
 			  {
-				  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GREEN + "Match found! '" + match.getName() + "'");;
+				  sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Match found! '" + match.getName() + "'");;
 			  }
 			  else
 			  {
 				  OfflinePlayer offlinematch = Util.matchOfflinePlayer(args[0]);
 				  if (offlinematch != null)
 				  {
-					  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GREEN + "Match found! '" + offlinematch.getName() + "'");
+					  sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Match found! '" + offlinematch.getName() + "'");
 				  }
 				  else
 				  {
-					  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Error, no match was found for '" + args[0] + "'");
+					  sender.sendMessage(plugin.prefix + ChatColor.RED + "Error, no match was found for '" + args[0] + "'");
 				  }
 			  }
 		  }

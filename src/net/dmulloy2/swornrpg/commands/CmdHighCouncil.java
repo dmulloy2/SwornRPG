@@ -1,7 +1,6 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,7 +47,7 @@ public class CmdHighCouncil implements CommandExecutor
 		  }
 		  else
 		  {
-			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/hc <message>)");
+			  sender.sendMessage(plugin.invalidargs + "(/hc <message>)");
 		  }
 
 		  return true;

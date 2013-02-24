@@ -55,14 +55,14 @@ public class CmdHat implements CommandExecutor
 				final ItemStack head = inv.getHelmet();
 				if (head == null || head.getType() == Material.AIR)
 				{
-					player.sendMessage(ChatColor.RED + "You are not wearing a hat.");
+					player.sendMessage(plugin.prefix + ChatColor.RED + "You are not wearing a hat.");
 				}
 				else
 				{
 					final ItemStack air = new ItemStack(Material.AIR);
 					inv.setHelmet(air);
 					InventoryWorkaround.addItems(player.getInventory(), head);
-					player.sendMessage(ChatColor.GOLD + "Your hat has been removed");
+					player.sendMessage(plugin.prefix + ChatColor.YELLOW + "Your hat has been removed");
 				}
 			}
 			else
@@ -82,7 +82,7 @@ public class CmdHat implements CommandExecutor
 							hand.setAmount(hand.getAmount() - 1);
 							inv.setHelmet(toHead);
 							InventoryWorkaround.addItems(player.getInventory(), head);
-							player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+							player.sendMessage(plugin.prefix + ChatColor.YELLOW + "Enjoy your new hat!");
 						}
 						else
 						{
@@ -90,23 +90,23 @@ public class CmdHat implements CommandExecutor
 							inv.remove(hand);
 							inv.setHelmet(hand);
 							inv.setItemInHand(head);
-							player.sendMessage(ChatColor.GOLD + "Enjoy your new hat!");
+							player.sendMessage(plugin.prefix + ChatColor.YELLOW + "Enjoy your new hat!");
 						}
 					}
 					else
 					{
-						player.sendMessage(ChatColor.RED + "Error, you cannot use this item as a hat!");
+						player.sendMessage(plugin.prefix + ChatColor.RED + "Error, you cannot use this item as a hat!");
 					}
 				}
 				else
 				{
-					player.sendMessage(ChatColor.RED + "You must have something to wear in your hand");
+					player.sendMessage(plugin.prefix + ChatColor.RED + "You must have something to wear in your hand");
 				}
 			}
 		}
 		else
 		{
-			sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
+			sender.sendMessage(plugin.mustbeplayer);
 		}
 		
 		return true;

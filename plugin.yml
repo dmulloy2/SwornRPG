@@ -1,8 +1,9 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.9.5
+version: 0.9.6
 author: dmulloy2
 description: The mcMMO Alternative
+softdepend: [TagAPI]
 commands:
   a:
     description: Admin only chat
@@ -13,16 +14,19 @@ commands:
     description: Get on someones head
     permission: srpg.ride
     usage: /<command> <player>
+    aliases: [mount]
   unride:
     description: Get off someone's head
     permission: srpg.ride
     usage: /<command>
+    aliases: [dismount]
   hat:
     description: Puts the block in your hand on your head
     permission: srpg.hat
     usage: |
       /<command>
-      /<command> <remove>
+      /<command> [remove]
+    aliases: [headgear]
   asay:
     description: Alternate admin say command
     permission: srpg.asay
@@ -51,6 +55,16 @@ commands:
     permission: srpg.match
     usage: /<command> <player>
     aliases: [matchplayer]
+  tag:
+    description: Change the tag above your head
+    permission: srpg.tag
+    usage: /<command> [player] <tag>
+    aliases: [playertag, settag, nametag]
+  removetag:
+    description: Removes/resets a player's tag
+    permission: srpg.removetag
+    usage: /<command> [player] <tag>
+    aliases: [resettag, rtag, tagr, tagreset]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
@@ -60,6 +74,9 @@ permissions:
       srpg.asay: true
       srpg.aclear: true
       srpg.council: true
+      srpg.tag: true
+      srpg.removetag: true
+      srpg.othertag: true
   srpg.*:
     description: Just an alias for srpg.admin
     default: op
@@ -88,4 +105,10 @@ permissions:
   srpg.aclear:
     default: false
   srpg.adminchat:
+    default: false
+  srpg.tag:
+    default: false
+  srpg.removetag:
+    default: false
+  srpg.othertag:
     default: false

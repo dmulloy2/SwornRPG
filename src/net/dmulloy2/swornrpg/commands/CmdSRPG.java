@@ -36,7 +36,8 @@ public class CmdSRPG implements CommandExecutor
 			  if (PermissionInterface.checkPermission(sender, plugin.adminReloadPerm))
 			  {
 				  plugin.reloadConfig();
-				  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.GREEN + "Configuration reloaded");
+				  plugin.reloadtagsConfig();
+				  sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Configuration reloaded");
 				  if (sender instanceof Player)
 				  {
 					  SwornRPG.outConsole("Configuration reloaded");
@@ -44,22 +45,22 @@ public class CmdSRPG implements CommandExecutor
 			  }
 			  else
 			  {
-				  sender.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+				  sender.sendMessage(plugin.prefix + ChatColor.RED + "You do not have permission to perform this command");
 			  }
 		  }
 		  else if (args[0].equals("level"))
 		  {
-			  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "This command has not been implimented yet");
+			  sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "This command has not been implimented yet");
 		  }
 		  else if (args[0].equals("levelr"))
 		  {
 			  if (PermissionInterface.checkPermission(sender, plugin.adminClearPerm)) 
 			  {
-				  sender.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.YELLOW + "This command has not been implimented yet");
+				  sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "This command has not been implimented yet");
 			  }
 			  else
 			  {
-				  sender.sendMessage(ChatColor.RED + "You do not have permission to perform this command");
+				  sender.sendMessage(plugin.prefix + ChatColor.RED + "You do not have permission to perform this command");
 			  }
 		  }
 		  else if (args[0].equals("help"))

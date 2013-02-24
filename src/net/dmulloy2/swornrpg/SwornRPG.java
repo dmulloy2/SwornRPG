@@ -18,7 +18,11 @@
 package net.dmulloy2.swornrpg;
 
 //Java Imports
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +30,7 @@ import java.util.logging.Logger;
 //Plugin imports
 import net.dmulloy2.swornrpg.commands.*;
 import net.dmulloy2.swornrpg.listeners.*;
+import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.util.Util;
 import net.dmulloy2.swornrpg.util.VersionChecker;
 
@@ -34,10 +39,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.kitteh.tag.TagAPI;
 
 /**
  * @author dmulloy2
@@ -50,12 +58,17 @@ public class SwornRPG extends JavaPlugin
 	private EntityListener entityListener = new EntityListener(this);
 	private PlayerListener playerListener = new PlayerListener(this);
 	private BlockListener blockListener = new BlockListener(this);
+	private TagListener tagListener = new TagListener(this);
 
 	public List<String> adminchaters = new ArrayList<String>();
 	public List<String> councilchaters = new ArrayList<String>();
+    private HashMap<String, String> nameChanges;
 	
 	VersionChecker vc = new VersionChecker(this);
 	PluginDescriptionFile pdfFile;
+	
+    private FileConfiguration tagsConfig = null;
+    private File tagsConfigFile = null;
 
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire;
 //	public boolean frenzyenabled, onlinetime, mining, items, mcxp;
@@ -70,8 +83,12 @@ public class SwornRPG extends JavaPlugin
 	public String adminReloadPerm = "srpg.reload";
 	public String hatPerm = "srpg.hat";
 	public String matchPerm = "srpg.match";
+	public String tagPerm = "srpg.tag";
+	
+	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
+	public String invalidargs = prefix + ChatColor.RED + "Invalid arguments count ";
+	public String mustbeplayer = prefix + ChatColor.RED + " You must be a player to use this command";
 
-  
 	//What the plugin does when it is disabled
 	public void onDisable()
 	{
@@ -92,6 +109,10 @@ public class SwornRPG extends JavaPlugin
 		pm.registerEvents(this.playerListener, this);
 		pm.registerEvents(this.entityListener, this);
 		pm.registerEvents(this.blockListener, this);
+		if (pm.getPlugin("TagAPI") != null)
+		{
+			pm.registerEvents(this.tagListener, this);
+		}
 
 		//Initializes all SwornRPG commands
 		getCommand("srpg").setExecutor(new CmdSRPG (this));
@@ -105,6 +126,8 @@ public class SwornRPG extends JavaPlugin
 		getCommand("unride").setExecutor(new CmdUnride (this));
 		getCommand("eject").setExecutor(new CmdEject (this));
 		getCommand("match").setExecutor(new CmdMatch (this));
+		getCommand("tag").setExecutor(new CmdTag (this));
+		getCommand("removetag").setExecutor(new CmdResetTag (this));
 		
 		//Permissions Messages
 		getCommand("ride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
@@ -116,7 +139,9 @@ public class SwornRPG extends JavaPlugin
 		getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 		getCommand("eject").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
 		getCommand("match").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-	
+		getCommand("tag").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("removetag").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		
 		//Initializes the Util class
 		Util.Initialize(this);
 
@@ -124,9 +149,35 @@ public class SwornRPG extends JavaPlugin
 		saveDefaultConfig();
 		getConfig().options().copyDefaults(true);
 		loadConfig();
-		this.pdfFile = getDescription();
-		this.vc.versionChecker(this.pdfFile);
-  }
+		pdfFile = getDescription();
+		vc.versionChecker(pdfFile);
+		reloadConfig();
+		savetagsConfig();
+		
+		for (final Player player : this.getServer().getOnlinePlayers()) 
+		{
+			final String oldName = player.getName();
+			final String newName = this.getDefinedName(oldName);
+			if (!newName.equals(oldName)) 
+			{
+				try 
+				{
+					this.addNameChange(oldName, newName);
+				} 
+					catch (final TooBigException e) 
+				{
+					this.getLogger().severe("Error while changing name from memory:");
+					this.getLogger().severe(e.getMessage());
+				}
+				TagAPI.refreshPlayer(player);
+			}
+		}
+	}
+	
+	public void onLoad()
+	{
+		this.nameChanges = new HashMap<String, String>();
+	}
 
 	//Players who are admin chatting
 	public boolean isAdminChatting(String str)
@@ -241,6 +292,10 @@ public class SwornRPG extends JavaPlugin
 		{
 			p.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Match online and offline players");
 		}
+		if (PermissionInterface.checkPermission(p, tagPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/tag" + ChatColor.GOLD + " [player] " + ChatColor.DARK_RED + "<tag>" + ChatColor.YELLOW + "Change the name above your head");
+		}
 	}
   
 	//Console logging
@@ -266,4 +321,88 @@ public class SwornRPG extends JavaPlugin
 //		mcxp = getConfig().getBoolean("levelingrewards.minecraft-xp");
 //		frenzyduration = getConfig().getInt("frenzy.baseduration");
 	}
+	
+	//Tag stuff
+    public void addNameChange(final String oldName, final String newName)
+    {
+        this.nameChanges.put(oldName, newName);
+        this.gettagsConfig().set("tags." + oldName, newName);
+        this.savetagsConfig();
+        final Player player = this.getServer().getPlayerExact(oldName);
+        if (player != null) 
+        {
+            TagAPI.refreshPlayer(player);
+        }
+    }
+    
+    public void removeNameChange(final String oldName) 
+    {
+        this.nameChanges.remove(oldName);
+        this.gettagsConfig().set("tags." + oldName, null);
+        this.savetagsConfig();
+        final Player player = this.getServer().getPlayerExact(oldName);
+        if (player != null) 
+        {
+            TagAPI.refreshPlayer(player);
+        }
+    }
+    
+    public boolean hasChanged(final String name) 
+    {
+        return nameChanges.containsKey(name);
+    }
+    
+    public String getName(final String name) 
+    {
+        return nameChanges.get(name);
+    }
+    
+    public String getDefinedName(final String oldName)
+    {
+        final String newName = this.gettagsConfig().getString("tags." + oldName);
+        return newName == null ? oldName : newName;
+    }
+    
+    //Tags Configuration
+    public void reloadtagsConfig() 
+    {
+        if (tagsConfigFile == null) 
+        {
+        	tagsConfigFile = new File(getDataFolder(), "tags.yml");
+        }
+        tagsConfig = YamlConfiguration.loadConfiguration(tagsConfigFile);
+     
+        // Look for defaults in the jar
+        InputStream defConfigStream = this.getResource("tags.yml");
+        if (defConfigStream != null) 
+        {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            tagsConfig.setDefaults(defConfig);
+        }
+    }
+    
+    public FileConfiguration gettagsConfig() 
+    {
+        if (tagsConfig == null) 
+        {
+            this.reloadtagsConfig();
+        }
+        return tagsConfig;
+    }
+    
+    public void savetagsConfig() 
+    {
+        if (tagsConfig == null || tagsConfigFile == null) 
+        {
+        	return;
+        }
+        try 
+        {
+        	gettagsConfig().save(tagsConfigFile);
+        } 
+        catch (IOException ex) 
+        {
+        	this.getLogger().log(Level.SEVERE, "Could not save config to " + tagsConfigFile, ex);
+        }
+    }
 }

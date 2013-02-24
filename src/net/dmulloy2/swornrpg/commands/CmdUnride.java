@@ -1,7 +1,6 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +27,7 @@ public class CmdUnride implements CommandExecutor
 		    	player = (Player) sender;
 		    	if(args.length > 0)
 		    	{
-		    		player.sendMessage(ChatColor.GOLD + "[SwornRPG] " + ChatColor.RED + "Invalid arguments count (/unride)");
+		    		player.sendMessage(plugin.invalidargs + "(/unride)");
 		    	}
 		    	else
 		    	{
@@ -37,7 +36,7 @@ public class CmdUnride implements CommandExecutor
 		    }
 		    else
 		    {
-		    	sender.sendMessage(ChatColor.RED + "Error: You must be a player to use this command");
+		    	sender.sendMessage(plugin.mustbeplayer);
 		    }
 		    
 			return true;

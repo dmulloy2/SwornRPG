@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.InventoryHelper;
+import net.dmulloy2.swornrpg.util.TooBigException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -321,4 +323,23 @@ public class PlayerListener implements Listener
 		{
 		}	
 	}
+	
+    @EventHandler
+    public void onPlayerLogin(final PlayerLoginEvent event) 
+    {
+        final String name = event.getPlayer().getName();
+        final String newName = this.plugin.getDefinedName(name);
+        if (newName != null) 
+        {
+            try 
+            {
+                this.plugin.addNameChange(name, newName);
+            } 
+            catch (final TooBigException e) 
+            {
+                this.plugin.getLogger().severe("Error while changing name from memory:");
+                this.plugin.getLogger().severe(e.getMessage());
+            }
+        }
+    }
 }
