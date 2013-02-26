@@ -62,7 +62,7 @@ public class SwornRPG extends JavaPlugin
 
 	public List<String> adminchaters = new ArrayList<String>();
 	public List<String> councilchaters = new ArrayList<String>();
-    private HashMap<String, String> nameChanges;
+    private HashMap<String, String> tagChanges;
 	
 	VersionChecker vc = new VersionChecker(this);
 	PluginDescriptionFile pdfFile;
@@ -75,19 +75,23 @@ public class SwornRPG extends JavaPlugin
 //	public boolean playerkills, mobkills, money;
 //	public int frenzyduration;
 
+	//Permission Strings
 	public String adminChatPerm = "srpg.adminchat";
 	public String adminRidePerm = "srpg.ride";
 	public String adminSayPerm = "srpg.asay";
-	public String adminClearPerm = "srpg.aclear";
+	public String adminResetPerm = "srpg.levelr";
 	public String councilChatPerm = "srpg.council";
 	public String adminReloadPerm = "srpg.reload";
 	public String hatPerm = "srpg.hat";
 	public String matchPerm = "srpg.match";
 	public String tagPerm = "srpg.tag";
+	public String tagresetPerm = "srpg.tagr";
 	
+	//General command strings
 	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
 	public String invalidargs = prefix + ChatColor.RED + "Invalid arguments count ";
 	public String mustbeplayer = prefix + ChatColor.RED + " You must be a player to use this command";
+	public String noperm = ChatColor.RED + "You do not have permission to perform this command";
 
 	//What the plugin does when it is disabled
 	public void onDisable()
@@ -109,9 +113,18 @@ public class SwornRPG extends JavaPlugin
 		pm.registerEvents(this.playerListener, this);
 		pm.registerEvents(this.entityListener, this);
 		pm.registerEvents(this.blockListener, this);
+		//Check for TagAPI
 		if (pm.getPlugin("TagAPI") != null)
 		{
+			//If found, enable Tags
 			pm.registerEvents(this.tagListener, this);
+			outConsole("TagAPI found. Enabling all Tag related features");
+		}
+		else
+		{
+			//If not, give link for TagAPI
+			outConsole("TagAPI not found. Disabling all Tag related features");
+			outConsole("http://dev.bukkit.org/server-mods/tag/");
 		}
 
 		//Initializes all SwornRPG commands
@@ -128,55 +141,74 @@ public class SwornRPG extends JavaPlugin
 		getCommand("match").setExecutor(new CmdMatch (this));
 		getCommand("tag").setExecutor(new CmdTag (this));
 		getCommand("removetag").setExecutor(new CmdResetTag (this));
+		getCommand("level").setExecutor(new CmdLevel (this));
+		getCommand("levelr").setExecutor(new CmdLevelr (this));
+
 		
 		//Permissions Messages
-		getCommand("ride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("asay").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("a").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("hat").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("hc").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("unride").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("eject").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("match").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("tag").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
-		getCommand("removetag").setPermissionMessage(ChatColor.RED + "You do not have permission to perform this command");
+		getCommand("ride").setPermissionMessage(noperm);
+		getCommand("unride").setPermissionMessage(noperm);
+		getCommand("asay").setPermissionMessage(noperm);
+		getCommand("a").setPermissionMessage(noperm);
+		getCommand("hat").setPermissionMessage(noperm);
+		getCommand("hc").setPermissionMessage(noperm);
+		getCommand("unride").setPermissionMessage(noperm);
+		getCommand("eject").setPermissionMessage(noperm);
+		getCommand("match").setPermissionMessage(noperm);
+		getCommand("tag").setPermissionMessage(noperm);
+		getCommand("removetag").setPermissionMessage(noperm);
+		getCommand("levelr").setPermissionMessage(noperm);
 		
 		//Initializes the Util class
 		Util.Initialize(this);
-
-		//Configuration Stuff
-		saveDefaultConfig();
-		getConfig().options().copyDefaults(true);
-		loadConfig();
-		pdfFile = getDescription();
-		vc.versionChecker(pdfFile);
-		reloadConfig();
-		savetagsConfig();
 		
-		for (final Player player : this.getServer().getOnlinePlayers()) 
+		//Loads configurations
+		loadConfigs();
+		
+		//Initialize Tags
+		if (pm.getPlugin("TagAPI") != null)
 		{
-			final String oldName = player.getName();
-			final String newName = this.getDefinedName(oldName);
-			if (!newName.equals(oldName)) 
+			for (final Player player : this.getServer().getOnlinePlayers()) 
 			{
-				try 
+				final String oldName = player.getName();
+				final String newName = this.getDefinedName(oldName);
+				if (!newName.equals(oldName)) 
 				{
-					this.addNameChange(oldName, newName);
-				} 
+					try 
+					{
+						this.addTagChange(oldName, newName);
+					} 
 					catch (final TooBigException e) 
-				{
-					this.getLogger().severe("Error while changing name from memory:");
-					this.getLogger().severe(e.getMessage());
+					{
+						this.getLogger().severe("Error while changing name from memory:");
+						this.getLogger().severe(e.getMessage());
+					}
+					TagAPI.refreshPlayer(player);
 				}
-				TagAPI.refreshPlayer(player);
 			}
 		}
 	}
 	
+	//What the plugin does upon loading
 	public void onLoad()
 	{
-		this.nameChanges = new HashMap<String, String>();
+		this.tagChanges = new HashMap<String, String>();
+	}
+	
+	//Load configurations
+	public void loadConfigs()
+	{
+		//Regular config
+		saveDefaultConfig();
+		getConfig().options().copyDefaults(true);
+		loadConfig();
+		
+		//Version checker
+		pdfFile = getDescription();
+		vc.versionChecker(pdfFile);
+		
+		//Tags file
+		savetagsConfig();
 	}
 
 	//Players who are admin chatting
@@ -250,56 +282,8 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
   
-	//Help menu
-	public void displayHelp(CommandSender p)
-	{
-		p.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + getDescription().getFullName() + ChatColor.DARK_RED + " ======");
-		p.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
-		if (PermissionInterface.checkPermission(p, adminReloadPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");
-		}
-		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
-//		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays your current level");
-//		if (p.hasPermission("srpg.levelr"))
-//		{
-//			p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " levelr <name> " + ChatColor.YELLOW + "Resets a player's level.");
-//		}
-//		p.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters Frenzy mode.");
-		if (PermissionInterface.checkPermission(p, adminRidePerm))
-		{
-			p.sendMessage(ChatColor.RED + "/ride" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Ride another player");
-			p.sendMessage(ChatColor.RED + "/unride" + ChatColor.YELLOW + " Stop riding another player");
-			p.sendMessage(ChatColor.RED + "/eject" + ChatColor.YELLOW + " Kick someone off your head");
-		}
-		if (PermissionInterface.checkPermission(p, hatPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");
-		}
-		if (PermissionInterface.checkPermission(p, adminChatPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/a" + ChatColor.DARK_RED + " <message> "+ ChatColor.YELLOW + "Talk in admin chat");
-		}
-		if (PermissionInterface.checkPermission(p, councilChatPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/hc" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Talk in council chat");
-		}
-		if (PermissionInterface.checkPermission(p, adminSayPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/asay" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Alternate admin say command");
-		}
-		if (PermissionInterface.checkPermission(p, matchPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Match online and offline players");
-		}
-		if (PermissionInterface.checkPermission(p, tagPerm))
-		{
-			p.sendMessage(ChatColor.RED + "/tag" + ChatColor.GOLD + " [player] " + ChatColor.DARK_RED + "<tag>" + ChatColor.YELLOW + "Change the name above your head");
-		}
-	}
-  
 	//Console logging
-	public static void outConsole(String s)
+	public void outConsole(String s)
 	{
 		log.log(Level.INFO, "[SwornRPG] " + s);
 	}
@@ -322,10 +306,10 @@ public class SwornRPG extends JavaPlugin
 //		frenzyduration = getConfig().getInt("frenzy.baseduration");
 	}
 	
-	//Tag stuff
-    public void addNameChange(final String oldName, final String newName)
+	//Add Tag Change
+    public void addTagChange(final String oldName, final String newName)
     {
-        this.nameChanges.put(oldName, newName);
+        this.tagChanges.put(oldName, newName);
         this.gettagsConfig().set("tags." + oldName, newName);
         this.savetagsConfig();
         final Player player = this.getServer().getPlayerExact(oldName);
@@ -335,9 +319,10 @@ public class SwornRPG extends JavaPlugin
         }
     }
     
-    public void removeNameChange(final String oldName) 
+    //Remove Tag Change
+    public void removeTagChange(final String oldName) 
     {
-        this.nameChanges.remove(oldName);
+        this.tagChanges.remove(oldName);
         this.gettagsConfig().set("tags." + oldName, null);
         this.savetagsConfig();
         final Player player = this.getServer().getPlayerExact(oldName);
@@ -349,12 +334,12 @@ public class SwornRPG extends JavaPlugin
     
     public boolean hasChanged(final String name) 
     {
-        return nameChanges.containsKey(name);
+        return tagChanges.containsKey(name);
     }
     
     public String getName(final String name) 
     {
-        return nameChanges.get(name);
+        return tagChanges.get(name);
     }
     
     public String getDefinedName(final String oldName)
@@ -405,4 +390,56 @@ public class SwornRPG extends JavaPlugin
         	this.getLogger().log(Level.SEVERE, "Could not save config to " + tagsConfigFile, ex);
         }
     }
+    
+	//Help menu
+	public void displayHelp(CommandSender p)
+	{
+		p.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + getDescription().getFullName() + ChatColor.DARK_RED + " ======");
+		p.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
+		if (PermissionInterface.checkPermission(p, adminReloadPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");
+		}
+		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");
+		p.sendMessage(ChatColor.RED + "/level " + ChatColor.GOLD + "[name] " + ChatColor.YELLOW + "Displays your current level");
+		if (PermissionInterface.checkPermission(p, adminResetPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/levelr " + ChatColor.GOLD + "[name] " + ChatColor.YELLOW + "Resets a player's level.");
+		}
+		p.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters Frenzy mode.");
+		if (PermissionInterface.checkPermission(p, adminRidePerm))
+		{
+			p.sendMessage(ChatColor.RED + "/ride" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Ride another player");
+			p.sendMessage(ChatColor.RED + "/unride" + ChatColor.YELLOW + " Stop riding another player");
+			p.sendMessage(ChatColor.RED + "/eject" + ChatColor.YELLOW + " Kick someone off your head");
+		}
+		if (PermissionInterface.checkPermission(p, hatPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");
+		}
+		if (PermissionInterface.checkPermission(p, adminChatPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/a" + ChatColor.DARK_RED + " <message> "+ ChatColor.YELLOW + "Talk in admin chat");
+		}
+		if (PermissionInterface.checkPermission(p, councilChatPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/hc" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Talk in council chat");
+		}
+		if (PermissionInterface.checkPermission(p, adminSayPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/asay" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Alternate admin say command");
+		}
+		if (PermissionInterface.checkPermission(p, matchPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Match online and offline players");
+		}
+		if (PermissionInterface.checkPermission(p, tagPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/tag" + ChatColor.GOLD + " [player] " + ChatColor.DARK_RED + "<tag> " + ChatColor.YELLOW + "Change the name above your head");
+		}
+		if (PermissionInterface.checkPermission(p, tagresetPerm))
+		{
+			p.sendMessage(ChatColor.RED + "/tagr" + ChatColor.GOLD + " [player] " + ChatColor.YELLOW + "Resets a player's tag");
+		}
+	}
 }

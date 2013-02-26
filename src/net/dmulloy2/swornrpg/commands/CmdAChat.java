@@ -47,7 +47,7 @@ public class CmdAChat implements CommandExecutor
 		  }
 		  else
 		  {
-			  sender.sendMessage(plugin.invalidargs + "(/a <message)");
+			  sender.sendMessage(plugin.invalidargs + "(/a <message>)");
 		  }
 
 		  return true;

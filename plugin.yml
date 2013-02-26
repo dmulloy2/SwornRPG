@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.9.6
+version: 0.9.7
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI]
@@ -62,9 +62,17 @@ commands:
     aliases: [playertag, settag, nametag]
   removetag:
     description: Removes/resets a player's tag
-    permission: srpg.removetag
+    permission: srpg.tagr
     usage: /<command> [player] <tag>
     aliases: [resettag, rtag, tagr, tagreset]
+  level:
+    description: Shows a player's level
+    usage: /<command> [player]
+  levelr:
+    description: Resets a player's level
+    permission: srpg.levelr
+    usage: /<command> [player]
+    aliases: [resetlevel, levelc, clearlevel]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
@@ -75,8 +83,9 @@ permissions:
       srpg.aclear: true
       srpg.council: true
       srpg.tag: true
-      srpg.removetag: true
+      srpg.tagr: true
       srpg.othertag: true
+      srpg.levelr: true
   srpg.*:
     description: Just an alias for srpg.admin
     default: op
@@ -111,4 +120,6 @@ permissions:
   srpg.removetag:
     default: false
   srpg.othertag:
+    default: false
+  srpg.levelr:
     default: false

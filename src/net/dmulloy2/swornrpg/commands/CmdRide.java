@@ -29,12 +29,7 @@ public class CmdRide implements CommandExecutor
 		    if (sender instanceof Player) 
 		    {
 		    	player = (Player) sender;
-		    	if (args.length == 0)
-		    	{
-		    		player.sendMessage(plugin.invalidargs + "(/ride <player>)");
-		    		player.leaveVehicle();
-		    	}
-		    	else
+		    	if (args.length == 1)
 		    	{
 		    		final Player target = Util.matchPlayer(args[0]);
 		    		final Player player1 = (Player) sender;
@@ -50,6 +45,11 @@ public class CmdRide implements CommandExecutor
 		    				player1.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are now riding " + target.getName());
 		    			}				
 		    		},20);
+		    	}
+		    	else
+		    	{
+		    		player.sendMessage(plugin.invalidargs + "(/ride <player>)");
+		    		player.leaveVehicle();
 		    	}
 		    }
 		    else

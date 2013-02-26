@@ -29,7 +29,7 @@ public class CmdFrenzy implements CommandExecutor
 			  player = (Player) sender;
 			  if (args.length == 0)
 			  {
-				  player.sendMessage(plugin.prefix + ChatColor.YELLOW + " This command has not been implimented yet");
+				  player.sendMessage(plugin.prefix + ChatColor.YELLOW + "This command has not been implimented yet");
 			  }
 			  else
 			  {

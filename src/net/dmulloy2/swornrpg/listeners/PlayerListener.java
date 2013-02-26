@@ -44,7 +44,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) 
 	{
-		try 
+		try
 		{
 			if (!event.hasBlock()) 
 			{
@@ -327,13 +327,13 @@ public class PlayerListener implements Listener
     @EventHandler
     public void onPlayerLogin(final PlayerLoginEvent event) 
     {
-        final String name = event.getPlayer().getName();
-        final String newName = this.plugin.getDefinedName(name);
-        if (newName != null) 
+        final String oldName = event.getPlayer().getName();
+        final String newName = this.plugin.getDefinedName(oldName);
+        if (!newName.equals(oldName))
         {
             try 
             {
-                this.plugin.addNameChange(name, newName);
+                this.plugin.addTagChange(oldName, newName);
             } 
             catch (final TooBigException e) 
             {

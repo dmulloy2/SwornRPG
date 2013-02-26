@@ -32,7 +32,7 @@ public class CmdMatch implements CommandExecutor
 		  }
 		  if (args.length == 0)
 		  {
-			  sender.sendMessage(plugin.prefix + plugin.invalidargs + "(/match <player>)");
+			  sender.sendMessage(plugin.invalidargs + "(/match <player>)");
 		  }
 		  else
 		  {

@@ -1,6 +1,8 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +33,14 @@ public class CmdUnride implements CommandExecutor
 		    	}
 		    	else
 		    	{
-		    		player.leaveVehicle();
+		    		if (player.getVehicle() != null)
+		    		{
+		    			player.leaveVehicle();
+		    		}
+		    		else
+		    		{
+		    			player.sendMessage(plugin.prefix + ChatColor.RED + "Error, you are not riding anyone");
+		    		}
 		    	}
 		    }
 		    else

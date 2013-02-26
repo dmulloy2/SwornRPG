@@ -40,27 +40,12 @@ public class CmdSRPG implements CommandExecutor
 				  sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Configuration reloaded");
 				  if (sender instanceof Player)
 				  {
-					  SwornRPG.outConsole("Configuration reloaded");
+					  plugin.outConsole("Configuration reloaded");
 				  }
 			  }
 			  else
 			  {
-				  sender.sendMessage(plugin.prefix + ChatColor.RED + "You do not have permission to perform this command");
-			  }
-		  }
-		  else if (args[0].equals("level"))
-		  {
-			  sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "This command has not been implimented yet");
-		  }
-		  else if (args[0].equals("levelr"))
-		  {
-			  if (PermissionInterface.checkPermission(sender, plugin.adminClearPerm)) 
-			  {
-				  sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "This command has not been implimented yet");
-			  }
-			  else
-			  {
-				  sender.sendMessage(plugin.prefix + ChatColor.RED + "You do not have permission to perform this command");
+				  sender.sendMessage(plugin.prefix + plugin.noperm);
 			  }
 		  }
 		  else if (args[0].equals("help"))
