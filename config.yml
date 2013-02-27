@@ -6,7 +6,7 @@
 #                                                                                              #
 ################################################################################################
 
-Version: 0.9.7
+Version: 0.9.8
 #########################################################################
 #   Do not change unless you want your configuration regenerated.       #
 #  If the plugin finds that the configuration is out of date, it will   #
@@ -26,6 +26,9 @@ axekb: true
 
 arrowfire: true
 #Enables/disables the random chance that players can catch fire when shot by arrows
+
+deathbook: true
+#Will a player receive a book with the coordinates of their death upon respawn?
 
 #frenzy:
   #enabled: true

@@ -70,7 +70,7 @@ public class SwornRPG extends JavaPlugin
     private FileConfiguration tagsConfig = null;
     private File tagsConfigFile = null;
 
-	public boolean irondoorprotect, randomdrops, axekb, arrowfire;
+	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook;
 //	public boolean frenzyenabled, onlinetime, mining, items, mcxp;
 //	public boolean playerkills, mobkills, money;
 //	public int frenzyduration;
@@ -295,6 +295,7 @@ public class SwornRPG extends JavaPlugin
 		randomdrops = getConfig().getBoolean("randomdrops");
 		axekb = getConfig().getBoolean("axekb");
 		arrowfire = getConfig().getBoolean("arrowfire");
+		deathbook = getConfig().getBoolean("deathbook");
 //		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
 //		onlinetime = getConfig().getBoolean("leveling-methods.onlinetime");
 //		mining = getConfig().getBoolean("leveling-methods.mining");
