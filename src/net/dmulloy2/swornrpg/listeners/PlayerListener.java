@@ -6,11 +6,13 @@ import java.util.List;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.InventoryHelper;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
-import net.dmulloy2.swornrpg.util.TooBigException;
+import net.dmulloy2.swornrpg.data.PlayerData;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,16 +20,19 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.plugin.PluginManager;
 
 /**
  * @author dmulloy2
- * @contributor Minesworn
+ * @contributor t7seven7t
+ * @contributor Milkywayz
  */
 
 public class PlayerListener implements Listener 
@@ -48,6 +53,7 @@ public class PlayerListener implements Listener
 		this.plugin = plugin;
 	}
 
+	//Salvaging
 	@SuppressWarnings("deprecation") //player.updateInventory()
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) 
@@ -308,49 +314,7 @@ public class PlayerListener implements Listener
 
 		return ret;
 	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerChat(AsyncPlayerChatEvent event)
-	{
-		try 
-		{
-			String msg = event.getMessage();
-			Player player = event.getPlayer();
-			if (this.plugin.isAdminChatting(player.getName()))
-			{
-				this.plugin.sendAdminMessage(player.getName(), msg);
-				event.setCancelled(true);
-			}
-			if (this.plugin.isCouncilChatting(player.getName()))
-			{
-				this.plugin.sendCouncilMessage(player.getName(), msg);
-				event.setCancelled(true);
-			}
-		}
-		catch (Exception localException)
-		{
-		}	
-	}
-	
-    @EventHandler
-    public void onPlayerLogin(final PlayerLoginEvent event) 
-    {
-        final String oldName = event.getPlayer().getName();
-        final String newName = this.plugin.getDefinedName(oldName);
-        if (!newName.equals(oldName))
-        {
-            try 
-            {
-                this.plugin.addTagChange(oldName, newName);
-            } 
-            catch (final TooBigException e) 
-            {
-                this.plugin.getLogger().severe("Error while changing name from memory:");
-                this.plugin.getLogger().severe(e.getMessage());
-            }
-        }
-    }
-    
+	    
     /**
      * Books on Player Deaths
      * Creds to Milkywayz (BukkitDev Staff) for helping me on this :3
@@ -363,27 +327,97 @@ public class PlayerListener implements Listener
 			Entity ent = event.getEntity();
 			if(ent instanceof Player)
 			{
-				final Player player = (Player)event.getEntity();
-				double x = (int) Math.floor(player.getLocation().getX());
-				double y = (int) Math.floor(player.getLocation().getY());
-				double z = (int) Math.floor(player.getLocation().getZ());
-				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-				BookMeta meta = (BookMeta)book.getItemMeta();
-				pages.add(plugin.prefix + ChatColor.RED + player.getName() + ChatColor.GOLD + " died at " + ChatColor.RED + x + ", " + y + ", " + z);
-				meta.setTitle(ChatColor.RED + "DeathCoords");
-				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
-				meta.setPages(pages);
-				book.setItemMeta(meta);
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+				PluginManager pm = Bukkit.getPluginManager();
+				if (pm.getPlugin("Essentials") == null)
 				{
-					@Override
-					public void run()
+					final Player player = (Player)event.getEntity();
+					final PlayerData data = plugin.getPlayerDataCache().getData(player);
+					if (!(data.isDeathbookdisabled()))
 					{
-						InventoryWorkaround.addItems(player.getInventory(), book);
-					}				
-				},20);
-				this.pages.clear();
+						double x = (int) Math.floor(player.getLocation().getX());
+						double y = (int) Math.floor(player.getLocation().getY());
+						double z = (int) Math.floor(player.getLocation().getZ());
+						final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+						BookMeta meta = (BookMeta)book.getItemMeta();
+						pages.add(plugin.prefix + ChatColor.RED + player.getName() + ChatColor.GOLD + " died at " + ChatColor.RED + x + ", " + y + ", " + z);
+						meta.setTitle(ChatColor.RED + "DeathCoords");
+						meta.setAuthor(ChatColor.GOLD + "SwornRPG");
+						meta.setPages(pages);
+						book.setItemMeta(meta);
+						plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								InventoryWorkaround.addItems(player.getInventory(), book);
+							}				
+						},20);
+						this.pages.clear();
+					}
+				}
+				else
+				{
+					final Player player = (Player)event.getEntity();
+					final PlayerData data = plugin.getPlayerDataCache().getData(player);
+					if (!(data.isDeathbookdisabled()))
+					{
+						double x = (int) Math.floor(player.getLocation().getX());
+						double y = (int) Math.floor(player.getLocation().getY());
+						double z = (int) Math.floor(player.getLocation().getZ());
+						ConsoleCommandSender ccs = Bukkit.getServer().getConsoleSender();
+						Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z);
+						player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
+					}
+				}
 			}
 		}
     }
+	
+	//Creates a player data file if one does not exist
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerJoin(final PlayerJoinEvent event) 
+	{
+		// Store current time - will use it later
+		final long now = System.currentTimeMillis();
+		
+		// Try to get the player's data from the cache otherwise create a new data entry
+		PlayerData data = plugin.getPlayerDataCache().getData(event.getPlayer());
+		if (data == null)
+			data = plugin.getPlayerDataCache().newData(event.getPlayer());
+		
+		if (data.getFrenzyusedlevel() != (data.getPlayerxp()/125))
+			data.setFrenzyused(false);
+
+		// Set most recent login time (now)
+		data.setLastOnline(now);
+		
+		data.setTimeOfLastUpdate(now);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(final PlayerQuitEvent event) {
+		// Treat as player disconnect
+		onPlayerDisconnect(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerKick(final PlayerKickEvent event) {
+		if (!event.isCancelled()) {
+			// Treat as player disconnect
+			onPlayerDisconnect(event.getPlayer());
+		}
+	}
+
+	public void onPlayerDisconnect(final Player player) 
+	{
+		final long now = System.currentTimeMillis();
+		final PlayerData data = plugin.getPlayerDataCache().getData(player);
+		// Update spent time before setting their disconnect time
+		data.updateSpentTime();
+		if (plugin.onlinetime == true)
+		{
+			data.setPlayerxp((int) (data.getPlayerxp() + ((now - data.getTimeOfLastUpdate())/40000)));
+			data.setLastOnline(System.currentTimeMillis());
+		}
+	}
 }

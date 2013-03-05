@@ -6,9 +6,9 @@ import org.bukkit.command.CommandSender;
  * @author t7seven7t
  */
 
-public class PermissionInterface
+public class Perms
 {
-	public static boolean checkPermission(CommandSender player, String command)
+	public static boolean has(CommandSender player, String command)
 	{
 		return player.hasPermission(command) || player.isOp();
 	}

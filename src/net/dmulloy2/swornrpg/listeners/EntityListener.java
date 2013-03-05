@@ -35,7 +35,7 @@ public class EntityListener implements Listener
 	{
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
 		try 

@@ -1,15 +1,15 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 0.9.8
+version: 1.2
 author: dmulloy2
 description: The mcMMO Alternative
-softdepend: [TagAPI]
+softdepend: [TagAPI, Essentials, Factions]
 commands:
   a:
     description: Admin only chat
     permission: srpg.adminchat
     usage: /<command> <message>
-    aliases: [adminchat, staff, staffchat, sc]
+    aliases: [adminchat]
   ride:
     description: Get on someones head
     permission: srpg.ride
@@ -31,16 +31,16 @@ commands:
     description: Alternate admin say command
     permission: srpg.asay
     usage: /<command> <message>
-    aliases: [adm, adminsay]
+    aliases: [adm]
   srpg:
     description: SwornRPG root command
     usage: |
       /<command>
       /<command> <args>
+    aliases: [swornrpg]
   frenzy:
     description: Gives special abilities based on level
     usage: /<command>
-    aliases: [beastmode]
   hc:
     description: High Council Chat
     permission: srpg.council
@@ -73,6 +73,26 @@ commands:
     permission: srpg.levelr
     usage: /<command> [player]
     aliases: [resetlevel, levelc, clearlevel]
+  deathbook:
+    description: Toggles death coordinate books
+    usage: /<command>
+    aliases: [deathbooktoggle, deathmessage, deathmessagetoggle]
+  propose:
+    description: Propose to another player
+    usage: /<command> <player>
+    aliases: [engage]
+  marry:
+    description: Marry another player
+    usage: /<command> <player>
+    aliases: [matrimony]
+  spouse:
+    description: Shows information on a player's spouse
+    usage: /<command> [player]
+    aliases: [spouseinfo, marryinfo]
+  divorce:
+    description: Divorce your spouse
+    usage: /<command>
+    aliases: [unmarry, divorcespouse]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins

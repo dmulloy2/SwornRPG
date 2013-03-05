@@ -36,7 +36,6 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class CmdHat implements CommandExecutor
 {
-		
 	public SwornRPG plugin;
 	public CmdHat(SwornRPG plugin)  
 	{
