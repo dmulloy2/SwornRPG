@@ -31,6 +31,7 @@ import net.dmulloy2.swornrpg.commands.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.PlayerDataCache;
+import net.milkbowl.vault.economy.Economy;
 
 //Bukkit imports
 import org.bukkit.ChatColor;
@@ -38,8 +39,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.kitteh.tag.TagAPI;
@@ -52,6 +55,7 @@ public class SwornRPG extends JavaPlugin
 {
 	//Define some stuff
 	private @Getter PlayerDataCache playerDataCache;
+	private @Getter Economy economy;
 	
 	private static Logger log;
 	private EntityListener entityListener = new EntityListener(this);
@@ -70,9 +74,9 @@ public class SwornRPG extends JavaPlugin
     private File tagsConfigFile = null;
 	
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
-	frenzyenabled, onlinetime, playerkills, mobkills;//,mining, items, mcxp,
-	//money;
-	public int frenzyduration;
+	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
+	money;
+	public int frenzyduration, basemoney, itemperlevel, itemreward;
 
 	//Permission Strings
 	public String adminChatPerm = "srpg.adminchat";
@@ -97,8 +101,7 @@ public class SwornRPG extends JavaPlugin
 	public void onDisable()
 	{
 		outConsole(getDescription().getFullName() + " has been disabled");
-		
-		tagChanges.clear();
+
 		playerDataCache.save();
 		
 		getServer().getScheduler().cancelTasks(this);
@@ -131,7 +134,7 @@ public class SwornRPG extends JavaPlugin
 			outConsole("TagAPI not found. Disabling all Tag related features");
 			outConsole("http://dev.bukkit.org/server-mods/tag/");
 		}
-
+		
 		//Initializes all SwornRPG commands
 		getCommand("srpg").setExecutor(new CmdHelp (this));
 		getCommand("ride").setExecutor(new CmdRide (this));
@@ -173,6 +176,9 @@ public class SwornRPG extends JavaPlugin
 		
 		//Loads configurations
 		loadConfigs();
+		
+		//Check for vault
+		checkVault(pm);
 		
 		//Initialize Tags
 		if (pm.getPlugin("TagAPI") != null)
@@ -247,13 +253,16 @@ public class SwornRPG extends JavaPlugin
 		arrowfire = getConfig().getBoolean("arrowfire");
 		deathbook = getConfig().getBoolean("deathbook");
 		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
-		onlinetime = getConfig().getBoolean("leveling-methods.onlinetime");
-//		mining = getConfig().getBoolean("leveling-methods.mining");
-		playerkills = getConfig().getBoolean("leveling-methods.playerkills");
-		mobkills = getConfig().getBoolean("leveling-methods.mobkills");
-//		money = getConfig().getBoolean("levelingrewards.money");
-//		items = getConfig().getBoolean("levelingrewards.items");
-//		mcxp = getConfig().getBoolean("levelingrewards.minecraft-xp");
+		onlinetime = getConfig().getBoolean("levelingmethods.onlinetime");
+		xplevel = getConfig().getBoolean("levelingmethods.mcxpgain");
+		playerkills = getConfig().getBoolean("levelingmethods.playerkills");
+		mobkills = getConfig().getBoolean("levelingmethods.mobkills");
+		money = getConfig().getBoolean("levelingrewards.money.enabled");
+		basemoney = getConfig().getInt("levelingrewards.money.amountperlevel");
+		items = getConfig().getBoolean("levelingrewards.items.enabled");
+		itemperlevel = getConfig().getInt("levelingrewards.items.amountperlevel");
+		itemreward = getConfig().getInt("levelingrewards.items.itemid");
+		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
 		frenzyduration = getConfig().getInt("frenzy.baseduration");
 	}
 	
@@ -340,6 +349,31 @@ public class SwornRPG extends JavaPlugin
         	this.getLogger().log(Level.SEVERE, "Could not save config to " + tagsConfigFile, ex);
         }
     }
+    
+    private boolean setupEconomy() 
+	{
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+		if (economyProvider != null) 
+		{
+			economy = ((Economy)economyProvider.getProvider());
+		}
+ 
+		return economy != null;
+	}
+    
+	private void checkVault(PluginManager pm) 
+	{
+		Plugin p = pm.getPlugin("Vault");
+		if (p != null) 
+		{
+			setupEconomy();
+		} 
+		else 
+		{
+			outConsole("Vault not found. Vault is required for money rewards");
+			outConsole("Disabling all money related fetures");
+		}
+	}
 	
     //Main help menu
     public void displayHelp(CommandSender p)
@@ -356,7 +390,7 @@ public class SwornRPG extends JavaPlugin
     		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " chat " + ChatColor.YELLOW + "Displays chat commands");}
     	if (Perms.has(p, tagPerm)){
     		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " tag " + ChatColor.YELLOW + "Displays tag commands");}
-//    	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays level commands");
+    	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays level commands");
     	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " misc " + ChatColor.YELLOW + "Displays miscellaneous commands");
     	if (Perms.has(p, hatPerm)){
     		p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");}

@@ -39,7 +39,7 @@ public class CmdPropose implements CommandExecutor
 					{
 						sender.sendMessage(plugin.prefix + ChatColor.RED + "Monogamy is not allowed!");
 					}
-					else if (target.equals(sender.getName()))
+					else if (targetp.equals(sender.getName()))
 					{
 						sender.sendMessage(plugin.prefix + ChatColor.RED + "You cannot marry yourself");
 					}

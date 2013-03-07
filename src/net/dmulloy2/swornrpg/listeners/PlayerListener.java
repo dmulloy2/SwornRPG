@@ -6,6 +6,7 @@ import java.util.List;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.InventoryHelper;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
+import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.data.PlayerData;
 
 import org.bukkit.Bukkit;
@@ -392,21 +393,74 @@ public class PlayerListener implements Listener
 		data.setLastOnline(now);
 		
 		data.setTimeOfLastUpdate(now);
+		
+		//Makes sure Tag changes are permanent
+		final String name = event.getPlayer().getName();
+		final String newName = this.plugin.getDefinedName(name);
+		if (newName != name) 
+		{
+			try 
+			{
+				this.plugin.addTagChange(name, newName);
+			} 
+			catch (final TooBigException e) 
+			{
+				this.plugin.getLogger().severe("Error while changing name from memory:");
+				this.plugin.getLogger().severe(e.getMessage());
+			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(final PlayerQuitEvent event) {
+	public void onPlayerQuit(final PlayerQuitEvent event) 
+	{
 		// Treat as player disconnect
 		onPlayerDisconnect(event.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerKick(final PlayerKickEvent event) {
+	public void onPlayerKick(final PlayerKickEvent event) 
+	{
 		if (!event.isCancelled()) {
 			// Treat as player disconnect
 			onPlayerDisconnect(event.getPlayer());
 		}
 	}
+	
+	/**
+	 * Coming soon
+	 * Heart Effect
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerMove(final PlayerMoveEvent event)
+	{
+		Player player = event.getPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		String spousep = data.getSpouse();
+		if (spousep == null)
+		{
+			return;
+		}
+		Player spouse = Util.matchPlayer(spousep);
+		if (spouse == null)
+		{
+			return;
+		}
+		List<Entity> nearby = player.getNearbyEntities(10, 10, 10);
+		ArrayList<Player> nearbyPlayers = new ArrayList<Player>(Math.min(nearby.size(),10));
+		for (Entity entity : nearby) 
+		{
+		    if (entity instanceof Player) 
+		    {
+		         nearbyPlayers.add((Player) entity);
+		         if (nearbyPlayers.contains(spouse))
+		         {
+		        	 player.playEffect(EntityEffect.WOLF_HEARTS);
+		        	 spouse.playEffect(EntityEffect.WOLF_HEARTS);
+		         }
+		    }
+		}
+	}
+	*/
 
 	public void onPlayerDisconnect(final Player player) 
 	{

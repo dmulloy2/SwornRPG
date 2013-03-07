@@ -32,10 +32,17 @@ public class CmdSpouse implements CommandExecutor
 		if (args.length == 1)
 		{
 			Player target = Util.matchPlayer(args[0]);
-			String targetp = target.getName();
-			final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
-			String spouse = data.getSpouse();
-			sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is married to " + spouse);
+			if (target != null)
+			{
+				String targetp = target.getName();
+				final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
+				String spouse = data.getSpouse();
+				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is married to " + spouse);
+			}
+			else
+			{
+				sender.sendMessage(plugin.noplayer);
+			}
 		}
 		else if (args.length == 0)
 		{

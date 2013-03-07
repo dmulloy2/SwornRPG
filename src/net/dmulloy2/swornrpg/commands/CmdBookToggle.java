@@ -32,13 +32,13 @@ public class CmdBookToggle implements CommandExecutor
 				{
 					data.setDeathbookdisabled(false);
 					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate books enabled");
+					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages enabled");
 				}
 				else
 				{
 					data.setDeathbookdisabled(true);
 					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate books disabled");
+					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages disabled");
 				}
 			}
 			else if (args.length == 1)
@@ -47,13 +47,13 @@ public class CmdBookToggle implements CommandExecutor
 				{
 					data.setDeathbookdisabled(false);
 					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate books enabled");
+					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages enabled");
 				}
 				else if (args[0].equalsIgnoreCase("disabled"))
 				{
 					data.setDeathbookdisabled(true);
 					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate books disabled");
+					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages disabled");
 				}
 				else
 				{

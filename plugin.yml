@@ -1,9 +1,9 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 1.2
+version: 1.2.4
 author: dmulloy2
 description: The mcMMO Alternative
-softdepend: [TagAPI, Essentials, Factions]
+softdepend: [TagAPI, Essentials, Factions, Vault]
 commands:
   a:
     description: Admin only chat

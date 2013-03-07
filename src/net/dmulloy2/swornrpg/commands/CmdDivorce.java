@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,6 +37,7 @@ public class CmdDivorce implements CommandExecutor
 					data.setSpouse(null);
 					data1.setSpouse(null);
 					sender.sendMessage(plugin.prefix + ChatColor.RED + "You have divorced " + targetp);
+					Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.RED + sender.getName() + " has divorced " + targetp);
 					Player target = Util.matchPlayer(targetp);
 					plugin.getPlayerDataCache().save();
 					if (target != null)

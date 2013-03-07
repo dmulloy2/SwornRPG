@@ -6,7 +6,7 @@
 #                                                                                              #
 ################################################################################################
 
-Version: 1.2
+Version: 1.2.4
 #########################################################################
 #   Do not change unless you want your configuration regenerated.       #
 #  If the plugin finds that the configuration is out of date, it will   #
@@ -38,16 +38,22 @@ frenzy:
   #Make this integer low.(Formula = baseduration x level)
   #Example: a player that is level 2 with a base duration of 30 would get frenzy for a minute
   
-leveling-methods:
+levelingmethods:
 #How can players level up?
   onlinetime: true
-  #mining: true
+  mcxpgain: true
   playerkills: true
   mobkills: true
   
-#levelrewards:
+levelingrewards:
 #What do players receieve for leveling up?
-  #money: true
+  money:
+    enabled: true
+    amountperlevel: 250
   #minecraft-xp: false
-  #items: true
+  items:
+    enabled: true
+    itemid: 264
+    #Item id of the item you wish to reward (Defaults to diamond)
+    amountperlevel: 2
 
