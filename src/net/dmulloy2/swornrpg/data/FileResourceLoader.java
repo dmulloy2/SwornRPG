@@ -18,7 +18,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 
 public class FileResourceLoader extends ClassLoader 
 {
-
 	private final transient File dataFolder;
 	
 	public FileResourceLoader(final ClassLoader classLoader, final SwornRPG plugin) 
@@ -41,7 +40,7 @@ public class FileResourceLoader extends ClassLoader
 			{
 			}
 		}
-		
+			
 		return super.getResource(string);
 	}
 	
@@ -54,7 +53,8 @@ public class FileResourceLoader extends ClassLoader
 			try 
 			{
 				return new FileInputStream(file);
-			} catch (FileNotFoundException ex) 
+			} 
+			catch (FileNotFoundException ex) 
 			{
 			}
 		}

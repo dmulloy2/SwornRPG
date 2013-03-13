@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.data.PlayerData;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -34,7 +35,12 @@ public class CmdEject implements CommandExecutor
 			{
 				if (player.getPassenger() != null)
 				{
+					Player target = (Player)player.getVehicle();
+					PlayerData datap = plugin.getPlayerDataCache().getData(target);
+					datap.setRiding(false);
 					player.eject();
+					PlayerData data = plugin.getPlayerDataCache().getData(player);
+					data.setVehicle(false);
 				}
 				else
 				{

@@ -36,7 +36,7 @@ public class CmdLevelr implements CommandExecutor
 					data.setPlayerxp(0);
 					data.setFrenzyusedlevel(0);
 					data.setLastUpdateTimeSpent(now);
-					plugin.getPlayerDataCache().save();
+//					plugin.getPlayerDataCache().save();
 					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have reset your level");
 				}
 				else

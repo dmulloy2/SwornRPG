@@ -6,14 +6,15 @@ import java.util.List;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.InventoryHelper;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
+import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.data.PlayerData;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -29,6 +31,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.util.Vector;
+
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.Faction;
 
 /**
  * @author dmulloy2
@@ -331,6 +338,12 @@ public class PlayerListener implements Listener
 				PluginManager pm = Bukkit.getPluginManager();
 				if (pm.getPlugin("Essentials") == null)
 				{
+					if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
+					{
+						Faction otherFaction = Board.getFactionAt(new FLocation(ent.getLocation()));
+						if (otherFaction.isWarZone())
+							return;
+					}
 					final Player player = (Player)event.getEntity();
 					final PlayerData data = plugin.getPlayerDataCache().getData(player);
 					if (!(data.isDeathbookdisabled()))
@@ -366,15 +379,38 @@ public class PlayerListener implements Listener
 						double y = (int) Math.floor(player.getLocation().getY());
 						double z = (int) Math.floor(player.getLocation().getZ());
 						ConsoleCommandSender ccs = Bukkit.getServer().getConsoleSender();
-						Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z);
+						final Entity killer = event.getEntity().getKiller();
+						if (killer instanceof Entity)
+						{
+							if (killer instanceof Player)
+							{
+								if (killer.equals(player))
+								{
+									Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You commited suicide at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+								}
+								else
+								{
+									Player killerp = (Player)event.getEntity().getKiller();
+									Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed at " + x + ", " + y + ", " + z + " by " + killerp.getName() + " on " + TimeUtil.getLongDateCurr());
+								}
+							}
+							else
+							{
+								String killerfriendly = killer.getType().toString().toLowerCase().replaceAll("_", " ");
+								Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed at " + x + ", " + y + ", " + z + " by " + killerfriendly + " on " + TimeUtil.getLongDateCurr());
+							}
+						}
+						else
+						{
+							Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died mysteriously at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+						}
 						player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
 					}
 				}
 			}
 		}
     }
-	
-	//Creates a player data file if one does not exist
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event) 
 	{
@@ -385,9 +421,6 @@ public class PlayerListener implements Listener
 		PlayerData data = plugin.getPlayerDataCache().getData(event.getPlayer());
 		if (data == null)
 			data = plugin.getPlayerDataCache().newData(event.getPlayer());
-		
-		if (data.getFrenzyusedlevel() != (data.getPlayerxp()/125))
-			data.setFrenzyused(false);
 
 		// Set most recent login time (now)
 		data.setLastOnline(now);
@@ -409,6 +442,12 @@ public class PlayerListener implements Listener
 				this.plugin.getLogger().severe(e.getMessage());
 			}
 		}
+		
+		if (event.getPlayer().hasPermission("srpg.update") && (plugin.updateNeeded()))
+		{
+			event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "A new version is available! Get it at");
+			event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "http://dev.bukkit.org/server-mods/swornrpg/");
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -426,41 +465,6 @@ public class PlayerListener implements Listener
 			onPlayerDisconnect(event.getPlayer());
 		}
 	}
-	
-	/**
-	 * Coming soon
-	 * Heart Effect
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerMove(final PlayerMoveEvent event)
-	{
-		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		String spousep = data.getSpouse();
-		if (spousep == null)
-		{
-			return;
-		}
-		Player spouse = Util.matchPlayer(spousep);
-		if (spouse == null)
-		{
-			return;
-		}
-		List<Entity> nearby = player.getNearbyEntities(10, 10, 10);
-		ArrayList<Player> nearbyPlayers = new ArrayList<Player>(Math.min(nearby.size(),10));
-		for (Entity entity : nearby) 
-		{
-		    if (entity instanceof Player) 
-		    {
-		         nearbyPlayers.add((Player) entity);
-		         if (nearbyPlayers.contains(spouse))
-		         {
-		        	 player.playEffect(EntityEffect.WOLF_HEARTS);
-		        	 spouse.playEffect(EntityEffect.WOLF_HEARTS);
-		         }
-		    }
-		}
-	}
-	*/
 
 	public void onPlayerDisconnect(final Player player) 
 	{
@@ -472,6 +476,76 @@ public class PlayerListener implements Listener
 		{
 			data.setPlayerxp((int) (data.getPlayerxp() + ((now - data.getTimeOfLastUpdate())/40000)));
 			data.setLastOnline(System.currentTimeMillis());
+		}
+		if (data.isRiding())
+		{
+			player.leaveVehicle();
+			data.setRiding(false);
+		}
+		if (data.isVehicle())
+		{
+			player.eject();
+			data.setVehicle(false);
+		}
+		if (data.isSitting())
+		{
+			data.setSitting(false);
+		}
+	}
+	
+	//Chairs
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerInteract1(PlayerInteractEvent event) 
+	{
+		Player player = event.getPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
+		{
+			if (player.isSneaking())
+			{
+				String clicked = event.getClickedBlock().getType().toString().toLowerCase().replaceAll("_", " ");
+				if (clicked.contains("step")||clicked.contains("stair"))
+				{
+					data.setSitting(true);	
+					Arrow it = player.getWorld().spawnArrow(event.getClickedBlock().getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
+					it.setPassenger(player);
+					player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are now sitting on a " + ChatColor.GREEN + clicked + ChatColor.YELLOW + " stand up with" + ChatColor.RED + " /standup");
+				}
+			}
+		}
+		if (event.getAction() == Action.LEFT_CLICK_AIR)
+		{
+			if (data.isSitting())
+			{
+				Entity vehicle = event.getPlayer().getVehicle();
+				if (vehicle instanceof Arrow)
+				{
+					 player.leaveVehicle();;
+					 player.teleport(vehicle.getLocation().add(0, 1, 0));
+					 data.setSitting(false);
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerCommand(PlayerCommandPreprocessEvent event)
+	{
+		Player player = event.getPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		String cmd = event.getMessage().toString().toLowerCase().replaceAll("/", "").replaceAll(" ", "");
+		if (cmd.contains("spawn")||cmd.contains("home")||cmd.contains("warp")||cmd.contains("tp"))
+		{
+			if (player.getVehicle() != null && data.isRiding())
+			{
+				//If a player is riding another player, leave the vehicle
+				player.leaveVehicle();
+			}
+			if (player.getPassenger() != null && data.isVehicle())
+			{
+				//If a player is being ridden, eject the passenger
+				player.eject();
+			}
 		}
 	}
 }

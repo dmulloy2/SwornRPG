@@ -5,7 +5,6 @@ import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,7 +36,14 @@ public class CmdSpouse implements CommandExecutor
 				String targetp = target.getName();
 				final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
 				String spouse = data.getSpouse();
-				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is married to " + spouse);
+				if (spouse != null)
+				{
+					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is married to " + spouse);
+				}
+				else
+				{
+					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is not married");
+				}
 			}
 			else
 			{
@@ -52,21 +58,7 @@ public class CmdSpouse implements CommandExecutor
 				String spouse = data.getSpouse();
 				if (spouse != null)
 				{
-					Player spousep = Util.matchPlayer(data.getSpouse());
-					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are married to " + spouse);
-					if (spousep != null)
-					{
-						double x = (int) Math.floor(spousep.getLocation().getX());
-						double y = (int) Math.floor(spousep.getLocation().getY());
-						double z = (int) Math.floor(spousep.getLocation().getZ());
-						World world = spousep.getLocation().getWorld();
-						sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "Their coordinates are " + x + ", " + y + ", " + z + " in " + world.getName());
-					}
-					else
-					{
-						sender.sendMessage(plugin.prefix + ChatColor.YELLOW + spouse + " is currently offline");
-					}
-				
+					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are married to " + spouse);				
 				}
 				else
 				{

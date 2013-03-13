@@ -21,18 +21,23 @@ package net.dmulloy2.swornrpg;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import lombok.Getter;
 
 //Plugin imports
 import net.dmulloy2.swornrpg.commands.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.*;
-import net.dmulloy2.swornrpg.data.PlayerDataCache;
+import net.dmulloy2.swornrpg.data.*;
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Bukkit;
 //Bukkit imports
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -40,12 +45,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.kitteh.tag.TagAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author dmulloy2
@@ -58,6 +66,8 @@ public class SwornRPG extends JavaPlugin
 	private @Getter Economy economy;
 	
 	private static Logger log;
+	private double newVersion;
+    private double currentVersion;
 	private EntityListener entityListener = new EntityListener(this);
 	private PlayerListener playerListener = new PlayerListener(this);
 	private BlockListener blockListener = new BlockListener(this);
@@ -67,16 +77,15 @@ public class SwornRPG extends JavaPlugin
     private HashMap<String, String> tagChanges;
     public HashMap<String, String> proposal = new HashMap<String, String>();
 	
-	VersionChecker vc = new VersionChecker(this);
-	PluginDescriptionFile pdfFile;
-	
     private FileConfiguration tagsConfig = null;
     private File tagsConfigFile = null;
 	
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
-	money;
-	public int frenzyduration, basemoney, itemperlevel, itemreward;
+	money, update;
+	public int frenzyduration, basemoney, itemperlevel, itemreward, xplevelgain,
+	killergain, killedloss, mobkillsxp;
+	
 
 	//Permission Strings
 	public String adminChatPerm = "srpg.adminchat";
@@ -104,7 +113,8 @@ public class SwornRPG extends JavaPlugin
 
 		playerDataCache.save();
 		
-		getServer().getScheduler().cancelTasks(this);
+		getServer().getServicesManager().unregisterAll(this);
+        Bukkit.getScheduler().cancelTasks(this);
 	}
 
 	//What the plugin does when it is enabled
@@ -113,6 +123,7 @@ public class SwornRPG extends JavaPlugin
 		//Console logging
 		log = Logger.getLogger("Minecraft");
 		outConsole(getDescription().getFullName() + " has been enabled");
+		currentVersion = Double.valueOf(getDescription().getVersion().replaceFirst("\\.", ""));
     
 		//Registers Listener events
 		PluginManager pm = getServer().getPluginManager();
@@ -126,13 +137,13 @@ public class SwornRPG extends JavaPlugin
 		{
 			//If found, enable Tags
 			pm.registerEvents(this.tagListener, this);
-			outConsole("TagAPI found. Enabling all Tag related features");
+			outConsole("TagAPI found, enabling all Tag related features");
 		}
 		else
 		{
 			//If not, give link for TagAPI
-			outConsole("TagAPI not found. Disabling all Tag related features");
-			outConsole("http://dev.bukkit.org/server-mods/tag/");
+			outConsole("TagAPI not found, disabling all Tag related features");
+			outConsole("Get it here: http://dev.bukkit.org/server-mods/tag/");
 		}
 		
 		//Initializes all SwornRPG commands
@@ -156,6 +167,7 @@ public class SwornRPG extends JavaPlugin
 		getCommand("marry").setExecutor(new CmdMarry (this));
 		getCommand("spouse").setExecutor(new CmdSpouse (this));
 		getCommand("divorce").setExecutor(new CmdDivorce (this));
+		getCommand("standup").setExecutor(new CmdStandup (this));
 		
 		//Permissions Messages
 		getCommand("ride").setPermissionMessage(noperm);
@@ -174,11 +186,28 @@ public class SwornRPG extends JavaPlugin
 		//Initializes the Util class
 		Util.Initialize(this);
 		
-		//Loads configurations
-		loadConfigs();
+		//Configuration
+		loadConfig();
+		saveDefaultConfig();
+		getConfig().options().copyDefaults(true);
+		savetagsConfig();
 		
 		//Check for vault
 		checkVault(pm);
+		
+		//Makes sure files exist
+		if (!getDataFolder().exists())
+			getDataFolder().mkdir();
+		
+		//Schedules player data cache saving
+		playerDataCache = new PlayerDataCache(this);
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() {
+			
+			public void run() {
+				playerDataCache.save();
+			}
+			
+		}, 12000L, 12000L);
 		
 		//Initialize Tags
 		if (pm.getPlugin("TagAPI") != null)
@@ -203,17 +232,27 @@ public class SwornRPG extends JavaPlugin
 			}
 		}
 		
-		if (!getDataFolder().exists())
-			getDataFolder().mkdir();
-		
-		playerDataCache = new PlayerDataCache(this);
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() {
-			
-			public void run() {
-				playerDataCache.save();
-			}
-			
-		}, 12000L, 12000L);
+		//Update Checker
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() 
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    newVersion = updateCheck(currentVersion);
+                    if (newVersion > currentVersion) 
+                    {
+                        log.info("[SwornRPG] A new version of SwornRPG is now available!");
+                        log.info("[SwornRPG] Update SwornRPG at: http://dev.bukkit.org/server-mods/swornrpg/");
+                    }
+                } 
+                catch (Exception e) 
+                {
+                }
+            }
+
+        }, 0, 432000);
 	}
 	
 	//What the plugin does upon loading
@@ -221,23 +260,7 @@ public class SwornRPG extends JavaPlugin
 	{
 		this.tagChanges = new HashMap<String, String>();
 	}
-	
-	//Load configurations
-	public void loadConfigs()
-	{
-		//Regular config
-		saveDefaultConfig();
-		getConfig().options().copyDefaults(true);
-		loadConfig();
-		
-		//Version checker
-		pdfFile = getDescription();
-		vc.versionChecker(pdfFile);
-		
-		//Tags file
-		savetagsConfig();
-	}
-    
+	    
 	//Console logging
 	public void outConsole(String s)
 	{
@@ -253,10 +276,14 @@ public class SwornRPG extends JavaPlugin
 		arrowfire = getConfig().getBoolean("arrowfire");
 		deathbook = getConfig().getBoolean("deathbook");
 		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
-		onlinetime = getConfig().getBoolean("levelingmethods.onlinetime");
-		xplevel = getConfig().getBoolean("levelingmethods.mcxpgain");
-		playerkills = getConfig().getBoolean("levelingmethods.playerkills");
-		mobkills = getConfig().getBoolean("levelingmethods.mobkills");
+		onlinetime = getConfig().getBoolean("levelingmethods.onlinetime.enabled");
+		xplevel = getConfig().getBoolean("levelingmethods.mcxpgain.enabled");
+		xplevelgain = getConfig().getInt("levelingmethods.mcxpgain.xpgain");
+		playerkills = getConfig().getBoolean("levelingmethods.playerkills.enabled");
+		killergain = getConfig().getInt("levelingmethods.playerkills.xpgain");
+		killedloss = getConfig().getInt("levelingmethods.playerkills.xploss");
+		mobkills = getConfig().getBoolean("levelingmethods.mobkills.enabled");
+		mobkillsxp = getConfig().getInt("levelingmethods.mobkills.xpgain");
 		money = getConfig().getBoolean("levelingrewards.money.enabled");
 		basemoney = getConfig().getInt("levelingrewards.money.amountperlevel");
 		items = getConfig().getBoolean("levelingrewards.items.enabled");
@@ -264,6 +291,7 @@ public class SwornRPG extends JavaPlugin
 		itemreward = getConfig().getInt("levelingrewards.items.itemid");
 		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
 		frenzyduration = getConfig().getInt("frenzy.baseduration");
+		update = getConfig().getBoolean("updatechecker");
 	}
 	
 	//Tags Stuff
@@ -350,6 +378,23 @@ public class SwornRPG extends JavaPlugin
         }
     }
     
+    //Checks for vault, for money rewards
+	private void checkVault(PluginManager pm) 
+	{
+		Plugin p = pm.getPlugin("Vault");
+		if (p != null) 
+		{
+			setupEconomy();
+			outConsole("Vault found, enabling money related features");
+		} 
+		else 
+		{
+			outConsole("Vault not found. Vault is required for money rewards");
+			outConsole("Disabling all money related fetures");
+		}
+	}
+	
+    //Set up vault economy
     private boolean setupEconomy() 
 	{
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
@@ -360,21 +405,38 @@ public class SwornRPG extends JavaPlugin
  
 		return economy != null;
 	}
+
+    public double updateCheck(double currentVersion) throws Exception 
+    {
+        String pluginUrlString = "http://dev.bukkit.org/server-mods/swornrpg/files.rss";
+        try
+        {
+            URL url = new URL(pluginUrlString);
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openConnection().getInputStream());
+            doc.getDocumentElement().normalize();
+            NodeList nodes = doc.getElementsByTagName("item");
+            Node firstNode = nodes.item(0);
+            if (firstNode.getNodeType() == 1) 
+            {
+                Element firstElement = (Element)firstNode;
+                NodeList firstElementTagName = firstElement.getElementsByTagName("title");
+                Element firstNameElement = (Element) firstElementTagName.item(0);
+                NodeList firstNodes = firstNameElement.getChildNodes();
+                return Double.valueOf(firstNodes.item(0).getNodeValue().replaceAll("[a-zA-Z ]", "").replaceFirst("\\.", ""));
+            }
+        }
+        catch (Exception localException) {
+        }
+        return currentVersion;
+    }
     
-	private void checkVault(PluginManager pm) 
-	{
-		Plugin p = pm.getPlugin("Vault");
-		if (p != null) 
-		{
-			setupEconomy();
-		} 
-		else 
-		{
-			outConsole("Vault not found. Vault is required for money rewards");
-			outConsole("Disabling all money related fetures");
-		}
-	}
-	
+    public boolean updateNeeded()
+    {
+    	if (newVersion > currentVersion)
+    		return true;
+    	else
+    		return false;
+    }
     //Main help menu
     public void displayHelp(CommandSender p)
     {

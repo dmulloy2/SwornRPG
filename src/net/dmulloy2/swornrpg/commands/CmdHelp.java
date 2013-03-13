@@ -36,7 +36,6 @@ public class CmdHelp implements CommandExecutor
 			if (Perms.has(sender, plugin.adminReloadPerm))
 			{
 				plugin.reloadConfig();
-				plugin.reloadtagsConfig();
 				sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Configuration reloaded");
 				if (sender instanceof Player)
 				{
@@ -121,6 +120,7 @@ public class CmdHelp implements CommandExecutor
 			sender.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + "SwornRPG Miscellaneous Commands" + ChatColor.DARK_RED + " ======"); 
 			sender.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
 			sender.sendMessage(ChatColor.RED + "/propose" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Request to marry a player");
+			sender.sendMessage(ChatColor.RED + "/deny" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Deny a player's hand in marriage");
 			sender.sendMessage(ChatColor.RED + "/marry" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Marry another player");
 			sender.sendMessage(ChatColor.RED + "/spouse" + ChatColor.GOLD + " [player] " + ChatColor.YELLOW + "Shows information about a player's spouse");
 			sender.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <string> " + ChatColor.YELLOW + "Match a string with the closest player");

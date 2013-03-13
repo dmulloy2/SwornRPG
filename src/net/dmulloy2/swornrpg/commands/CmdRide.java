@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.ChatColor;
@@ -43,6 +44,10 @@ public class CmdRide implements CommandExecutor
 						{
 							target.setPassenger(player1);
 							player1.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are now riding " + target.getName());
+							final PlayerData data = plugin.getPlayerDataCache().getData(player1);
+							data.setRiding(true);
+							final PlayerData data1 = plugin.getPlayerDataCache().getData(target);
+							data1.setVehicle(true);
 						}				
 					},20);
 				}
@@ -54,7 +59,6 @@ public class CmdRide implements CommandExecutor
 			else
 			{
 				player.sendMessage(plugin.invalidargs + "(/ride <player>)");
-				player.leaveVehicle();
 			}
 		}
 		else

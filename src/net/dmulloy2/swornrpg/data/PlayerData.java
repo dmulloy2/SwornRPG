@@ -27,6 +27,9 @@ public class PlayerData implements ConfigurationSerializable
 	
 	private boolean deathbookdisabled;
 	private boolean frenzyused;
+	private boolean riding;
+	private boolean vehicle;
+	private boolean sitting;
 	
 	private int playerxp;
 	private int frenzyusedlevel;
@@ -148,7 +151,8 @@ public class PlayerData implements ConfigurationSerializable
 		return data;
 	}
 
-	public void updateSpentTime() {
+	public void updateSpentTime() 
+	{
 		long now = System.currentTimeMillis();
 		onlineTime = onlineTime + (now - ((lastUpdateTimeSpent > lastOnline) ? lastUpdateTimeSpent : lastOnline));
 		lastUpdateTimeSpent = now;

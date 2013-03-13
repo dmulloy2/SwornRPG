@@ -37,7 +37,7 @@ public class CmdPropose implements CommandExecutor
 				{
 					if (data.getSpouse() != null)
 					{
-						sender.sendMessage(plugin.prefix + ChatColor.RED + "Monogamy is not allowed!");
+						sender.sendMessage(plugin.prefix + ChatColor.RED + "Polygamy is not allowed!");
 					}
 					else if (targetp.equals(sender.getName()))
 					{

@@ -6,14 +6,8 @@
 #                                                                                              #
 ################################################################################################
 
-Version: 1.2.4
-#########################################################################
-#   Do not change unless you want your configuration regenerated.       #
-#  If the plugin finds that the configuration is out of date, it will   #
-#  Save your current configuration to /plugins/SwornRPG/old_config.yml  #
-#  And regenerate the configuration. You can then customize the config  #
-#                       And use /srpg reload                            #
-#########################################################################
+updatechecker: true
+#Enables/disables checking for updates
 
 irondoorprotect: true
 #Enables/disables the protection of iron doors
@@ -40,10 +34,22 @@ frenzy:
   
 levelingmethods:
 #How can players level up?
-  onlinetime: true
-  mcxpgain: true
-  playerkills: true
-  mobkills: true
+  onlinetime:
+    enabled: true
+  mcxpgain:
+    enabled: true
+    xpgain: 15
+    #how much xp a player gains when they level up using MC xp
+  playerkills:
+    enabled: true
+    xpgain: 25
+    #xp gained when a player kills
+    xploss: 10
+    #xp lost when a player dies
+  mobkills:
+    enabled: true
+    xpgain: 5
+    #xp gain when a player kills a mob
   
 levelingrewards:
 #What do players receieve for leveling up?

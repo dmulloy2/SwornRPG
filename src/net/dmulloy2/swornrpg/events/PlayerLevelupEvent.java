@@ -5,6 +5,10 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
+/**
+ * @author dmulloy2
+ */
+
 public class PlayerLevelupEvent extends PlayerEvent implements Cancellable
 {	
 	private static final HandlerList handlers = new HandlerList();
@@ -30,7 +34,6 @@ public class PlayerLevelupEvent extends PlayerEvent implements Cancellable
 		return newLevel;
 	}
 
-	/** Generic methods required **/
 	public HandlerList getHandlers() {
 		return handlers;
 	}

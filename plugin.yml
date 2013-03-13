@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 1.2.4
+version: 1.2.3
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, Vault]
@@ -19,7 +19,7 @@ commands:
     description: Get off someone's head
     permission: srpg.ride
     usage: /<command>
-    aliases: [dismount]
+    aliases: [dismount, standup]
   hat:
     description: Puts the block in your hand on your head
     permission: srpg.hat
@@ -93,6 +93,9 @@ commands:
     description: Divorce your spouse
     usage: /<command>
     aliases: [unmarry, divorcespouse]
+  standup:
+    description: Get off your chair
+    usage: /<command>
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
@@ -100,7 +103,6 @@ permissions:
     children:
       srpg.moderator: true
       srpg.asay: true
-      srpg.aclear: true
       srpg.council: true
       srpg.tag: true
       srpg.tagr: true
@@ -124,22 +126,29 @@ permissions:
     children:
       srpg.adminchat: true
   srpg.hat:
+    description: Allows access to /hat
     default: true
   srpg.ride:
+    description: Allows access to /ride, /eject, and /unride
     default: false
   srpg.asay:
+    description: Allows access to /asay
     default: false
   srpg.council:
-    default: false
-  srpg.aclear:
+    description: Allows access to /hc
     default: false
   srpg.adminchat:
+    description: Allows access to /a
     default: false
   srpg.tag:
+    description: Allows a player to set their own tag
     default: false
   srpg.removetag:
+    description: Allows access to /tagr
     default: false
   srpg.othertag:
+    description: Allows a player to set another player's tag
     default: false
   srpg.levelr:
+    description: Allows access to /levelr
     default: false

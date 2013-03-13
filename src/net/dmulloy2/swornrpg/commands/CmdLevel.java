@@ -28,7 +28,7 @@ public class CmdLevel implements CommandExecutor
 		{
 			if (sender instanceof Player)
 			{
-				plugin.getPlayerDataCache().save();
+//				plugin.getPlayerDataCache().save();
 				final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
 				int xp = data.getPlayerxp();
 				int level = xp/125;
