@@ -96,7 +96,7 @@ public class ExperienceListener implements Listener
 				if ((otherFaction.isWarZone())||(otherFaction.isSafeZone()))
 					return;
 			}
-			int killxp = 5;
+			int killxp = plugin.mobkillsxp;
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
 			if (mobname.startsWith("e")||mobname.startsWith("o")||mobname.startsWith("i"))
 				
@@ -142,10 +142,11 @@ public class ExperienceListener implements Listener
 		String playerp = player.getName();
 		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		data.setFrenzyused(false);
-		data.setOldlevel(data.getPlayerxp()/125);
-		int oldlevel = data.getOldlevel();
-		player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have leveled up to level " + ChatColor.GREEN + oldlevel + ChatColor.YELLOW + "!");
-		plugin.getPlayerDataCache().save();
+		data.setLevel(data.getLevel() + 1);
+		data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
+		data.setPlayerxp(0);
+		int level = data.getLevel();
+		player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have leveled up to level " + ChatColor.GREEN + level + ChatColor.YELLOW + "!");
 		//Awards money if money rewards are enabled
 		if (plugin.money == true)
 		{
@@ -153,7 +154,7 @@ public class ExperienceListener implements Listener
 			if (Bukkit.getServer().getPluginManager().getPlugin("Vault") != null)
 			{
 				Economy economy = plugin.getEconomy();
-				double money = (int) oldlevel*plugin.basemoney;
+				double money = (int) level*plugin.basemoney;
 				economy.depositPlayer(player.getName(), money);
 				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " +  ChatColor.GREEN + "$" + money + ChatColor.YELLOW + " for leveling up");
 			}
@@ -161,7 +162,6 @@ public class ExperienceListener implements Listener
 		//Awards items if money rewards are enabled
 		if (plugin.items == true)
 		{
-			int level = data.getPlayerxp()/125;
 			int rewardamt = level*plugin.itemperlevel;
 			ItemStack item = new ItemStack(plugin.itemreward, rewardamt);
 			String friendlyitem = item.getType().toString().toLowerCase().replaceAll("_", " ");
@@ -178,17 +178,15 @@ public class ExperienceListener implements Listener
 		int xpgained = event.getXpGained();
 		//Add the xp gained to their overall xp
 		data.setPlayerxp(data.getPlayerxp() + xpgained);
-		int oldlevel = data.getOldlevel();
-		int newlevel = data.getPlayerxp()/125;
-		//If the player leveled up, call the appropriate event
-		plugin.getPlayerDataCache().save();
-		if (newlevel > oldlevel)
+		data.setTotalxp(data.getTotalxp() + xpgained);
+		int xp = data.getPlayerxp();
+		int xpneeded = data.getXpneeded();
+		int newlevel = (xp/xpneeded);
+		int oldlevel = data.getLevel();
+		if ((xp - xpneeded) >= 1)
 		{
+			//If the player leveled up and did not prestege, give leveling rewards
 			Bukkit.getServer().getPluginManager().callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
-		}
-		else
-		{
-			data.setOldlevel(newlevel);
 		}
 	}
 }

@@ -32,11 +32,11 @@ public class CmdLevelr implements CommandExecutor
 				if (sender instanceof Player)
 				{
 					final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
-					final long now = System.currentTimeMillis();
 					data.setPlayerxp(0);
-					data.setFrenzyusedlevel(0);
-					data.setLastUpdateTimeSpent(now);
-//					plugin.getPlayerDataCache().save();
+					data.setFrenzyused(false);
+					data.setLevel(0);
+					data.setTotalxp(0);
+					data.setXpneeded(100 + (data.getPlayerxp()/4));
 					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have reset your level");
 				}
 				else
@@ -51,11 +51,11 @@ public class CmdLevelr implements CommandExecutor
 				{
 					String targetp = target.getName();
 					final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
-					final long now = System.currentTimeMillis();
 					data.setPlayerxp(0);
-					data.setFrenzyusedlevel(0);
-					data.setLastUpdateTimeSpent(now);
-					plugin.getPlayerDataCache().save();
+					data.setFrenzyused(false);
+					data.setLevel(0);
+					data.setTotalxp(0);
+					data.setXpneeded(100 + (data.getPlayerxp()/4));
 					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have reset " + targetp + "'s level");
 				}
 				else

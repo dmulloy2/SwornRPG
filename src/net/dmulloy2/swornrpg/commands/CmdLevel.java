@@ -28,17 +28,15 @@ public class CmdLevel implements CommandExecutor
 		{
 			if (sender instanceof Player)
 			{
-//				plugin.getPlayerDataCache().save();
 				final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
-				int xp = data.getPlayerxp();
-				int level = xp/125;
-				int nextlevel = (xp/125+1)*(125);
-				int xptonext = nextlevel - xp;
-				if (level < 1)
-					level = 0;
+				int level = data.getLevel();
+				int nextlevel = level+1;
+				int totalxp = data.getTotalxp();
+				int totalxpneeded = (data.getTotalxp() + data.getXpneeded());
+				int xptonext = data.getXpneeded() - data.getPlayerxp();
 				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are level " + ChatColor.GREEN + level);
-				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are " + ChatColor.GREEN + xptonext + ChatColor.YELLOW + " xp away from level " + (level + 1));
-				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "(" + ChatColor.GREEN + xp + ChatColor.YELLOW + "/" + ChatColor.GREEN + nextlevel + ChatColor.YELLOW + ")");
+				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are " + ChatColor.GREEN + xptonext + ChatColor.YELLOW + " xp away from level " + nextlevel);
+				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "(" + ChatColor.GREEN + totalxp + ChatColor.YELLOW + "/" + ChatColor.GREEN + totalxpneeded + ChatColor.YELLOW + ")");
 			}
 			else
 			{
@@ -56,15 +54,15 @@ public class CmdLevel implements CommandExecutor
 			{
 				String targetp = target.getName();
 				final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
-				int xp = data.getPlayerxp();
-				int level = xp/125;
-				int nextlevel = (xp/125+1)*(125);
-				int xptonext = nextlevel - xp;
-				if (level < 1)
-					level = 0;
+				int level = data.getLevel();
+				int nextlevel = level+1;
+				int totalxp = data.getTotalxp();
+				int totalxpneeded = (data.getTotalxp() + data.getXpneeded());
+				int xptonext = data.getXpneeded() - data.getPlayerxp();
+				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "Level info for: " + targetp);
 				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is level " + ChatColor.GREEN + level);
-				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is " + ChatColor.GREEN + xptonext + ChatColor.YELLOW + " xp away from level " + (level + 1));
-				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "(" + ChatColor.GREEN + xp + ChatColor.YELLOW + "/" + ChatColor.GREEN + nextlevel + ChatColor.YELLOW + ")");
+				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is " + ChatColor.GREEN + xptonext + ChatColor.YELLOW + " xp away from level " + nextlevel);
+				sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "(" + ChatColor.GREEN + totalxp + ChatColor.YELLOW + "/" + ChatColor.GREEN + totalxpneeded + ChatColor.YELLOW + ")");
 			}
 		}
 		else

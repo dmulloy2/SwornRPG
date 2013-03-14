@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import lombok.Getter;
@@ -37,8 +36,8 @@ import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.*;
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
 //Bukkit imports
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,30 +60,32 @@ import org.w3c.dom.NodeList;
 
 public class SwornRPG extends JavaPlugin
 {
-	//Define some stuff
+	//Getters
 	private @Getter PlayerDataCache playerDataCache;
 	private @Getter Economy economy;
 	
+	//Private objects
 	private static Logger log;
-	private double newVersion;
-    private double currentVersion;
+    private FileConfiguration tagsConfig = null;
+    private File tagsConfigFile = null;
 	private EntityListener entityListener = new EntityListener(this);
 	private PlayerListener playerListener = new PlayerListener(this);
 	private BlockListener blockListener = new BlockListener(this);
 	private TagListener tagListener = new TagListener(this);
 	private ExperienceListener experienceListener = new ExperienceListener(this);
 
+	//Hash maps
     private HashMap<String, String> tagChanges;
     public HashMap<String, String> proposal = new HashMap<String, String>();
 	
-    private FileConfiguration tagsConfig = null;
-    private File tagsConfigFile = null;
-	
+    //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update;
 	public int frenzyduration, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp;
+	private double newVersion;
+    private double currentVersion;
 	
 
 	//Permission Strings
@@ -168,6 +169,8 @@ public class SwornRPG extends JavaPlugin
 		getCommand("spouse").setExecutor(new CmdSpouse (this));
 		getCommand("divorce").setExecutor(new CmdDivorce (this));
 		getCommand("standup").setExecutor(new CmdStandup (this));
+		getCommand("deny").setExecutor(new CmdDeny (this));
+//		getCommand("mine").setExecutor(new CmdMine (this));
 		
 		//Permissions Messages
 		getCommand("ride").setPermissionMessage(noperm);
@@ -232,27 +235,30 @@ public class SwornRPG extends JavaPlugin
 			}
 		}
 		
-		//Update Checker
-        this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() 
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    newVersion = updateCheck(currentVersion);
-                    if (newVersion > currentVersion) 
-                    {
-                        log.info("[SwornRPG] A new version of SwornRPG is now available!");
-                        log.info("[SwornRPG] Update SwornRPG at: http://dev.bukkit.org/server-mods/swornrpg/");
-                    }
-                } 
-                catch (Exception e) 
-                {
-                }
-            }
-
-        }, 0, 432000);
+		if (update)
+		{
+			//Update Checker
+			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() 
+			{
+				@Override
+				public void run()
+				{
+					try
+					{
+						newVersion = updateCheck(currentVersion);
+						if (newVersion > currentVersion) 
+						{
+							log.info("[SwornRPG] A new version of SwornRPG is now available!");
+							log.info("[SwornRPG] Update SwornRPG at: http://dev.bukkit.org/server-mods/swornrpg/");
+						}
+					} 
+					catch (Exception e) 
+					{
+					}
+				}
+				
+			}, 0, 432000);
+		}
 	}
 	
 	//What the plugin does upon loading
@@ -425,8 +431,10 @@ public class SwornRPG extends JavaPlugin
                 return Double.valueOf(firstNodes.item(0).getNodeValue().replaceAll("[a-zA-Z ]", "").replaceFirst("\\.", ""));
             }
         }
-        catch (Exception localException) {
+        catch (Exception localException) 
+        {
         }
+        
         return currentVersion;
     }
     
@@ -456,7 +464,6 @@ public class SwornRPG extends JavaPlugin
     	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " misc " + ChatColor.YELLOW + "Displays miscellaneous commands");
     	if (Perms.has(p, hatPerm)){
     		p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");}
-		
     }
     
 }

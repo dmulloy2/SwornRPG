@@ -23,6 +23,7 @@ public class PlayerDataCache
 	private final File folder;
 	private final String extension = ".dat";
 	private final String folderName = "players";
+	private final SwornRPG plugin;
 	
 	private ConcurrentMap<String, PlayerData> data;
 	
@@ -33,6 +34,7 @@ public class PlayerDataCache
 			folder.mkdir();
 		
 		this.data = new ConcurrentHashMap<String, PlayerData>(64, 0.75f, 64);
+		this.plugin = plugin;
 	}
 
 	public PlayerData getData(final String key) {
@@ -101,6 +103,8 @@ public class PlayerDataCache
 	}
 	
 	public void save() {
+		plugin.outConsole("Saving " + folderName + " to disk...");
+		long start = System.currentTimeMillis();
 		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet()) {
 			File file = new File(folder, getFileName(entry.getKey()));
 			
@@ -109,6 +113,7 @@ public class PlayerDataCache
 			}
 		}
 		cleanupData();
+		plugin.outConsole(folderName + " saved! [" + (System.currentTimeMillis() - start) + "ms]");
 	}
 	
 	private boolean isFileAlreadyLoaded(final String fileName, final Map<String, PlayerData> map) {

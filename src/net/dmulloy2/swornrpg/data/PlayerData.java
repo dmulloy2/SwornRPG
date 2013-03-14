@@ -34,6 +34,9 @@ public class PlayerData implements ConfigurationSerializable
 	private int playerxp;
 	private int frenzyusedlevel;
 	private int oldlevel;
+	private int xpneeded;
+	private int level;
+	private int totalxp;
 	
 	private long timeOfLastUpdate;
 	private long onlineTime;

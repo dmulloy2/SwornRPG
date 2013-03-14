@@ -34,8 +34,6 @@ frenzy:
   
 levelingmethods:
 #How can players level up?
-  onlinetime:
-    enabled: true
   mcxpgain:
     enabled: true
     xpgain: 15
@@ -59,7 +57,7 @@ levelingrewards:
   #minecraft-xp: false
   items:
     enabled: true
-    itemid: 264
+    itemid: 265
     #Item id of the item you wish to reward (Defaults to diamond)
-    amountperlevel: 2
+    amountperlevel: 1
 

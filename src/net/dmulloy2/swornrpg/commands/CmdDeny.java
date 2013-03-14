@@ -1,8 +1,6 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -14,10 +12,10 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class CmdMarry implements CommandExecutor
+public class CmdDeny implements CommandExecutor
 {
 	public SwornRPG plugin;
-	public CmdMarry(SwornRPG plugin)  
+	public CmdDeny(SwornRPG plugin)  
 	{
 		this.plugin = plugin;
 	}
@@ -33,13 +31,10 @@ public class CmdMarry implements CommandExecutor
 				{
 					String targetp = target.getName();
 					String senderp = sender.getName();
-					final PlayerData data = plugin.getPlayerDataCache().getData(senderp);
-					final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
-					data.setSpouse(targetp);
-					data1.setSpouse(senderp);
-					Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.GREEN + targetp + " has married " + senderp);
 					plugin.proposal.remove(senderp);
 					plugin.proposal.remove(targetp);
+					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have denied " + targetp + "'s proposal");
+					target.sendMessage(plugin.prefix + ChatColor.RED + senderp + " does not wish to marry at this time");
 				}
 				else
 				{
@@ -48,7 +43,7 @@ public class CmdMarry implements CommandExecutor
 			}
 			else
 			{
-				sender.sendMessage(plugin.prefix + ChatColor.RED + "You do not have a proposal");
+				sender.sendMessage(plugin.prefix + ChatColor.RED + "Error, you do not have a proposal");
 			}
 		}
 		else

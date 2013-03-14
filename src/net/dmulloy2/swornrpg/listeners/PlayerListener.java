@@ -413,20 +413,29 @@ public class PlayerListener implements Listener
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event) 
-	{
-		// Store current time - will use it later
-		final long now = System.currentTimeMillis();
-		
+	{	
 		// Try to get the player's data from the cache otherwise create a new data entry
 		PlayerData data = plugin.getPlayerDataCache().getData(event.getPlayer());
 		if (data == null)
+		{
 			data = plugin.getPlayerDataCache().newData(event.getPlayer());
+			data.setPlayerxp(0);
+			data.setXpneeded(100 + (data.getPlayerxp()/4));
+			data.setLevel(0);
+			data.setFrenzyused(false);
+		}
+		
+		//Converter to the new leveling system
+		if (data.getXpneeded() == 0)
+		{
+			data.setXpneeded(100 + (data.getPlayerxp()/4));
+		}
 
-		// Set most recent login time (now)
-		data.setLastOnline(now);
-		
-		data.setTimeOfLastUpdate(now);
-		
+		if (data.getLevel() <= 0)
+		{
+			data.setLevel(0);
+		}
+	
 		//Makes sure Tag changes are permanent
 		final String name = event.getPlayer().getName();
 		final String newName = this.plugin.getDefinedName(name);
@@ -443,10 +452,14 @@ public class PlayerListener implements Listener
 			}
 		}
 		
-		if (event.getPlayer().hasPermission("srpg.update") && (plugin.updateNeeded()))
+		//Update Notification
+		if (plugin.update)
 		{
-			event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "A new version is available! Get it at");
-			event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "http://dev.bukkit.org/server-mods/swornrpg/");
+			if (event.getPlayer().hasPermission("srpg.update") && (plugin.updateNeeded()))
+			{
+				event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "A new version is available! Get it at");
+				event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "http://dev.bukkit.org/server-mods/swornrpg/");
+			}
 		}
 	}
 	
@@ -468,15 +481,7 @@ public class PlayerListener implements Listener
 
 	public void onPlayerDisconnect(final Player player) 
 	{
-		final long now = System.currentTimeMillis();
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
-		// Update spent time before setting their disconnect time
-		data.updateSpentTime();
-		if (plugin.onlinetime == true)
-		{
-			data.setPlayerxp((int) (data.getPlayerxp() + ((now - data.getTimeOfLastUpdate())/40000)));
-			data.setLastOnline(System.currentTimeMillis());
-		}
 		if (data.isRiding())
 		{
 			player.leaveVehicle();
@@ -495,7 +500,7 @@ public class PlayerListener implements Listener
 	
 	//Chairs
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerInteract1(PlayerInteractEvent event) 
+	public void onChairInteract(PlayerInteractEvent event) 
 	{
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
