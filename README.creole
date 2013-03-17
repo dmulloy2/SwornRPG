@@ -1,8 +1,9 @@
-=<<color maroon>>SwornRPG<</color>>
+=SwornRPG
 **Introducing SwornRPG, the fully functional alternative to mcMMO! This plugin currently features such things as admin chat, rare drops, the ability to ride other players, the ability to make any block your hat, color the name above your head, get a book with the coords of where you died, and marry other players. This plugin also features a fully featured leveling system, explained below!**
-<<color maroon>>**Thanks for over 1,500 downloads!!!**<</color>>
-----
-== <<color maroon>>Commands<</color>>
+**Thanks for over 1,500 downloads!!!**
+== Check SwornRPG out on Bukkit Dev!
+http://dev.bukkit.org/server-mods/swornrpg
+== Commands
 |**Command**||**Description**||**Permission**|
 |/a||Admin only chat||srpg.adminchat|
 |/hc||High Council chat||srpg.council|
@@ -16,26 +17,26 @@
 |/match||Match a string with a player|||
 |Tags||See [[player tags|here]]|||
 |Marriage||See [[marriage|here]]||||
-----
-==<<color maroon>>Leveling<</color>>
+
+==Leveling
 This plugin features a fully featured leveling system similar to that of mcMMO's. There are some key differences though. All of SwornRPG's leveling methods and rewards are highly configurable and much less OP. Players can gain plugin xp by doing things such as playing on the server (online time), killing mobs, killing players, and gaining Minecraft XP. Players can check their level using /level and administrators can clear a player's level with /levelr <player>. When a player gains enough xp to level up, they receive a few different things. They receive the item you defined in the config.yml, money (also defined in the config), as well as regenerated frenzy mode. Frenzy mode gives players potion effects such as strength, regeneration, speed, etc. Frenzy mode's duration is determined by the player's level, as well as the base duration defined in your configuration. Frenzy can only be used once per level, however.
-----
-==<<color maroon>>Salvaging<</color>>
+
+==Salvaging
 This plugin allows for the salvaging of used armor. Salvaging the used armor gives the player SOME of the ingots back, but it is designed to be inefficient. For example: If you salvage a full set of unused diamond armor, you will only get 20 diamonds back. If the armor is used, the plugin calculates how many ingots the player should receive based on how used the armor is.
 {{http://i.troll.ws/94107e8e.png}}
-----
-==<<color maroon>>Other Features<</color>>
+
+==Other Features
 *Protects Iron doors from being directly broken
 *Certain blocks have a random chance of dropping random materials.
 *Arrows have a random chance of setting the player on fire
 *Axes have a random chance of blowing the player back
 *Players can sit on chairs and slabs
 *Players are sent a mail message with death coordinates and time on death
-----
-==<<color maroon>>Planned Features<</color>>
+
+==Planned Features
 *If you have a suggestion, post in the comments below or create a ticket
-----
-==<<color maroon>>Permissions<</color>>
+
+==Permissions
 *srpg.admin (or srpg.*):
 **Grants access to all SwornRPG (op default)
 *srpg.moderator:
@@ -43,14 +44,11 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 *srpg.guard:
 **Grants access to features meant for Guards
 *Individual nodes can be found [[https://github.com/dmulloy2/SwornRPG/blob/master/plugin.yml|here]]
-----
-==<<color maroon>>Configuration<</color>>
+
+==Configuration
 *A detailed configuration guide can be found [[configuration|here]]
 *Note: The configuration should not need to be updated after 1.2.6. For 1.2.6, it is important that you regenerate your configuration, or the leveling system will break
-----
-==<<color maroon>>SwornRPG is Open Sourced!<</color>>
-Check out our repository on [[https://github.com/dmulloy2/SwornRPG|GitHub]]
-----
-==<<color maroon>>Check out SwornRPG in action!<</color>>
+
+==Check out SwornRPG in action!
 {{https://mcservers.org/images/mc.shadowvolt.com/600x100/14.jpg}}
 {{http://minesworn.com/images/Minestatussworn.gif}}
