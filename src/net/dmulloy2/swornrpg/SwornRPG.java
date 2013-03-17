@@ -99,6 +99,8 @@ public class SwornRPG extends JavaPlugin
 	public String matchPerm = "srpg.match";
 	public String tagPerm = "srpg.tag";
 	public String tagresetPerm = "srpg.tagr";
+	public String adminItemPerm = "srpg.iname";
+	public String adminMatchPerm = "srpg.match";
 	
 	//General command strings
 	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
@@ -171,6 +173,7 @@ public class SwornRPG extends JavaPlugin
 		getCommand("standup").setExecutor(new CmdStandup (this));
 		getCommand("deny").setExecutor(new CmdDeny (this));
 //		getCommand("mine").setExecutor(new CmdMine (this));
+		getCommand("itemname").setExecutor(new CmdItemName (this));
 		
 		//Permissions Messages
 		getCommand("ride").setPermissionMessage(noperm);
@@ -185,6 +188,7 @@ public class SwornRPG extends JavaPlugin
 		getCommand("tag").setPermissionMessage(noperm);
 		getCommand("removetag").setPermissionMessage(noperm);
 		getCommand("levelr").setPermissionMessage(noperm);
+		getCommand("itemname").setPermissionMessage(noperm);
 		
 		//Initializes the Util class
 		Util.Initialize(this);

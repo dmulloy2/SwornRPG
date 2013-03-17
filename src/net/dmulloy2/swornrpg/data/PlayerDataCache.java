@@ -27,7 +27,8 @@ public class PlayerDataCache
 	
 	private ConcurrentMap<String, PlayerData> data;
 	
-	public PlayerDataCache(SwornRPG plugin) {
+	public PlayerDataCache(SwornRPG plugin)
+	{
 		this.folder = new File(plugin.getDataFolder(), folderName);
 		
 		if (!folder.exists())
@@ -37,11 +38,13 @@ public class PlayerDataCache
 		this.plugin = plugin;
 	}
 
-	public PlayerData getData(final String key) {
+	public PlayerData getData(final String key) 
+	{
 		PlayerData value = this.data.get(key);
 		if (value == null) {
 			File file = new File(folder, getFileName(key));
-			if (file.exists()) {
+			if (file.exists())
+			{
 				value = loadData(key);
 				addData(key, value);
 			}
@@ -50,19 +53,23 @@ public class PlayerDataCache
 		return value;
 	}
 	
-	public PlayerData getData(final OfflinePlayer player) {
+	public PlayerData getData(final OfflinePlayer player)
+	{
 		return getData(player.getName());
 	}
 	
-	public Map<String, PlayerData> getAllLoadedPlayerData() {
+	public Map<String, PlayerData> getAllLoadedPlayerData()
+	{
 		return Collections.unmodifiableMap(data);
 	}
 	
-	public Map<String, PlayerData> getAllPlayerData() {
+	public Map<String, PlayerData> getAllPlayerData()
+	{
 		Map<String, PlayerData> data = new HashMap<String, PlayerData>();
 		data.putAll(this.data);
 		for (File file : folder.listFiles())
-			if (file.getName().contains(extension)) {
+			if (file.getName().contains(extension))
+			{
 				String fileName = trimFileExtension(file);
 				if (!isFileAlreadyLoaded(fileName, data))
 					data.put(fileName, loadData(fileName));
@@ -70,74 +77,88 @@ public class PlayerDataCache
 		return Collections.unmodifiableMap(data);
 	}
 	
-	private void removeData(final String key) {
+	private void removeData(final String key)
+	{
 		data.remove(key);
 	}
 	
-	private void addData(final String key, final PlayerData value) {
+	private void addData(final String key, final PlayerData value) 
+	{
 		data.put(key, value);
 	}
 	
-	public PlayerData newData(final String key) {
+	public PlayerData newData(final String key) 
+	{
 		PlayerData value = new PlayerData();
 		addData(key, value);
 		return value;
 	}
 	
-	public PlayerData newData(final OfflinePlayer player) {
+	public PlayerData newData(final OfflinePlayer player) 
+	{
 		return newData(player.getName());
 	}
 	
-	private void cleanupData() {
+	private void cleanupData() 
+	{
 		for (String key : getAllLoadedPlayerData().keySet())
 			if (!Util.matchOfflinePlayer(key).isOnline())
 				removeData(key);
 	}
 	
-	private PlayerData loadData(final String key) {
+	private PlayerData loadData(final String key) 
+	{
 		File file = new File(folder, getFileName(key));
 		
-		synchronized(file) {
+		synchronized(file)
+		{
 			return FileSerialization.load(new File(folder, getFileName(key)), PlayerData.class);
 		}
 	}
 	
-	public void save() {
+	public void save() 
+	{
 		plugin.outConsole("Saving " + folderName + " to disk...");
 		long start = System.currentTimeMillis();
-		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet()) {
+		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet()) 
+		{
 			File file = new File(folder, getFileName(entry.getKey()));
 			
-			synchronized(file) {
+			synchronized(file)
+			{
 				FileSerialization.save(entry.getValue(), new File(folder, getFileName(entry.getKey())));
 			}
 		}
 		cleanupData();
-		plugin.outConsole(folderName + " saved! [" + (System.currentTimeMillis() - start) + "ms]");
+		plugin.outConsole("Players saved! [" + (System.currentTimeMillis() - start) + "ms]");
 	}
 	
-	private boolean isFileAlreadyLoaded(final String fileName, final Map<String, PlayerData> map) {
+	private boolean isFileAlreadyLoaded(final String fileName, final Map<String, PlayerData> map) 
+	{
 		for (String key : map.keySet())
 			if (key.equals(fileName))
 				return true;
 		return false;
 	}
 	
-	private String trimFileExtension(final File file) {
+	private String trimFileExtension(final File file)
+	{
 		int index = file.getName().lastIndexOf(extension);
 		return index > 0 ? file.getName().substring(0, index) : file.getName(); 
 	}
 	
-	private String getFileName(final String key) {
+	private String getFileName(final String key)
+	{
 		return key + extension;
 	}
 	
-	public int getFileListSize() {
+	public int getFileListSize()
+	{
 		return folder.listFiles().length;
 	}
 	
-	public int getCacheSize() {
+	public int getCacheSize() 
+	{
 		return data.size();
 	}
-	
 }

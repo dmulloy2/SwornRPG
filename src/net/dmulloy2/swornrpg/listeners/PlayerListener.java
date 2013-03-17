@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -128,7 +129,7 @@ public class PlayerListener implements Listener
 						try
 					{
 							pl.sendMessage(ChatColor.GRAY + "You have salvaged an " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
-							System.out.println("[SwornRPG] " + pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
+							plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
 							Material give = Material.IRON_INGOT;
@@ -202,7 +203,7 @@ public class PlayerListener implements Listener
 						try 
 					{
 							pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
-							System.out.println("[SwornRPG] " + pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
+							plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
 							Material give = Material.DIAMOND;
@@ -273,7 +274,7 @@ public class PlayerListener implements Listener
 						try 
 					{
 							pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
-							System.out.println("[SwornRPG] " + pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
+							plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
 							Material give = Material.GOLD_INGOT;
@@ -324,30 +325,36 @@ public class PlayerListener implements Listener
 	}
 	    
     /**
-     * Books on Player Deaths
+     * Books or Mail messages with death coordinates
      * Creds to Milkywayz (BukkitDev Staff) for helping me on this :3
      */
 	@EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event)
     {
+		//Checks to make sure death books are enabled in the config
 		if (plugin.deathbook == true)
 		{
+			//Checks that it was a player that died
 			Entity ent = event.getEntity();
 			if(ent instanceof Player)
 			{
+				//Warzone check
 				PluginManager pm = Bukkit.getPluginManager();
-				if (pm.getPlugin("Essentials") == null)
+				if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 				{
-					if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
+					Faction otherFaction = Board.getFactionAt(new FLocation(ent.getLocation()));
+					if (otherFaction.isWarZone())
+						return;
+				}
+				//Player death book toggle check
+				final Player player = (Player)event.getEntity();
+				final PlayerData data = plugin.getPlayerDataCache().getData(player);
+				if (!(data.isDeathbookdisabled()))
+				{
+					//Check for essentials
+					if (!(pm.isPluginEnabled("Essentials")))
 					{
-						Faction otherFaction = Board.getFactionAt(new FLocation(ent.getLocation()));
-						if (otherFaction.isWarZone())
-							return;
-					}
-					final Player player = (Player)event.getEntity();
-					final PlayerData data = plugin.getPlayerDataCache().getData(player);
-					if (!(data.isDeathbookdisabled()))
-					{
+						//If not found, create a book with their death coords
 						double x = (int) Math.floor(player.getLocation().getX());
 						double y = (int) Math.floor(player.getLocation().getY());
 						double z = (int) Math.floor(player.getLocation().getZ());
@@ -368,43 +375,26 @@ public class PlayerListener implements Listener
 						},20);
 						this.pages.clear();
 					}
-				}
-				else
-				{
-					final Player player = (Player)event.getEntity();
-					final PlayerData data = plugin.getPlayerDataCache().getData(player);
-					if (!(data.isDeathbookdisabled()))
+					else
 					{
+						//If essentials is found, send the message via mail
 						double x = (int) Math.floor(player.getLocation().getX());
 						double y = (int) Math.floor(player.getLocation().getY());
 						double z = (int) Math.floor(player.getLocation().getZ());
 						ConsoleCommandSender ccs = Bukkit.getServer().getConsoleSender();
-						final Entity killer = event.getEntity().getKiller();
-						if (killer instanceof Entity)
+						Entity killer = event.getEntity().getKiller();
+						if (killer instanceof Player)
 						{
-							if (killer instanceof Player)
-							{
-								if (killer.equals(player))
-								{
-									Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You commited suicide at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
-								}
-								else
-								{
-									Player killerp = (Player)event.getEntity().getKiller();
-									Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed at " + x + ", " + y + ", " + z + " by " + killerp.getName() + " on " + TimeUtil.getLongDateCurr());
-								}
-							}
-							else
-							{
-								String killerfriendly = killer.getType().toString().toLowerCase().replaceAll("_", " ");
-								Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed at " + x + ", " + y + ", " + z + " by " + killerfriendly + " on " + TimeUtil.getLongDateCurr());
-							}
+							Player killerp = event.getEntity().getKiller();
+							String killern = killerp.getName();
+							Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed by" + killern  + "at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+							player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
 						}
 						else
 						{
-							Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died mysteriously at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+							Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+							player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
 						}
-						player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
 					}
 				}
 			}
@@ -414,11 +404,14 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event) 
 	{	
+		Player player = event.getPlayer();
 		// Try to get the player's data from the cache otherwise create a new data entry
-		PlayerData data = plugin.getPlayerDataCache().getData(event.getPlayer());
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data == null)
 		{
-			data = plugin.getPlayerDataCache().newData(event.getPlayer());
+			plugin.outConsole("Creating a new player data file for " + player.getName());
+			data = plugin.getPlayerDataCache().newData(player);
+			//Basic data that a player needs
 			data.setPlayerxp(0);
 			data.setXpneeded(100 + (data.getPlayerxp()/4));
 			data.setLevel(0);
@@ -437,8 +430,8 @@ public class PlayerListener implements Listener
 		}
 	
 		//Makes sure Tag changes are permanent
-		final String name = event.getPlayer().getName();
-		final String newName = this.plugin.getDefinedName(name);
+		String name = player.getName();
+		String newName = this.plugin.getDefinedName(name);
 		if (newName != name) 
 		{
 			try 
@@ -455,10 +448,10 @@ public class PlayerListener implements Listener
 		//Update Notification
 		if (plugin.update)
 		{
-			if (event.getPlayer().hasPermission("srpg.update") && (plugin.updateNeeded()))
+			if (player.hasPermission("srpg.update") && (plugin.updateNeeded()))
 			{
-				event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "A new version is available! Get it at");
-				event.getPlayer().sendMessage(plugin.prefix + ChatColor.YELLOW + "http://dev.bukkit.org/server-mods/swornrpg/");
+				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "A new version is available! Get it at");
+				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "http://dev.bukkit.org/server-mods/swornrpg/");
 			}
 		}
 	}
@@ -473,7 +466,8 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerKick(final PlayerKickEvent event) 
 	{
-		if (!event.isCancelled()) {
+		if (!event.isCancelled()) 
+		{
 			// Treat as player disconnect
 			onPlayerDisconnect(event.getPlayer());
 		}
@@ -482,14 +476,13 @@ public class PlayerListener implements Listener
 	public void onPlayerDisconnect(final Player player) 
 	{
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
+		//Basic data needing to be false when a player leaves the game
 		if (data.isRiding())
 		{
-			player.leaveVehicle();
 			data.setRiding(false);
 		}
 		if (data.isVehicle())
 		{
-			player.eject();
 			data.setVehicle(false);
 		}
 		if (data.isSitting())
@@ -506,11 +499,14 @@ public class PlayerListener implements Listener
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
+			//Makes sure they are shift clicking
 			if (player.isSneaking())
 			{
 				String clicked = event.getClickedBlock().getType().toString().toLowerCase().replaceAll("_", " ");
+				//Check to make sure they are clicking on a stair
 				if (clicked.contains("step")||clicked.contains("stair"))
 				{
+					//Set them as a passenger to the stair/arrow
 					data.setSitting(true);	
 					Arrow it = player.getWorld().spawnArrow(event.getClickedBlock().getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
 					it.setPassenger(player);
@@ -525,7 +521,9 @@ public class PlayerListener implements Listener
 				Entity vehicle = event.getPlayer().getVehicle();
 				if (vehicle instanceof Arrow)
 				{
-					 player.leaveVehicle();;
+					//Get out of the chair
+					 player.leaveVehicle();
+					 vehicle.remove();
 					 player.teleport(vehicle.getLocation().add(0, 1, 0));
 					 data.setSitting(false);
 				}
@@ -536,6 +534,10 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerCommand(PlayerCommandPreprocessEvent event)
 	{
+		/**
+		 * Checks to make sure that if a player is riding another player,
+		 * teleportation is not disabled
+		 */
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		String cmd = event.getMessage().toString().toLowerCase().replaceAll("/", "").replaceAll(" ", "");
@@ -545,12 +547,43 @@ public class PlayerListener implements Listener
 			{
 				//If a player is riding another player, leave the vehicle
 				player.leaveVehicle();
+				data.setRiding(false);
 			}
 			if (player.getPassenger() != null && data.isVehicle())
 			{
 				//If a player is being ridden, eject the passenger
 				player.eject();
+				data.setVehicle(false);
 			}
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerPickupItem(PlayerPickupItemEvent event)
+	{
+		Player player = event.getPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		if ((data.isRiding()) && (player.getVehicle() != null))
+		{
+			//Cancel pickup event if a player is on another player's head
+			event.setCancelled(true);
+		}
+	}
+	/**
+	 * Super Pickaxes, coming to a SwornRPG near you!
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerActivate(PlayerInteractEvent event)
+	{
+		Player player = event.getPlayer();
+		if (player.getItemInHand() != null)
+		{
+			String inhand = player.getItemInHand().toString().toLowerCase().replaceAll("_", " ");
+			if (inhand.contains("pickaxe")&&!inhand.contains("wood")&&!inhand.contains("gold"));
+			{
+				player.sendMessage(plugin.prefix + ChatColor.GREEN + "Ready to mine?");
+				player.sendMessage(plugin.prefix + ChatColor.GREEN + "Your " + inhand + " has become a super pickaxe!");
+			}	
+		}
+	}
+	*/
 }

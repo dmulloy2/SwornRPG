@@ -41,6 +41,7 @@ public class CmdStandup implements CommandExecutor
 					if (vehicle instanceof Arrow)
 					{
 						player.leaveVehicle();
+						vehicle.remove();
 						player.teleport(vehicle.getLocation().add(0, 1, 0));
 						data.setSitting(false);
 					}

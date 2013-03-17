@@ -123,8 +123,15 @@ public class CmdHelp implements CommandExecutor
 			sender.sendMessage(ChatColor.RED + "/deny" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Deny a player's hand in marriage");
 			sender.sendMessage(ChatColor.RED + "/marry" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Marry another player");
 			sender.sendMessage(ChatColor.RED + "/spouse" + ChatColor.GOLD + " [player] " + ChatColor.YELLOW + "Shows information about a player's spouse");
-			sender.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <string> " + ChatColor.YELLOW + "Match a string with the closest player");
 			sender.sendMessage(ChatColor.RED + "/deathmessage" + ChatColor.YELLOW + " Toggles death coordinate books/messages");
+			if (Perms.has(sender, plugin.adminItemPerm))
+			{
+				sender.sendMessage(ChatColor.RED + "/iname" + ChatColor.DARK_RED + " <name> " + ChatColor.YELLOW + "Set the name of an item");
+			}
+			if (Perms.has(sender, plugin.adminMatchPerm))
+			{
+				sender.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <string> " + ChatColor.YELLOW + "Match a string with the closest player");
+			}
 		}
 		else
 		{
