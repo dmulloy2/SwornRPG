@@ -1,78 +1,66 @@
 package net.dmulloy2.swornrpg.commands;
 
-import net.dmulloy2.swornrpg.Perms;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdLevelr implements CommandExecutor
+public class CmdLevelr extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdLevelr(SwornRPG plugin)  
+	public CmdLevelr (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "levelr";
+		this.description = "Reset a player's level";
+		this.optionalArgs.add("player");
+		this.permission = PermissionType.CMD_LEVELR.permission;
+		this.mustBePlayer = false;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		if (Perms.has(sender, plugin.adminResetPerm))
+	
+	@Override
+	public void perform()
+	{
+		if (args.length == 0)
 		{
-			if (args.length == 0)
+			if (sender instanceof Player)
 			{
-				if (sender instanceof Player)
-				{
-					final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
-					data.setPlayerxp(0);
-					data.setFrenzyused(false);
-					data.setLevel(0);
-					data.setTotalxp(0);
-					data.setXpneeded(100 + (data.getPlayerxp()/4));
-					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have reset your level");
-				}
-				else
-				{
-					sender.sendMessage(plugin.mustbeplayer);
-				}
-			}
-			else if (args.length == 1)
-			{
-				Player target = Util.matchPlayer(args[0]);
-				if (target != null)
-				{
-					String targetp = target.getName();
-					final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
-					data.setPlayerxp(0);
-					data.setFrenzyused(false);
-					data.setLevel(0);
-					data.setTotalxp(0);
-					data.setXpneeded(100 + (data.getPlayerxp()/4));
-					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have reset " + targetp + "'s level");
-				}
-				else
-				{
-					sender.sendMessage(plugin.noplayer);
-				}
+				PlayerData data = getPlayerData(player);
+				data.setPlayerxp(0);
+				data.setFrenzyused(false);
+				data.setLevel(0);
+				data.setTotalxp(0);
+				data.setXpneeded(100 + (data.getPlayerxp()/4));
+				sendpMessage("&eYou have reset your level");
 			}
 			else
 			{
-				sender.sendMessage(plugin.invalidargs + "(/levelr [player])");
+				sender.sendMessage(plugin.mustbeplayer);
 			}
 		}
-		else
+		else if (args.length == 1)
 		{
-			sender.sendMessage(plugin.noperm);
+			Player target = Util.matchPlayer(args[0]);
+			if (target != null)
+			{
+				String targetp = target.getName();
+				final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
+				data.setPlayerxp(0);
+				data.setFrenzyused(false);
+				data.setLevel(0);
+				data.setTotalxp(0);
+				data.setXpneeded(100 + (data.getPlayerxp()/4));
+				sendpMessage("&eYou have reset " + targetp + "'s level");
+			}
+			else
+			{
+				sender.sendMessage(plugin.noplayer);
+			}
 		}
-		
-		return true;
 	}
 }

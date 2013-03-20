@@ -3,51 +3,41 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdStandup implements CommandExecutor
+public class CmdStandup extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdStandup(SwornRPG plugin)  
+	public CmdStandup (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "standup";
+		this.description = "Get out of your chair";
+		this.mustBePlayer = true;
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		Player player = null;
-		if (sender instanceof Player) 
+	@Override
+	public void perform()
+	{
+		PlayerData data = getPlayerData(player);
+		if (data.isSitting())
 		{
-			player = (Player) sender;
-			if(args.length > 0)
+			Entity vehicle = player.getVehicle();
+			if (vehicle instanceof Arrow)
 			{
-				player.sendMessage(plugin.invalidargs + "(/standup)");
-			}
-			else
-			{
-				PlayerData data = plugin.getPlayerDataCache().getData(player);
-				if (data.isSitting())
-				{
-					Entity vehicle = player.getVehicle();
-					if (vehicle instanceof Arrow)
-					{
-						player.leaveVehicle();
-						vehicle.remove();
-						player.teleport(vehicle.getLocation().add(0, 1, 0));
-						data.setSitting(false);
-					}
-				}
+				player.leaveVehicle();
+				vehicle.remove();
+				player.teleport(vehicle.getLocation().add(0, 1, 0));
+				data.setSitting(false);
 			}
 		}
-		return true;
+		else
+		{
+			sendpMessage("&cError, you must be sitting to use this");
+		}
 	}
 }

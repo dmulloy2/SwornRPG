@@ -53,7 +53,7 @@ public class ExperienceListener implements Listener
 		{
 			//Factions Warzone check, helpful for pvpboxes
 			PluginManager pm = Bukkit.getServer().getPluginManager();
-			if ((pm.getPlugin("Factions") != null)||(pm.getPlugin("SwornNations") != null))
+			if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 			{
 				Faction otherFaction = Board.getFactionAt(new FLocation(killer.getLocation()));
 				Faction otherFaction2 = Board.getFactionAt(new FLocation(killed.getLocation()));
@@ -96,7 +96,7 @@ public class ExperienceListener implements Listener
 			String mobname = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
 			PluginManager pm = Bukkit.getServer().getPluginManager();
 			//Factions exploit check
-			if ((pm.getPlugin("Factions") != null)||(pm.getPlugin("SwornNations") != null))
+			if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 			{
 				Faction otherFaction = Board.getFactionAt(new FLocation(killer.getLocation()));
 				if ((otherFaction.isWarZone())||(otherFaction.isSafeZone()))
@@ -167,7 +167,7 @@ public class ExperienceListener implements Listener
 		Player player = event.getPlayer();
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		//Factions exploit check
-		if ((pm.getPlugin("Factions") != null)||(pm.getPlugin("SwornNations") != null))
+		if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 		{
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
 			if (otherFaction.isWarZone())
@@ -206,7 +206,7 @@ public class ExperienceListener implements Listener
 	public void onPlayerLevelup(PlayerLevelupEvent event)
 	{
 		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		//Prepares data for the next level
 		data.setFrenzyused(false);
 		data.setLevel(data.getLevel() + 1);
@@ -241,7 +241,7 @@ public class ExperienceListener implements Listener
 	public void OnPlayerXpGain(PlayerXpGainEvent event)
 	{
 		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		int xpgained = event.getXpGained();
 		//Add the xp gained to their overall xp
 		data.setPlayerxp(data.getPlayerxp() + xpgained);

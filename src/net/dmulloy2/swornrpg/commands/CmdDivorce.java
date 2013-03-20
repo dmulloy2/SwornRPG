@@ -6,60 +6,43 @@ import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdDivorce implements CommandExecutor
+public class CmdDivorce extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdDivorce(SwornRPG plugin)  
+	public CmdDivorce (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "divorce";
+		this.description = "Divorce your spouse";
+		this.mustBePlayer = true;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		if (sender instanceof Player) 
+	
+	@Override
+	public void perform()
+	{
+		PlayerData data = getPlayerData(player);
+		String targetp = data.getSpouse();
+		if (targetp != null)
 		{
-			if (args.length == 0)
+			PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
+			data.setSpouse(null);
+			data1.setSpouse(null);
+			sendpMessage("&cYou have divorced " + targetp);
+			Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.RED + sender.getName() + " has divorced " + targetp);
+			Player target = Util.matchPlayer(targetp);
+			if (target != null)
 			{
-				final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
-				String targetp = data.getSpouse();
-				final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
-				if (targetp != null)
-				{
-					data.setSpouse(null);
-					data1.setSpouse(null);
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "You have divorced " + targetp);
-					Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.RED + sender.getName() + " has divorced " + targetp);
-					Player target = Util.matchPlayer(targetp);
-					plugin.getPlayerDataCache().save();
-					if (target != null)
-					{
-						target.sendMessage(plugin.prefix + ChatColor.RED + "You are now single");
-					}
-				}
-				else
-				{
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Error, you are not married");
-				}
-			}
-			else
-			{
-				sender.sendMessage(plugin.invalidargs + ChatColor.RED + "(/divorce)");
+				target.sendMessage(plugin.prefix + ChatColor.RED + "You are now single");
 			}
 		}
 		else
 		{
-			sender.sendMessage(plugin.mustbeplayer);
+			sendpMessage("&cError, you are not married");
 		}
-		
-		return true;
 	}
 }

@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.util.InventoryHelper;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
-import net.dmulloy2.swornrpg.util.TimeUtil;
-import net.dmulloy2.swornrpg.util.TooBigException;
+import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -348,7 +346,7 @@ public class PlayerListener implements Listener
 				}
 				//Player death book toggle check
 				final Player player = (Player)event.getEntity();
-				final PlayerData data = plugin.getPlayerDataCache().getData(player);
+				PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 				if (!(data.isDeathbookdisabled()))
 				{
 					//Check for essentials
@@ -402,16 +400,17 @@ public class PlayerListener implements Listener
     }
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerJoin(final PlayerJoinEvent event) 
+	public void onPlayerJoin(PlayerJoinEvent event) 
 	{	
 		Player player = event.getPlayer();
+		String playerp = player.getName();
 		// Try to get the player's data from the cache otherwise create a new data entry
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		if (data == null)
 		{
-			plugin.outConsole("Creating a new player data file for " + player.getName());
-			data = plugin.getPlayerDataCache().newData(player);
+			plugin.outConsole("Creating a new player data file for " + playerp);
 			//Basic data that a player needs
+			data = plugin.getPlayerDataCache().getData(playerp);
 			data.setPlayerxp(0);
 			data.setXpneeded(100 + (data.getPlayerxp()/4));
 			data.setLevel(0);
@@ -457,14 +456,14 @@ public class PlayerListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(final PlayerQuitEvent event) 
+	public void onPlayerQuit(PlayerQuitEvent event) 
 	{
 		// Treat as player disconnect
 		onPlayerDisconnect(event.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerKick(final PlayerKickEvent event) 
+	public void onPlayerKick(PlayerKickEvent event) 
 	{
 		if (!event.isCancelled()) 
 		{
@@ -473,9 +472,9 @@ public class PlayerListener implements Listener
 		}
 	}
 
-	public void onPlayerDisconnect(final Player player) 
+	public void onPlayerDisconnect(Player player) 
 	{
-		final PlayerData data = plugin.getPlayerDataCache().getData(player);
+		final PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		//Basic data needing to be false when a player leaves the game
 		if (data.isRiding())
 		{
@@ -496,12 +495,20 @@ public class PlayerListener implements Listener
 	public void onChairInteract(PlayerInteractEvent event) 
 	{
 		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
 			//Makes sure they are shift clicking
 			if (player.isSneaking())
 			{
+				//Warzone check (for PvPBoxes)
+				PluginManager pm = Bukkit.getPluginManager();
+				if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
+				{
+					Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
+					if (otherFaction.isWarZone())
+						return;
+				}
 				String clicked = event.getClickedBlock().getType().toString().toLowerCase().replaceAll("_", " ");
 				//Check to make sure they are clicking on a stair
 				if (clicked.contains("step")||clicked.contains("stair"))
@@ -539,7 +546,7 @@ public class PlayerListener implements Listener
 		 * teleportation is not disabled
 		 */
 		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		String cmd = event.getMessage().toString().toLowerCase().replaceAll("/", "").replaceAll(" ", "");
 		if (cmd.contains("spawn")||cmd.contains("home")||cmd.contains("warp")||cmd.contains("tp"))
 		{
@@ -559,16 +566,36 @@ public class PlayerListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerBreakBlock(BlockBreakEvent event)
+	{
+		Player player = event.getPlayer();;
+		Entity vehicle = player.getVehicle();
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		if (data.isSitting() && vehicle != null)
+		{
+			//Cancels block breaking if you are sitting, prevents glitches
+			event.setCancelled(true);
+			player.sendMessage(plugin.prefix + ChatColor.YELLOW + "If you wish to break this block, use " + ChatColor.RED + "/standup");
+		}
+		if (data.isRiding() && vehicle != null)
+		{
+			//Cancels block breaking if you are riding a player
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event)
 	{
 		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if ((data.isRiding()) && (player.getVehicle() != null))
 		{
 			//Cancel pickup event if a player is on another player's head
 			event.setCancelled(true);
 		}
 	}
+		
 	/**
 	 * Super Pickaxes, coming to a SwornRPG near you!
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -1,6 +1,3 @@
-/**
- * Copyright (C) 2012 t7seven7t
- */
 package net.dmulloy2.swornrpg.data;
 
 import java.lang.reflect.Field;
@@ -18,6 +15,7 @@ import lombok.Setter;
 
 /**
  * @author t7seven7t
+ * @editor dmulloy2
  */
 
 @Data

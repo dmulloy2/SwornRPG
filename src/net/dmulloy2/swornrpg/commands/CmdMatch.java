@@ -1,58 +1,48 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdMatch implements CommandExecutor
+public class CmdMatch extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdMatch(SwornRPG plugin)  
+	public CmdMatch (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "match";
+		this.aliases.add("matchplayer");
+		this.description = "Match a string with a player";
+		this.requiredArgs.add("string");
+		this.permission = PermissionType.CMD_MATCH.permission;
+		this.mustBePlayer = false;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+	
+	@Override
+	public void perform()
 	{
-		if (sender instanceof Player)
+		Player match = Util.matchPlayer(args[0]);
+		if (match != null)
 		{
-			sender = (Player) sender;
-		}
-		if (args.length == 0)
-		{
-			sender.sendMessage(plugin.invalidargs + "(/match <player>)");
+			sendpMessage("&aMatch found! '" + match.getName() + "'");;
 		}
 		else
 		{
-			Player match = Util.matchPlayer(args[0]);
-			if (match != null)
+			OfflinePlayer offlinematch = Util.matchOfflinePlayer(args[0]);
+			if (offlinematch != null)
 			{
-				sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Match found! '" + match.getName() + "'");;
+				sendpMessage("&aMatch found! '" + offlinematch.getName() + "'");
 			}
 			else
 			{
-				OfflinePlayer offlinematch = Util.matchOfflinePlayer(args[0]);
-				if (offlinematch != null)
-				{
-					sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Match found! '" + offlinematch.getName() + "'");
-				}
-				else
-				{
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Error, no match was found for '" + args[0] + "'");
-				}
+				sendpMessage("&cError, no match was found for '" + args[0] + "'");
 			}
 		}
-		
-		return true;
 	}
 }

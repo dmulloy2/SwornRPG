@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import lombok.Getter;
 
 //Plugin imports
@@ -34,12 +33,12 @@ import net.dmulloy2.swornrpg.commands.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.*;
+import net.dmulloy2.swornrpg.permissions.*;
 import net.milkbowl.vault.economy.Economy;
 
 //Bukkit imports
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -63,6 +62,8 @@ public class SwornRPG extends JavaPlugin
 	//Getters
 	private @Getter PlayerDataCache playerDataCache;
 	private @Getter Economy economy;
+	private @Getter PermissionHandler permissionHandler;
+	private @Getter CommandHandler commandHandler;
 	
 	//Private objects
 	private static Logger log;
@@ -135,8 +136,11 @@ public class SwornRPG extends JavaPlugin
 		pm.registerEvents(this.blockListener, this);
 		pm.registerEvents(this.experienceListener, this);
 		
+		commandHandler = new CommandHandler(this);
+		permissionHandler = new PermissionHandler(this);
+		
 		//Check for TagAPI
-		if (pm.getPlugin("TagAPI") != null)
+		if (pm.isPluginEnabled("TagAPI"))
 		{
 			//If found, enable Tags
 			pm.registerEvents(this.tagListener, this);
@@ -150,32 +154,32 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		//Initializes all SwornRPG commands
-		getCommand("srpg").setExecutor(new CmdHelp (this));
-		getCommand("ride").setExecutor(new CmdRide (this));
-		getCommand("unride").setExecutor(new CmdRide (this));
-		getCommand("asay").setExecutor(new CmdASay (this));
-		getCommand("a").setExecutor(new CmdAChat (this));
-		getCommand("frenzy").setExecutor(new CmdFrenzy (this));
-		getCommand("hat").setExecutor(new CmdHat (this));
-		getCommand("hc").setExecutor(new CmdHighCouncil (this));
-		getCommand("unride").setExecutor(new CmdUnride (this));
-		getCommand("eject").setExecutor(new CmdEject (this));
-		getCommand("match").setExecutor(new CmdMatch (this));
-		getCommand("tag").setExecutor(new CmdTag (this));
-		getCommand("removetag").setExecutor(new CmdResetTag (this));
-		getCommand("level").setExecutor(new CmdLevel (this));
-		getCommand("levelr").setExecutor(new CmdLevelr (this));
-		getCommand("deathbook").setExecutor(new CmdBookToggle (this));
-		getCommand("propose").setExecutor(new CmdPropose (this));
-		getCommand("marry").setExecutor(new CmdMarry (this));
-		getCommand("spouse").setExecutor(new CmdSpouse (this));
-		getCommand("divorce").setExecutor(new CmdDivorce (this));
-		getCommand("standup").setExecutor(new CmdStandup (this));
-		getCommand("deny").setExecutor(new CmdDeny (this));
-//		getCommand("mine").setExecutor(new CmdMine (this));
-		getCommand("itemname").setExecutor(new CmdItemName (this));
+		commandHandler.registerCommand(new CmdAChat (this));
+		commandHandler.registerCommand(new CmdAddxp (this));
+		commandHandler.registerCommand(new CmdASay (this));
+		commandHandler.registerCommand(new CmdBookToggle (this));
+		commandHandler.registerCommand(new CmdDeny (this));
+		commandHandler.registerCommand(new CmdDivorce (this));
+		commandHandler.registerCommand(new CmdEject (this));
+		commandHandler.registerCommand(new CmdFrenzy (this));
+		commandHandler.registerCommand(new CmdHat (this));
+		commandHandler.registerCommand(new CmdHelp (this));
+		commandHandler.registerCommand(new CmdHighCouncil (this));
+		commandHandler.registerCommand(new CmdItemName (this));
+		commandHandler.registerCommand(new CmdLevel (this));
+		commandHandler.registerCommand(new CmdLevelr (this));
+		commandHandler.registerCommand(new CmdMarry (this));
+		commandHandler.registerCommand(new CmdMatch (this));
+//		commandHandler.registerCommand(new CmdMine (this));
+		commandHandler.registerCommand(new CmdPropose (this));
+		commandHandler.registerCommand(new CmdRide (this));
+		commandHandler.registerCommand(new CmdSpouse (this));
+		commandHandler.registerCommand(new CmdStandup (this));
+		commandHandler.registerCommand(new CmdTag (this));
+		commandHandler.registerCommand(new CmdTagr (this));
+		commandHandler.registerCommand(new CmdUnride (this));
 		
-		//Permissions Messages
+		//Set permission messages
 		getCommand("ride").setPermissionMessage(noperm);
 		getCommand("unride").setPermissionMessage(noperm);
 		getCommand("asay").setPermissionMessage(noperm);
@@ -186,9 +190,10 @@ public class SwornRPG extends JavaPlugin
 		getCommand("eject").setPermissionMessage(noperm);
 		getCommand("match").setPermissionMessage(noperm);
 		getCommand("tag").setPermissionMessage(noperm);
-		getCommand("removetag").setPermissionMessage(noperm);
+		getCommand("tagr").setPermissionMessage(noperm);
 		getCommand("levelr").setPermissionMessage(noperm);
 		getCommand("itemname").setPermissionMessage(noperm);
+		getCommand("addxp").setPermissionMessage(noperm);
 		
 		//Initializes the Util class
 		Util.Initialize(this);
@@ -449,25 +454,4 @@ public class SwornRPG extends JavaPlugin
     	else
     		return false;
     }
-    //Main help menu
-    public void displayHelp(CommandSender p)
-    {
-    	p.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + getDescription().getFullName() + ChatColor.DARK_RED + " ======"); 
-    	p.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
-    	if (Perms.has(p, adminReloadPerm)){
-    		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " reload " + ChatColor.YELLOW + "Reloads the config");
-    		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " save " + ChatColor.YELLOW + "Saves all player data");}
-    	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " help " + ChatColor.YELLOW + "Displays this help menu");			
-    	if (Perms.has(p, adminRidePerm)){
-    		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " ride " + ChatColor.YELLOW + "Displays ride commands");}
-    	if (Perms.has(p, adminChatPerm)){
-    		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " chat " + ChatColor.YELLOW + "Displays chat commands");}
-    	if (Perms.has(p, tagPerm)){
-    		p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " tag " + ChatColor.YELLOW + "Displays tag commands");}
-    	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " level " + ChatColor.YELLOW + "Displays level commands");
-    	p.sendMessage(ChatColor.RED + "/srpg" + ChatColor.DARK_RED + " misc " + ChatColor.YELLOW + "Displays miscellaneous commands");
-    	if (Perms.has(p, hatPerm)){
-    		p.sendMessage(ChatColor.RED + "/hat" + ChatColor.GOLD + " [remove] " + ChatColor.YELLOW + "Get a new hat!");}
-    }
-    
 }

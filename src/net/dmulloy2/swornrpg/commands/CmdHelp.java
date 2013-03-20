@@ -4,8 +4,6 @@ import net.dmulloy2.swornrpg.Perms;
 import net.dmulloy2.swornrpg.SwornRPG;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,30 +11,38 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class CmdHelp implements CommandExecutor
+public class CmdHelp extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdHelp (SwornRPG plugin)  
+	public CmdHelp (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "srpg";
+		this.aliases.add("swornrpg");
+		this.description = "SwornRPG root command";
+		this.optionalArgs.add("help");
+		this.optionalArgs.add("misc");
+		this.optionalArgs.add("ride");
+		this.optionalArgs.add("save");
+		this.optionalArgs.add("reload");
+		this.optionalArgs.add("chat");
+		this.optionalArgs.add("level");
+		this.mustBePlayer = false;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		if (sender instanceof Player) 
-		{
-			sender = (Player) sender;
-		}
+	
+	@Override
+	public void perform()
+	{
 		if(args.length == 0)
 		{
-			plugin.displayHelp(sender);
+			displayHelp(sender);
 		}
 		else if (args[0].equalsIgnoreCase("reload"))
 		{
 			if (Perms.has(sender, plugin.adminReloadPerm))
 			{
 				plugin.reloadConfig();
-				sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Configuration reloaded");
+				plugin.reloadtagsConfig();
+				sendpMessage("&aConfiguration reloaded");
 				if (sender instanceof Player)
 				{
 					plugin.outConsole("Configuration reloaded");
@@ -44,7 +50,7 @@ public class CmdHelp implements CommandExecutor
 			}
 			else
 			{
-				sender.sendMessage(plugin.noperm);
+				sendMessage(plugin.noperm);
 			}
 		}
 		else if (args[0].equalsIgnoreCase("save"))
@@ -52,7 +58,7 @@ public class CmdHelp implements CommandExecutor
 			if(Perms.has(sender, plugin.adminReloadPerm))
 			{
 				plugin.getPlayerDataCache().save();
-				sender.sendMessage(plugin.prefix + ChatColor.GREEN + "Player data files saved");
+				sendpMessage("&aPlayer data files saved");
 			}
 			else
 			{
@@ -61,83 +67,117 @@ public class CmdHelp implements CommandExecutor
 		}
 		else if (args[0].equalsIgnoreCase("help"))
 		{
-			plugin.displayHelp(sender);	  
+			displayHelp(sender);	  
 		}
 		else if (args[0].equalsIgnoreCase("ride"))
 		{
-			sender.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + "SwornRPG Ride Commands" + ChatColor.DARK_RED + " ======"); 
-			sender.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
+			sendMessage("&4====== &6SwornRPG Ride Commands &4======"); 
+			sendMessage("&c/<command> &4<required> &6[optional]");
 			if(Perms.has(sender, plugin.adminRidePerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/ride" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Ride another player");
-				sender.sendMessage(ChatColor.RED + "/unride" + ChatColor.YELLOW + " Stop riding another player");
-				sender.sendMessage(ChatColor.RED + "/eject" + ChatColor.YELLOW + " Kick someone off your head");
+				sendMessage("&c/ride &4<player> &eRide another player");
+				sendMessage("&c/unride &eStop riding another player");
+				sendMessage("&c/eject &eKick someone off your head");
 			}
 		}
 		else if (args[0].equalsIgnoreCase("chat"))
 		{
-			sender.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + "SwornRPG Chat Commands" + ChatColor.DARK_RED + " ======"); 
-			sender.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
+			sendMessage("&4====== &6SwornRPG Chat Commands &4======"); 
+			sendMessage("&c/<command> &4<required> &6[optional]");
 			if (Perms.has(sender, plugin.adminChatPerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/a" + ChatColor.DARK_RED + " <message> "+ ChatColor.YELLOW + "Talk in admin chat");
+				sendMessage("&c/a &4<message> &eTalk in admin chat");
 			}
 			if (Perms.has(sender, plugin.councilChatPerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/hc" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Talk in council chat");
+				sendMessage("&c/hc &4<message> &eTalk in council chat");
 			}
 			if (Perms.has(sender, plugin.adminSayPerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/asay" + ChatColor.DARK_RED + " <message> " + ChatColor.YELLOW + "Alternate admin say command");
+				sendMessage("&c/asay &4<message> &eAlternate admin say command");
 			}
 		}
 		else if (args[0].equalsIgnoreCase("tag"))
 		{
-			sender.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + "SwornRPG Tag Commands" + ChatColor.DARK_RED + " ======"); 
-			sender.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
+			sendMessage("&4====== &6SwornRPG Tag Commands &4======"); 
+			sendMessage("&c/<command> &4<required> &6[optional]");
 			if (Perms.has(sender, plugin.tagPerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/tag" + ChatColor.GOLD + " [player] " + ChatColor.DARK_RED + "<tag> " + ChatColor.YELLOW + "Change the name above your head");
+				sendMessage("&c/tag &6[player] &4<tag> &eChange the color of the name above your head");
 			}
 			if (Perms.has(sender, plugin.tagresetPerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/tagr" + ChatColor.GOLD + " [player] " + ChatColor.YELLOW + "Resets a player's tag");
+				sendMessage("&c/tagr &6player] &eReset a player's tag");
 			}
 		}
 		else if (args[0].equalsIgnoreCase("level"))
 		{
-			sender.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + "SwornRPG Level Commands" + ChatColor.DARK_RED + " ======"); 
-			sender.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
-			sender.sendMessage(ChatColor.RED + "/level " + ChatColor.GOLD + "[name] " + ChatColor.YELLOW + "Displays your current level");
+			sendMessage("&4====== &6SwornRPG Level Commands &4======"); 
+			sendMessage("&c/<command> &4<required> &6[optional]");
+			sendMessage("&c/level &6[name] &eDisplays your current level");
 			if (Perms.has(sender, plugin.adminResetPerm))
 			{
-				sender.sendMessage(ChatColor.RED + "/levelr " + ChatColor.GOLD + "[name] " + ChatColor.YELLOW + "Resets a player's level.");
+				sendMessage("&c/levelr &6[name] &eReset a player's level.");
 			}
-			sender.sendMessage(ChatColor.RED + "/frenzy" + ChatColor.YELLOW + " Enters Frenzy mode.");
+			sendMessage("&c/frenzy &eEnter Frenzy mode.");
 		}
 		else if (args[0].equalsIgnoreCase("misc"))
 		{
-			sender.sendMessage(ChatColor.DARK_RED + "====== " + ChatColor.GOLD + "SwornRPG Miscellaneous Commands" + ChatColor.DARK_RED + " ======"); 
-			sender.sendMessage(ChatColor.RED + "/<command>" + ChatColor.DARK_RED + " <required> " + ChatColor.GOLD + "[optional]");
+			sendMessage("&4====== &6SwornRPG Misc Commands &4======"); 
+			sendMessage("&c/<command> &4<required> &6[optional]");
+			sendMessage("/deathmessage &eToggles death coordinate books/messages");
+			if (Perms.has(sender, plugin.adminItemPerm))
+			{
+				sendMessage("&c/iname &4<name> &eSet the name of an item");
+			}
+			if (Perms.has(sender, plugin.adminMatchPerm))
+			{
+				sendMessage("&c/match &4<string> &eMatch a string with the closest player");
+			}
+		}
+		else if (args[0].equalsIgnoreCase("marriage"))
+		{
+			sendMessage("&4====== &6SwornRPG Marriage Commands &4======"); 
+			sendMessage("&c/<command> &4<required> &6[optional]");
 			sender.sendMessage(ChatColor.RED + "/propose" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Request to marry a player");
 			sender.sendMessage(ChatColor.RED + "/deny" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Deny a player's hand in marriage");
 			sender.sendMessage(ChatColor.RED + "/marry" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Marry another player");
 			sender.sendMessage(ChatColor.RED + "/spouse" + ChatColor.GOLD + " [player] " + ChatColor.YELLOW + "Shows information about a player's spouse");
-			sender.sendMessage(ChatColor.RED + "/deathmessage" + ChatColor.YELLOW + " Toggles death coordinate books/messages");
-			if (Perms.has(sender, plugin.adminItemPerm))
-			{
-				sender.sendMessage(ChatColor.RED + "/iname" + ChatColor.DARK_RED + " <name> " + ChatColor.YELLOW + "Set the name of an item");
-			}
-			if (Perms.has(sender, plugin.adminMatchPerm))
-			{
-				sender.sendMessage(ChatColor.RED + "/match" + ChatColor.DARK_RED + " <string> " + ChatColor.YELLOW + "Match a string with the closest player");
-			}
 		}
 		else
 		{
-			plugin.displayHelp(sender);
+			displayHelp(sender);
 		}
-		
-		return true;
 	}
+    //Main help menu
+    public void displayHelp(CommandSender p)
+    {
+    	sendMessage("&4====== &6" + plugin.getDescription().getFullName() + " &4======"); 
+    	sendMessage("&c/<command> &4<required> &6[optional]");
+    	if (Perms.has(p, plugin.adminReloadPerm))
+    	{
+    		sendMessage("&c/srpg &4reload &eReload the configuration");
+    		sendMessage("&c/srpg &4save &eSave all player data");
+    	}
+    	sendMessage("&c/srpg &4help &eDisplay this help menu");			
+    	if (Perms.has(p, plugin.adminRidePerm))
+    	{
+    		sendMessage("&c/srpg &4ride &eDisplay ride commands");
+    	}
+    	if (Perms.has(p, plugin.adminChatPerm))
+    	{
+    		sendMessage("&c/srpg &4chat &eDisplay chat commands");
+    	}
+    	if (Perms.has(p, plugin.tagPerm))
+    	{
+    		sendMessage("&c/srpg &4tag &eDisplay tag commands");		
+    	}
+    	sendMessage("&c/srpg &4level &eDisplay level commands");
+    	sendMessage("&c/srpg &4marriage &eDisplay marriage commands");
+    	sendMessage("&c/srpg &4misc &eDisplay miscellaneous commands");
+    	if (Perms.has(p, plugin.hatPerm))
+    	{
+    		sendMessage("&c/hat &6[remove] &eGet a new hat!");
+    	}
+    }
 }

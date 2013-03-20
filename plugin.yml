@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 1.3
+version: 2.0
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, Vault]
@@ -9,7 +9,7 @@ commands:
     description: Admin only chat
     permission: srpg.adminchat
     usage: /<command> <message>
-    aliases: [adminchat]
+    aliases: [achat]
   ride:
     description: Get on someones head
     permission: srpg.ride
@@ -19,7 +19,7 @@ commands:
     description: Get off someone's head
     permission: srpg.ride
     usage: /<command>
-    aliases: [dismount, standup]
+    aliases: [dismount]
   hat:
     description: Puts the block in your hand on your head
     permission: srpg.hat
@@ -45,7 +45,7 @@ commands:
     description: High Council Chat
     permission: srpg.council
     usage: /<command> <message>
-    aliases: [council, highcouncil]
+    aliases: [council]
   eject:
     description: Kick someone off your head
     permission: srpg.ride
@@ -59,12 +59,12 @@ commands:
     description: Change the tag above your head
     permission: srpg.tag
     usage: /<command> [player] <tag>
-    aliases: [playertag, settag, nametag]
-  removetag:
+    aliases: [settag]
+  tagr:
     description: Removes/resets a player's tag
     permission: srpg.tagr
     usage: /<command> [player] <tag>
-    aliases: [resettag, rtag, tagr, tagreset]
+    aliases: [resettag]
   level:
     description: Shows a player's level
     usage: /<command> [player]
@@ -72,11 +72,11 @@ commands:
     description: Resets a player's level
     permission: srpg.levelr
     usage: /<command> [player]
-    aliases: [resetlevel, levelc, clearlevel]
-  deathbook:
-    description: Toggles death coordinate books
+    aliases: [resetlevel]
+  deathcoords:
+    description: Toggle death coordinate messages
     usage: /<command>
-    aliases: [deathbooktoggle, deathmessage, deathmessagetoggle]
+    aliases: [deathbook, deathmail]
   propose:
     description: Propose to another player
     usage: /<command> <player>
@@ -92,19 +92,23 @@ commands:
   spouse:
     description: Shows information on a player's spouse
     usage: /<command> [player]
-    aliases: [spouseinfo, marryinfo]
+    aliases: [spouseinfo]
   divorce:
     description: Divorce your spouse
     usage: /<command>
-    aliases: [unmarry, divorcespouse]
   standup:
     description: Get off your chair
     usage: /<command>
-  itemname:
+  iname:
     description: Change the name of items!
     usage: /<command> <name>
     permission: srpg.iname
-    aliases: [iname]
+    aliases: [itemname]
+  addxp:
+    description: Manually add xp to a player
+    usage: /<command> <player>
+    permission: srpg.addxp
+    aliases: [givexp]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
@@ -118,6 +122,8 @@ permissions:
       srpg.othertag: true
       srpg.levelr: true
       srpg.iname: true
+      srpg.addxp: true
+      srpg.update: true
   srpg.*:
     description: Just an alias for srpg.admin
     default: op
@@ -164,4 +170,7 @@ permissions:
     default: false
   srpg.iname:
     description: Allows setting of item names
+    default: false
+  srpg.update:
+    description: Allows a player to see update messages
     default: false

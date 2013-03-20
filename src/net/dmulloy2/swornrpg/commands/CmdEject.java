@@ -2,57 +2,42 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdEject implements CommandExecutor
+public class CmdEject extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdEject(SwornRPG plugin)  
+	public CmdEject (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "eject";
+		this.description = "Remove a player from your head";
+		this.mustBePlayer = true;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		Player player = null;
-		if (sender instanceof Player) 
+	
+	@Override
+	public void perform()
+	{
+		if (player.getPassenger() != null)
 		{
-			player = (Player) sender;
-			if(args.length > 0)
+			Entity target = player.getPassenger();
+			if (target instanceof Player)
 			{
-				player.sendMessage(plugin.invalidargs + "(/eject)");
+				Player targetp = (Player)player.getPassenger();
+				PlayerData data = getPlayerData(targetp);
+				data.setRiding(false);
 			}
-			else
-			{
-				if (player.getPassenger() != null)
-				{
-					Player target = (Player)player.getVehicle();
-					PlayerData datap = plugin.getPlayerDataCache().getData(target);
-					datap.setRiding(false);
-					player.eject();
-					PlayerData data = plugin.getPlayerDataCache().getData(player);
-					data.setVehicle(false);
-				}
-				else
-				{
-					player.sendMessage(plugin.prefix + ChatColor.RED + "Error, nobody is riding you");
-				}
-			}
+			player.eject();
+			PlayerData data = getPlayerData(player);
+			data.setVehicle(false);
 		}
 		else
 		{
-			sender.sendMessage(plugin.mustbeplayer);
+			sendpMessage("&cError, nobody is riding you");
 		}
-		
-		return true;
 	}
 }

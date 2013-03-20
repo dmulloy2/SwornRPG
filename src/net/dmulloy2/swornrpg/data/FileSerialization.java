@@ -1,6 +1,3 @@
-/**
- * Copyright (C) 2012 t7seven7t
- */
 package net.dmulloy2.swornrpg.data;
 
 import java.io.File;

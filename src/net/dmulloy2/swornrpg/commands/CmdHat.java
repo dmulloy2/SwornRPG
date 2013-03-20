@@ -18,14 +18,10 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -34,80 +30,75 @@ import org.bukkit.inventory.PlayerInventory;
  * @editor dmulloy2
  */
 
-public class CmdHat implements CommandExecutor
+public class CmdHat extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdHat(SwornRPG plugin)  
+	public CmdHat (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "hat";
+		this.aliases.add("headgear");
+		this.description = "Put the block in your hand on your head!";
+		this.optionalArgs.add("remove");
+		this.permission = PermissionType.CMD_HAT.permission;
+		this.mustBePlayer = true;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		Player player = null;
-		if (sender instanceof Player) 
+	
+	@Override
+	public void perform()
+	{
+		if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
 		{
-			player = (Player) sender;   
-			if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
+			final PlayerInventory inv = player.getInventory();
+			final ItemStack head = inv.getHelmet();
+			if (head == null || head.getType() == Material.AIR)
 			{
-				final PlayerInventory inv = player.getInventory();
-				final ItemStack head = inv.getHelmet();
-				if (head == null || head.getType() == Material.AIR)
-				{
-					player.sendMessage(plugin.prefix + ChatColor.RED + "You are not wearing a hat.");
-				}
-				else
-				{
-					final ItemStack air = new ItemStack(Material.AIR);
-					inv.setHelmet(air);
-					InventoryWorkaround.addItems(player.getInventory(), head);
-					player.sendMessage(plugin.prefix + ChatColor.YELLOW + "Your hat has been removed");
-				}
+				sendpMessage("&cYou are not wearing a hat.");
 			}
 			else
 			{
-				if (player.getItemInHand().getType() != Material.AIR)
-				{
-					final ItemStack hand = player.getItemInHand();
-					if (hand.getType().getMaxDurability() == 0)
-					{
-						final PlayerInventory inv = player.getInventory();
-						final ItemStack head = inv.getHelmet();
-						ItemStack itm = player.getItemInHand();
-						ItemStack toHead = itm.clone();
-						toHead.setAmount(1);
-						if (hand.getAmount() > 1)
-						{
-							hand.setAmount(hand.getAmount() - 1);
-							inv.setHelmet(toHead);
-							InventoryWorkaround.addItems(player.getInventory(), head);
-							player.sendMessage(plugin.prefix + ChatColor.YELLOW + "Enjoy your new hat!");
-						}
-						else
-						{
-							hand.setAmount(1);
-							inv.remove(hand);
-							inv.setHelmet(hand);
-							inv.setItemInHand(head);
-							player.sendMessage(plugin.prefix + ChatColor.YELLOW + "Enjoy your new hat!");
-						}
-					}
-					else
-					{
-						player.sendMessage(plugin.prefix + ChatColor.RED + "Error, you cannot use this item as a hat!");
-					}
-				}
-				else
-				{
-					player.sendMessage(plugin.prefix + ChatColor.RED + "You must have something to wear in your hand");
-				}
+				final ItemStack air = new ItemStack(Material.AIR);
+				inv.setHelmet(air);
+				InventoryWorkaround.addItems(player.getInventory(), head);
+				sendpMessage("&eYour hat has been removed");
 			}
 		}
 		else
 		{
-			sender.sendMessage(plugin.mustbeplayer);
+			if (player.getItemInHand().getType() != Material.AIR)
+			{
+				final ItemStack hand = player.getItemInHand();
+				if (hand.getType().getMaxDurability() == 0)
+				{
+					final PlayerInventory inv = player.getInventory();
+					final ItemStack head = inv.getHelmet();
+					ItemStack itm = player.getItemInHand();
+					ItemStack toHead = itm.clone();
+					toHead.setAmount(1);
+					if (hand.getAmount() > 1)
+					{
+						hand.setAmount(hand.getAmount() - 1);
+						inv.setHelmet(toHead);
+						InventoryWorkaround.addItems(player.getInventory(), head);
+						sendpMessage("&eEnjoy your new hat!");
+					}
+					else
+					{
+						hand.setAmount(1);
+						inv.remove(hand);
+						inv.setHelmet(hand);
+						inv.setItemInHand(head);
+						sendpMessage("&eEnjoy your new hat!");
+					}
+				}
+				else
+				{
+					sendpMessage("&cError, you cannot use this item as a hat!");
+				}
+			}
+			else
+			{
+				sendpMessage("&cYou must have something to wear in your hand");
+			}
 		}
-		
-		return true;
 	}
 }

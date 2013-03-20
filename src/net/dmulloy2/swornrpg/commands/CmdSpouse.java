@@ -4,77 +4,68 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdSpouse implements CommandExecutor
+public class CmdSpouse extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdSpouse(SwornRPG plugin)  
+	public CmdSpouse (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "spouse";
+		this.aliases.add("spouseinfo");
+		this.description = "Check information on a player's spouse";
+		this.optionalArgs.add("player");
+		this.mustBePlayer = true;
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		if (sender instanceof Player) 
-		{
-			sender = (Player) sender;
-		}
+	@Override
+	public void perform()
+	{
 		if (args.length == 1)
 		{
 			Player target = Util.matchPlayer(args[0]);
 			if (target != null)
 			{
 				String targetp = target.getName();
-				final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
+				PlayerData data = getPlayerData(target);
 				String spouse = data.getSpouse();
 				if (spouse != null)
 				{
-					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is married to " + spouse);
+					sendpMessage("&e" + targetp + " is married to " + spouse);
 				}
 				else
 				{
-					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + targetp + " is not married");
+					sendpMessage("&e" + targetp + " is not married");
 				}
 			}
 			else
 			{
-				sender.sendMessage(plugin.noplayer);
+				sendMessage(plugin.noplayer);
 			}
 		}
 		else if (args.length == 0)
 		{
 			if (sender instanceof Player)
 			{
-				final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
+				PlayerData data = getPlayerData(player);
 				String spouse = data.getSpouse();
 				if (spouse != null)
 				{
-					sender.sendMessage(plugin.prefix + ChatColor.YELLOW + "You are married to " + spouse);				
+					sendpMessage("&eYou are married to " + spouse);				
 				}
 				else
 				{
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "You are not married");
+					sendpMessage("&cYou are not married");
 				}
 			}
 			else
 			{
-				sender.sendMessage(plugin.mustbeplayer);
+				sendMessage(plugin.mustbeplayer);
 			}
 		}
-		else
-		{
-			sender.sendMessage(plugin.invalidargs + ChatColor.RED + "(/spouse [player])");
-		}
-		
-		return true;
-	  }
+	}
 }

@@ -3,73 +3,56 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 /**
  * @author dmulloy2
  */
 
-public class CmdBookToggle implements CommandExecutor
+public class CmdBookToggle extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdBookToggle(SwornRPG plugin)  
+	public CmdBookToggle (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "deathcoords";
+		this.description = "Toggle the reception of death coordinates";
+		this.aliases.add("deathbook");
+		this.aliases.add("deathmail");
+		this.optionalArgs.add("enabled");
+		this.optionalArgs.add("disabled");
+		this.mustBePlayer = true;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		if (sender instanceof Player) 
+	
+	public void perform()
+	{
+		final PlayerData data = getPlayerData(player);
+		if (args.length == 0)
 		{
-			final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
-			if (args.length == 0)
+			if (data.isDeathbookdisabled())
 			{
-				if (data.isDeathbookdisabled())
-				{
-					data.setDeathbookdisabled(false);
-					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages enabled");
-				}
-				else
-				{
-					data.setDeathbookdisabled(true);
-					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages disabled");
-				}
-			}
-			else if (args.length == 1)
-			{
-				if (args[0].equalsIgnoreCase("enabled"))
-				{
-					data.setDeathbookdisabled(false);
-					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages enabled");
-				}
-				else if (args[0].equalsIgnoreCase("disabled"))
-				{
-					data.setDeathbookdisabled(true);
-					plugin.getPlayerDataCache().save();
-					sender.sendMessage(plugin.prefix + ChatColor.RED + "Death coordinate messages disabled");
-				}
-				else
-				{
-					sender.sendMessage(plugin.invalidargs + ChatColor.RED + "(/deathbook [enabled/disabled])");
-				}
+				data.setDeathbookdisabled(false);
+				sendpMessage(plugin.prefix + "&cDeath coordinate messages enabled");
 			}
 			else
 			{
-				sender.sendMessage(plugin.invalidargs + ChatColor.RED + "(/deathbook [enabled/disabled])");
-			}				
+				data.setDeathbookdisabled(true);
+				sendpMessage(plugin.prefix + "&cDeath coordinate messages disabled");
+			}
 		}
-		else
+		else if (args.length == 1)
 		{
-			sender.sendMessage(plugin.mustbeplayer);
-		}
-		
-		return true;
+			if (args[0].equalsIgnoreCase("enabled"))
+			{
+				data.setDeathbookdisabled(false);
+				sendpMessage(plugin.prefix + "&eDeath coordinate messages enabled");
+			}
+			else if (args[0].equalsIgnoreCase("disabled"))
+			{
+				data.setDeathbookdisabled(true);
+				sendpMessage(plugin.prefix + "&eDeath coordinate messages disabled");
+			}
+			else
+			{
+				sendpMessage(plugin.invalidargs + "&c(/deathbook [enabled/disabled])");
+			}
+		}			
 	}
 }

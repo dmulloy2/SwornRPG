@@ -1,50 +1,42 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.permissions.PermissionType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdAChat implements CommandExecutor
-{	
-	public SwornRPG plugin;
-	public CmdAChat(SwornRPG plugin)  
+public class CmdAChat extends SwornRPGCommand
+{
+	public CmdAChat (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "a";
+		this.description = "Admin only chat";
+		this.aliases.add("achat");
+		this.requiredArgs.add("message");
+		this.permission = PermissionType.CMD_ACHAT.permission;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+	
+	@Override
+	public void perform()
 	{
-		if (args.length > 0)
+		int amt = args.length;
+		String str = "";
+		for (int i = 0; i < amt; i++)
 		{
-			int amt = args.length;
-			String str = "";
-			for (int i = 0; i < amt; i++)
-			{
-				str = str + args[i] + " ";
-			}
-			if (sender instanceof Player)
-			{
-				Bukkit.getServer().broadcast(ChatColor.GRAY + sender.getName() + ": " + ChatColor.AQUA + str, "srpg.adminchat");
-			}
-			else
-			{
-				Bukkit.getServer().broadcast(ChatColor.GRAY + "Console: " + ChatColor.AQUA + str, "srpg.adminchat");
-			}
+			str = str + args[i] + " ";
 		}
+		String sname;
+		if (sender instanceof Player)
+			sname = sender.getName();
 		else
-		{
-			sender.sendMessage(plugin.invalidargs + "(/a <message>)");
-		}
-		
-		return true;
+			sname = "Console";
+		Bukkit.getServer().broadcast(ChatColor.GRAY + sname + ": " + ChatColor.AQUA + str, "srpg.adminchat");
 	}
 }

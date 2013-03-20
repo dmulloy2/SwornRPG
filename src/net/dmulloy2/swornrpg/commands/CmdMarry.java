@@ -5,57 +5,50 @@ import net.dmulloy2.swornrpg.data.PlayerData;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdMarry implements CommandExecutor
+public class CmdMarry extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdMarry(SwornRPG plugin)  
+	public CmdMarry (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "marry";
+		this.aliases.add("matrimony");
+		this.description = "Marry a player";
+		this.requiredArgs.add("player");
+		this.mustBePlayer = true;
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		if (sender instanceof Player) 
+	@Override
+	public void perform()
+	{
+		if (plugin.proposal.containsKey(sender.getName()))
 		{
-			if (plugin.proposal.containsKey(sender.getName()))
+			Player target = Bukkit.getServer().getPlayer((String)plugin.proposal.get(sender.getName()));
+			if (target != null)
 			{
-				Player target = Bukkit.getServer().getPlayer((String)plugin.proposal.get(sender.getName()));
-				if (target != null)
-				{
-					String targetp = target.getName();
-					String senderp = sender.getName();
-					final PlayerData data = plugin.getPlayerDataCache().getData(senderp);
-					final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
-					data.setSpouse(targetp);
-					data1.setSpouse(senderp);
-					Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.GREEN + targetp + " has married " + senderp);
-					plugin.proposal.remove(senderp);
-					plugin.proposal.remove(targetp);
-				}
-				else
-				{
-					sender.sendMessage(plugin.noplayer);
-				}
+				String targetp = target.getName();
+				String senderp = sender.getName();
+				final PlayerData data = plugin.getPlayerDataCache().getData(senderp);
+				final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
+				data.setSpouse(targetp);
+				data1.setSpouse(senderp);
+				Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.GREEN + targetp + " has married " + senderp);
+				plugin.proposal.remove(senderp);
+				plugin.proposal.remove(targetp);
 			}
 			else
 			{
-				sender.sendMessage(plugin.prefix + ChatColor.RED + "You do not have a proposal");
+				sendMessage(plugin.noplayer);
 			}
 		}
 		else
 		{
-			sender.sendMessage(plugin.mustbeplayer);
+			sendpMessage("&cYou do not have a proposal");
 		}
-		
-		return true;
 	}
 }

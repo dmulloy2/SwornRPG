@@ -1,11 +1,8 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.permissions.PermissionType;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -13,38 +10,37 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author dmulloy2
  */
 
-public class CmdItemName implements CommandExecutor
+public class CmdItemName extends SwornRPGCommand
 {
-	public SwornRPG plugin;
-	public CmdItemName(SwornRPG plugin)  
+	public CmdItemName (SwornRPG plugin)
 	{
-		this.plugin = plugin;
+		super(plugin);
+		this.name = "iname";
+		this.description = "Set the name of your inhand item";
+		this.aliases.add("itemname");
+		this.requiredArgs.add("name");
+		this.permission = PermissionType.CMD_INAME.permission;
+		this.mustBePlayer = true;
 	}
-	  
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  
-	{    
-		Player player = null;
-		if (sender instanceof Player) 
-		{
-			player = (Player)sender;
-			if (args.length >= 1)
-			{
-			    ItemStack hand = player.getItemInHand();
-			    ItemMeta meta = hand.getItemMeta();
-			    String name = new String();
-			    for (int i = 0; i < args.length; i++) 
-			    { 
-			    	name = name.concat(args[i].replaceAll("&", "§") + " ");
-			    }
-			    meta.setDisplayName(name);
-			    hand.setItemMeta(meta);
-			}
-			else
-			{
-				sender.sendMessage(plugin.invalidargs + "(/iname <name>)");
-			}
-		}
-		
-		return true;
+	
+	@Override
+	public void perform()
+	{
+	    ItemStack hand = player.getItemInHand();
+	    if (hand != null)
+	    {
+	    	ItemMeta meta = hand.getItemMeta();
+	    	String name = new String();
+	    	for (int i = 0; i < args.length; i++) 
+	    	{ 
+	    		name = name.concat(args[i].replaceAll("&", "§") + " ");
+		    }
+	    	meta.setDisplayName(name);
+	    	hand.setItemMeta(meta);
+	    }
+	    else
+	    {
+	    	sendpMessage("&cError, you must have an item in your hand to do this");
+	    }
 	}
 }

@@ -57,7 +57,7 @@ levelingrewards:
   #minecraft-xp: false
   items:
     enabled: true
-    itemid: 265
+    itemid: 264
     #Item id of the item you wish to reward (Defaults to diamond)
     amountperlevel: 1
 
