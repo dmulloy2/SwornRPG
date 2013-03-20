@@ -5,18 +5,18 @@
 http://dev.bukkit.org/server-mods/swornrpg
 == Commands
 |**Command**||**Description**||**Permission**|
-|/a||Admin only chat||srpg.adminchat|
-|/hc||High Council chat||srpg.council|
-|/ride||Ride another player||srpg.ride|
-|/unride||Get off a player||srpg.ride|
-|/eject||Kick a player off your head||srpg.ride|
-|/asay||Send a colored message to the server||srpg.asay|
-|/iname||Set the name of the item in your hand||srpg.iname|
-|/hat||Puts the item in your hand on your head||srpg.hat|
-|/frenzy||Level based ability rewards|||
-|/match||Match a string with a player|||
-|Tags||See [[player tags|here]]|||
-|Marriage||See [[marriage|here]]||||
+|/a||Admin only chat||srpg.adminchat
+|/hc||High Council chat||srpg.council
+|/ride||Ride another player||srpg.ride
+|/unride||Get off a player||srpg.ride
+|/eject||Kick a player off your head||srpg.ride
+|/asay||Send a colored message to the server||srpg.asay
+|/iname||Set the name of the item in your hand||srpg.iname
+|/hat||Puts the item in your hand on your head||srpg.hat
+|/frenzy||Level based ability rewards||
+|/match||Match a string with a player||
+|Tags||See [[player tags|here]]||
+|Marriage||See [[marriage|here]]||
 
 ==Leveling
 This plugin features a fully featured leveling system similar to that of mcMMO's. There are some key differences though. All of SwornRPG's leveling methods and rewards are highly configurable and much less OP. Players can gain plugin xp by doing things such as playing on the server (online time), killing mobs, killing players, and gaining Minecraft XP. Players can check their level using /level and administrators can clear a player's level with /levelr <player>. When a player gains enough xp to level up, they receive a few different things. They receive the item you defined in the config.yml, money (also defined in the config), as well as regenerated frenzy mode. Frenzy mode gives players potion effects such as strength, regeneration, speed, etc. Frenzy mode's duration is determined by the player's level, as well as the base duration defined in your configuration. Frenzy can only be used once per level, however.
