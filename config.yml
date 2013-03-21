@@ -61,3 +61,5 @@ levelingrewards:
     #Item id of the item you wish to reward (Defaults to diamond)
     amountperlevel: 1
 
+salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Gold, 5; 311, Gold, 8; 312, Gold, 7; 313, Gold, 5; 314, Diamond, 5; 315, Diamond, 8; 316, Diamond, 7; 317, Diamond, 4; 267, Iron, 2; 256, Iron, 1; 257, Iron, 3; 258, Iron, 3; 292, Iron, 2; 276, Diamond, 2; 277, Diamond, 1; 278, Diamond, 3; 279, Diamond, 3; 293, Diamond, 2; 283, Gold, 2; 284, Gold, 1; 285, Gold, 3; 286, Gold, 3; 294, Gold, 2"
+#Items that can be salvaged, formatted: "id, Material, how many items it returns; ...; lastid, Lastmaterial, lastitems"
