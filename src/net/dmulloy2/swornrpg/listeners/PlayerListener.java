@@ -146,6 +146,7 @@ public class PlayerListener implements Listener
 							ItemStack itm = new ItemStack(give.getId(), amt + (int)amtIron);
 							inv.setItem(slot, itm);
 							pl.updateInventory();
+							event.setCancelled(true);
 					}
 					catch (Exception e)
 					{
