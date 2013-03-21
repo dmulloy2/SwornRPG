@@ -78,7 +78,8 @@ public class SwornRPG extends JavaPlugin
 	//Hash maps
     private HashMap<String, String> tagChanges;
     public HashMap<String, String> proposal = new HashMap<String, String>();
-	
+    public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
+
     //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
@@ -87,7 +88,7 @@ public class SwornRPG extends JavaPlugin
 	killergain, killedloss, mobkillsxp;
 	private double newVersion;
     private double currentVersion;
-	
+
 
 	//Permission Strings
 	public String adminChatPerm = "srpg.adminchat";
@@ -307,7 +308,16 @@ public class SwornRPG extends JavaPlugin
 		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
 		frenzyduration = getConfig().getInt("frenzy.baseduration");
 		update = getConfig().getBoolean("updatechecker");
-	}
+		salvage = getConfig().getString("salvage");
+		
+		salvageRef.put("Iron", new HashMap<Integer, Integer>());
+		salvageRef.put("Gold", new HashMap<Integer, Integer>());
+		salvageRef.put("Diamond", new HashMap<Integer, Integer>());
+		String[] salvageArray = salvage.split("; ");
+		for (String s: salvageArray) {
+			String[] subset = s.split(", ");
+			salvageRef.get(subset[1]).put(Integer.getInteger(subset[0]), Integer.getInteger(subset[2]));
+		}
 	
 	//Tags Stuff
     public void addTagChange(final String oldName, final String newName)
