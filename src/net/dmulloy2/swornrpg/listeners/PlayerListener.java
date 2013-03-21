@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.listeners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -40,6 +41,7 @@ import com.massivecraft.factions.Faction;
  * @author dmulloy2
  * @contributor t7seven7t
  * @contributor Milkywayz
+ * @contributor Dimpl
  */
 
 public class PlayerListener implements Listener 
@@ -47,14 +49,7 @@ public class PlayerListener implements Listener
 
 	private SwornRPG plugin;
 	private List<String> pages = new ArrayList<String>();
-	int ChestMax = 8;
-	int LegsMax = 7;
-	int HelmMax = 5;
-	int bootsMax = 4;
-
-	int ironMax = 155;
-	int diamondMax = 155;
-
+	
 	public PlayerListener(SwornRPG plugin) 
 	{
 		this.plugin = plugin;
@@ -83,226 +78,80 @@ public class PlayerListener implements Listener
       
 			event.getAction().equals(Action.LEFT_CLICK_BLOCK);
 
+			String blockType;
 			if (block.getType().equals(Material.IRON_BLOCK))
+				blockType = "Iron";
+			if (block.getType().equals(Material.GOLD_BLOCK))
+				blockType = "Gold";
+			if (block.getType().equals(Material.IRON_BLOCK))
+				blockType = "Diamond";
+			
+			if (blockType != null)
 			{
 				if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE))) 
 				{
 					ItemStack item = pl.getItemInHand();
-					Material mitem = item.getType();
-					double mult = 1.0D - item.getDurability() / this.ironMax;
-					double amtIron = 0.0D;
-					if (mitem.equals(Material.IRON_BOOTS))
-					{
-						amtIron = Math.ceil(this.bootsMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.IRON_HELMET)) 
-					{
-						amtIron = Math.ceil(this.HelmMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.IRON_LEGGINGS)) 
-					{
-						amtIron = Math.ceil(this.LegsMax * mult);
-						if (amtIron < 0.0D)
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.IRON_CHESTPLATE))
-					{
-						amtIron = Math.ceil(this.ChestMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (amtIron > 0.0D)
+					Integer itemId = item.getTypeId();
+					double mult = 1.0D - item.getDurability() / item.getType().getMaxDurability();
+					double amt = 0.0D;
+					
+					if (salvageRef.get(blockType).contains(itemId))
+						amt = Math.round(salvageRef.get(blockType).get(itemId) * mult);
+					
+					if (amt > 0.0D)
 						try
 					{
-							pl.sendMessage(ChatColor.GRAY + "You have salvaged an " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
-							plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
+							String article = "a";
+							if (blockType == "Iron")
+								article = "an";
+							String materialExtension = " ingot";
+							if (blockType == "Diamond")
+								materialExtension = "";
+							String plural = "";
+							if (amt > 1.0D)
+								plural = "s";
+							pl.sendMessage(ChatColor.GRAY + "You have salvaged " + article + " " + item.getType().toString().toLowerCase().replaceAll("_", " ") + " for " + amt + " " + blockType.toLowerCase() + materialExtension + plural);
+							plugin.outConsole(pl.getName() + " salvaged " + item.getType().toString().toLowerCase().replaceAll("_", " ") + " for " + amt + " " + blockType.toLowerCase() + materialExtension + plural);
 							Inventory inv = pl.getInventory();
 							inv.removeItem(new ItemStack[] { item });
-							Material give = Material.IRON_INGOT;
+							Material give;
+							if (blockType == "Iron")
+								give = Material.IRON_INGOT;
+							if (blockType == "Gold")
+								give = Material.GOLD_INGOT;
+							if (blockType == "Diamond")
+								give = Material.DIAMOND;
 							int slot = getSlot(give.getId(), inv);
 							if (slot == -1) 
 							{
 								slot = InventoryHelper.getFirstFreeSlot(inv);
 							}	
 							if (slot <= -1) return;
-							int amt = 0;
+							int baseAmt = 0;
 							if (inv.getItem(slot) != null) 
 							{
-								amt = inv.getItem(slot).getAmount();
+								baseAmt = inv.getItem(slot).getAmount();
 							}
 
-							ItemStack itm = new ItemStack(give.getId(), amt + (int)amtIron);
+							ItemStack itm = new ItemStack(give.getId(), baseAmt + (int)amt);
 							inv.setItem(slot, itm);
 							pl.updateInventory();
+							event.setCancelled(true);
 					}
 					catch (Exception e)
 					{
 						e.printStackTrace();
 					}
 					else
-						pl.sendMessage(ChatColor.GRAY + "Error, '" + mitem.toString().toLowerCase().replaceAll("_", " ") + "' is not a type of iron armor");
+						pl.sendMessage(ChatColor.GRAY + "Error, '" + item.getType().toString().toLowerCase().replaceAll("_", " ") + "' is not a salvagable " + blockType.toLowerCase() + " item");
 				}
-			} 
-			else if (block.getType().equals(Material.DIAMOND_BLOCK)) 
+			}
+			catch (Exception e2)
 			{
-				if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE)))
-				{
-					ItemStack item = pl.getItemInHand();
-					Material mitem = item.getType();
-
-					double mult = 1.0D - item.getDurability() / this.diamondMax;
-					double amtIron = 0.0D;
-					if (mitem.equals(Material.DIAMOND_BOOTS))
-					{
-						amtIron = Math.ceil(this.bootsMax * mult);
-					}
-					if (amtIron < 0.0D)
-					{
-						amtIron = 1.0D;
-					}
-					if (mitem.equals(Material.DIAMOND_HELMET)) 
-					{
-						amtIron = Math.ceil(this.HelmMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.DIAMOND_LEGGINGS))
-					{
-						amtIron = Math.ceil(this.LegsMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.DIAMOND_CHESTPLATE))
-					{
-						amtIron = Math.ceil(this.ChestMax * mult);
-						if (amtIron < 0.0D)
-						{
-							amtIron = 1.0D;
-						}
-					}
-					amtIron -= 1.0D;
-					if (amtIron > 0.0D)
-						try 
-					{
-							pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
-							plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
-							Inventory inv = pl.getInventory();
-							inv.removeItem(new ItemStack[] { item });
-							Material give = Material.DIAMOND;
-							int slot = getSlot(give.getId(), inv);
-							if (slot == -1)
-							{
-								slot = InventoryHelper.getFirstFreeSlot(inv);
-							}
-							if (slot <= -1) return;
-							int amt = 0;
-							if (inv.getItem(slot) != null)
-							{
-								amt = inv.getItem(slot).getAmount();
-							}
-							ItemStack itm = new ItemStack(give.getId(), amt + (int)amtIron);
-							inv.setItem(slot, itm);
-							pl.updateInventory();
-					}
-					catch (Exception localException1)
-					{
-					}
-					else
-						pl.sendMessage(ChatColor.GRAY + "Error, '" + mitem.toString().toLowerCase().replaceAll("_", " ") + "' is not a type of diamond armor");
-				}
-			} 
-			else if (block.getType().equals(Material.GOLD_BLOCK))
-				if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE)))
-				{
-					ItemStack item = pl.getItemInHand();
-					Material mitem = item.getType();
-
-					double mult = 1.0D - item.getDurability() / this.diamondMax;
-					double amtIron = 0.0D;
-					if (mitem.equals(Material.GOLD_BOOTS))   
-					{
-						amtIron = Math.ceil(this.bootsMax * mult);
-					}
-					if (amtIron < 0.0D)
-					{
-						amtIron = 1.0D;
-					}
-					if (mitem.equals(Material.GOLD_HELMET)) 
-					{
-						amtIron = Math.ceil(this.HelmMax * mult);
-						if (amtIron < 0.0D)
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.GOLD_LEGGINGS))
-					{
-						amtIron = Math.ceil(this.LegsMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					if (mitem.equals(Material.GOLD_CHESTPLATE)) 
-					{
-						amtIron = Math.ceil(this.ChestMax * mult);
-						if (amtIron < 0.0D) 
-						{
-							amtIron = 1.0D;
-						}
-					}
-					amtIron -= 1.0D;
-					if (amtIron > 0.0D)
-						try 
-					{
-							pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
-							plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
-							Inventory inv = pl.getInventory();
-							inv.removeItem(new ItemStack[] { item });
-							Material give = Material.GOLD_INGOT;
-							int slot = getSlot(give.getId(), inv);
-							if (slot == -1) 
-							{
-								slot = InventoryHelper.getFirstFreeSlot(inv);
-							}
-							if (slot <= -1) return;
-							int amt = 0;
-							if (inv.getItem(slot) != null)
-							{
-								amt = inv.getItem(slot).getAmount();
-							}
-							ItemStack itm = new ItemStack(give.getId(), amt + (int)amtIron);
-							inv.setItem(slot, itm);
-							pl.updateInventory();
-					}
-					catch (Exception localException2)
-					{
-					}
-					else
-						pl.sendMessage(ChatColor.GRAY + "Error, '" + mitem.toString().toLowerCase().replaceAll("_", " ") + "' is not a type of gold armor");
-				}
-		}
-		catch (Exception localException3)
-		{
+			}
 		}
 	}
-
+			
 	public int getSlot(int id, Inventory inv) 
 	{
 		int ret = -1;
