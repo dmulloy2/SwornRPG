@@ -307,6 +307,7 @@ public class SwornRPG extends JavaPlugin
 		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
 		frenzyduration = getConfig().getInt("frenzy.baseduration");
 		update = getConfig().getBoolean("updatechecker");
+		salvage = getConfig().getString("salvage");
 	}
 	
 	//Tags Stuff
