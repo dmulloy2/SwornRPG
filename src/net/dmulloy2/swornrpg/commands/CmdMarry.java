@@ -4,7 +4,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -37,7 +36,7 @@ public class CmdMarry extends SwornRPGCommand
 				final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
 				data.setSpouse(targetp);
 				data1.setSpouse(senderp);
-				Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.GREEN + targetp + " has married " + senderp);
+				sendMessageAll("&a" + targetp + " has married " + senderp);
 				plugin.proposal.remove(senderp);
 				plugin.proposal.remove(targetp);
 			}

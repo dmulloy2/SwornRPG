@@ -24,26 +24,40 @@ public class CmdFrenzy extends SwornRPGCommand
 	{
 		if(!plugin.frenzyenabled)
 			return;
-		PlayerData data = getPlayerData(player);
-		if (data.isFrenzyused() == false)
+		final PlayerData data = getPlayerData(player);
+		if (!(data.isFcooldown()))
 		{
-			int level = data.getPlayerxp()/125;
-			if (level == 0)
-				level = 1;
+			sendpMessage("&eEntering frenzy mode!");
 			int strength = 0;
-			int duration = plugin.frenzyduration*level*20;
+			int level = data.getLevel();
+			/**Duration = frenzy base duraton + (frenzy multiplier x level)**/
+			final int duration = (20*(plugin.frenzyd + (level*plugin.frenzym)));
 			player.addPotionEffect(PotionEffectType.SPEED.createEffect((int) duration, strength));
 			player.addPotionEffect(PotionEffectType.INCREASE_DAMAGE.createEffect((int) duration, strength));
 			player.addPotionEffect(PotionEffectType.REGENERATION.createEffect((int) duration, strength));
 			player.addPotionEffect(PotionEffectType.JUMP.createEffect((int) duration, strength));
 			player.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect((int) duration, strength));
 			player.addPotionEffect(PotionEffectType.DAMAGE_RESISTANCE.createEffect((int) duration, strength));
-			data.setFrenzyused(true);
-			data.setFrenzyusedlevel(data.getPlayerxp()/125);
+			if (plugin.debug) plugin.outConsole(player.getName() + " has entered frenzy mode. Duration: " + duration);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					sendpMessage("&eFrenzy mode has worn off");
+					
+					/**Cooldown = duraton x cooldown multiplier**/
+					int cooldown = (20*(duration*plugin.frenzycd));
+					data.setFrenzycd(cooldown);
+					data.setFcooldown(true);
+					if (plugin.debug) plugin.outConsole(player.getName() + "has a cooldown of " + cooldown + " for frenzy");
+				}				
+			},(duration));
 		}
 		else
 		{
-			sendpMessage("&cError, you have already used frenzy for this level");
+			sendpMessage("&cError, you are still recovering from frenzy");
+			sendpMessage("&cYou have " + data.getFrenzycd() + " seconds left");
 		}
 	}
 }

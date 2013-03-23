@@ -29,12 +29,12 @@ public class CmdBookToggle extends SwornRPGCommand
 			if (data.isDeathbookdisabled())
 			{
 				data.setDeathbookdisabled(false);
-				sendpMessage(plugin.prefix + "&cDeath coordinate messages enabled");
+				sendpMessage("&cDeath coordinate messages enabled");
 			}
 			else
 			{
 				data.setDeathbookdisabled(true);
-				sendpMessage(plugin.prefix + "&cDeath coordinate messages disabled");
+				sendpMessage("&cDeath coordinate messages disabled");
 			}
 		}
 		else if (args.length == 1)
@@ -42,12 +42,12 @@ public class CmdBookToggle extends SwornRPGCommand
 			if (args[0].equalsIgnoreCase("enabled"))
 			{
 				data.setDeathbookdisabled(false);
-				sendpMessage(plugin.prefix + "&eDeath coordinate messages enabled");
+				sendpMessage("&eDeath coordinate messages enabled");
 			}
 			else if (args[0].equalsIgnoreCase("disabled"))
 			{
 				data.setDeathbookdisabled(true);
-				sendpMessage(plugin.prefix + "&eDeath coordinate messages disabled");
+				sendpMessage("&eDeath coordinate messages disabled");
 			}
 			else
 			{

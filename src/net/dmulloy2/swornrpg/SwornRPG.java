@@ -78,17 +78,16 @@ public class SwornRPG extends JavaPlugin
 	//Hash maps
     private HashMap<String, String> tagChanges;
     public HashMap<String, String> proposal = new HashMap<String, String>();
-    public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
-
+	
     //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
-	money, update;
-	public int frenzyduration, basemoney, itemperlevel, itemreward, xplevelgain,
-	killergain, killedloss, mobkillsxp;
+	money, update, spenabled, debug, salvaging;
+	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
+	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, superpickcd, superpickm;
 	private double newVersion;
     private double currentVersion;
-
+	
 
 	//Permission Strings
 	public String adminChatPerm = "srpg.adminchat";
@@ -171,7 +170,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdLevelr (this));
 		commandHandler.registerCommand(new CmdMarry (this));
 		commandHandler.registerCommand(new CmdMatch (this));
-//		commandHandler.registerCommand(new CmdMine (this));
+		commandHandler.registerCommand(new CmdMine (this));
 		commandHandler.registerCommand(new CmdPropose (this));
 		commandHandler.registerCommand(new CmdRide (this));
 		commandHandler.registerCommand(new CmdSpouse (this));
@@ -179,6 +178,8 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdTag (this));
 		commandHandler.registerCommand(new CmdTagr (this));
 		commandHandler.registerCommand(new CmdUnride (this));
+		commandHandler.registerCommand(new CmdStaffList (this));
+		commandHandler.registerCommand(new CmdSitdown (this));
 		
 		//Set permission messages
 		getCommand("ride").setPermissionMessage(noperm);
@@ -203,7 +204,7 @@ public class SwornRPG extends JavaPlugin
 		loadConfig();
 		saveDefaultConfig();
 		getConfig().options().copyDefaults(true);
-		savetagsConfig();
+		saveConfig();
 		
 		//Check for vault
 		checkVault(pm);
@@ -214,13 +215,45 @@ public class SwornRPG extends JavaPlugin
 		
 		//Schedules player data cache saving
 		playerDataCache = new PlayerDataCache(this);
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() {
-			
-			public void run() {
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
+		{	
+			public void run() 
+			{
 				playerDataCache.save();
 			}
-			
 		}, 12000L, 12000L);
+		
+		//Frenzy cooldown
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
+		{
+			public void run() 
+			{
+				for (Player player : getServer().getOnlinePlayers())
+				{
+					final PlayerData data = playerDataCache.getData(player.getName());
+					if (data.isFcooldown())
+					{
+						data.setFrenzycd(data.getFrenzycd() - 20);
+					}
+				}
+			}
+		},20, 20);
+		
+		//Superpick cooldown
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
+		{
+			public void run() 
+			{
+				for (Player player : getServer().getOnlinePlayers())
+				{
+					final PlayerData data = playerDataCache.getData(player.getName());
+					if (data.isScooldown())
+					{
+						data.setSuperpickcd(data.getSuperpickcd() - 20);
+					}
+				}
+			}
+		},20, 20);
 		
 		//Initialize Tags
 		if (pm.getPlugin("TagAPI") != null)
@@ -286,13 +319,23 @@ public class SwornRPG extends JavaPlugin
 	//Loads the configuration
 	private void loadConfig() 
 	{
+		/**General Config Options**/
 		irondoorprotect = getConfig().getBoolean("irondoorprotect");
 		randomdrops = getConfig().getBoolean("randomdrops");
 		axekb = getConfig().getBoolean("axekb");
 		arrowfire = getConfig().getBoolean("arrowfire");
 		deathbook = getConfig().getBoolean("deathbook");
+		update = getConfig().getBoolean("updatechecker");
+		debug = getConfig().getBoolean("debug");
+		salvaging = getConfig().getBoolean("salvaging");
+		
+		/**Frenzy**/
 		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
-		onlinetime = getConfig().getBoolean("levelingmethods.onlinetime.enabled");
+		frenzycd = getConfig().getInt("frenzy.cooldownmultiplier");
+		frenzym = getConfig().getInt("frenzy.levelmultiplier");
+		frenzyd = getConfig().getInt("frenzy.baseduration");
+		
+		/**Leveling**/
 		xplevel = getConfig().getBoolean("levelingmethods.mcxpgain.enabled");
 		xplevelgain = getConfig().getInt("levelingmethods.mcxpgain.xpgain");
 		playerkills = getConfig().getBoolean("levelingmethods.playerkills.enabled");
@@ -306,18 +349,13 @@ public class SwornRPG extends JavaPlugin
 		itemperlevel = getConfig().getInt("levelingrewards.items.amountperlevel");
 		itemreward = getConfig().getInt("levelingrewards.items.itemid");
 		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
-		frenzyduration = getConfig().getInt("frenzy.baseduration");
-		update = getConfig().getBoolean("updatechecker");
-		salvage = getConfig().getString("salvage");
 		
-		salvageRef.put("Iron", new HashMap<Integer, Integer>());
-		salvageRef.put("Gold", new HashMap<Integer, Integer>());
-		salvageRef.put("Diamond", new HashMap<Integer, Integer>());
-		String[] salvageArray = salvage.split("; ");
-		for (String s: salvageArray) {
-			String[] subset = s.split(", ");
-			salvageRef.get(subset[1]).put(Integer.getInteger(subset[0]), Integer.getInteger(subset[2]));
-		}
+		/**SuperPick**/
+		spenabled = getConfig().getBoolean("superpickaxe.enabled");
+		spbaseduration = getConfig().getInt("superpickaxe.baseduration");
+		superpickcd = getConfig().getInt("superpickaxe.cooldownmultiplier");
+		superpickm = getConfig().getInt("superpickaxe.levelmultiplier");
+	}
 	
 	//Tags Stuff
     public void addTagChange(final String oldName, final String newName)

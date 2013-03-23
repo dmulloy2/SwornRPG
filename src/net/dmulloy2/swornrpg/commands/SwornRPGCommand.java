@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -115,6 +116,18 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	protected final void sendpMessage(String msg, Object... args) 
 	{
 		sender.sendMessage(plugin.prefix + FormatUtil.format(msg, args));
+	}
+	
+	//Send message to the whole server
+	protected final void sendMessageAll(String msg, Object... args) 
+	{
+		Bukkit.getServer().broadcastMessage(plugin.prefix + FormatUtil.format(msg, args));
+	}
+	
+	//Send prefixed message
+	protected final void sendMessageTarget(String msg, Player target, Object... args) 
+	{
+		target.sendMessage(plugin.prefix + FormatUtil.format(msg, args));
 	}
 
 	public final String getName() 

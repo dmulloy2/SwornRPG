@@ -39,19 +39,19 @@ public class ExperienceListener implements Listener
 		this.plugin = plugin;
 	}
 	
-	//Rewards XP in PvP situations
+	/**Rewards XP in PvP situations**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(final PlayerDeathEvent event)
 	{
-		//Checks for player kills to be enabled in the config
+		/**Checks for player kills to be enabled in the config**/
 		if (plugin.playerkills == false)
 			return;
 		Player killed = event.getEntity().getPlayer();
 		Player killer = event.getEntity().getKiller();
-		//Checks to see if it was PvP
+		/**Checks to see if it was PvP**/
 		if (killer instanceof Player)
 		{
-			//Factions Warzone check, helpful for pvpboxes
+			/**Warzone Check**/
 			PluginManager pm = Bukkit.getServer().getPluginManager();
 			if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 			{
@@ -62,47 +62,52 @@ public class ExperienceListener implements Listener
 			}
 			String killerp = killer.getName();
 			String killedp = killed.getName();
-			//Checks for suicide
+			/**Suicide Check**/
 			if (killedp == killerp)
 				return;
-			//Killer xp gain
 			int killxp = plugin.killergain;
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
 			killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + killxp + ChatColor.YELLOW + " xp for killing " + ChatColor.RED + killedp);
-			//Killed xp loss
 			int killedxp = -(plugin.killedloss);
 			int msgxp = Math.abs(killedxp);
+			/**Call XP Gain Event**/
 			pm.callEvent(new PlayerXpGainEvent (killed, killedxp));
 			killed.sendMessage(plugin.prefix + ChatColor.YELLOW + "You lost " + ChatColor.RED + msgxp + ChatColor.YELLOW + " xp after getting killed by " + ChatColor.RED + killerp);
+			if (plugin.debug) 
+			{
+				plugin.outConsole(killedp + " lost " + msgxp + " xp after getting killed by  " + killerp);
+				plugin.outConsole(killerp + " gained " + killxp + " xp for killing " + killedp);
+			} 
+			
 		}
 	}
 	
-	//Rewards XP in PvE situations
+	/**Rewards XP in PvE situations**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		//Checks for mob kills to be enabled in the config
+		/**Checks for mob kills to be enabled in the config**/
 		if (plugin.mobkills == false)
 			return;
 		Entity kill = event.getEntity().getKiller();
 		Entity killed = event.getEntity();
-		//Checks to make sure it isnt pvp
+		/**Checks to make sure it wasn't pvp**/
 		if (killed instanceof Player)
 			return;
-		//Checks to make sure the killer is a player
+		/**Checks to make sure the killer is a player**/
 		if (kill instanceof Player)
 		{
 			Player killer = event.getEntity().getKiller();
 			String mobname = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
 			PluginManager pm = Bukkit.getServer().getPluginManager();
-			//Factions exploit check
+			/**Warzone and Safezone check**/
 			if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 			{
 				Faction otherFaction = Board.getFactionAt(new FLocation(killer.getLocation()));
 				if ((otherFaction.isWarZone())||(otherFaction.isSafeZone()))
 					return;
 			}
-			//Camping check
+			/**Camping Check**/
 			World world = kill.getWorld();
 			Location loc = kill.getLocation();
 			int RADIUS = 5;
@@ -121,7 +126,7 @@ public class ExperienceListener implements Listener
 					}
 				}
 			}
-			//Kill xp calculation
+			/**XP gain calculation**/
 			int killxp;
 			if (
 					mobname.equals("wither")
@@ -143,9 +148,9 @@ public class ExperienceListener implements Listener
 				killxp = plugin.mobkillsxp*2;
 			else
 				killxp = plugin.mobkillsxp;
-			//Call event
+			/**Call Event**/
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
-			//Send message
+			/**Send Message**/
 			if (mobname.startsWith("e")||mobname.startsWith("o")||mobname.startsWith("i"))				
 			{
 				killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + killxp + ChatColor.YELLOW + " xp for killing an " + ChatColor.RED + mobname);
@@ -154,26 +159,27 @@ public class ExperienceListener implements Listener
 			{
 				killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + killxp + ChatColor.YELLOW + " xp for killing a " + ChatColor.RED + mobname);
 			}
+			if (plugin.debug) plugin.outConsole(killer.getName() + "gained " + killxp + " xp for killing " + mobname);
 		}
 	}
 	
-	//Rewards XP on Minecraft xp levelup
+	/**Rewards XP on Minecraft xp levelup**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 	{
-		//Checks to make sure xp level xp gain is enabled in the config
+		/**Checks to make sure xp level xp gain is enabled in the config**/
 		if (plugin.xplevel == false)
 			return;
 		Player player = event.getPlayer();
 		PluginManager pm = Bukkit.getServer().getPluginManager();
-		//Factions exploit check
+		/**Warzone Check**/
 		if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 		{
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
 			if (otherFaction.isWarZone())
 				return;
 		}
-		//Camping check
+		/**Camping Check**/
 		World world = player.getWorld();
 		Location loc = player.getLocation();
 		int RADIUS = 5;
@@ -197,27 +203,28 @@ public class ExperienceListener implements Listener
 		if (newlevel - oldlevel != 1)
 			return;
 		int xpgained = plugin.xplevelgain;
+		/**Call Event**/
 		Bukkit.getServer().getPluginManager().callEvent(new PlayerXpGainEvent (player, xpgained));
 		player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You gained " + ChatColor.GREEN + xpgained + ChatColor.YELLOW + " xp for gaining Minecraft xp");
 	}
 	
-	//Rewards items and money on player levelup
+	/**Rewards items and money on player levelup**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelup(PlayerLevelupEvent event)
 	{
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		//Prepares data for the next level
-		data.setFrenzyused(false);
+		/**Prepare data for the next level**/
 		data.setLevel(data.getLevel() + 1);
 		data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
 		data.setPlayerxp(0);
 		int level = data.getLevel();
 		player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have leveled up to level " + ChatColor.GREEN + level + ChatColor.YELLOW + "!");
-		//Awards money if money rewards are enabled
+		if (plugin.debug) plugin.outConsole(player.getName() + " leveled up to level " + level);
+		/**Award money if money rewards are enabled**/
 		if (plugin.money == true)
 		{
-			//Checks for vault
+			/**Vault Check**/
 			if (Bukkit.getServer().getPluginManager().getPlugin("Vault") != null)
 			{
 				Economy economy = plugin.getEconomy();
@@ -226,7 +233,7 @@ public class ExperienceListener implements Listener
 				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " +  ChatColor.GREEN + "$" + money + ChatColor.YELLOW + " for leveling up");
 			}
 		}
-		//Awards items if money rewards are enabled
+		/**Award items if item rewards are enabled**/
 		if (plugin.items == true)
 		{
 			int rewardamt = level*plugin.itemperlevel;
@@ -243,17 +250,17 @@ public class ExperienceListener implements Listener
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		int xpgained = event.getXpGained();
-		//Add the xp gained to their overall xp
+		/**Add the xp gained to their overall xp**/
 		data.setPlayerxp(data.getPlayerxp() + xpgained);
 		data.setTotalxp(data.getTotalxp() + xpgained);
 		int xp = data.getPlayerxp();
 		int xpneeded = data.getXpneeded();
 		int newlevel = (xp/xpneeded);
 		int oldlevel = data.getLevel();
-		//Did the player level up?
+		/**Levelup check**/
 		if ((xp - xpneeded) >= 1)
 		{
-			//If the player leveled up, call level up event
+			/**If so, call levelup event**/
 			Bukkit.getServer().getPluginManager().callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
 		}
 	}

@@ -16,6 +16,7 @@ public class CmdStandup extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "standup";
+		this.aliases.add("stand");
 		this.description = "Get out of your chair";
 		this.mustBePlayer = true;
 	}

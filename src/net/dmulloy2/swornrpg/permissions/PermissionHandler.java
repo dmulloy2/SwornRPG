@@ -12,11 +12,8 @@ import org.bukkit.entity.Player;
 
 public class PermissionHandler 
 {
-	private final SwornRPG plugin;
-	
 	public PermissionHandler(final SwornRPG plugin) 
 	{
-		this.plugin = plugin;
 	}
 
 	public boolean hasPermission(CommandSender sender, Permission permission) 
@@ -37,7 +34,7 @@ public class PermissionHandler
 	
 	private String getPermissionString(Permission permission) 
 	{
-		return plugin.getName().toLowerCase() + "." + permission.node.toLowerCase();
+		return "srpg." + permission.node.toLowerCase();
 	}
 
 }

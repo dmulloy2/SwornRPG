@@ -5,7 +5,6 @@ import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
@@ -46,7 +45,7 @@ public class CmdTag extends SwornRPGCommand
 						  Player target = Util.matchPlayer(args[0]);
 						  this.plugin.addTagChange(target.getName(), args[1] + target.getName());
 						  sendpMessage("&aChanged tag for " + target.getName() + "!");
-						  target.sendMessage(plugin.prefix + ChatColor.GREEN + "Your tag is now '" + args[1] + target.getName() + "'");
+						  sendMessageTarget("&aYour tag is now '" + args[1] + target.getName() + "'", target);
 					}
 				}
 				else

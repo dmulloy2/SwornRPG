@@ -32,7 +32,10 @@ public class CmdLevelr extends SwornRPGCommand
 			{
 				PlayerData data = getPlayerData(player);
 				data.setPlayerxp(0);
-				data.setFrenzyused(false);
+				data.setFcooldown(false);
+				data.setFrenzycd(0);
+				data.setScooldown(false);
+				data.setSuperpickcd(0);
 				data.setLevel(0);
 				data.setTotalxp(0);
 				data.setXpneeded(100 + (data.getPlayerxp()/4));
@@ -49,9 +52,12 @@ public class CmdLevelr extends SwornRPGCommand
 			if (target != null)
 			{
 				String targetp = target.getName();
-				final PlayerData data = plugin.getPlayerDataCache().getData(targetp);
+				PlayerData data = getPlayerData(target);
 				data.setPlayerxp(0);
-				data.setFrenzyused(false);
+				data.setFcooldown(false);
+				data.setFrenzycd(0);
+				data.setScooldown(false);
+				data.setSuperpickcd(0);
 				data.setLevel(0);
 				data.setTotalxp(0);
 				data.setXpneeded(100 + (data.getPlayerxp()/4));

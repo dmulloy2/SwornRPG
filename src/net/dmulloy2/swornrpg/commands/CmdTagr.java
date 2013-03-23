@@ -5,7 +5,6 @@ import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
@@ -48,7 +47,7 @@ public class CmdTagr extends SwornRPGCommand
 					Player target = Util.matchPlayer(args[0]);
 					this.plugin.removeTagChange(target.getName());
 					sendpMessage("&eYou have reset " + target.getName() + "'s tag");
-					target.sendMessage(plugin.prefix + ChatColor.RED + "Your tag has been reset");
+					sendpMessage("&cYour tag has been reset", target);
 				}
 			}
 		}

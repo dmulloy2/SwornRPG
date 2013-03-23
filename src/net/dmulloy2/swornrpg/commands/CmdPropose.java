@@ -2,8 +2,8 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.dmulloy2.swornrpg.util.Util;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -24,12 +24,12 @@ public class CmdPropose extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		final PlayerData data = plugin.getPlayerDataCache().getData(sender.getName());
-		Player target = Bukkit.getPlayer(args[0]);
+		PlayerData data = getPlayerData(player);
+		Player target = Util.matchPlayer(args[0]);
 		if (target != null)
 		{
 			String targetp = target.getName();
-			final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
+			PlayerData data1 = getPlayerData(target);
 			if (args.length == 1)
 			{
 				if (data.getSpouse() != null)
@@ -48,7 +48,7 @@ public class CmdPropose extends SwornRPGCommand
 				{
 					plugin.proposal.put(targetp, sender.getName());
 					sendpMessage("&aYou have proposed to " + targetp);
-					target.sendMessage(plugin.prefix + ChatColor.GREEN + sender.getName() + " Wishes to marry you. Type " + ChatColor.RED + "/marry " + ChatColor.GOLD + sender.getName() + ChatColor.GREEN + " to confirm");
+					sendMessageTarget("&a" + sender.getName() + " Wishes to marry you. Type &c/marry &6 " + sender.getName() + " &ato confirm", target);
 				}
 			}
 		}

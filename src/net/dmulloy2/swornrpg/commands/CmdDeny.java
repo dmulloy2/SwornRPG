@@ -33,7 +33,7 @@ public class CmdDeny extends SwornRPGCommand
 				plugin.proposal.remove(senderp);
 				plugin.proposal.remove(targetp);
 				sendpMessage("&eYou have denied " + targetp + "'s proposal");
-				sendpMessage("&c" + senderp + " does not wish to marry at this time");
+				sendMessageTarget("&c" + senderp + " does not wish to marry at this time", target);
 			}
 			else
 			{

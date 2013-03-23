@@ -35,6 +35,9 @@ public class EntityListener implements Listener
 	{
 	}
 
+	/**
+	 * Axe blowback and Arrow fire
+	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event)
 	{
@@ -53,7 +56,6 @@ public class EntityListener implements Listener
 				{
 					if (Util.random(10) == 0) 
 					{
-						//Causes fire damage
 						defender.setFireTicks(128);
 						if ((((Arrow)att).getShooter() instanceof Player))
 							((Player)((Arrow)att).getShooter()).sendMessage(ChatColor.GOLD + "Fire Damage!"); 

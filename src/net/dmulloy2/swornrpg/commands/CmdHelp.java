@@ -120,12 +120,13 @@ public class CmdHelp extends SwornRPGCommand
 				sendMessage("&c/levelr &6[name] &eReset a player's level.");
 			}
 			sendMessage("&c/frenzy &eEnter Frenzy mode.");
+			sendMessage("&c/mine &eActivate super pickaxe");
 		}
 		else if (args[0].equalsIgnoreCase("misc"))
 		{
 			sendMessage("&4====== &6SwornRPG Misc Commands &4======"); 
 			sendMessage("&c/<command> &4<required> &6[optional]");
-			sendMessage("/deathmessage &eToggles death coordinate books/messages");
+			sendMessage("&c/deathmessage &eToggles death coordinate books/messages");
 			if (Perms.has(sender, plugin.adminItemPerm))
 			{
 				sendMessage("&c/iname &4<name> &eSet the name of an item");

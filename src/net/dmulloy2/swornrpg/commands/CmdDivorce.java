@@ -4,8 +4,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -33,11 +31,11 @@ public class CmdDivorce extends SwornRPGCommand
 			data.setSpouse(null);
 			data1.setSpouse(null);
 			sendpMessage("&cYou have divorced " + targetp);
-			Bukkit.getServer().broadcastMessage(plugin.prefix + ChatColor.RED + sender.getName() + " has divorced " + targetp);
+			sendMessageAll("&c" + sender.getName() + " has divorced " + targetp);
 			Player target = Util.matchPlayer(targetp);
 			if (target != null)
 			{
-				target.sendMessage(plugin.prefix + ChatColor.RED + "You are now single");
+				sendMessageTarget("&cYou are now single", target);
 			}
 		}
 		else

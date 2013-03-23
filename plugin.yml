@@ -99,6 +99,7 @@ commands:
   standup:
     description: Get off your chair
     usage: /<command>
+    aliases: [stand]
   iname:
     description: Change the name of items!
     usage: /<command> <name>
@@ -109,6 +110,18 @@ commands:
     usage: /<command> <player>
     permission: srpg.addxp
     aliases: [givexp]
+  mine:
+    description: Super pickaxe based upon level
+    usage: /<command>
+    aliases: [superpick]
+  stafflist:
+    description: List online staff
+    usage: /<command>
+    aliases: [staff]
+  sitdown:
+    description: Sit down on a chair
+    usage: /<command>
+    aliases: [sit]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
@@ -141,6 +154,7 @@ permissions:
     default: false
     children:
       srpg.adminchat: true
+      srpg.staff: true
   srpg.hat:
     description: Allows access to /hat
     default: true
@@ -173,4 +187,7 @@ permissions:
     default: false
   srpg.update:
     description: Allows a player to see update messages
+    default: false
+  srpg.staff:
+    description: Designates a player as staff (for /stafflist)
     default: false

@@ -24,13 +24,14 @@ public class PlayerData implements ConfigurationSerializable
 	private String spouse;
 	
 	private boolean deathbookdisabled;
-	private boolean frenzyused;
 	private boolean riding;
 	private boolean vehicle;
 	private boolean sitting;
+	private boolean scooldown;
+	private boolean fcooldown;
+	private boolean spick;
 	
 	private int playerxp;
-	private int frenzyusedlevel;
 	private int oldlevel;
 	private int xpneeded;
 	private int level;
@@ -39,6 +40,8 @@ public class PlayerData implements ConfigurationSerializable
 	private long timeOfLastUpdate;
 	private long onlineTime;
 	private long lastOnline;
+	private long frenzycd;
+	private long superpickcd;
 	
 	private transient long lastUpdateTimeSpent;
 	
