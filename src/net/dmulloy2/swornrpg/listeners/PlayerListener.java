@@ -86,37 +86,13 @@ public class PlayerListener implements Listener
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amtIron = 0;
 				if (mitem.equals(Material.IRON_BOOTS))
-				{
 					amtIron = Math.floor(this.bootsMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.IRON_HELMET)) 
-				{
 					amtIron = Math.floor(this.HelmMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.IRON_LEGGINGS)) 
-				{
 					amtIron = Math.floor(this.LegsMax * mult);
-					if (amtIron < 0.0D)
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.IRON_CHESTPLATE))
-				{
 					amtIron = Math.floor(this.ChestMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (amtIron > 0.0D)
 				{
 					pl.sendMessage(ChatColor.GRAY + "You have salvaged an " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
@@ -142,37 +118,13 @@ public class PlayerListener implements Listener
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amtIron = 0.0D;
 				if (mitem.equals(Material.DIAMOND_BOOTS))   
-				{
 					amtIron = Math.floor(this.bootsMax * mult);
-				}
-				if (amtIron < 0.0D)
-				{
-					amtIron = 1.0D;
-				}
 				if (mitem.equals(Material.DIAMOND_HELMET)) 
-				{
 					amtIron = Math.floor(this.HelmMax * mult);
-					if (amtIron < 0.0D)
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.DIAMOND_LEGGINGS))
-				{
 					amtIron = Math.floor(this.LegsMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.DIAMOND_CHESTPLATE)) 
-				{
 					amtIron = Math.floor(this.ChestMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-					}
 				amtIron -= 1.0D;
 				if (amtIron > 0.0D)
 				{
@@ -199,37 +151,13 @@ public class PlayerListener implements Listener
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amtIron = 0.0D;
 				if (mitem.equals(Material.GOLD_BOOTS))   
-				{
 					amtIron = Math.floor(this.bootsMax * mult);
-				}
-				if (amtIron < 0.0D)
-				{
-					amtIron = 1.0D;
-				}
 				if (mitem.equals(Material.GOLD_HELMET)) 
-				{
 					amtIron = Math.floor(this.HelmMax * mult);
-					if (amtIron < 0.0D)
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.GOLD_LEGGINGS))
-				{
 					amtIron = Math.floor(this.LegsMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-				}
 				if (mitem.equals(Material.GOLD_CHESTPLATE)) 
-				{
 					amtIron = Math.floor(this.ChestMax * mult);
-					if (amtIron < 0.0D) 
-					{
-						amtIron = 1.0D;
-					}
-				}
 				amtIron -= 1.0D;
 				if (amtIron > 0.0D)
 				{
