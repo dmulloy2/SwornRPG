@@ -63,20 +63,20 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		
 		if (mustBePlayer && !isPlayer())
 		{
-			err(plugin.mustbeplayer);
+			err(plugin.getMessage("mustbeplayer"));
 			return;
 		}
 		
 		if (requiredArgs.size() > args.length) 
 		{
-			err(plugin.invalidargs + "&c(" + getUsageTemplate(false) + "&c)");
+			err(plugin.getMessage("invalidargs") + "&c(" + getUsageTemplate(false) + "&c)");
 			return;
 		}
 		
 		if (hasPermission())
 			perform();
 		else
-			err(plugin.noperm);
+			err(plugin.getMessage("noperm"));
 	}
 	
 	protected final boolean isPlayer() 
@@ -168,7 +168,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		catch (NumberFormatException ex) 
 		{
 			if (msg)
-				err(plugin.invalidargs + "(" + getUsageTemplate(false) + ")");
+				err(plugin.getMessage("prefix") + "(" + getUsageTemplate(false) + ")");
 			return -1;
 		}
 	}
@@ -180,7 +180,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		} catch (NumberFormatException ex) 
 		{
 			if (msg)
-				err(plugin.invalidargs + "(" + getUsageTemplate(false) + ")");
+				err(plugin.getMessage("prefix") + "(" + getUsageTemplate(false) + ")");
 			return -1;
 		}
 	}

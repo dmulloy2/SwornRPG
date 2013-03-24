@@ -38,7 +38,7 @@ public class CmdTag extends SwornRPGCommand
 				{
 					if (args[1].length() > 2)
 					{
-						sendMessage(plugin.invalidargs + "&c(/tag [player] + <colorcode>)");
+						sendpMessage(plugin.getMessage("invalidargs") + "&c(/tag [player] + <colorcode>)");
 					}
 					else 
 					{
@@ -50,14 +50,14 @@ public class CmdTag extends SwornRPGCommand
 				}
 				else
 				{
-					sendMessage(plugin.noperm);
+					sendMessage(plugin.getMessage("noperm"));
 				}
 			}
 			else if (args.length == 1)
 			{
 				if (args[0].length() > 2)
 				{
-					sendMessage(plugin.invalidargs + "&c(/tag <colorcode>)");
+					sendpMessage(plugin.getMessage("invalidargs") + "&c(/tag <colorcode>)");
 				}
 				else
 				{

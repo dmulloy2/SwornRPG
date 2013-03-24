@@ -51,7 +51,7 @@ public class CmdBookToggle extends SwornRPGCommand
 			}
 			else
 			{
-				sendpMessage(plugin.invalidargs + "&c(/deathbook [enabled/disabled])");
+				sendpMessage(plugin.getMessage("invalidargs") + "&c(/deathbook [enabled/disabled])");
 			}
 		}			
 	}

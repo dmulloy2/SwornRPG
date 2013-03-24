@@ -34,7 +34,7 @@ public class CmdMine extends SwornRPGCommand
 			if (data.isScooldown())
 			{
 				sendpMessage("&cYou are still recovering from super pick!");
-				sendpMessage("&cYou have " + data.getSuperpickcd() + " seconds left");
+				sendpMessage("&cYou have " + (data.getSuperpickcd()/20) + " seconds left");
 				return;
 			}
 			if (player.getItemInHand() != null)

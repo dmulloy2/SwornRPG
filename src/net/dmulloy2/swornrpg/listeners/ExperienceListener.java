@@ -4,11 +4,11 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
@@ -67,12 +67,12 @@ public class ExperienceListener implements Listener
 				return;
 			int killxp = plugin.killergain;
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
-			killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + killxp + ChatColor.YELLOW + " xp for killing " + ChatColor.RED + killedp);
+			killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_message"), killxp, killedp));
 			int killedxp = -(plugin.killedloss);
 			int msgxp = Math.abs(killedxp);
 			/**Call XP Gain Event**/
 			pm.callEvent(new PlayerXpGainEvent (killed, killedxp));
-			killed.sendMessage(plugin.prefix + ChatColor.YELLOW + "You lost " + ChatColor.RED + msgxp + ChatColor.YELLOW + " xp after getting killed by " + ChatColor.RED + killerp);
+			killed.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_message"), msgxp, killerp));
 			if (plugin.debug) 
 			{
 				plugin.outConsole(killedp + " lost " + msgxp + " xp after getting killed by  " + killerp);
@@ -120,7 +120,7 @@ public class ExperienceListener implements Listener
 						int id = world.getBlockTypeIdAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz);
 						if (id == 52)
 						{
-							killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You find no rewards camping mob spawners");
+							killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("spawner_camper")));
 							return;
 						}
 					}
@@ -152,13 +152,9 @@ public class ExperienceListener implements Listener
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
 			/**Send Message**/
 			if (mobname.startsWith("e")||mobname.startsWith("o")||mobname.startsWith("i"))				
-			{
-				killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + killxp + ChatColor.YELLOW + " xp for killing an " + ChatColor.RED + mobname);
-			}
+				killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill_vowel"), killxp, mobname));
 			else
-			{
-				killer.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + killxp + ChatColor.YELLOW + " xp for killing a " + ChatColor.RED + mobname);
-			}
+				killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, mobname));
 			if (plugin.debug) plugin.outConsole(killer.getName() + "gained " + killxp + " xp for killing " + mobname);
 		}
 	}
@@ -192,7 +188,7 @@ public class ExperienceListener implements Listener
 					int id = world.getBlockTypeIdAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz);
 					if (id == 52)
 					{
-						player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You find no rewards camping mob spawners");
+						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("spawner_camper")));
 						return;
 					}
 				}
@@ -205,7 +201,7 @@ public class ExperienceListener implements Listener
 		int xpgained = plugin.xplevelgain;
 		/**Call Event**/
 		Bukkit.getServer().getPluginManager().callEvent(new PlayerXpGainEvent (player, xpgained));
-		player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You gained " + ChatColor.GREEN + xpgained + ChatColor.YELLOW + " xp for gaining Minecraft xp");
+		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
 	}
 	
 	/**Rewards items and money on player levelup**/
@@ -219,7 +215,7 @@ public class ExperienceListener implements Listener
 		data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
 		data.setPlayerxp(0);
 		int level = data.getLevel();
-		player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have leveled up to level " + ChatColor.GREEN + level + ChatColor.YELLOW + "!");
+		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
 		if (plugin.debug) plugin.outConsole(player.getName() + " leveled up to level " + level);
 		/**Award money if money rewards are enabled**/
 		if (plugin.money == true)
@@ -230,7 +226,7 @@ public class ExperienceListener implements Listener
 				Economy economy = plugin.getEconomy();
 				double money = (int) level*plugin.basemoney;
 				economy.depositPlayer(player.getName(), money);
-				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " +  ChatColor.GREEN + "$" + money + ChatColor.YELLOW + " for leveling up");
+				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), money));
 			}
 		}
 		/**Award items if item rewards are enabled**/
@@ -240,7 +236,7 @@ public class ExperienceListener implements Listener
 			ItemStack item = new ItemStack(plugin.itemreward, rewardamt);
 			String friendlyitem = item.getType().toString().toLowerCase().replaceAll("_", " ");
 			InventoryWorkaround.addItems(player.getInventory(), item);
-			player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You were rewarded " + ChatColor.GREEN + rewardamt + " " + friendlyitem + ChatColor.YELLOW + "(s)");
+			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, friendlyitem));
 		}
 	}
 	
@@ -258,7 +254,7 @@ public class ExperienceListener implements Listener
 		int newlevel = (xp/xpneeded);
 		int oldlevel = data.getLevel();
 		/**Levelup check**/
-		if ((xp - xpneeded) >= 1)
+		if ((xp - xpneeded) >= 0)
 		{
 			/**If so, call levelup event**/
 			Bukkit.getServer().getPluginManager().callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));

@@ -40,7 +40,7 @@ public class CmdLevel extends SwornRPGCommand
 			}
 			else
 			{
-				sendMessage(plugin.mustbeplayer);
+				sendpMessage(plugin.getMessage("mustbeplayer"));
 			}
 		}
 		else if (args.length == 1)
@@ -48,7 +48,7 @@ public class CmdLevel extends SwornRPGCommand
 			Player target = Util.matchPlayer(args[0]);
 			if (target == null)
 			{
-				sendMessage(plugin.noplayer);
+				sendpMessage(plugin.getMessage("noplayer"));
 			}
 			else
 			{

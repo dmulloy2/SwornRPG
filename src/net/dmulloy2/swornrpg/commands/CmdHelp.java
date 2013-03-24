@@ -50,7 +50,7 @@ public class CmdHelp extends SwornRPGCommand
 			}
 			else
 			{
-				sendMessage(plugin.noperm);
+				sendpMessage(plugin.getMessage("noperm"));
 			}
 		}
 		else if (args[0].equalsIgnoreCase("save"))
@@ -62,7 +62,7 @@ public class CmdHelp extends SwornRPGCommand
 			}
 			else
 			{
-				sender.sendMessage(plugin.noperm);
+				sendpMessage(plugin.getMessage("noperm"));
 			}
 		}
 		else if (args[0].equalsIgnoreCase("help"))
@@ -118,6 +118,7 @@ public class CmdHelp extends SwornRPGCommand
 			if (Perms.has(sender, plugin.adminResetPerm))
 			{
 				sendMessage("&c/levelr &6[name] &eReset a player's level.");
+				sendMessage("&c/addxp &4<name> &eGive xp to a player");
 			}
 			sendMessage("&c/frenzy &eEnter Frenzy mode.");
 			sendMessage("&c/mine &eActivate super pickaxe");
@@ -127,6 +128,9 @@ public class CmdHelp extends SwornRPGCommand
 			sendMessage("&4====== &6SwornRPG Misc Commands &4======"); 
 			sendMessage("&c/<command> &4<required> &6[optional]");
 			sendMessage("&c/deathmessage &eToggles death coordinate books/messages");
+			sendMessage("&c/standup &eGet out of your chair");
+			sendMessage("&c/sitdown &eSit in a chair");
+			sendMessage("&c/stafflist &eList online staff");
 			if (Perms.has(sender, plugin.adminItemPerm))
 			{
 				sendMessage("&c/iname &4<name> &eSet the name of an item");

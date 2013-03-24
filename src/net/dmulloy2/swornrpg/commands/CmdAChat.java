@@ -2,9 +2,9 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -37,6 +37,6 @@ public class CmdAChat extends SwornRPGCommand
 			sname = sender.getName();
 		else
 			sname = "Console";
-		Bukkit.getServer().broadcast(ChatColor.GRAY + sname + ": " + ChatColor.AQUA + str, "srpg.adminchat");
+		Bukkit.getServer().broadcast((FormatUtil.format(plugin.getMessage("achat"), sname, str)), "srpg.adminchat");
 	}
 }

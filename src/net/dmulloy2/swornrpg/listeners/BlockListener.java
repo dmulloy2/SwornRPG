@@ -4,9 +4,9 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -75,7 +75,7 @@ public class BlockListener implements Listener
 				{
 					/**Protect the iron door!**/
 					event.setCancelled(true);
-					player.sendMessage(plugin.prefix + ChatColor.RED + "This iron door was protected from being broken");
+					player.sendMessage(FormatUtil.format(plugin.getMessage("prefix") + plugin.getMessage("irondoorprotect")));
 				}
 			}
 			
@@ -85,7 +85,7 @@ public class BlockListener implements Listener
 			if (data.isSitting() && vehicle != null)
 			{
 				event.setCancelled(true);
-				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "If you wish to break this block, use " + ChatColor.RED + "/standup");
+				player.sendMessage(FormatUtil.format(plugin.getMessage("prefix")) + FormatUtil.format(plugin.getMessage("chairblockdeny"), "&c/standup"));
 			}
 			if (data.isRiding() && vehicle != null)
 			{
@@ -159,10 +159,10 @@ public class BlockListener implements Listener
 					if (blockType.equals(Material.CLAY)) 
 					{
 						List<Integer> claylist = plugin.getConfig().getIntegerList("block-drops.clay");
-						int cl1 = (int) claylist.get(0);
-						int cl2 = (int) claylist.get(1);
-						int cl3 = (int) claylist.get(2);
-						int cl4 = (int) claylist.get(3);
+						int cl1 = claylist.get(0);
+						int cl2 = claylist.get(1);
+						int cl3 = claylist.get(2);
+						int cl4 = claylist.get(3);
 						int r341 = Util.random(20);
 						int r287 = Util.random(20);
 						int r318 = Util.random(20);

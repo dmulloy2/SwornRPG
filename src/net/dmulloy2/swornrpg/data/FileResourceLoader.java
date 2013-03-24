@@ -12,50 +12,45 @@ import net.dmulloy2.swornrpg.SwornRPG;
 /**
  * @author t7seven7t
  */
-
 public class FileResourceLoader extends ClassLoader 
 {
 	private final transient File dataFolder;
-	
-	public FileResourceLoader(final ClassLoader classLoader, final SwornRPG plugin) 
+
+	public FileResourceLoader(final ClassLoader classLoader, final SwornRPG plugin)
 	{
 		super(classLoader);
 		this.dataFolder = plugin.getDataFolder();
 	}
-	
+
 	@Override
-	public URL getResource(final String string) 
+	public URL getResource(final String string)
 	{
 		final File file = new File(dataFolder, string);
-		if (file.exists()) 
+		if (file.exists())
 		{
-			try 
+			try
 			{
 				return file.toURI().toURL();
-			} 
-			catch (MalformedURLException ex) 
+			}
+			catch (MalformedURLException ex)
 			{
 			}
 		}
-			
 		return super.getResource(string);
 	}
 	
 	@Override
-	public InputStream getResourceAsStream(final String string) 
+	public InputStream getResourceAsStream(final String string)
 	{
 		final File file = new File(dataFolder, string);
-		if (file.exists()) 
+		if (file.exists())
+		try
 		{
-			try 
-			{
-				return new FileInputStream(file);
-			} 
-			catch (FileNotFoundException ex) 
-			{
-			}
+			return new FileInputStream(file);
 		}
-		
+		catch (FileNotFoundException ex)
+		{
+		}
 		return super.getResourceAsStream(string);
-	}
+	}	
 }

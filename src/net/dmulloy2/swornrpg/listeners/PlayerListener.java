@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.util.*;
+import net.dmulloy2.swornrpg.util.TimeUtil;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.InventoryWorkaround;
+import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,29 +86,43 @@ public class PlayerListener implements Listener
 			{
 				ItemStack item = pl.getItemInHand();
 				Material mitem = item.getType();
+				String msg = mitem.toString().toLowerCase().replaceAll("_", " ");
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amtIron = 0;
-				if (mitem.equals(Material.IRON_BOOTS))
-					amtIron = Math.floor(this.bootsMax * mult);
-				if (mitem.equals(Material.IRON_HELMET)) 
-					amtIron = Math.floor(this.HelmMax * mult);
-				if (mitem.equals(Material.IRON_LEGGINGS)) 
-					amtIron = Math.floor(this.LegsMax * mult);
-				if (mitem.equals(Material.IRON_CHESTPLATE))
-					amtIron = Math.floor(this.ChestMax * mult);
-				if (amtIron > 0.0D)
+				if (msg.contains("iron"))
 				{
-					pl.sendMessage(ChatColor.GRAY + "You have salvaged an " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
-					plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " iron ingot(s)");
-					Inventory inv = pl.getInventory();
-					inv.removeItem(new ItemStack[] { item });
-					Material give = Material.IRON_INGOT;
-					ItemStack salvaged = new ItemStack(give.getId(), (int)amtIron);
-					InventoryWorkaround.addItems(inv, salvaged);
+					if (mitem.equals(Material.IRON_BOOTS))
+					{
+						amtIron = Math.ceil(this.bootsMax * mult);
+					}
+					if (mitem.equals(Material.IRON_HELMET)) 
+					{
+						amtIron = Math.ceil(this.HelmMax * mult);
+					}
+					if (mitem.equals(Material.IRON_LEGGINGS)) 
+					{
+						amtIron = Math.ceil(this.LegsMax * mult);
+					}
+					if (mitem.equals(Material.IRON_CHESTPLATE))
+					{
+						amtIron = Math.ceil(this.ChestMax * mult);
+					}
+					if (amtIron == 0)
+						amtIron = 1;
+					if (amtIron > 0.0D)
+					{
+						pl.sendMessage(FormatUtil.format("&7You have salvaged an " + msg + " for " + amtIron + " iron"));
+						plugin.outConsole(pl.getName() + " salvaged " + msg + " for " + amtIron + " iron");
+						Inventory inv = pl.getInventory();
+						inv.removeItem(new ItemStack[] { item });
+						Material give = Material.IRON_INGOT;
+						ItemStack salvaged = new ItemStack(give.getId(), (int)amtIron);
+						InventoryWorkaround.addItems(inv, salvaged);
+					}
 				}
 				else
 				{
-					pl.sendMessage(ChatColor.GRAY + "Error, '" + mitem.toString().toLowerCase().replaceAll("_", " ") + "' is not a type of iron armor");
+					pl.sendMessage(FormatUtil.format("&7Error, " + msg + " is not a type of iron armor"));
 				}
 			}
 		} 
@@ -115,30 +132,43 @@ public class PlayerListener implements Listener
 			{
 				ItemStack item = pl.getItemInHand();
 				Material mitem = item.getType();
+				String msg = mitem.toString().toLowerCase().replaceAll("_", " ");
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amtIron = 0.0D;
-				if (mitem.equals(Material.DIAMOND_BOOTS))   
-					amtIron = Math.floor(this.bootsMax * mult);
-				if (mitem.equals(Material.DIAMOND_HELMET)) 
-					amtIron = Math.floor(this.HelmMax * mult);
-				if (mitem.equals(Material.DIAMOND_LEGGINGS))
-					amtIron = Math.floor(this.LegsMax * mult);
-				if (mitem.equals(Material.DIAMOND_CHESTPLATE)) 
-					amtIron = Math.floor(this.ChestMax * mult);
-				amtIron -= 1.0D;
-				if (amtIron > 0.0D)
+				if (msg.contains("diamond"))
 				{
-					pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
-					plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " diamond(s)");
-					Inventory inv = pl.getInventory();
-					inv.removeItem(new ItemStack[] { item });
-					Material give = Material.DIAMOND;
-					ItemStack salvaged = new ItemStack(give.getId(), (int)amtIron);
-					InventoryWorkaround.addItems(inv, salvaged);
+					if (mitem.equals(Material.DIAMOND_BOOTS))   
+					{
+						amtIron = Math.ceil(this.bootsMax * mult);
+					}
+					if (mitem.equals(Material.DIAMOND_HELMET)) 
+					{
+						amtIron = Math.ceil(this.HelmMax * mult);
+					}
+					if (mitem.equals(Material.DIAMOND_LEGGINGS))
+					{
+						amtIron = Math.ceil(this.LegsMax * mult);
+					}
+					if (mitem.equals(Material.DIAMOND_CHESTPLATE)) 
+					{
+						amtIron = Math.ceil(this.ChestMax * mult);
+					}
+					if (amtIron == 0)
+						amtIron = 1;
+					if (amtIron > 0.0D)
+					{
+						pl.sendMessage(FormatUtil.format("&7You have salvaged a " + msg + " for " + amtIron + " diamond(s)"));
+						plugin.outConsole(pl.getName() + " salvaged " + msg + " for " + amtIron + " diamond");
+						Inventory inv = pl.getInventory();
+						inv.removeItem(new ItemStack[] { item });
+						Material give = Material.DIAMOND;
+						ItemStack salvaged = new ItemStack(give.getId(), (int)amtIron);
+						InventoryWorkaround.addItems(inv, salvaged);
+					}
 				}
 				else
 				{
-					pl.sendMessage(ChatColor.GRAY + "Error, '" + mitem.toString().toLowerCase().replaceAll("_", " ") + "' is not a type of diamond armor");
+					pl.sendMessage(FormatUtil.format("&7Error, " + msg + " is not a type of diamond armor"));
 				}
 			}
 		} 
@@ -148,30 +178,43 @@ public class PlayerListener implements Listener
 			{
 				ItemStack item = pl.getItemInHand();
 				Material mitem = item.getType();
-				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
+				String msg = mitem.toString().toLowerCase().replaceAll("_", " ");
+				double mult = 1.0D - ((double) item.getDurability() / mitem.getMaxDurability());
 				double amtIron = 0.0D;
-				if (mitem.equals(Material.GOLD_BOOTS))   
-					amtIron = Math.floor(this.bootsMax * mult);
-				if (mitem.equals(Material.GOLD_HELMET)) 
-					amtIron = Math.floor(this.HelmMax * mult);
-				if (mitem.equals(Material.GOLD_LEGGINGS))
-					amtIron = Math.floor(this.LegsMax * mult);
-				if (mitem.equals(Material.GOLD_CHESTPLATE)) 
-					amtIron = Math.floor(this.ChestMax * mult);
-				amtIron -= 1.0D;
-				if (amtIron > 0.0D)
+				if (msg.contains("gold"))
 				{
-					pl.sendMessage(ChatColor.GRAY + "You have salvaged a " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
-					plugin.outConsole(pl.getName() + " salvaged " + mitem.toString().toLowerCase().replaceAll("_", " ") + " for " + amtIron + " gold ingot(s)");
-					Inventory inv = pl.getInventory();
-					inv.removeItem(new ItemStack[] { item });
-					Material give = Material.IRON_INGOT;
-					ItemStack salvaged = new ItemStack(give.getId(), (int)amtIron);
-					InventoryWorkaround.addItems(inv, salvaged);
+					if (mitem.equals(Material.GOLD_BOOTS))   
+					{
+						amtIron = Math.ceil(this.bootsMax * mult);
 					}
+					if (mitem.equals(Material.GOLD_HELMET)) 
+					{
+						amtIron = Math.ceil(this.HelmMax * mult);
+					}
+					if (mitem.equals(Material.GOLD_LEGGINGS))
+					{
+						amtIron = Math.ceil(this.LegsMax * mult);
+					}
+					if (mitem.equals(Material.GOLD_CHESTPLATE)) 
+					{
+						amtIron = Math.ceil(this.ChestMax * mult);
+					}
+					if (amtIron == 0)
+						amtIron = 1;
+					if (amtIron > 0.0D)
+					{
+						pl.sendMessage(FormatUtil.format("&7You have salvaged a " + msg + " for " + amtIron + " gold"));
+						plugin.outConsole(pl.getName() + " salvaged " + msg + " for " + amtIron + " gold");
+						Inventory inv = pl.getInventory();
+						inv.removeItem(new ItemStack[] { item });
+						Material give = Material.GOLD_INGOT;
+						ItemStack salvaged = new ItemStack(give.getId(), (int)amtIron);
+						InventoryWorkaround.addItems(inv, salvaged);
+					}
+				}
 				else
 				{
-					pl.sendMessage(ChatColor.GRAY + "Error, '" + mitem.toString().toLowerCase().replaceAll("_", " ") + "' is not a type of gold armor");
+					pl.sendMessage(ChatColor.GRAY + "Error, " + msg + " is not a type of gold armor");
 				}
 			}
 		}
@@ -402,6 +445,7 @@ public class PlayerListener implements Listener
 		if (data.isScooldown())
 		{
 			player.sendMessage(FormatUtil.format(plugin.prefix + "&cYou are recovering from super pickaxe"));
+			player.sendMessage(FormatUtil.format(plugin.prefix + "&cYou have " + (data.getSuperpickcd()/20) + " seconds left"));
 			return;
 		}
 		if (data.isSpick())

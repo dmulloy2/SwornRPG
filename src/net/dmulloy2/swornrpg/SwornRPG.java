@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,10 +31,10 @@ import lombok.Getter;
 
 //Plugin imports
 import net.dmulloy2.swornrpg.commands.*;
+import net.dmulloy2.swornrpg.handlers.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.*;
-import net.dmulloy2.swornrpg.permissions.*;
 import net.milkbowl.vault.economy.Economy;
 
 //Bukkit imports
@@ -64,9 +65,10 @@ public class SwornRPG extends JavaPlugin
 	private @Getter Economy economy;
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
+	private @Getter ResourceHandler resourceHandler;
 	
 	//Private objects
-	private static Logger log;
+	public static Logger log;
     private FileConfiguration tagsConfig = null;
     private File tagsConfigFile = null;
 	private EntityListener entityListener = new EntityListener(this);
@@ -102,14 +104,10 @@ public class SwornRPG extends JavaPlugin
 	public String tagresetPerm = "srpg.tagr";
 	public String adminItemPerm = "srpg.iname";
 	public String adminMatchPerm = "srpg.match";
-	
-	//General command strings
-	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
-	public String invalidargs = prefix + ChatColor.RED + "Invalid arguments count ";
-	public String mustbeplayer = prefix + ChatColor.RED + "You must be a player to use this command";
-	public String noperm = ChatColor.RED + "You do not have permission to perform this command";
-	public String noplayer = prefix + ChatColor.RED + "Error, player not found";
 
+	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
+	public String noperm = ChatColor.RED + "Error, you do not have permission to perform this command";
+	
 	//What the plugin does when it is disabled
 	public void onDisable()
 	{
@@ -138,6 +136,7 @@ public class SwornRPG extends JavaPlugin
 		
 		commandHandler = new CommandHandler(this);
 		permissionHandler = new PermissionHandler(this);
+		resourceHandler = new ResourceHandler(this, this.getClassLoader());
 		
 		//Check for TagAPI
 		if (pm.isPluginEnabled("TagAPI"))
@@ -196,6 +195,7 @@ public class SwornRPG extends JavaPlugin
 		getCommand("levelr").setPermissionMessage(noperm);
 		getCommand("itemname").setPermissionMessage(noperm);
 		getCommand("addxp").setPermissionMessage(noperm);
+
 		
 		//Initializes the Util class
 		Util.Initialize(this);
@@ -234,6 +234,8 @@ public class SwornRPG extends JavaPlugin
 					if (data.isFcooldown())
 					{
 						data.setFrenzycd(data.getFrenzycd() - 20);
+						if (data.getFrenzycd() <= 0)
+							data.setFcooldown(false);
 					}
 				}
 			}
@@ -250,6 +252,8 @@ public class SwornRPG extends JavaPlugin
 					if (data.isScooldown())
 					{
 						data.setSuperpickcd(data.getSuperpickcd() - 20);
+						if (data.getSuperpickcd() <= 0)
+							data.setScooldown(false);
 					}
 				}
 			}
@@ -502,4 +506,17 @@ public class SwornRPG extends JavaPlugin
     	else
     		return false;
     }
+    
+	public String getMessage(String string) 
+	{
+		try
+		{
+			return resourceHandler.getMessages().getString(string);
+		} 
+		catch (MissingResourceException ex) 
+		{
+			outConsole("[WARNING] Messages locale is missing key for: string");
+			return null;
+		}
+	}
 }

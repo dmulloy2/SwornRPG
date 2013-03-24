@@ -49,7 +49,7 @@ public class CmdRide extends SwornRPGCommand
 		}
 		else
 		{
-			sendMessage(plugin.noplayer);
+			sendpMessage(plugin.getMessage("noplayer"));
 		}
 	}
 }

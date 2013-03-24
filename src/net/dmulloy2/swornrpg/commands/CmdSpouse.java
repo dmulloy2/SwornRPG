@@ -44,7 +44,7 @@ public class CmdSpouse extends SwornRPGCommand
 			}
 			else
 			{
-				sendMessage(plugin.noplayer);
+				sendpMessage(plugin.getMessage("noplayer"));
 			}
 		}
 		else if (args.length == 0)
@@ -64,7 +64,7 @@ public class CmdSpouse extends SwornRPGCommand
 			}
 			else
 			{
-				sendMessage(plugin.mustbeplayer);
+				sendpMessage(plugin.getMessage("mustbeplayer"));
 			}
 		}
 	}

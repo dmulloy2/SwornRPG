@@ -57,7 +57,7 @@ public class CmdFrenzy extends SwornRPGCommand
 		else
 		{
 			sendpMessage("&cError, you are still recovering from frenzy");
-			sendpMessage("&cYou have " + data.getFrenzycd() + " seconds left");
+			sendpMessage("&cYou have " + (data.getFrenzycd()/20) + " seconds left");
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class CmdTagr extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "tagr";
-		this.description = "High Council chat";
+		this.description = "Reset a player's tag";
 		this.aliases.add("resettag");
 		this.optionalArgs.add("player");
 		this.permission = PermissionType.CMD_TAGR.permission;
@@ -47,7 +47,7 @@ public class CmdTagr extends SwornRPGCommand
 					Player target = Util.matchPlayer(args[0]);
 					this.plugin.removeTagChange(target.getName());
 					sendpMessage("&eYou have reset " + target.getName() + "'s tag");
-					sendpMessage("&cYour tag has been reset", target);
+					sendMessageTarget("&cYour tag has been reset", target);
 				}
 			}
 		}

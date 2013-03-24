@@ -1,6 +1,7 @@
-package net.dmulloy2.swornrpg.permissions;
+package net.dmulloy2.swornrpg.handlers;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.permissions.Permission;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public class PermissionHandler
 	
 	private String getPermissionString(Permission permission) 
 	{
-		return "srpg." + permission.node.toLowerCase();
+		return "srpg." + permission.getNode().toLowerCase();
 	}
 
 }

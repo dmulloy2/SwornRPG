@@ -42,7 +42,7 @@ public class CmdMarry extends SwornRPGCommand
 			}
 			else
 			{
-				sendMessage(plugin.noplayer);
+				sendpMessage(plugin.getMessage("noplayer"));
 			}
 		}
 		else

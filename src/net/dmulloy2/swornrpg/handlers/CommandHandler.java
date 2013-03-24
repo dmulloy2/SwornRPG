@@ -1,9 +1,12 @@
-package net.dmulloy2.swornrpg.commands;
+package net.dmulloy2.swornrpg.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.commands.CmdHelp;
+import net.dmulloy2.swornrpg.commands.SwornRPGCommand;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
