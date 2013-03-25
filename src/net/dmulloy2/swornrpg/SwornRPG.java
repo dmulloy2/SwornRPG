@@ -69,8 +69,8 @@ public class SwornRPG extends JavaPlugin
 	
 	//Private objects
 	public static Logger log;
-    private FileConfiguration tagsConfig = null;
-    private File tagsConfigFile = null;
+	private FileConfiguration tagsConfig = null;
+	private File tagsConfigFile = null;
 	private EntityListener entityListener = new EntityListener(this);
 	private PlayerListener playerListener = new PlayerListener(this);
 	private BlockListener blockListener = new BlockListener(this);
@@ -78,8 +78,9 @@ public class SwornRPG extends JavaPlugin
 	private ExperienceListener experienceListener = new ExperienceListener(this);
 
 	//Hash maps
-    private HashMap<String, String> tagChanges;
-    public HashMap<String, String> proposal = new HashMap<String, String>();
+	private HashMap<String, String> tagChanges;
+	public HashMap<String, String> proposal = new HashMap<String, String>();
+	public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
 	
     //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
@@ -88,7 +89,8 @@ public class SwornRPG extends JavaPlugin
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, superpickcd, superpickm;
 	private double newVersion;
-    private double currentVersion;
+	private double currentVersion;
+	public String salvage;
 	
 
 	//Permission Strings
@@ -331,7 +333,19 @@ public class SwornRPG extends JavaPlugin
 		deathbook = getConfig().getBoolean("deathbook");
 		update = getConfig().getBoolean("updatechecker");
 		debug = getConfig().getBoolean("debug");
+		
+		/**Salvage**/
 		salvaging = getConfig().getBoolean("salvaging");
+		salvage = getConfig().getString("salvage");
+		 
+		salvageRef.put("Iron", new HashMap<Integer, Integer>());
+		salvageRef.put("Gold", new HashMap<Integer, Integer>());
+		salvageRef.put("Diamond", new HashMap<Integer, Integer>());
+		String[] salvageArray = salvage.split("; ");
+		for (String s: salvageArray) {
+			String[] subset = s.split(", ");
+			salvageRef.get(subset[1]).put(Integer.parseInt(subset[0]), Integer.parseInt(subset[2]));
+		}
 		
 		/**Frenzy**/
 		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
