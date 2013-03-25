@@ -69,7 +69,7 @@ levelingmethods:
     #xp gain when a player kills a mob
   
 levelingrewards:
-#What do players receieve for leveling up?
+#What do players receive for leveling up?
   money:
     enabled: true
     amountperlevel: 250
