@@ -22,7 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +47,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -69,8 +74,8 @@ public class SwornRPG extends JavaPlugin
 	
 	//Private objects
 	public static Logger log;
-	private FileConfiguration tagsConfig = null;
-	private File tagsConfigFile = null;
+    private FileConfiguration tagsConfig = null;
+    private File tagsConfigFile = null;
 	private EntityListener entityListener = new EntityListener(this);
 	private PlayerListener playerListener = new PlayerListener(this);
 	private BlockListener blockListener = new BlockListener(this);
@@ -78,10 +83,11 @@ public class SwornRPG extends JavaPlugin
 	private ExperienceListener experienceListener = new ExperienceListener(this);
 
 	//Hash maps
-	private HashMap<String, String> tagChanges;
-	public HashMap<String, String> proposal = new HashMap<String, String>();
+    private HashMap<String, String> tagChanges;
+    public HashMap<String, String> proposal = new HashMap<String, String>();
 	public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
-	
+    public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
+    
     //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
@@ -89,24 +95,9 @@ public class SwornRPG extends JavaPlugin
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, superpickcd, superpickm;
 	private double newVersion;
-	private double currentVersion;
-	public String salvage;
+    private double currentVersion;
+    public String salvage;
 	
-
-	//Permission Strings
-	public String adminChatPerm = "srpg.adminchat";
-	public String adminRidePerm = "srpg.ride";
-	public String adminSayPerm = "srpg.asay";
-	public String adminResetPerm = "srpg.levelr";
-	public String councilChatPerm = "srpg.council";
-	public String adminReloadPerm = "srpg.reload";
-	public String hatPerm = "srpg.hat";
-	public String matchPerm = "srpg.match";
-	public String tagPerm = "srpg.tag";
-	public String tagresetPerm = "srpg.tagr";
-	public String adminItemPerm = "srpg.iname";
-	public String adminMatchPerm = "srpg.match";
-
 	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
 	public String noperm = ChatColor.RED + "Error, you do not have permission to perform this command";
 	
@@ -127,9 +118,25 @@ public class SwornRPG extends JavaPlugin
 		//Console logging
 		log = Logger.getLogger("Minecraft");
 		outConsole(getDescription().getFullName() + " has been enabled");
+		
+		//Version checker stuff
 		currentVersion = Double.valueOf(getDescription().getVersion().replaceFirst("\\.", ""));
+		
+		//Configuration
+		if (!getDataFolder().exists())
+			getDataFolder().mkdir();
+		
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists())
+        	saveDefaultConfig();
+        
+		loadConfig();
+		reloadConfig();
+		saveResource("messages.properties", true);
+		
+		updateBlockDrops();
     
-		//Registers Listener events
+		//Register Listener events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(this.playerListener, this);
 		pm.registerEvents(this.entityListener, this);
@@ -201,20 +208,10 @@ public class SwornRPG extends JavaPlugin
 		
 		//Initializes the Util class
 		Util.Initialize(this);
-		
-		//Configuration
-		loadConfig();
-		saveDefaultConfig();
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-		
+	
 		//Check for vault
 		checkVault(pm);
-		
-		//Makes sure files exist
-		if (!getDataFolder().exists())
-			getDataFolder().mkdir();
-		
+
 		//Schedules player data cache saving
 		playerDataCache = new PlayerDataCache(this);
 		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
@@ -237,7 +234,10 @@ public class SwornRPG extends JavaPlugin
 					{
 						data.setFrenzycd(data.getFrenzycd() - 20);
 						if (data.getFrenzycd() <= 0)
+						{
 							data.setFcooldown(false);
+							player.sendMessage(FormatUtil.format(getMessage("ability_refreshed"), "Frenzy"));
+						}
 					}
 				}
 			}
@@ -255,7 +255,10 @@ public class SwornRPG extends JavaPlugin
 					{
 						data.setSuperpickcd(data.getSuperpickcd() - 20);
 						if (data.getSuperpickcd() <= 0)
+						{
 							data.setScooldown(false);
+							player.sendMessage(FormatUtil.format(getMessage("ability_refreshed"), "SuperPickaxe"));
+						}
 					}
 				}
 			}
@@ -297,8 +300,8 @@ public class SwornRPG extends JavaPlugin
 						newVersion = updateCheck(currentVersion);
 						if (newVersion > currentVersion) 
 						{
-							log.info("[SwornRPG] A new version of SwornRPG is now available!");
-							log.info("[SwornRPG] Update SwornRPG at: http://dev.bukkit.org/server-mods/swornrpg/");
+							outConsole("A new version of SwornRPG is now available!");
+							outConsole("Update SwornRPG at: http://dev.bukkit.org/server-mods/swornrpg/");
 						}
 					} 
 					catch (Exception e) 
@@ -334,15 +337,16 @@ public class SwornRPG extends JavaPlugin
 		update = getConfig().getBoolean("updatechecker");
 		debug = getConfig().getBoolean("debug");
 		
-		/**Salvage**/
+		/**Salvaging**/
 		salvaging = getConfig().getBoolean("salvaging");
 		salvage = getConfig().getString("salvage");
-		 
+
 		salvageRef.put("Iron", new HashMap<Integer, Integer>());
 		salvageRef.put("Gold", new HashMap<Integer, Integer>());
 		salvageRef.put("Diamond", new HashMap<Integer, Integer>());
 		String[] salvageArray = salvage.split("; ");
-		for (String s: salvageArray) {
+		for (String s: salvageArray) 
+		{
 			String[] subset = s.split(", ");
 			salvageRef.get(subset[1]).put(Integer.parseInt(subset[0]), Integer.parseInt(subset[2]));
 		}
@@ -487,6 +491,7 @@ public class SwornRPG extends JavaPlugin
 		return economy != null;
 	}
 
+    //Update checker
     public double updateCheck(double currentVersion) throws Exception 
     {
         String pluginUrlString = "http://dev.bukkit.org/server-mods/swornrpg/files.rss";
@@ -521,6 +526,7 @@ public class SwornRPG extends JavaPlugin
     		return false;
     }
     
+    //Get messages
 	public String getMessage(String string) 
 	{
 		try
@@ -529,8 +535,48 @@ public class SwornRPG extends JavaPlugin
 		} 
 		catch (MissingResourceException ex) 
 		{
-			outConsole("[WARNING] Messages locale is missing key for: string");
+			outConsole("WARNING: Messages locale is missing key for: " + string);
 			return null;
 		}
+	}
+	
+	//Reload
+	public void reload()
+	{
+		reloadConfig();
+		reloadtagsConfig();
+		loadConfig();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void updateBlockDrops() 
+	{
+		Map<String, ?> map = getConfig().getConfigurationSection("block-drops").getValues(true);
+		
+		for (Entry<String, ?> entry : map.entrySet()) 
+		{
+			List<String> values = (List<String>) entry.getValue();
+			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
+			for (String value : values) 
+			{
+				String[] ss = value.split(":");
+				int type = Integer.valueOf(ss[0]);
+				short data = 0;
+				int chance = 0;
+				if (ss.length == 3)
+				{
+					data = Short.valueOf(ss[1]);
+					chance = Integer.valueOf(ss[2]);
+				} 
+				else 
+				{
+					chance = Integer.valueOf(ss[1]);
+				}
+				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+			}
+			
+			blockDropsMap.put(Integer.valueOf(entry.getKey()), blockDrops);
+		}
+		if (debug) System.out.println(blockDropsMap.toString());
 	}
 }

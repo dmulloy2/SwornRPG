@@ -34,21 +34,21 @@ public class CmdPropose extends SwornRPGCommand
 			{
 				if (data.getSpouse() != null)
 				{
-					sendpMessage("&cPolygamy is not allowed!");
+					sendpMessage(plugin.getMessage("polygamy"));
 				}
 				else if (targetp.equals(sender.getName()))
 				{
-					sendpMessage("&cYou cannot marry yourself");
+					sendpMessage(plugin.getMessage("cannot_marry_self"));
 				}
 				else if (data1.getSpouse() != null)
 				{
-					sendpMessage("&c" + targetp + " is already married");
+					sendpMessage(plugin.getMessage("target_is_married"), targetp);
 				}
 				else
 				{
 					plugin.proposal.put(targetp, sender.getName());
-					sendpMessage("&aYou have proposed to " + targetp);
-					sendMessageTarget("&a" + sender.getName() + " Wishes to marry you. Type &c/marry &6 " + sender.getName() + " &ato confirm", target);
+					sendpMessage(plugin.getMessage("you_have_proposed"), targetp);
+					sendMessageTarget(plugin.getMessage("send_marriage_request"), target, sender.getName());
 				}
 			}
 		}

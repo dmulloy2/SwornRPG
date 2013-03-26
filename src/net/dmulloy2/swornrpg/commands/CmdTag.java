@@ -43,9 +43,9 @@ public class CmdTag extends SwornRPGCommand
 					else 
 					{
 						  Player target = Util.matchPlayer(args[0]);
-						  this.plugin.addTagChange(target.getName(), args[1] + target.getName());
-						  sendpMessage("&aChanged tag for " + target.getName() + "!");
-						  sendMessageTarget("&aYour tag is now '" + args[1] + target.getName() + "'", target);
+						  plugin.addTagChange(target.getName(), args[1] + target.getName());
+						  sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName());
+						  sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, (args[1] + target.getName()));
 					}
 				}
 				else
@@ -62,13 +62,13 @@ public class CmdTag extends SwornRPGCommand
 				else
 				{
 					this.plugin.addTagChange(sender.getName(), args[0] + sender.getName());
-					sendpMessage("&aYou have successfully changed your tag to '" + args[0] + sender.getName() + "'");
+					sendpMessage(plugin.getMessage("tag_changed_changer"), (args[0] + sender.getName()));
 				}
 			}
 		}
 		else
 		{
-			sendpMessage("&cYou must have TagAPI installed to perform this command");
+			sendpMessage(plugin.getMessage("no_tagapi"));
 			plugin.outConsole("You must have TagAPI installed to use Tag related commands. http://dev.bukkit.org/server-mods/tag/");
 		}
 	}

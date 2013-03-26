@@ -30,17 +30,17 @@ public class CmdDivorce extends SwornRPGCommand
 			PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
 			data.setSpouse(null);
 			data1.setSpouse(null);
-			sendpMessage("&cYou have divorced " + targetp);
-			sendMessageAll("&c" + sender.getName() + " has divorced " + targetp);
+			sendpMessage(plugin.getMessage("divorce_plaintiff"), targetp);
+			sendMessageAll(plugin.getMessage("divorce_broadcast"), sender.getName(), targetp);
 			Player target = Util.matchPlayer(targetp);
 			if (target != null)
 			{
-				sendMessageTarget("&cYou are now single", target);
+				sendMessageTarget(plugin.getMessage("divorce_defendant"), target);
 			}
 		}
 		else
 		{
-			sendpMessage("&cError, you are not married");
+			sendpMessage(plugin.getMessage("not_married"));
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class CmdEject extends SwornRPGCommand
 		}
 		else
 		{
-			sendpMessage("&cError, nobody is riding you");
+			sendpMessage(plugin.getMessage("no_passenger"));
 		}
 	}
 }

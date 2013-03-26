@@ -28,7 +28,7 @@ public class CmdStaffList extends SwornRPGCommand
 	{
 		List<String> lines = new ArrayList<String>();
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format("&4==== &6Online Staff &4 ===="));
+		line.append(FormatUtil.format(plugin.getMessage("stafflist_header")));
 		lines.add(line.toString());
 		for (Player player : plugin.getServer().getOnlinePlayers()) 
 		{

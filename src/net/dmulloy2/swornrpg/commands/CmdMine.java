@@ -28,13 +28,13 @@ public class CmdMine extends SwornRPGCommand
 			final PlayerData data = getPlayerData(player);
 			if (data.isSpick())
 			{
-				sendpMessage("&cYou are currently using super pickaxe");
+				sendpMessage(plugin.getMessage("superpick_inprogress"));
 				return;
 			}
 			if (data.isScooldown())
 			{
-				sendpMessage("&cYou are still recovering from super pick!");
-				sendpMessage("&cYou have " + (data.getSuperpickcd()/20) + " seconds left");
+				sendpMessage(plugin.getMessage("superpick_cooldown_header"));
+				sendpMessage(plugin.getMessage("superpick_cooldown_time"), (data.getSuperpickcd()/20));
 				return;
 			}
 			if (player.getItemInHand() != null)
@@ -42,8 +42,8 @@ public class CmdMine extends SwornRPGCommand
 				String inhand = player.getItemInHand().toString().toLowerCase().replaceAll("_", " ");
 				if (inhand.contains("pickaxe")&&!inhand.contains("wood")&&!inhand.contains("gold"))
 				{
-					sendpMessage("&aReady to mine?");
-					sendpMessage("&aYour pickaxe has become a super pickaxe!");
+					sendpMessage(plugin.getMessage("superpick_question"));
+					sendpMessage(plugin.getMessage("superpick_activate"));
 					int level = data.getLevel();
 					final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
 					int strength = 1;
@@ -55,7 +55,7 @@ public class CmdMine extends SwornRPGCommand
 						@Override
 						public void run()
 						{
-							sendpMessage("&eSuper pickaxe ability has worn off");
+							sendpMessage(plugin.getMessage("superpick_wearoff"));
 							data.setSpick(false);
 							data.setScooldown(true);
 							int cooldown = (20*(duration*plugin.superpickcd));
@@ -66,18 +66,17 @@ public class CmdMine extends SwornRPGCommand
 				}
 				else
 				{
-					sendpMessage("&cYour inhand item is not valid for this command!");
-					sendpMessage("&cYou must have an iron or diamond pickaxe!");
+					sendpMessage(plugin.getMessage("superpick_invalid_item"));
 				}
 			}
 			else
 			{
-				sendpMessage("&cYou must have a pickaxe to use this command!");
+				sendpMessage(plugin.getMessage("hand_empty"));
 			}
 		}
 		else
 		{
-			sendpMessage("&cThis command has been disabled by your server owner!");
+			sendpMessage(plugin.getMessage("command_disabled"));
 		}
 	}
 }

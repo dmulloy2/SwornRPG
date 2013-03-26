@@ -34,14 +34,14 @@ public class CmdSitdown extends SwornRPGCommand
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
 			if (otherFaction.isWarZone())
 			{
-				sendpMessage("&cYou cannot use this command in a warzone");
+				sendpMessage(plugin.getMessage("chair_warzone"));
 				return;
 			}
 		}
 		Block block = player.getTargetBlock(null, 100);
 		if (block == null)
 		{
-			sendpMessage("&cError, you are not targeting a block!");
+			sendpMessage(plugin.getMessage("no_block"));
 		}
 		else
 		{
@@ -56,12 +56,12 @@ public class CmdSitdown extends SwornRPGCommand
 				data.setSitting(true);	
 				Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
 				it.setPassenger(player);
-				sendpMessage("&eYou are now sitting on a &a" + seat);
-				sendpMessage("&eStand up with &c/standup");
+				sendpMessage(plugin.getMessage("now_sitting"), seat);
+				sendpMessage(plugin.getMessage("standup_command"));
 			}
 			else
 			{
-				sendpMessage("&cError, you are not targeting a chair!");
+				sendpMessage(plugin.getMessage("no_chair"));
 			}
 		}
 	}

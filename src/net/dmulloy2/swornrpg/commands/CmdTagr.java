@@ -34,26 +34,26 @@ public class CmdTagr extends SwornRPGCommand
 			if (args.length == 0) 
 			{
 				this.plugin.removeTagChange(sender.getName());
-				sendpMessage("&aYou have reset your tag");
+				sendpMessage(plugin.getMessage("tag_reset_self"));
 			}
 			else if (args.length == 1)
 			{
 				if (args[0].length() > 16) 
 				{
-					sendpMessage("&cThat username is too large to be a players!");
+					sendpMessage(plugin.getMessage("username_too_large"));
 				}
 				else 
 				{
 					Player target = Util.matchPlayer(args[0]);
 					this.plugin.removeTagChange(target.getName());
-					sendpMessage("&eYou have reset " + target.getName() + "'s tag");
-					sendMessageTarget("&cYour tag has been reset", target);
+					sendpMessage(plugin.getMessage("tag_reset_resetter"), target.getName());
+					sendMessageTarget(plugin.getMessage("tag_reset_resetee"), target);
 				}
 			}
 		}
 		else
 		{
-			sendpMessage("&cYou must have TagAPI installed to perform this command");
+			sendpMessage(plugin.getMessage("no_tagapi"));
 			plugin.outConsole("You must have TagAPI installed to perform Tag related commands. http://dev.bukkit.org/server-mods/tag");
 		}
 	}

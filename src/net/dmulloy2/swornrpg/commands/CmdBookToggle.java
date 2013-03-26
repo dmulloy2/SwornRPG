@@ -16,8 +16,8 @@ public class CmdBookToggle extends SwornRPGCommand
 		this.description = "Toggle the reception of death coordinates";
 		this.aliases.add("deathbook");
 		this.aliases.add("deathmail");
-		this.optionalArgs.add("enabled");
-		this.optionalArgs.add("disabled");
+		this.optionalArgs.add("enable");
+		this.optionalArgs.add("disable");
 		this.mustBePlayer = true;
 	}
 	
@@ -29,29 +29,29 @@ public class CmdBookToggle extends SwornRPGCommand
 			if (data.isDeathbookdisabled())
 			{
 				data.setDeathbookdisabled(false);
-				sendpMessage("&cDeath coordinate messages enabled");
+				sendpMessage(plugin.getMessage("deathbook_enabled"));
 			}
 			else
 			{
 				data.setDeathbookdisabled(true);
-				sendpMessage("&cDeath coordinate messages disabled");
+				sendpMessage(plugin.getMessage("deathbook_disabled"));
 			}
 		}
 		else if (args.length == 1)
 		{
-			if (args[0].equalsIgnoreCase("enabled"))
+			if (args[0].equalsIgnoreCase("enable"))
 			{
 				data.setDeathbookdisabled(false);
-				sendpMessage("&eDeath coordinate messages enabled");
+				sendpMessage(plugin.getMessage("deathbook_enabled"));
 			}
-			else if (args[0].equalsIgnoreCase("disabled"))
+			else if (args[0].equalsIgnoreCase("disable"))
 			{
 				data.setDeathbookdisabled(true);
-				sendpMessage("&eDeath coordinate messages disabled");
+				sendpMessage(plugin.getMessage("deathbook_disabled"));
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("invalidargs") + "&c(/deathbook [enabled/disabled])");
+				sendpMessage(plugin.getMessage("invalidargs") + "&c(/deathbook [enable/disable])");
 			}
 		}			
 	}

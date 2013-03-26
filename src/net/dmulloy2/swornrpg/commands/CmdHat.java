@@ -52,14 +52,14 @@ public class CmdHat extends SwornRPGCommand
 			final ItemStack head = inv.getHelmet();
 			if (head == null || head.getType() == Material.AIR)
 			{
-				sendpMessage("&cYou are not wearing a hat.");
+				sendpMessage(plugin.getMessage("no_hat"));
 			}
 			else
 			{
 				final ItemStack air = new ItemStack(Material.AIR);
 				inv.setHelmet(air);
 				InventoryWorkaround.addItems(player.getInventory(), head);
-				sendpMessage("&eYour hat has been removed");
+				sendpMessage(plugin.getMessage("hat_removed"));
 			}
 		}
 		else
@@ -79,7 +79,7 @@ public class CmdHat extends SwornRPGCommand
 						hand.setAmount(hand.getAmount() - 1);
 						inv.setHelmet(toHead);
 						InventoryWorkaround.addItems(player.getInventory(), head);
-						sendpMessage("&eEnjoy your new hat!");
+						sendpMessage(plugin.getMessage("hat_success"));
 					}
 					else
 					{
@@ -87,17 +87,17 @@ public class CmdHat extends SwornRPGCommand
 						inv.remove(hand);
 						inv.setHelmet(hand);
 						inv.setItemInHand(head);
-						sendpMessage("&eEnjoy your new hat!");
+						sendpMessage(plugin.getMessage("hat_success"));
 					}
 				}
 				else
 				{
-					sendpMessage("&cError, you cannot use this item as a hat!");
+					sendpMessage(plugin.getMessage("hat_failure"));
 				}
 			}
 			else
 			{
-				sendpMessage("&cYou must have something to wear in your hand");
+				sendpMessage(plugin.getMessage("hand_empty"));
 			}
 		}
 	}

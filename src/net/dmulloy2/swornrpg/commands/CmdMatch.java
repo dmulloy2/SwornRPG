@@ -30,18 +30,18 @@ public class CmdMatch extends SwornRPGCommand
 		Player match = Util.matchPlayer(args[0]);
 		if (match != null)
 		{
-			sendpMessage("&aMatch found! '" + match.getName() + "'");;
+			sendpMessage(plugin.getMessage("match_successful"), match.getName());
 		}
 		else
 		{
 			OfflinePlayer offlinematch = Util.matchOfflinePlayer(args[0]);
 			if (offlinematch != null)
 			{
-				sendpMessage("&aMatch found! '" + offlinematch.getName() + "'");
+				sendpMessage(plugin.getMessage("match_successful"), offlinematch.getName());
 			}
 			else
 			{
-				sendpMessage("&cError, no match was found for '" + args[0] + "'");
+				sendpMessage(plugin.getMessage("match_failure"), args[0]);
 			}
 		}
 	}

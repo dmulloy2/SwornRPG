@@ -39,7 +39,7 @@ public class CmdLevelr extends SwornRPGCommand
 				data.setLevel(0);
 				data.setTotalxp(0);
 				data.setXpneeded(100 + (data.getPlayerxp()/4));
-				sendpMessage("&eYou have reset your level");
+				sendpMessage(plugin.getMessage("level_reset_self"));
 			}
 			else
 			{
@@ -61,7 +61,8 @@ public class CmdLevelr extends SwornRPGCommand
 				data.setLevel(0);
 				data.setTotalxp(0);
 				data.setXpneeded(100 + (data.getPlayerxp()/4));
-				sendpMessage("&eYou have reset " + targetp + "'s level");
+				sendpMessage(plugin.getMessage("level_reset_resetter"), targetp);
+				sendMessageTarget(plugin.getMessage("level_reset_reset"), target);
 			}
 			else
 			{

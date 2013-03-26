@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -27,7 +28,11 @@ public class CmdItemName extends SwornRPGCommand
 	public void perform()
 	{
 	    ItemStack hand = player.getItemInHand();
-	    if (hand != null)
+	    if ((hand == null)||hand.getType().equals(Material.AIR))
+	    {
+	    	sendpMessage(plugin.getMessage("hand_empty"));
+	    }
+	    else
 	    {
 	    	ItemMeta meta = hand.getItemMeta();
 	    	String name = new String();
@@ -37,10 +42,8 @@ public class CmdItemName extends SwornRPGCommand
 		    }
 	    	meta.setDisplayName(name);
 	    	hand.setItemMeta(meta);
-	    }
-	    else
-	    {
-	    	sendpMessage("&cError, you must have an item in your hand to do this");
+	    	String inhand = hand.getType().toString().toLowerCase().replaceAll("_", " ");
+	    	sendpMessage(plugin.getMessage("item_name"), inhand, name);
 	    }
 	}
 }

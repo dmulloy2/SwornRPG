@@ -40,39 +40,42 @@ import com.massivecraft.factions.Faction;
 /**
  * @author dmulloy2
  * @contributor t7seven7t
+ * @contributor Dimpl
  */
 
-public class PlayerListener implements Listener 
+public class PlayerListener implements Listener
 {
-
 	private SwornRPG plugin;
 	private List<String> pages = new ArrayList<String>();
-
-	public PlayerListener(SwornRPG plugin) 
+	
+	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
-
+	
 	/**Salvaging**/
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerInteract(PlayerInteractEvent event) 
+	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		if(plugin.salvaging == false)
 			return;
 		
-		if (!event.hasBlock()) 
+		if (!event.hasBlock())
+			return;
+	
+		if (event.getClickedBlock() == null)
 			return;
 		
-		if (event.getClickedBlock() == null) 
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
-		
+	
 		Player pl = event.getPlayer();
-		
+	
 		if (!(pl.getGameMode() == (GameMode.SURVIVAL)))
 			return;
-		
+	
 		Block block = event.getClickedBlock();
-					
+	
 		String blockType = null;
 		if (block.getType().equals(Material.IRON_BLOCK))
 			blockType = "Iron";
@@ -80,19 +83,19 @@ public class PlayerListener implements Listener
 			blockType = "Gold";
 		if (block.getType().equals(Material.DIAMOND_BLOCK))
 			blockType = "Diamond";
-		
+	
 		if (blockType != null)
 		{
-			if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE))) 
+			if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE)))
 			{
 				ItemStack item = pl.getItemInHand();
 				Integer itemId = item.getTypeId();
-				double mult = 1.0D - item.getDurability() / item.getType().getMaxDurability();
+				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amt = 0.0D;
 				
 				if (plugin.salvageRef.get(blockType).containsKey(itemId))
 					amt = Math.round(plugin.salvageRef.get(blockType).get(itemId) * mult);
-				
+	
 				if (amt > 0.0D)
 				{
 					String article = "a";
@@ -104,7 +107,8 @@ public class PlayerListener implements Listener
 					String plural = "";
 					if (amt > 1.0D)
 						plural = "s";
-					pl.sendMessage(ChatColor.GRAY + "You have salvaged " + article + " " + item.getType().toString().toLowerCase().replaceAll("_", " ") + " for " + amt + " " + blockType.toLowerCase() + materialExtension + plural);
+					String salvagem = item.getType().toString().toLowerCase().replaceAll("_", " ");
+					pl.sendMessage(FormatUtil.format(plugin.getMessage("salvage_success"), article, salvagem, amt, (blockType.toLowerCase() + materialExtension + plural)));
 					plugin.outConsole(pl.getName() + " salvaged " + item.getType().toString().toLowerCase().replaceAll("_", " ") + " for " + amt + " " + blockType.toLowerCase() + materialExtension + plural);
 					Inventory inv = pl.getInventory();
 					inv.removeItem(new ItemStack[] { item });
@@ -116,15 +120,18 @@ public class PlayerListener implements Listener
 					if (blockType == "Diamond")
 						give = Material.DIAMOND;
 					ItemStack salvaged = new ItemStack(give.getId(), (int)amt);
-					InventoryWorkaround.addItems(inv, salvaged); 
+					InventoryWorkaround.addItems(inv, salvaged);
 					event.setCancelled(true);
 				}
 				else
-					pl.sendMessage(ChatColor.GRAY + "Error, '" + item.getType().toString().toLowerCase().replaceAll("_", " ") + "' is not a salvagable " + blockType.toLowerCase() + " item");
+				{
+					String itemname = item.getType().toString().toLowerCase().replaceAll("_", " ");
+					pl.sendMessage(FormatUtil.format(plugin.getMessage("not_salvagable"), itemname, blockType.toLowerCase()));
+				}
 			}
 		}
 	}
-	    
+	
     /**
      * Books or Mail messages with death coordinates
      * Creds to Milkywayz for helping with the books :)
@@ -186,13 +193,13 @@ public class PlayerListener implements Listener
 					Player killerp = event.getEntity().getKiller();
 					String killern = killerp.getName();
 					Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed by" + killern  + "at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
-					player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
+					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					if (plugin.debug) plugin.outConsole(player.getName() + "was sent a mail message with their death coords");
 				}
 				else
 				{
 					Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
-					player.sendMessage(plugin.prefix + ChatColor.YELLOW + "You have been sent a mail message with your death coords!");
+					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					if (plugin.debug) plugin.outConsole(player.getName() + "was sent a mail message with their death coords");
 				}
 			}
@@ -217,7 +224,7 @@ public class PlayerListener implements Listener
 		}
 		
 		/**Converter to the new leveling system**/
-		if (data.getXpneeded() == 0)
+		if (data.getXpneeded() <= 99)
 		{
 			data.setXpneeded(100 + (data.getPlayerxp()/4));
 		}
@@ -247,8 +254,8 @@ public class PlayerListener implements Listener
 		{
 			if (player.hasPermission("srpg.update") && (plugin.updateNeeded()))
 			{
-				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "A new version is available! Get it at");
-				player.sendMessage(plugin.prefix + ChatColor.YELLOW + "http://dev.bukkit.org/server-mods/swornrpg/");
+				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("update_message")));
+				player.sendMessage(FormatUtil.format("&6[SwornRPG]&e " + plugin.getMessage("update_url")));
 			}
 		}
 	}
@@ -349,16 +356,16 @@ public class PlayerListener implements Listener
 		final PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (data.isScooldown())
 		{
-			player.sendMessage(FormatUtil.format(plugin.prefix + "&cYou are recovering from super pickaxe"));
-			player.sendMessage(FormatUtil.format(plugin.prefix + "&cYou have " + (data.getSuperpickcd()/20) + " seconds left"));
+			player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_cooldown_header")));
+			player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_cooldown_time"), (data.getSuperpickcd()/20)));
 			return;
 		}
 		if (data.isSpick())
 		{
-			player.sendMessage(FormatUtil.format(plugin.prefix + "&cError, you are already using this ability"));
+			return;
 		}
-		player.sendMessage(FormatUtil.format(plugin.prefix + "&aReady to mine?"));
-		player.sendMessage(FormatUtil.format(plugin.prefix + "&aYour pickaxe has become a super pickaxe!"));
+		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_question")));
+		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_activate")));
 		int level = data.getLevel();
 		final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
 		int strength = 1;
@@ -370,7 +377,7 @@ public class PlayerListener implements Listener
 			@Override
 			public void run()
 			{
-				player.sendMessage(FormatUtil.format(plugin.prefix + "&eSuper pickaxe ability has worn off"));
+				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_wearoff")));
 				data.setSpick(false);
 				data.setScooldown(true);
 				int cooldown = (20*(duration*plugin.superpickcd));

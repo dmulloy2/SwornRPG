@@ -23,11 +23,14 @@ public class CmdFrenzy extends SwornRPGCommand
 	public void perform()
 	{
 		if(!plugin.frenzyenabled)
+		{
+			sendpMessage(plugin.getMessage("command_disabled"));
 			return;
+		}
 		final PlayerData data = getPlayerData(player);
 		if (!(data.isFcooldown()))
 		{
-			sendpMessage("&eEntering frenzy mode!");
+			sendpMessage(plugin.getMessage("frenzy_enter"));
 			int strength = 0;
 			int level = data.getLevel();
 			/**Duration = frenzy base duraton + (frenzy multiplier x level)**/
@@ -44,7 +47,7 @@ public class CmdFrenzy extends SwornRPGCommand
 				@Override
 				public void run()
 				{
-					sendpMessage("&eFrenzy mode has worn off");
+					sendpMessage(plugin.getMessage("frenzy_wearoff"));
 					
 					/**Cooldown = duraton x cooldown multiplier**/
 					int cooldown = (20*(duration*plugin.frenzycd));
@@ -56,8 +59,8 @@ public class CmdFrenzy extends SwornRPGCommand
 		}
 		else
 		{
-			sendpMessage("&cError, you are still recovering from frenzy");
-			sendpMessage("&cYou have " + (data.getFrenzycd()/20) + " seconds left");
+			sendpMessage(plugin.getMessage("frenzy_cd_header"));
+			sendpMessage(plugin.getMessage("frenzy_cd_time"), (data.getFrenzycd()/20));
 		}
 	}
 }

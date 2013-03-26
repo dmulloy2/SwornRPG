@@ -2,9 +2,9 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 /**
  * @author dmulloy2
@@ -31,6 +31,6 @@ public class CmdASay extends SwornRPGCommand
 		{
 			str = str + args[i] + " ";
 		}
-		Bukkit.getServer().broadcastMessage(ChatColor.RED + "[" + ChatColor.DARK_RED + "Admin" + ChatColor.RED + "]: " + str);
+		Bukkit.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("admin_say"), str));
 	}
 }

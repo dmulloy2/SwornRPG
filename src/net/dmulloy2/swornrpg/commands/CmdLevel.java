@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -24,59 +25,60 @@ public class CmdLevel extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (args.length == 0)
+		OfflinePlayer target = null;
+		if (args.length == 1)
+		{
+			target = Util.matchPlayer(args[0]);
+			if (target == null)
+			{
+				target = Util.matchOfflinePlayer(args[0]);
+				if (target == null)
+				{
+					sendpMessage(plugin.getMessage("noplayer"));
+					return;
+				}
+			}
+		}
+		else
 		{
 			if (sender instanceof Player)
 			{
-				PlayerData data = getPlayerData(player);
-				int level = data.getLevel();
-				int nextlevel = level+1;
-				int totalxp = data.getTotalxp();
-				int totalxpneeded = (Math.abs(data.getTotalxp()) + data.getXpneeded());
-				int xptonext = (data.getXpneeded() - data.getPlayerxp());
-				sendpMessage("&eYou are level &a" + level);
-				sendpMessage("&eYou are &a" + xptonext + " &exp away from level &a" + nextlevel);
-				sendpMessage("&e(&a" + totalxp + "&e/&a" + totalxpneeded + "&e)");
+				target = (Player)sender;
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("mustbeplayer"));
+				sendpMessage(plugin.getMessage("console_level"));
+				return;
 			}
 		}
-		else if (args.length == 1)
+		PlayerData data = getPlayerData(target);
+		if (data == null)
 		{
-			Player target = Util.matchPlayer(args[0]);
-			if (target == null)
-			{
-				sendpMessage(plugin.getMessage("noplayer"));
-			}
-			else
-			{
-				PlayerData data = getPlayerData(target);
-				int level = data.getLevel();
-				int nextlevel = level+1;
-				int totalxp = data.getTotalxp();
-				int totalxpneeded = (Math.abs(data.getTotalxp()) + data.getXpneeded());
-				int xptonext = (data.getXpneeded() - data.getPlayerxp());
-				String name;
-				String title;
-				String senderp = sender.getName();
-				String targetp = target.getName();
-				if (targetp == senderp)
-				{
-					name = "You are";
-					title = senderp;
-				}
-				else
-				{
-					name = targetp + " is";
-					title = targetp;
-				}
-				sendpMessage("&eLevel info for: " + title);
-				sendpMessage("&e" + name + " level &a" + level);
-				sendpMessage("&e" + name + " &a" + xptonext + " &exp away from level &a" + nextlevel);
-				sendpMessage("&e(&a" + totalxp + "&e/&a" + totalxpneeded + "&e)");
-			}
+			sendpMessage(plugin.getMessage("noplayer"));
+			return;
 		}
+		int level = data.getLevel();
+		int nextlevel = level+1;
+		int totalxp = data.getTotalxp();
+		int totalxpneeded = (Math.abs(data.getTotalxp()) + data.getXpneeded());
+		int xptonext = (data.getXpneeded() - data.getPlayerxp());
+		String name;
+		String title;
+		String senderp = sender.getName();
+		String targetp = target.getName();
+		if (targetp == senderp)
+		{
+			name = "You are";
+			title = senderp;
+		}
+		else
+		{
+			name = targetp + " is";
+			title = targetp;
+		}
+		sendpMessage(plugin.getMessage("level_header"), title);
+		sendpMessage(plugin.getMessage("level_level"), name, level);
+		sendpMessage(plugin.getMessage("level_xptonext"), name, xptonext, nextlevel);
+		sendpMessage(plugin.getMessage("level_amount"), totalxp, totalxpneeded);
 	}
 }

@@ -39,7 +39,7 @@ public class CmdRide extends SwornRPGCommand
 				public void run()
 				{
 					target.setPassenger(player1);
-					sendpMessage("&eYou are now riding " + target.getName());
+					sendpMessage(plugin.getMessage("now_riding"), target.getName());
 					PlayerData data = getPlayerData(player);
 					data.setRiding(true);
 					PlayerData data1 = getPlayerData(target);

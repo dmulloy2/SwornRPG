@@ -40,7 +40,7 @@ public class CmdUnride extends SwornRPGCommand
 		}
 		else
 		{
-			sendpMessage("&cError, you are not riding anyone");
+			sendpMessage(plugin.getMessage("not_riding"));
 		}
 	}
 }

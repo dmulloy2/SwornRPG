@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -19,53 +20,59 @@ public class CmdSpouse extends SwornRPGCommand
 		this.aliases.add("spouseinfo");
 		this.description = "Check information on a player's spouse";
 		this.optionalArgs.add("player");
-		this.mustBePlayer = true;
+		this.mustBePlayer = false;
 	}
 	
 	@Override
 	public void perform()
 	{
+		OfflinePlayer target = null;
 		if (args.length == 1)
 		{
-			Player target = Util.matchPlayer(args[0]);
-			if (target != null)
+			target = Util.matchPlayer(args[0]);
+			if (target == null)
 			{
-				String targetp = target.getName();
-				PlayerData data = getPlayerData(target);
-				String spouse = data.getSpouse();
-				if (spouse != null)
+				target = Util.matchOfflinePlayer(args[0]);
+				if (target == null)
 				{
-					sendpMessage("&e" + targetp + " is married to " + spouse);
+					sendpMessage(plugin.getMessage("noplayer"));
+					return;
 				}
-				else
-				{
-					sendpMessage("&e" + targetp + " is not married");
-				}
-			}
-			else
-			{
-				sendpMessage(plugin.getMessage("noplayer"));
 			}
 		}
-		else if (args.length == 0)
+		else
 		{
 			if (sender instanceof Player)
 			{
-				PlayerData data = getPlayerData(player);
-				String spouse = data.getSpouse();
-				if (spouse != null)
-				{
-					sendpMessage("&eYou are married to " + spouse);				
-				}
-				else
-				{
-					sendpMessage("&cYou are not married");
-				}
+				target = (Player)sender;
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("mustbeplayer"));
+				sendpMessage(plugin.getMessage("console_spouse"));
+				return;
 			}
+		}
+		PlayerData data = getPlayerData(target);
+		if (data == null)
+		{
+			sendpMessage(plugin.getMessage("noplayer"));
+			return;
+		}
+		String targetp = target.getName();
+		String spouse = data.getSpouse();
+		String name;
+		String senderp = sender.getName();
+		if (targetp == senderp)
+			name = "You are";
+		else
+			name = targetp + " is";
+		if (spouse != null)
+		{
+			sendpMessage(plugin.getMessage("spouse_info"), name, spouse);
+		}
+		else
+		{
+			sendpMessage(plugin.getMessage("no_spouse"), name);
 		}
 	}
 }

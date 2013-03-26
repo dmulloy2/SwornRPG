@@ -36,7 +36,7 @@ public class CmdMarry extends SwornRPGCommand
 				final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
 				data.setSpouse(targetp);
 				data1.setSpouse(senderp);
-				sendMessageAll("&a" + targetp + " has married " + senderp);
+				sendMessageAll(plugin.getMessage("marry"), senderp, targetp);
 				plugin.proposal.remove(senderp);
 				plugin.proposal.remove(targetp);
 			}
@@ -47,7 +47,7 @@ public class CmdMarry extends SwornRPGCommand
 		}
 		else
 		{
-			sendpMessage("&cYou do not have a proposal");
+			sendpMessage(plugin.getMessage("no_proposal"));
 		}
 	}
 }

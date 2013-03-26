@@ -1,28 +1,33 @@
+/**
+ * Copyright (C) 2012 t7seven7t
+ */
 package net.dmulloy2.swornrpg.handlers;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import net.dmulloy2.swornrpg.SwornRPG;
+import java.util.logging.Level;
+
 import net.dmulloy2.swornrpg.data.FileResourceLoader;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author t7seven7t
  */
-
-public class ResourceHandler 
+public class ResourceHandler
 {
 	private ResourceBundle messages;
 	
-	public ResourceHandler(SwornRPG plugin, ClassLoader classLoader) 
+	public ResourceHandler(JavaPlugin plugin, ClassLoader classLoader)
 	{
-		try
+		try 
 		{
 			messages = ResourceBundle.getBundle("messages", Locale.getDefault(), new FileResourceLoader(classLoader, plugin));
-		}
-		catch (MissingResourceException ex) 
+		} 
+		catch (MissingResourceException ex)
 		{
-			plugin.outConsole("SEVERE: Could not find messages.properties!");
+			plugin.getLogger().log(Level.SEVERE, "Could not find resource bundle: messages.properties");
 		}
 	}
 	
@@ -30,4 +35,5 @@ public class ResourceHandler
 	{
 		return messages;
 	}
+
 }

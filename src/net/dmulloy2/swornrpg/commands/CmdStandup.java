@@ -38,7 +38,7 @@ public class CmdStandup extends SwornRPGCommand
 		}
 		else
 		{
-			sendpMessage("&cError, you must be sitting to use this");
+			sendpMessage(plugin.getMessage("not_sitting"));
 		}
 	}
 }
