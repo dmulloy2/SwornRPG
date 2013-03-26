@@ -22,7 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +47,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -80,6 +85,8 @@ public class SwornRPG extends JavaPlugin
 	//Hash maps
     private HashMap<String, String> tagChanges;
     public HashMap<String, String> proposal = new HashMap<String, String>();
+    
+    public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
 	
     //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
@@ -205,6 +212,8 @@ public class SwornRPG extends JavaPlugin
 		saveDefaultConfig();
 		getConfig().options().copyDefaults(true);
 		saveConfig();
+		
+		updateBlockDrops();
 		
 		//Check for vault
 		checkVault(pm);
@@ -519,4 +528,34 @@ public class SwornRPG extends JavaPlugin
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void updateBlockDrops() {
+		Map<String, ?> map = getConfig().getConfigurationSection("block-drops").getValues(true);
+		
+		for (Entry<String, ?> entry : map.entrySet()) {
+			List<String> values = (List<String>) entry.getValue();
+			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
+			for (String value : values) {
+				String[] ss = value.split(":");
+				int type = Integer.valueOf(ss[0]);
+				short data = 0;
+				int chance = 0;
+				if (ss.length == 3) {
+					data = Short.valueOf(ss[1]);
+					chance = Integer.valueOf(ss[2]);
+				} else {
+					chance = Integer.valueOf(ss[1]);
+				}
+				
+				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+			}
+			
+			blockDropsMap.put(Integer.valueOf(entry.getKey()), blockDrops);
+		}
+		
+		System.out.println(blockDropsMap.toString());
+		
+	}
+	
 }
