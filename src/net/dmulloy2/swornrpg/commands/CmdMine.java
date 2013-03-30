@@ -43,7 +43,7 @@ public class CmdMine extends SwornRPGCommand
 				if (inhand.contains("pickaxe")&&!inhand.contains("wood")&&!inhand.contains("gold"))
 				{
 					sendpMessage(plugin.getMessage("superpick_question"));
-					sendpMessage(plugin.getMessage("superpick_activate"));
+					sendpMessage(plugin.getMessage("superpick_activated"));
 					int level = data.getLevel();
 					final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
 					int strength = 1;

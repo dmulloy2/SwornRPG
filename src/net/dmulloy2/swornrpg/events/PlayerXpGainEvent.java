@@ -15,24 +15,33 @@ public class PlayerXpGainEvent extends PlayerEvent implements Cancellable
 	
 	public boolean cancelled;
 	public int xpgained;
+	public String message;
 	
-	public PlayerXpGainEvent(final Player player, int xpgained)
+	public PlayerXpGainEvent(final Player player, int xpgained, String message)
 	{
 		super(player);
 		this.xpgained = xpgained;
+		this.message = message;
 	}
 
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers() 
+	{
 		return handlers;
 	}
 	
-	public static HandlerList getHandlerList() {
+	public static HandlerList getHandlerList() 
+	{
 		return handlers;
 	}
 	
 	public int getXpGained()
 	{
 		return xpgained;
+	}
+	
+	public String getMessage()
+	{
+		return message;
 	}
 	
 	@Override

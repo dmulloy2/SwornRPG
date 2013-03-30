@@ -365,7 +365,7 @@ public class PlayerListener implements Listener
 			return;
 		}
 		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_question")));
-		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_activate")));
+		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_activated")));
 		int level = data.getLevel();
 		final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
 		int strength = 1;

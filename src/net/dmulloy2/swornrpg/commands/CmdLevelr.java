@@ -5,6 +5,7 @@ import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -26,48 +27,52 @@ public class CmdLevelr extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (args.length == 0)
+		OfflinePlayer target = null;
+		if (args.length == 1)
+		{
+			target = Util.matchPlayer(args[0]);
+			if (target == null)
+			{
+				target = Util.matchOfflinePlayer(args[0]);
+				if (target == null)
+				{
+					sendpMessage(plugin.getMessage("noplayer"));
+					return;
+				}
+			}
+		}
+		else
 		{
 			if (sender instanceof Player)
 			{
-				PlayerData data = getPlayerData(player);
-				data.setPlayerxp(0);
-				data.setFcooldown(false);
-				data.setFrenzycd(0);
-				data.setScooldown(false);
-				data.setSuperpickcd(0);
-				data.setLevel(0);
-				data.setTotalxp(0);
-				data.setXpneeded(100 + (data.getPlayerxp()/4));
-				sendpMessage(plugin.getMessage("level_reset_self"));
+				target = (Player)sender;
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("mustbeplayer"));
+				sendpMessage(plugin.getMessage("console_level"));
+				return;
 			}
 		}
-		else if (args.length == 1)
+		PlayerData data = getPlayerData(target);
+		if (data == null)
 		{
-			Player target = Util.matchPlayer(args[0]);
-			if (target != null)
-			{
-				String targetp = target.getName();
-				PlayerData data = getPlayerData(target);
-				data.setPlayerxp(0);
-				data.setFcooldown(false);
-				data.setFrenzycd(0);
-				data.setScooldown(false);
-				data.setSuperpickcd(0);
-				data.setLevel(0);
-				data.setTotalxp(0);
-				data.setXpneeded(100 + (data.getPlayerxp()/4));
-				sendpMessage(plugin.getMessage("level_reset_resetter"), targetp);
-				sendMessageTarget(plugin.getMessage("level_reset_reset"), target);
-			}
-			else
-			{
-				sendpMessage(plugin.getMessage("noplayer"));
-			}
+			sendpMessage(plugin.getMessage("noplayer"));
+			return;
+		}
+		String targetp = target.getName();
+		data.setPlayerxp(0);
+		data.setFcooldown(false);
+		data.setFrenzycd(0);
+		data.setScooldown(false);
+		data.setSuperpickcd(0);
+		data.setLevel(0);
+		data.setTotalxp(0);
+		data.setXpneeded(100 + (data.getPlayerxp()/4));
+		sendpMessage(plugin.getMessage("level_reset_resetter"), targetp);
+		if (target.isOnline())
+		{
+			Player targetplayer = Util.matchPlayer(targetp);
+			sendMessageTarget(plugin.getMessage("level_reset_reset"), targetplayer);
 		}
 	}
 }

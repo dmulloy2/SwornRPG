@@ -65,14 +65,16 @@ public class ExperienceListener implements Listener
 			/**Suicide Check**/
 			if (killedp == killerp)
 				return;
+			String message = "";
+			/**Killer Xp Gain**/
 			int killxp = plugin.killergain;
-			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
-			killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_message"), killxp, killedp));
+			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
+			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
 			int killedxp = -(plugin.killedloss);
 			int msgxp = Math.abs(killedxp);
 			/**Call XP Gain Event**/
-			pm.callEvent(new PlayerXpGainEvent (killed, killedxp));
-			killed.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_message"), msgxp, killerp));
+			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
+			pm.callEvent(new PlayerXpGainEvent (killed, killedxp, message));
 			if (plugin.debug) 
 			{
 				plugin.outConsole(killedp + " lost " + msgxp + " xp after getting killed by  " + killerp);
@@ -148,13 +150,13 @@ public class ExperienceListener implements Listener
 				killxp = plugin.mobkillsxp*2;
 			else
 				killxp = plugin.mobkillsxp;
+			String message = "";
 			/**Call Event**/
-			pm.callEvent(new PlayerXpGainEvent (killer, killxp));
-			/**Send Message**/
 			if (mobname.startsWith("e")||mobname.startsWith("o")||mobname.startsWith("i"))				
-				killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill_vowel"), killxp, mobname));
+				message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill_vowel"), killxp, mobname));
 			else
-				killer.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, mobname));
+				message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, mobname));
+			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
 			if (plugin.debug) plugin.outConsole(killer.getName() + "gained " + killxp + " xp for killing " + mobname);
 		}
 	}
@@ -200,8 +202,8 @@ public class ExperienceListener implements Listener
 			return;
 		int xpgained = plugin.xplevelgain;
 		/**Call Event**/
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerXpGainEvent (player, xpgained));
-		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
+		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
+		Bukkit.getServer().getPluginManager().callEvent(new PlayerXpGainEvent (player, xpgained, message));
 	}
 	
 	/**Rewards items and money on player levelup**/
@@ -243,17 +245,28 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void OnPlayerXpGain(PlayerXpGainEvent event)
 	{
+		/**Cancellation check**/
+		if (event.isCancelled())
+			return;
+		
 		Player player = event.getPlayer();
+		String message = event.getMessage();
+		
+		/**Add the xp gained to their overall xp**/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		int xpgained = event.getXpGained();
-		/**Add the xp gained to their overall xp**/
 		data.setPlayerxp(data.getPlayerxp() + xpgained);
 		data.setTotalxp(data.getTotalxp() + xpgained);
+		
+		/**Send the message**/
+		player.sendMessage(message);
+		
+		/**Levelup check**/
 		int xp = data.getPlayerxp();
 		int xpneeded = data.getXpneeded();
 		int newlevel = (xp/xpneeded);
 		int oldlevel = data.getLevel();
-		/**Levelup check**/
+		
 		if ((xp - xpneeded) >= 0)
 		{
 			/**If so, call levelup event**/

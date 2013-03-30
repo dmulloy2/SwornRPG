@@ -27,7 +27,7 @@ public class BlockDrop {
 	}
 	
 	public String toString() {
-		return "[" + item.toString() + ", " + chance + "]";
+		return "[" + item.getType().toString().toLowerCase().replaceAll("_", " ") + ", " + chance + "]";
 	}
 	
 }

@@ -41,7 +41,7 @@ public class CmdMatch extends SwornRPGCommand
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("match_failure"), args[0]);
+				sendpMessage(plugin.getMessage("match_failed"), args[0]);
 			}
 		}
 	}
