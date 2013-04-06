@@ -48,7 +48,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -91,9 +90,10 @@ public class SwornRPG extends JavaPlugin
     //Configuration/Update Checking
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
-	money, update, spenabled, debug, salvaging;
+	money, update, spenabled, debug, salvaging, ammoenabled;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
-	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, superpickcd, superpickm;
+	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
+	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier;
 	private double newVersion;
     private double currentVersion;
     public String salvage;
@@ -153,6 +153,24 @@ public class SwornRPG extends JavaPlugin
 			//If found, enable Tags
 			pm.registerEvents(this.tagListener, this);
 			outConsole("TagAPI found, enabling all Tag related features");
+			for (final Player player : this.getServer().getOnlinePlayers()) 
+			{
+				final String oldName = player.getName();
+				final String newName = this.getDefinedName(oldName);
+				if (!newName.equals(oldName)) 
+				{
+					try 
+					{
+						this.addTagChange(oldName, newName);
+					} 
+					catch (final TooBigException e) 
+					{
+						this.getLogger().severe("Error while changing name from memory:");
+						this.getLogger().severe(e.getMessage());
+					}
+					TagAPI.refreshPlayer(player);
+				}
+			}
 		}
 		else
 		{
@@ -188,6 +206,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdUnride (this));
 		commandHandler.registerCommand(new CmdStaffList (this));
 		commandHandler.registerCommand(new CmdSitdown (this));
+		commandHandler.registerCommand(new CmdUnlimitedAmmo (this));
 		
 		//Set permission messages
 		getCommand("ride").setPermissionMessage(noperm);
@@ -236,12 +255,12 @@ public class SwornRPG extends JavaPlugin
 						if (data.getFrenzycd() <= 0)
 						{
 							data.setFcooldown(false);
-							player.sendMessage(FormatUtil.format(getMessage("ability_refreshed"), "Frenzy"));
+							player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Frenzy"));
 						}
 					}
 				}
 			}
-		},20, 20);
+		},0, 20);
 		
 		//Superpick cooldown
 		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
@@ -257,35 +276,33 @@ public class SwornRPG extends JavaPlugin
 						if (data.getSuperpickcd() <= 0)
 						{
 							data.setScooldown(false);
-							player.sendMessage(FormatUtil.format(getMessage("ability_refreshed"), "SuperPickaxe"));
+							player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Super pickaxe"));
 						}
 					}
 				}
 			}
-		},20, 20);
+		},0, 20);
 		
-		//Initialize Tags
-		if (pm.getPlugin("TagAPI") != null)
+		//Ammo cooldown
+		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
 		{
-			for (final Player player : this.getServer().getOnlinePlayers()) 
+			public void run() 
 			{
-				final String oldName = player.getName();
-				final String newName = this.getDefinedName(oldName);
-				if (!newName.equals(oldName)) 
+				for (Player player : getServer().getOnlinePlayers())
 				{
-					try 
+					final PlayerData data = playerDataCache.getData(player.getName());
+					if (data.isAmmocooling())
 					{
-						this.addTagChange(oldName, newName);
-					} 
-					catch (final TooBigException e) 
-					{
-						this.getLogger().severe("Error while changing name from memory:");
-						this.getLogger().severe(e.getMessage());
+						data.setAmmocd(data.getAmmocd() - 20);
+						if (data.getAmmocd() <= 0)
+						{
+							data.setAmmocooling(false);
+							player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Unlimited ammo"));
+						}
 					}
-					TagAPI.refreshPlayer(player);
 				}
 			}
-		}
+		},0, 20);
 		
 		if (update)
 		{
@@ -377,6 +394,12 @@ public class SwornRPG extends JavaPlugin
 		spbaseduration = getConfig().getInt("superpickaxe.baseduration");
 		superpickcd = getConfig().getInt("superpickaxe.cooldownmultiplier");
 		superpickm = getConfig().getInt("superpickaxe.levelmultiplier");
+		
+		/**Unlimited Ammo**/
+		ammoenabled = getConfig().getBoolean("unlimitedammo.enabled");
+		ammobaseduration = getConfig().getInt("unlimitedammo.baseduration");
+		ammocooldown = getConfig().getInt("unlimitedammo.cooldownmultiplier");
+		ammomultiplier = getConfig().getInt("unlimitedammo.levelmultiplier");
 	}
 	
 	//Tags Stuff
@@ -466,8 +489,7 @@ public class SwornRPG extends JavaPlugin
     //Checks for vault, for money rewards
 	private void checkVault(PluginManager pm) 
 	{
-		Plugin p = pm.getPlugin("Vault");
-		if (p != null) 
+		if (pm.isPluginEnabled("Vault"))
 		{
 			setupEconomy();
 			outConsole("Vault found, enabling money related features");

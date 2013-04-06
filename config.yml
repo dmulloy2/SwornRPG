@@ -41,7 +41,7 @@ frenzy:
   #Frenzy base duration (Formula = frenzy base duraton + (level multiplier x level))
   levelmultiplier: 1
   cooldownmultiplier: 10
-  #Frenzy cooldown multiplier (Formula = duraton x cooldown multiplier)
+  #Frenzy cooldown multiplier (Formula = duration x cooldown multiplier)
   
 superpickaxe:
   enabled: true
@@ -51,6 +51,15 @@ superpickaxe:
   levelmultiplier: 2
   cooldownmultiplier: 2
   #Super pick cooldown multiplier (Formula = duraton x cooldown multiplier)
+ 
+unlimitedammo:
+  enabled: true
+  #Is unlimited ammo ability enabled?
+  baseduration: 10
+  #Unlimited ammo base duration (Formula = base duraton + (level multiplier x level))
+  levelmultiplier: 2
+  cooldownmultiplier: 2
+  #Unlimited ammo cooldown multiplier (Formula = duraton x cooldown multiplier)
 
 levelingmethods:
 #How can players level up?
@@ -82,7 +91,7 @@ levelingrewards:
     
 block-drops:
 #Configure rare drops here
-#Format: - itemid
+#Format: - "itemid:chance"
   0:
     - "2258:10000"
     - "2267:10000"

@@ -58,7 +58,7 @@ public class CmdMine extends SwornRPGCommand
 							sendpMessage(plugin.getMessage("superpick_wearoff"));
 							data.setSpick(false);
 							data.setScooldown(true);
-							int cooldown = (20*(duration*plugin.superpickcd));
+							int cooldown = (duration*plugin.superpickcd);
 							data.setSuperpickcd(cooldown);
 							if (plugin.debug) plugin.outConsole(player.getName() + "has a cooldown of " + cooldown + " for super pickaxe");
 						}				

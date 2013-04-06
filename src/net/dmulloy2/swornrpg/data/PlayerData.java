@@ -30,6 +30,8 @@ public class PlayerData implements ConfigurationSerializable
 	private boolean scooldown;
 	private boolean fcooldown;
 	private boolean spick;
+	private boolean unlimtdammo;
+	private boolean ammocooling;
 	
 	private int playerxp;
 	private int oldlevel;
@@ -42,6 +44,7 @@ public class PlayerData implements ConfigurationSerializable
 	private long lastOnline;
 	private long frenzycd;
 	private long superpickcd;
+	private long ammocd;
 	
 	private transient long lastUpdateTimeSpent;
 	

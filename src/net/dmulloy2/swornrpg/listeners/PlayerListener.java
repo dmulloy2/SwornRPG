@@ -9,6 +9,7 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.data.PlayerData;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -36,6 +37,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
+import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
 /**
  * @author dmulloy2
@@ -192,13 +194,13 @@ public class PlayerListener implements Listener
 				{
 					Player killerp = event.getEntity().getKiller();
 					String killern = killerp.getName();
-					Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed by" + killern  + "at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+					plugin.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed by" + killern  + "at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					if (plugin.debug) plugin.outConsole(player.getName() + "was sent a mail message with their death coords");
 				}
 				else
 				{
-					Bukkit.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+					plugin.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					if (plugin.debug) plugin.outConsole(player.getName() + "was sent a mail message with their death coords");
 				}
@@ -215,7 +217,7 @@ public class PlayerListener implements Listener
 		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		if (data == null)
 		{
-			if (plugin.debug) plugin.outConsole("Creating a new player data file for " + playerp);
+			if (plugin.debug) plugin.outConsole("Creating a new player data file for: " + playerp);
 			plugin.getPlayerDataCache().newData(playerp);
 			/**Basic data that a player needs**/
 			data = plugin.getPlayerDataCache().getData(playerp);
@@ -300,6 +302,10 @@ public class PlayerListener implements Listener
 		{
 			data.setSpick(false);
 		}
+		if (data.isUnlimtdammo())
+		{
+			data.setUnlimtdammo(false);
+		}
 	}
 	
 	/**Checks to make sure that if a player is riding another player, teleportation is not disabled**/
@@ -380,10 +386,21 @@ public class PlayerListener implements Listener
 				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_wearoff")));
 				data.setSpick(false);
 				data.setScooldown(true);
-				int cooldown = (20*(duration*plugin.superpickcd));
+				int cooldown = (duration*plugin.superpickcd);
 				data.setSuperpickcd(cooldown);
-				if (plugin.debug) plugin.outConsole(player.getName() + "has a cooldown of " + cooldown + " for super pickaxe");
+				if (plugin.debug) plugin.outConsole(player.getName() + " has a cooldown of " + cooldown + " for super pickaxe");
 			}				
 		},(duration));
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerShoot(PVPGunPlusFireGunEvent event)
+	{
+		Player player = event.getShooterAsPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		if (data.isUnlimtdammo())
+		{
+			event.setAmountAmmoNeeded(0);
+		}
 	}
 }

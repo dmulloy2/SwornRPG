@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 2.1
+version: 2.2
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, Vault]
@@ -122,6 +122,10 @@ commands:
     description: Sit down on a chair
     usage: /<command>
     aliases: [sit]
+  ammo:
+    description: Unlimited ammo for your gun
+    usage: /<command>
+    aliases: [unlimitedammo]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins

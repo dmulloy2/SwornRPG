@@ -146,6 +146,7 @@ public class ExperienceListener implements Listener
 						||mobname.equals("ghast")
 						||mobname.equals("magma cube")
 						||mobname.equals("witch")
+						||mobname.equals("slime")
 					)
 				killxp = plugin.mobkillsxp*2;
 			else
@@ -210,16 +211,25 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelup(PlayerLevelupEvent event)
 	{
+		/**Cancellation check**/
+		if (event.isCancelled())
+			return;
+		
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		
 		/**Prepare data for the next level**/
 		data.setLevel(data.getLevel() + 1);
 		data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
 		data.setPlayerxp(0);
+		
+		/**Send messages**/
 		int level = data.getLevel();
+		plugin.getServer().broadcastMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_broadcast"), player.getName(), level));
 		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
 		if (plugin.debug) plugin.outConsole(player.getName() + " leveled up to level " + level);
-		/**Award money if money rewards are enabled**/
+		
+		/**Award money if enabled**/
 		if (plugin.money == true)
 		{
 			/**Vault Check**/
@@ -231,7 +241,8 @@ public class ExperienceListener implements Listener
 				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), money));
 			}
 		}
-		/**Award items if item rewards are enabled**/
+		
+		/**Award items if enabled**/
 		if (plugin.items == true)
 		{
 			int rewardamt = level*plugin.itemperlevel;
