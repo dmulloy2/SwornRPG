@@ -8,7 +8,6 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
@@ -38,21 +37,23 @@ public class ExperienceListener implements Listener
 	{
 		this.plugin = plugin;
 	}
-	
+		
 	/**Rewards XP in PvP situations**/
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerDeath(final PlayerDeathEvent event)
+	public void onPlayerDeath(PlayerDeathEvent event)
 	{
 		/**Checks for player kills to be enabled in the config**/
 		if (plugin.playerkills == false)
 			return;
+		
 		Player killed = event.getEntity().getPlayer();
 		Player killer = event.getEntity().getKiller();
+		
 		/**Checks to see if it was PvP**/
 		if (killer instanceof Player)
 		{
 			/**Warzone Check**/
-			PluginManager pm = Bukkit.getServer().getPluginManager();
+			PluginManager pm = plugin.getServer().getPluginManager();
 			if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 			{
 				Faction otherFaction = Board.getFactionAt(new FLocation(killer.getLocation()));
@@ -60,21 +61,28 @@ public class ExperienceListener implements Listener
 				if ((otherFaction.isWarZone())||(otherFaction2.isWarZone()))
 					return;
 			}
+			
 			String killerp = killer.getName();
 			String killedp = killed.getName();
+			
 			/**Suicide Check**/
 			if (killedp == killerp)
 				return;
+			
 			String message = "";
+			
 			/**Killer Xp Gain**/
 			int killxp = plugin.killergain;
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
+			
+			/**Killed Xp Loss**/
 			int killedxp = -(plugin.killedloss);
 			int msgxp = Math.abs(killedxp);
-			/**Call XP Gain Event**/
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
 			pm.callEvent(new PlayerXpGainEvent (killed, killedxp, message));
+			
+			/**Debug Message**/
 			if (plugin.debug) 
 			{
 				plugin.outConsole(killedp + " lost " + msgxp + " xp after getting killed by  " + killerp);
@@ -91,17 +99,21 @@ public class ExperienceListener implements Listener
 		/**Checks for mob kills to be enabled in the config**/
 		if (plugin.mobkills == false)
 			return;
+		
 		Entity kill = event.getEntity().getKiller();
 		Entity killed = event.getEntity();
+		
 		/**Checks to make sure it wasn't pvp**/
 		if (killed instanceof Player)
 			return;
+		
 		/**Checks to make sure the killer is a player**/
 		if (kill instanceof Player)
 		{
 			Player killer = event.getEntity().getKiller();
 			String mobname = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
-			PluginManager pm = Bukkit.getServer().getPluginManager();
+			PluginManager pm = plugin.getServer().getPluginManager();
+			
 			/**Warzone and Safezone check**/
 			if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 			{
@@ -109,10 +121,11 @@ public class ExperienceListener implements Listener
 				if ((otherFaction.isWarZone())||(otherFaction.isSafeZone()))
 					return;
 			}
+			
 			/**Camping Check**/
 			World world = kill.getWorld();
 			Location loc = kill.getLocation();
-			int RADIUS = 5;
+			int RADIUS = 10;
 			for (int dx = -RADIUS; dx <= RADIUS; dx++) 
 			{
 				for (int dy = -RADIUS; dy <= RADIUS; dy++) 
@@ -128,6 +141,7 @@ public class ExperienceListener implements Listener
 					}
 				}
 			}
+			
 			/**XP gain calculation**/
 			int killxp;
 			if (
@@ -151,12 +165,16 @@ public class ExperienceListener implements Listener
 				killxp = plugin.mobkillsxp*2;
 			else
 				killxp = plugin.mobkillsxp;
-			String message = "";
-			/**Call Event**/
-			if (mobname.startsWith("e")||mobname.startsWith("o")||mobname.startsWith("i"))				
-				message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill_vowel"), killxp, mobname));
+			
+			/**Message**/
+			String article = "";
+			if (mobname.startsWith("a")||mobname.startsWith("e")||mobname.startsWith("i")||mobname.startsWith("o")||mobname.startsWith("u"))
+				article = "an";
 			else
-				message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, mobname));
+				article = "a";
+			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, (article + " &c" + mobname)));
+			
+			/**Call Event**/
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
 			if (plugin.debug) plugin.outConsole(killer.getName() + "gained " + killxp + " xp for killing " + mobname);
 		}
@@ -169,19 +187,22 @@ public class ExperienceListener implements Listener
 		/**Checks to make sure xp level xp gain is enabled in the config**/
 		if (plugin.xplevel == false)
 			return;
+		
 		Player player = event.getPlayer();
-		PluginManager pm = Bukkit.getServer().getPluginManager();
+
 		/**Warzone Check**/
+		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 		{
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
 			if (otherFaction.isWarZone())
 				return;
 		}
+		
 		/**Camping Check**/
 		World world = player.getWorld();
 		Location loc = player.getLocation();
-		int RADIUS = 5;
+		int RADIUS = 10;
 		for (int dx = -RADIUS; dx <= RADIUS; dx++) 
 		{
 			for (int dy = -RADIUS; dy <= RADIUS; dy++) 
@@ -197,14 +218,17 @@ public class ExperienceListener implements Listener
 				}
 			}
 		}
+		
+		/**Define Stuff**/
 		int oldlevel = event.getOldLevel();
 		int newlevel = event.getNewLevel();
 		if (newlevel - oldlevel != 1)
 			return;
 		int xpgained = plugin.xplevelgain;
+		
 		/**Call Event**/
 		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerXpGainEvent (player, xpgained, message));
+		pm.callEvent(new PlayerXpGainEvent (player, xpgained, message));
 	}
 	
 	/**Rewards items and money on player levelup**/
@@ -225,7 +249,6 @@ public class ExperienceListener implements Listener
 		
 		/**Send messages**/
 		int level = data.getLevel();
-		plugin.getServer().broadcastMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_broadcast"), player.getName(), level));
 		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
 		if (plugin.debug) plugin.outConsole(player.getName() + " leveled up to level " + level);
 		
@@ -233,7 +256,8 @@ public class ExperienceListener implements Listener
 		if (plugin.money == true)
 		{
 			/**Vault Check**/
-			if (Bukkit.getServer().getPluginManager().getPlugin("Vault") != null)
+			PluginManager pm = plugin.getServer().getPluginManager();
+			if (pm.isPluginEnabled("Vault"))
 			{
 				Economy economy = plugin.getEconomy();
 				double money = (int) level*plugin.basemoney;
@@ -281,7 +305,8 @@ public class ExperienceListener implements Listener
 		if ((xp - xpneeded) >= 0)
 		{
 			/**If so, call levelup event**/
-			Bukkit.getServer().getPluginManager().callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
+			PluginManager pm = plugin.getServer().getPluginManager();
+			pm.callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
 		}
 	}
 }

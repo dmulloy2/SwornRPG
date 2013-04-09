@@ -21,7 +21,6 @@ import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
- * @contributor t7seven7t
  */
 	
 public class BlockListener implements Listener 
@@ -74,7 +73,7 @@ public class BlockListener implements Listener
 				{
 					/**Protect the iron door!**/
 					event.setCancelled(true);
-					player.sendMessage(FormatUtil.format(plugin.getMessage("prefix") + plugin.getMessage("irondoorprotect")));
+					player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("iron_door_protect")));
 				}
 			}
 			
@@ -84,21 +83,14 @@ public class BlockListener implements Listener
 			if (data.isSitting() && vehicle != null)
 			{
 				event.setCancelled(true);
-				player.sendMessage(FormatUtil.format(plugin.getMessage("prefix")) + FormatUtil.format(plugin.getMessage("chairblockdeny"), "&c/standup"));
+				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("chairblockdeny"), "&c/standup"));
 			}
 			if (data.isRiding() && vehicle != null)
 			{
 				event.setCancelled(true);
 			}
-			if (data.isSpick())
-			{
-				String broken = block.toString().toLowerCase().replaceAll("_", " ");
-				if (broken.contains("obsidian"))
-				{
-					event.setCancelled(true);
-				}
-			}
 			
+			/**Rare Drops**/
 			if (plugin.blockDropsMap.containsKey(blockType.getId()) && !event.isCancelled())
 			{
 				if (plugin.randomdrops && gm == GameMode.SURVIVAL) 

@@ -135,6 +135,7 @@ public class CmdHelp extends SwornRPGCommand
 			}
 			sendMessage("&c/frenzy &eEnter Frenzy mode.");
 			sendMessage("&c/mine &eActivate super pickaxe");
+			sendMessage("&c/ammo &eUnlimited ammo ability");
 		}
 		else if (args[0].equalsIgnoreCase("misc"))
 		{
@@ -193,6 +194,7 @@ public class CmdHelp extends SwornRPGCommand
     	sendMessage("&c/srpg &4level &eDisplay level commands");
     	sendMessage("&c/srpg &4marriage &eDisplay marriage commands");
     	sendMessage("&c/srpg &4misc &eDisplay miscellaneous commands");
+//    	sendMessage("&c/srpg &4top &eDisplay level leaderboard");
     	if (hasPerm(p, hatPerm))
     	{
     		sendMessage("&c/hat &6[remove] &eGet a new hat!");

@@ -7,8 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * @author t7seven7t
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public class PermissionHandler 

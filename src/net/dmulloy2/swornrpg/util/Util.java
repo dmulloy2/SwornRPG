@@ -10,26 +10,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
  * @author orange451
- * @contributor t7seven7t
+ * @editor dmulloy2
  */
 
 public class Util 
 {
 
 	public static SwornRPG plugin;
-	public static World world;
 	public static Server server;
 
 	public static void Initialize(SwornRPG plugin)
 	{
 		Util.plugin = plugin;
 		server = plugin.getServer();
-//		world = (World)server.getWorlds().get(0);
 	}
 
 	public static Player matchPlayer(String p) {

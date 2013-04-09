@@ -179,7 +179,11 @@ public class SwornRPG extends JavaPlugin
 			outConsole("Get it here: http://dev.bukkit.org/server-mods/tag/");
 		}
 		
-		//Initializes all SwornRPG commands
+		/**Register Prefixed Commands**/
+		commandHandler.setCommandPrefix("srpg");
+		commandHandler.registerPrefixedCommand(new CmdLeaderboard (this));
+		
+		/**Register Non-Prefixed Commands**/
 		commandHandler.registerCommand(new CmdAChat (this));
 		commandHandler.registerCommand(new CmdAddxp (this));
 		commandHandler.registerCommand(new CmdASay (this));
@@ -251,7 +255,7 @@ public class SwornRPG extends JavaPlugin
 					final PlayerData data = playerDataCache.getData(player.getName());
 					if (data.isFcooldown())
 					{
-						data.setFrenzycd(data.getFrenzycd() - 20);
+						data.setFrenzycd(data.getFrenzycd() - 1);
 						if (data.getFrenzycd() <= 0)
 						{
 							data.setFcooldown(false);
@@ -272,7 +276,7 @@ public class SwornRPG extends JavaPlugin
 					final PlayerData data = playerDataCache.getData(player.getName());
 					if (data.isScooldown())
 					{
-						data.setSuperpickcd(data.getSuperpickcd() - 20);
+						data.setSuperpickcd(data.getSuperpickcd() - 1);
 						if (data.getSuperpickcd() <= 0)
 						{
 							data.setScooldown(false);
@@ -293,7 +297,7 @@ public class SwornRPG extends JavaPlugin
 					final PlayerData data = playerDataCache.getData(player.getName());
 					if (data.isAmmocooling())
 					{
-						data.setAmmocd(data.getAmmocd() - 20);
+						data.setAmmocd(data.getAmmocd() - 1);
 						if (data.getAmmocd() <= 0)
 						{
 							data.setAmmocooling(false);

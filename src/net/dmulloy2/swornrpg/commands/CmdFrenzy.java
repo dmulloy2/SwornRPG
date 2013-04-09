@@ -33,7 +33,7 @@ public class CmdFrenzy extends SwornRPGCommand
 			sendpMessage(plugin.getMessage("frenzy_enter"));
 			int strength = 0;
 			int level = data.getLevel();
-			//Duration = frenzy base duraton + (frenzy multiplier x level)
+			/**Duration = frenzy base duraton + (frenzy multiplier x level)**/
 			final int duration = (20*(plugin.frenzyd + (level*plugin.frenzym)));
 			player.addPotionEffect(PotionEffectType.SPEED.createEffect((int) duration, strength));
 			player.addPotionEffect(PotionEffectType.INCREASE_DAMAGE.createEffect((int) duration, strength));
@@ -49,7 +49,7 @@ public class CmdFrenzy extends SwornRPGCommand
 				{
 					sendpMessage(plugin.getMessage("frenzy_wearoff"));
 					
-					//Cooldown = duraton x cooldown multiplier
+					/**Cooldown = duraton x cooldown multiplier**/
 					int cooldown = (duration*plugin.frenzycd);
 					data.setFrenzycd(cooldown);
 					data.setFcooldown(true);
@@ -60,7 +60,7 @@ public class CmdFrenzy extends SwornRPGCommand
 		else
 		{
 			sendpMessage(plugin.getMessage("frenzy_cd_header"));
-			sendpMessage(plugin.getMessage("frenzy_cd_time"), (data.getFrenzycd()/20));
+			sendpMessage(plugin.getMessage("frenzy_cd_time"), (data.getFrenzycd()*30));
 		}
 	}
 }

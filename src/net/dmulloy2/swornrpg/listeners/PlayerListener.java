@@ -10,7 +10,6 @@ import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.data.PlayerData;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -41,7 +40,6 @@ import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
 /**
  * @author dmulloy2
- * @contributor t7seven7t
  * @contributor Dimpl
  */
 
@@ -144,15 +142,17 @@ public class PlayerListener implements Listener
 		/**Checks to make sure death books are enabled in the config**/
 		if (plugin.deathbook == false)
 			return;
+		
 		final Player player = event.getEntity();
 		/**Warzone check**/
-		PluginManager pm = Bukkit.getPluginManager();
+		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
 		{
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
 			if (otherFaction.isWarZone())
 				return;
 		}
+		
 		/**Player death book toggle check**/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (!(data.isDeathbookdisabled()))
@@ -188,7 +188,7 @@ public class PlayerListener implements Listener
 				double x = (int) Math.floor(player.getLocation().getX());
 				double y = (int) Math.floor(player.getLocation().getY());
 				double z = (int) Math.floor(player.getLocation().getZ());
-				ConsoleCommandSender ccs = Bukkit.getServer().getConsoleSender();
+				ConsoleCommandSender ccs = plugin.getServer().getConsoleSender();
 				Entity killer = event.getEntity().getKiller();
 				if (killer instanceof Player)
 				{
@@ -213,6 +213,7 @@ public class PlayerListener implements Listener
 	{	
 		Player player = event.getPlayer();
 		String playerp = player.getName();
+		
 		/**Try to get the player's data from the cache otherwise create a new data entry**/
 		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		if (data == null)
@@ -232,7 +233,7 @@ public class PlayerListener implements Listener
 		}
 	
 		/**Makes sure Tag changes are permanent**/
-		PluginManager pm = Bukkit.getServer().getPluginManager();
+		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("TagAPI"))
 		{
 			String name = player.getName();
@@ -351,14 +352,18 @@ public class PlayerListener implements Listener
 		Action action = event.getAction();
 		if (!(action == (Action.RIGHT_CLICK_AIR)))
 			return;
+		
 		final Player player = event.getPlayer();
 		String inhand = player.getItemInHand().toString().toLowerCase().replaceAll("_", " ");
 		if (!(inhand.contains("pickaxe")&&!inhand.contains("wood")&&!inhand.contains("gold")))
 			return;
+		
 		if (plugin.spenabled != true)
 			return;
+		
 		if (player.getItemInHand() == null)
 			return;
+		
 		final PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (data.isScooldown())
 		{
@@ -366,18 +371,21 @@ public class PlayerListener implements Listener
 			player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_cooldown_time"), (data.getSuperpickcd()/20)));
 			return;
 		}
+		
 		if (data.isSpick())
 		{
 			return;
 		}
+		
 		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_question")));
 		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_activated")));
 		int level = data.getLevel();
 		final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
 		int strength = 1;
 		data.setSpick(true);
-		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect((int) duration, strength));
-		if (plugin.debug) plugin.outConsole(player.getName() + "has activated super pickaxe. Duration: " + duration);
+		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(duration, strength));
+		if (plugin.debug) plugin.outConsole(player.getName() + " has activated super pickaxe. Duration: " + duration);
+		
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
 			@Override

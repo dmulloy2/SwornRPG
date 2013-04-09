@@ -6,7 +6,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 
 /**
- * @author t7seven7t
+ * @author dmulloy2
  */
 
 public class FormatUtil 

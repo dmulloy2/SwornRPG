@@ -13,8 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 
 /**
- * @author t7seven7t
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public class CommandHandler implements CommandExecutor 

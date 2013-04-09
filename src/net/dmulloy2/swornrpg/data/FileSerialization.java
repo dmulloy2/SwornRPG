@@ -10,7 +10,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 /**
- * @author t7seven7t
+ * @author dmulloy2
  */
 
 public class FileSerialization 

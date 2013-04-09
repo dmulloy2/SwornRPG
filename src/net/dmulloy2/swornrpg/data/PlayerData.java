@@ -14,8 +14,7 @@ import lombok.Data;
 import lombok.Setter;
 
 /**
- * @author t7seven7t
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 @Data

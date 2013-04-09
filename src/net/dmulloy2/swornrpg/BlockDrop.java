@@ -1,13 +1,11 @@
-/**
- * Copyright (C) 2012 t7seven7t
- */
 package net.dmulloy2.swornrpg;
 
 import org.bukkit.inventory.ItemStack;
 
 /**
- * @author t7seven7t
+ * @author dmulloy2
  */
+
 public class BlockDrop {
 
 	final ItemStack item;

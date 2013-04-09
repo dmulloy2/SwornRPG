@@ -1,6 +1,3 @@
-/**
- * Copyright (C) 2012 t7seven7t
- */
 package net.dmulloy2.swornrpg.handlers;
 
 import java.util.Locale;
@@ -13,8 +10,9 @@ import net.dmulloy2.swornrpg.data.FileResourceLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * @author t7seven7t
+ * @author dmulloy2
  */
+
 public class ResourceHandler
 {
 	private ResourceBundle messages;

@@ -31,12 +31,14 @@ public class CmdMine extends SwornRPGCommand
 				sendpMessage(plugin.getMessage("superpick_inprogress"));
 				return;
 			}
+			
 			if (data.isScooldown())
 			{
 				sendpMessage(plugin.getMessage("superpick_cooldown_header"));
-				sendpMessage(plugin.getMessage("superpick_cooldown_time"), (data.getSuperpickcd()/20));
+				sendpMessage(plugin.getMessage("superpick_cooldown_time"), (data.getSuperpickcd()*30));
 				return;
 			}
+			
 			if (player.getItemInHand() != null)
 			{
 				String inhand = player.getItemInHand().toString().toLowerCase().replaceAll("_", " ");

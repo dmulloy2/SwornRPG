@@ -16,8 +16,7 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.data.PlayerData;
 
 /**
- * @author t7seven7t
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public abstract class SwornRPGCommand implements CommandExecutor 
@@ -37,6 +36,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;
+	
+	protected boolean usesPrefix;
 		
 	public SwornRPGCommand(SwornRPG plugin) 
 	{
@@ -145,6 +146,9 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		StringBuilder ret = new StringBuilder();
 		ret.append("&c/");
 				
+		if (plugin.getCommandHandler().usesCommandPrefix() && usesPrefix)
+			ret.append(plugin.getCommandHandler().getCommandPrefix() + " ");
+		
 		ret.append(name);
 
 		for (String s : optionalArgs)

@@ -13,8 +13,9 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.Util;
 
 /**
- * @author t7seven7t
+ * @author dmulloy2
  */
+
 public class PlayerDataCache
 {
 	private final File folder;
@@ -38,7 +39,8 @@ public class PlayerDataCache
 	public PlayerData getData(final String key) 
 	{
 		PlayerData value = this.data.get(key);
-		if (value == null) {
+		if (value == null) 
+		{
 			File file = new File(folder, getFileName(key));
 			if (file.exists())
 			{
