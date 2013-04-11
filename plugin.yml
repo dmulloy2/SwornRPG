@@ -1,9 +1,9 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 2.2
+version: 2.2.1
 author: dmulloy2
 description: The mcMMO Alternative
-softdepend: [TagAPI, Essentials, Factions, Vault]
+softdepend: [TagAPI, Essentials, Factions, Vault, PVPGunPlus]
 commands:
   a:
     description: Admin only chat
@@ -76,7 +76,7 @@ commands:
   deathcoords:
     description: Toggle death coordinate messages
     usage: /<command>
-    aliases: [deathbook, deathmail]
+    aliases: [deathbook, deathmail, coordstoggle]
   propose:
     description: Propose to another player
     usage: /<command> <player>

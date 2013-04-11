@@ -125,7 +125,7 @@ public class ExperienceListener implements Listener
 			/**Camping Check**/
 			World world = kill.getWorld();
 			Location loc = kill.getLocation();
-			int RADIUS = 10;
+			int RADIUS = plugin.campingrad;
 			for (int dx = -RADIUS; dx <= RADIUS; dx++) 
 			{
 				for (int dy = -RADIUS; dy <= RADIUS; dy++) 
@@ -202,7 +202,7 @@ public class ExperienceListener implements Listener
 		/**Camping Check**/
 		World world = player.getWorld();
 		Location loc = player.getLocation();
-		int RADIUS = 10;
+		int RADIUS = plugin.campingrad;
 		for (int dx = -RADIUS; dx <= RADIUS; dx++) 
 		{
 			for (int dy = -RADIUS; dy <= RADIUS; dy++) 
@@ -278,7 +278,7 @@ public class ExperienceListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void OnPlayerXpGain(PlayerXpGainEvent event)
+	public void onPlayerXpGain(PlayerXpGainEvent event)
 	{
 		/**Cancellation check**/
 		if (event.isCancelled())

@@ -28,6 +28,9 @@ deathbook: true
 #Will a player receive a book/message with their death coordinates?
 #If essentials is found, the plugin will send a mail message. If not, it will give a book
 
+campingradius: 16
+#If a player is within x radius of a mob spawner, cancel xp gain
+
 salvaging: true
 #Enables/disables salvaging
 

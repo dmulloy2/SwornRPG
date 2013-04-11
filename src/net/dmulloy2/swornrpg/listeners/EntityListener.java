@@ -6,13 +6,11 @@ import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
 /**
@@ -32,15 +30,15 @@ public class EntityListener implements Listener
 
 	/**Axe blowback and Arrow fire**/
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEntityDamage(EntityDamageEvent event)
+	public void onEntityDamage(EntityDamageByEntityEvent event)
 	{
 		try 
 		{
 			if (event.getDamage() <= 0) 
 				return;
 			
-			Entity att = ((EntityDamageByEntityEvent)event).getDamager();
-			LivingEntity defender = (LivingEntity)event.getEntity();
+			Entity att = event.getDamager();
+			Entity defender = event.getEntity();
 	
 			if (att instanceof Arrow)
 			{
@@ -62,6 +60,7 @@ public class EntityListener implements Listener
 				{
 					Player p = (Player)att;
 					String gun = p.getItemInHand().getType().toString().toLowerCase();
+					if (gun == null) return;
 					if (gun.contains("_axe")) 
 					{
 						int randomBlowBack = Util.random(9);
@@ -84,9 +83,12 @@ public class EntityListener implements Listener
 							if (v2.getY() > 1.0D)
 								v2.setY(1.0D);
 							defender.setVelocity(v2.multiply(0.8D));
+							
 							String inhand = gun.replaceAll("_", " ");
-							((Player)defender).sendMessage(FormatUtil.format(plugin.getMessage("axe_blowbackee"), ((Player)att).getName(), inhand));
-							((Player)att).sendMessage(FormatUtil.format(plugin.getMessage("axe_blowbacker"), ((Player)defender).getName(), inhand));
+							if (defender instanceof Player)
+								((Player)defender).sendMessage(FormatUtil.format(plugin.getMessage("axe_blowbackee"), ((Player)att).getName(), inhand));
+							if (att instanceof Player)
+								((Player)att).sendMessage(FormatUtil.format(plugin.getMessage("axe_blowbacker"), ((Player)defender).getName(), inhand));
 						}
 					}
 				}
@@ -94,6 +96,7 @@ public class EntityListener implements Listener
 		}
 		catch (Exception localException)
 		{
+			if (plugin.debug) localException.printStackTrace();
 		}
 	}
 }

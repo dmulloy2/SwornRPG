@@ -42,7 +42,6 @@ import net.dmulloy2.swornrpg.data.*;
 import net.milkbowl.vault.economy.Economy;
 
 //Bukkit imports
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -93,7 +92,8 @@ public class SwornRPG extends JavaPlugin
 	money, update, spenabled, debug, salvaging, ammoenabled;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
-	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier;
+	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
+	campingrad;
 	private double newVersion;
     private double currentVersion;
     public String salvage;
@@ -109,7 +109,7 @@ public class SwornRPG extends JavaPlugin
 		playerDataCache.save();
 		
 		getServer().getServicesManager().unregisterAll(this);
-        Bukkit.getScheduler().cancelTasks(this);
+        getServer().getScheduler().cancelTasks(this);
 	}
 
 	//What the plugin does when it is enabled
@@ -153,17 +153,17 @@ public class SwornRPG extends JavaPlugin
 			//If found, enable Tags
 			pm.registerEvents(this.tagListener, this);
 			outConsole("TagAPI found, enabling all Tag related features");
-			for (final Player player : this.getServer().getOnlinePlayers()) 
+			for (Player player : this.getServer().getOnlinePlayers()) 
 			{
-				final String oldName = player.getName();
-				final String newName = this.getDefinedName(oldName);
+				String oldName = player.getName();
+				String newName = this.getDefinedName(oldName);
 				if (!newName.equals(oldName)) 
 				{
 					try 
 					{
 						this.addTagChange(oldName, newName);
 					} 
-					catch (final TooBigException e) 
+					catch (TooBigException e) 
 					{
 						this.getLogger().severe("Error while changing name from memory:");
 						this.getLogger().severe(e.getMessage());
@@ -174,9 +174,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		else
 		{
-			//If not, give link for TagAPI
 			outConsole("TagAPI not found, disabling all Tag related features");
-			outConsole("Get it here: http://dev.bukkit.org/server-mods/tag/");
 		}
 		
 		/**Register Prefixed Commands**/
@@ -187,7 +185,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdAChat (this));
 		commandHandler.registerCommand(new CmdAddxp (this));
 		commandHandler.registerCommand(new CmdASay (this));
-		commandHandler.registerCommand(new CmdBookToggle (this));
+		commandHandler.registerCommand(new CmdCoordsToggle (this));
 		commandHandler.registerCommand(new CmdDeny (this));
 		commandHandler.registerCommand(new CmdDivorce (this));
 		commandHandler.registerCommand(new CmdEject (this));
@@ -246,69 +244,86 @@ public class SwornRPG extends JavaPlugin
 		}, 12000L, 12000L);
 		
 		//Frenzy cooldown
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
+		if (frenzyenabled == true)
 		{
-			public void run() 
+			getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
 			{
-				for (Player player : getServer().getOnlinePlayers())
+				public void run() 
 				{
-					final PlayerData data = playerDataCache.getData(player.getName());
-					if (data.isFcooldown())
+					for (Player player : getServer().getOnlinePlayers())
 					{
-						data.setFrenzycd(data.getFrenzycd() - 1);
-						if (data.getFrenzycd() <= 0)
+						final PlayerData data = playerDataCache.getData(player.getName());
+						if (data.isFcooldown())
 						{
-							data.setFcooldown(false);
-							player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Frenzy"));
+							data.setFrenzycd(data.getFrenzycd() - 1);
+							if (data.getFrenzycd() <= 0)
+							{
+								data.setFcooldown(false);
+								player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Frenzy"));
+							}
 						}
 					}
 				}
-			}
-		},0, 20);
+			},0, 20);
+		}
 		
 		//Superpick cooldown
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
+		if (spenabled == true)
 		{
-			public void run() 
+			getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
 			{
-				for (Player player : getServer().getOnlinePlayers())
+				public void run() 
 				{
-					final PlayerData data = playerDataCache.getData(player.getName());
-					if (data.isScooldown())
+					for (Player player : getServer().getOnlinePlayers())
 					{
-						data.setSuperpickcd(data.getSuperpickcd() - 1);
-						if (data.getSuperpickcd() <= 0)
+						final PlayerData data = playerDataCache.getData(player.getName());
+						if (data.isScooldown())
 						{
-							data.setScooldown(false);
-							player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Super pickaxe"));
+							data.setSuperpickcd(data.getSuperpickcd() - 1);
+							if (data.getSuperpickcd() <= 0)
+							{
+								data.setScooldown(false);
+								player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Super pickaxe"));
+							}
 						}
 					}
 				}
-			}
-		},0, 20);
+			},0, 20);
+		}
 		
 		//Ammo cooldown
-		getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
+		if (pm.isPluginEnabled("PVPGunPlus"))
 		{
-			public void run() 
+			outConsole("PVPGunPlus found, enabling gun-related features");
+			if (ammoenabled == true)
 			{
-				for (Player player : getServer().getOnlinePlayers())
+				getServer().getScheduler().runTaskTimerAsynchronously(this, new BukkitRunnable() 
 				{
-					final PlayerData data = playerDataCache.getData(player.getName());
-					if (data.isAmmocooling())
+					public void run() 
 					{
-						data.setAmmocd(data.getAmmocd() - 1);
-						if (data.getAmmocd() <= 0)
+						for (Player player : getServer().getOnlinePlayers())
 						{
-							data.setAmmocooling(false);
-							player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Unlimited ammo"));
+							final PlayerData data = playerDataCache.getData(player.getName());
+							if (data.isAmmocooling())
+							{
+								data.setAmmocd(data.getAmmocd() - 1);
+								if (data.getAmmocd() <= 0)
+								{
+									data.setAmmocooling(false);
+									player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Unlimited ammo"));
+								}
+							}
 						}
 					}
-				}
+				},0, 20);
 			}
-		},0, 20);
+		}
+		else
+		{
+			outConsole("PVPGunPlus not found, disabling all gun-related features");
+		}
 		
-		if (update)
+		if (update == true)
 		{
 			//Update Checker
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() 
@@ -357,6 +372,7 @@ public class SwornRPG extends JavaPlugin
 		deathbook = getConfig().getBoolean("deathbook");
 		update = getConfig().getBoolean("updatechecker");
 		debug = getConfig().getBoolean("debug");
+		campingrad = getConfig().getInt("campingradius");
 		
 		/**Salvaging**/
 		salvaging = getConfig().getBoolean("salvaging");
@@ -539,6 +555,7 @@ public class SwornRPG extends JavaPlugin
         }
         catch (Exception localException) 
         {
+        	if (debug) localException.printStackTrace();
         }
         
         return currentVersion;

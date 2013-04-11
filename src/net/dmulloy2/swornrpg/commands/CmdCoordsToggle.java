@@ -7,17 +7,18 @@ import net.dmulloy2.swornrpg.data.PlayerData;
  * @author dmulloy2
  */
 
-public class CmdBookToggle extends SwornRPGCommand
+public class CmdCoordsToggle extends SwornRPGCommand
 {
-	public CmdBookToggle (SwornRPG plugin)
+	public CmdCoordsToggle (SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "deathcoords";
 		this.description = "Toggle the reception of death coordinates";
 		this.aliases.add("deathbook");
 		this.aliases.add("deathmail");
-		this.optionalArgs.add("enable");
-		this.optionalArgs.add("disable");
+		this.aliases.add("coordstoggle");
+		this.optionalArgs.add("on");
+		this.optionalArgs.add("off");
 		this.mustBePlayer = true;
 	}
 	
@@ -29,29 +30,29 @@ public class CmdBookToggle extends SwornRPGCommand
 			if (data.isDeathbookdisabled())
 			{
 				data.setDeathbookdisabled(false);
-				sendpMessage(plugin.getMessage("deathbook_enabled"));
+				sendpMessage(plugin.getMessage("deathcoords_enabled"));
 			}
 			else
 			{
 				data.setDeathbookdisabled(true);
-				sendpMessage(plugin.getMessage("deathbook_disabled"));
+				sendpMessage(plugin.getMessage("deathcoords_disabled"));
 			}
 		}
 		else if (args.length == 1)
 		{
-			if (args[0].equalsIgnoreCase("enable"))
+			if (args[0].equalsIgnoreCase("on"))
 			{
 				data.setDeathbookdisabled(false);
-				sendpMessage(plugin.getMessage("deathbook_enabled"));
+				sendpMessage(plugin.getMessage("deathcoords_enabled"));
 			}
-			else if (args[0].equalsIgnoreCase("disable"))
+			else if (args[0].equalsIgnoreCase("off"))
 			{
 				data.setDeathbookdisabled(true);
-				sendpMessage(plugin.getMessage("deathbook_disabled"));
+				sendpMessage(plugin.getMessage("deathcoords_disabled"));
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("invalidargs") + "&c(/deathbook [enable/disable])");
+				sendpMessage(plugin.getMessage("invalidargs") + "&c(/deathbook &6[on/off]&c)");
 			}
 		}			
 	}

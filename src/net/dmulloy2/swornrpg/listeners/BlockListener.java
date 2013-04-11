@@ -117,6 +117,7 @@ public class BlockListener implements Listener
 		}
 		catch (Exception localException)
 		{
+			if (plugin.debug) localException.printStackTrace();
 		}
 	}
 }

@@ -20,6 +20,12 @@ public class CmdUnlimitedAmmo extends SwornRPGCommand
 	@Override
 	public void perform() 
 	{
+		PluginManager pm = plugin.getServer().getPluginManager();
+		if (!pm.isPluginEnabled("PVPGunPlus"))
+		{
+			sendpMessage(plugin.getMessage("plugin_not_found"), "PVPGunPlus");
+			return;
+		}
 		final PlayerData data = getPlayerData(player);
 		if (data.isUnlimtdammo())
 		{
@@ -32,26 +38,22 @@ public class CmdUnlimitedAmmo extends SwornRPGCommand
 			sendpMessage(plugin.getMessage("ammo_cooling_time"), data.getAmmocd());
 			return;
 		}
-		PluginManager pm = plugin.getServer().getPluginManager();
-		if (pm.isPluginEnabled("PVPGunPlus"))
+		int level = data.getLevel();
+		final int duration = (20*(plugin.ammobaseduration + (level*plugin.ammomultiplier)));
+		data.setUnlimtdammo(true);
+		sendpMessage(plugin.getMessage("ammo_now_unlimited"));
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 		{
-			int level = data.getLevel();
-			final int duration = (20*(plugin.ammobaseduration + (level*plugin.ammomultiplier)));
-			data.setUnlimtdammo(true);
-			sendpMessage(plugin.getMessage("ammo_now_unlimited"));
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
-					data.setUnlimtdammo(false);
-					sendpMessage(plugin.getMessage("ammo_nolonger_unlimited"));
-					data.setAmmocooling(true);
-					int cooldown = (duration*plugin.ammocooldown);
-					data.setAmmocd(cooldown);
-					if (plugin.debug) plugin.outConsole(player.getName() + " has an ammo cooldown of " + cooldown);
-				}
-			},duration);
-		}
+				data.setUnlimtdammo(false);
+				sendpMessage(plugin.getMessage("ammo_nolonger_unlimited"));
+				data.setAmmocooling(true);
+				int cooldown = (duration*plugin.ammocooldown);
+				data.setAmmocd(cooldown);
+				if (plugin.debug) plugin.outConsole(player.getName() + " has an ammo cooldown of " + cooldown);
+			}
+		},duration);
 	}
 }

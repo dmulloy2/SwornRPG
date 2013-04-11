@@ -220,6 +220,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.debug) plugin.outConsole("Creating a new player data file for: " + playerp);
 			plugin.getPlayerDataCache().newData(playerp);
+			
 			/**Basic data that a player needs**/
 			data = plugin.getPlayerDataCache().getData(playerp);
 			data.setXpneeded(100 + (data.getPlayerxp()/4));
@@ -253,7 +254,7 @@ public class PlayerListener implements Listener
 		}
 		
 		/**Update Notification**/
-		if (plugin.update)
+		if (plugin.update == true)
 		{
 			if (player.hasPermission("srpg.update") && (plugin.updateNeeded()))
 			{
@@ -401,14 +402,18 @@ public class PlayerListener implements Listener
 		},(duration));
 	}
 	
+	/**Unlimited Ammo!**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerShoot(PVPGunPlusFireGunEvent event)
 	{
-		Player player = event.getShooterAsPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (data.isUnlimtdammo())
+		if (plugin.getServer().getPluginManager().isPluginEnabled("PVPGunPlus"))
 		{
-			event.setAmountAmmoNeeded(0);
+			Player player = event.getShooterAsPlayer();
+			PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+			if (data.isUnlimtdammo())
+			{
+				event.setAmountAmmoNeeded(0);
+			}
 		}
 	}
 }
