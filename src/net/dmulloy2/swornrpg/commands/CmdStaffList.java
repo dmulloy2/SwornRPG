@@ -19,7 +19,7 @@ public class CmdStaffList extends SwornRPGCommand
 		super(plugin);
 		this.name = "stafflist";
 		this.aliases.add("staff");
-		this.description = "List the staff that are currently on";
+		this.description = "List online staff";
 		this.mustBePlayer = false;
 	}
 	

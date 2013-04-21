@@ -46,17 +46,17 @@ public class CmdHat extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (args.length > 0 && (args[0].contains("rem") || args[0].contains("off") || args[0].equalsIgnoreCase("0")))
+		if (args.length > 0 && args[0].equalsIgnoreCase("remove"))
 		{
-			final PlayerInventory inv = player.getInventory();
-			final ItemStack head = inv.getHelmet();
+			PlayerInventory inv = player.getInventory();
+			ItemStack head = inv.getHelmet();
 			if (head == null || head.getType() == Material.AIR)
 			{
 				sendpMessage(plugin.getMessage("no_hat"));
 			}
 			else
 			{
-				final ItemStack air = new ItemStack(Material.AIR);
+				ItemStack air = new ItemStack(Material.AIR);
 				inv.setHelmet(air);
 				InventoryWorkaround.addItems(player.getInventory(), head);
 				sendpMessage(plugin.getMessage("hat_removed"));
@@ -66,11 +66,11 @@ public class CmdHat extends SwornRPGCommand
 		{
 			if (player.getItemInHand().getType() != Material.AIR)
 			{
-				final ItemStack hand = player.getItemInHand();
+				ItemStack hand = player.getItemInHand();
 				if (hand.getType().getMaxDurability() == 0)
 				{
-					final PlayerInventory inv = player.getInventory();
-					final ItemStack head = inv.getHelmet();
+					PlayerInventory inv = player.getInventory();
+					ItemStack head = inv.getHelmet();
 					ItemStack itm = player.getItemInHand();
 					ItemStack toHead = itm.clone();
 					toHead.setAmount(1);

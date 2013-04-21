@@ -15,7 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class FileResourceLoader extends ClassLoader 
 {
-
 	private final transient File dataFolder;
 	
 	public FileResourceLoader(final ClassLoader classLoader, final JavaPlugin plugin) 

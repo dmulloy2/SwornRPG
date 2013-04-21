@@ -7,94 +7,110 @@
 ################################################################################################
 
 debug: false
-#Enables/disables extra logging to console
+# Enables/disables extra logging to console
 
 updatechecker: true
-#Enables/disables checking for updates
+# Enables/disables checking for updates
 
 irondoorprotect: true
-#Enables/disables the protection of iron doors
+# Enables/disables the protection of iron doors
 
 randomdrops: true
-#Enables/disables the random chance that a random drop will drop from a block
+# Enables/disables the random chance that a random drop will drop from a block
 
 axekb: true
-#Enables/disables the random chance that players can get knocked back by axes
+# Enables/disables the random chance that players can get knocked back by axes
 
 arrowfire: true
-#Enables/disables the random chance that players can catch fire when shot by arrows
+# Enables/disables the random chance that players can catch fire when shot by arrows
 
 deathbook: true
-#Will a player receive a book/message with their death coordinates?
-#If essentials is found, the plugin will send a mail message. If not, it will give a book
+# Will a player receive a book/message with their death coordinates?
+# If essentials is found, the plugin will send a mail message. If not, it will give a book
 
 campingradius: 16
-#If a player is within x radius of a mob spawner, cancel xp gain
+# If a player is within x radius of a mob spawner, cancel xp gain
 
 salvaging: true
-#Enables/disables salvaging
+# Enables/disables salvaging
 
 salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 5; 311, Diamond, 8; 312, Diamond, 7; 313, Diamond, 4; 314, Gold, 5; 315, Gold, 8; 316, Gold, 7; 317, Gold, 4; 267, Iron, 2; 256, Iron, 1; 257, Iron, 3; 258, Iron, 3; 292, Iron, 2; 276, Diamond, 2; 277, Diamond, 1; 278, Diamond, 3; 279, Diamond, 3; 293, Diamond, 2; 283, Gold, 2; 284, Gold, 1; 285, Gold, 3; 286, Gold, 3; 294, Gold, 2"
-#Items that can be salvaged, formatted: "id, Material, how many items it returns; ...; lastid, Lastmaterial, lastitems"
+# Items that can be salvaged, formatted: "id, Material, how many items it returns; ...; lastid, Lastmaterial, lastitems"
 
 frenzy:
   enabled: true
-  #Is frenzy mode enabled?
+  # Is frenzy mode enabled?
   baseduration: 5
-  #Frenzy base duration (Formula = frenzy base duraton + (level multiplier x level))
+  # Frenzy base duration (Formula = frenzy base duraton + (level multiplier x level))
   levelmultiplier: 1
   cooldownmultiplier: 10
-  #Frenzy cooldown multiplier (Formula = duration x cooldown multiplier)
+  # Frenzy cooldown multiplier (Formula = duration x cooldown multiplier)
   
 superpickaxe:
   enabled: true
-  #Is super pickaxe ability enabled?
+  # Is super pickaxe ability enabled?
   baseduration: 10
-  #Super pick base duration (Formula = base duraton + (level multiplier x level))
+  # Super pick base duration (Formula = base duraton + (level multiplier x level))
   levelmultiplier: 2
   cooldownmultiplier: 2
-  #Super pick cooldown multiplier (Formula = duraton x cooldown multiplier)
+  # Super pick cooldown multiplier (Formula = duraton x cooldown multiplier)
  
 unlimitedammo:
   enabled: true
-  #Is unlimited ammo ability enabled?
+  # Is unlimited ammo ability enabled?
   baseduration: 10
-  #Unlimited ammo base duration (Formula = base duraton + (level multiplier x level))
+  # Unlimited ammo base duration (Formula = base duraton + (level multiplier x level))
   levelmultiplier: 2
   cooldownmultiplier: 2
-  #Unlimited ammo cooldown multiplier (Formula = duraton x cooldown multiplier)
+  # Unlimited ammo cooldown multiplier (Formula = duraton x cooldown multiplier)
 
 levelingmethods:
-#How can players level up?
+# How can players level up?
   mcxpgain:
     enabled: true
     xpgain: 15
-    #how much xp a player gains when they level up using MC xp
+    # How much xp a player gains when they level up using MC xp
   playerkills:
     enabled: true
     xpgain: 25
-    #xp gained when a player kills
+    # Xp gained when a player kills
     xploss: 10
-    #xp lost when a player dies
+    # Xp lost when a player dies
   mobkills:
     enabled: true
     xpgain: 5
-    #xp gain when a player kills a mob
+    # Xp gain when a player kills a mob
+  onlinetime:
+    enabled: true
+    xpgain: 1
+    # Xp gained per minute of online time
   
 levelingrewards:
-#What do players receive for leveling up?
+# What do players receive for leveling up?
   money:
     enabled: true
     amountperlevel: 250
   items:
     enabled: true
     itemid: 264
-    #Item id of the item you wish to reward (Defaults to diamond)
+    # Item id of the item you wish to reward (Defaults to diamond)
     amountperlevel: 1
     
+healthtags:
+# Mob health tags
+  enabled: true
+  
+playerhealth:
+# Player health tags
+  enabled: true
+  
+disabled-worlds:
+# Worlds SwornRPG is disabled in
+- disabled_world
+    
 block-drops:
-#Configure rare drops here
-#Format: - "itemid:chance"
+# Configure rare drops here
+# Format: - "itemid:chance"
   0:
     - "2258:10000"
     - "2267:10000"

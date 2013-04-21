@@ -22,21 +22,23 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
-import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
 
 /**
  * @author dmulloy2
@@ -180,7 +182,7 @@ public class PlayerListener implements Listener
 					}				
 				},20);
 				this.pages.clear();
-				if (plugin.debug) plugin.outConsole(player.getName() + "was given a book with their death coords");
+				if (plugin.debug) plugin.outConsole("{0} was given a book with their death coords", player.getName());
 			}
 			else
 			{
@@ -196,13 +198,13 @@ public class PlayerListener implements Listener
 					String killern = killerp.getName();
 					plugin.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed by" + killern  + "at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					if (plugin.debug) plugin.outConsole(player.getName() + "was sent a mail message with their death coords");
+					if (plugin.debug) plugin.outConsole("{0} was sent a mail message with their death coords", player.getName());
 				}
 				else
 				{
 					plugin.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					if (plugin.debug) plugin.outConsole(player.getName() + "was sent a mail message with their death coords");
+					if (plugin.debug) plugin.outConsole("{0} was sent a mail message with their death coords", player.getName());
 				}
 			}
 		}
@@ -214,11 +216,13 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 		String playerp = player.getName();
 		
+		plugin.updateHealthTag(player);
+		
 		/**Try to get the player's data from the cache otherwise create a new data entry**/
 		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		if (data == null)
 		{
-			if (plugin.debug) plugin.outConsole("Creating a new player data file for: " + playerp);
+			if (plugin.debug) plugin.outConsole("Creating a new player data file for: {0}", playerp);
 			plugin.getPlayerDataCache().newData(playerp);
 			
 			/**Basic data that a player needs**/
@@ -238,17 +242,17 @@ public class PlayerListener implements Listener
 		if (pm.isPluginEnabled("TagAPI"))
 		{
 			String name = player.getName();
-			String newName = this.plugin.getDefinedName(name);
+			String newName = plugin.getDefinedName(name);
 			if (newName != name) 
 			{
 				try 
 				{
-					this.plugin.addTagChange(name, newName);
+					plugin.addTagChange(name, newName);
 				} 
-				catch (final TooBigException e) 
+				catch (TooBigException e) 
 				{
-					this.plugin.getLogger().severe("Error while changing name from memory:");
-					this.plugin.getLogger().severe(e.getMessage());
+					plugin.getLogger().severe("Error while changing name from memory:");
+					plugin.getLogger().severe(e.getMessage());
 				}
 			}
 		}
@@ -312,25 +316,21 @@ public class PlayerListener implements Listener
 	
 	/**Checks to make sure that if a player is riding another player, teleportation is not disabled**/
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerCommand(PlayerCommandPreprocessEvent event)
+	public void onPlayerTeleoprt(PlayerTeleportEvent event)
 	{
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		String cmd = event.getMessage().toString().toLowerCase().replaceAll("/", "").replaceAll(" ", "");
-		if (cmd.contains("spawn")||cmd.contains("home")||cmd.contains("warp")||cmd.contains("tp"))
+		if (player.getVehicle() != null && data.isRiding())
 		{
-			if (player.getVehicle() != null && data.isRiding())
-			{
-				/**If a player is riding another player, leave the vehicle**/
-				player.leaveVehicle();
-				data.setRiding(false);
-			}
-			if (player.getPassenger() != null && data.isVehicle())
-			{
-				/**If a player is being ridden, eject the passenger**/
-				player.eject();
-				data.setVehicle(false);
-			}
+			/**If a player is riding another player, leave the vehicle**/
+			player.leaveVehicle();
+			data.setRiding(false);
+		}
+		if (player.getPassenger() != null && data.isVehicle())
+		{
+			/**If a player is being ridden, eject the passenger**/
+			player.eject();
+			data.setVehicle(false);
 		}
 	}
 		
@@ -385,9 +385,9 @@ public class PlayerListener implements Listener
 		int strength = 1;
 		data.setSpick(true);
 		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(duration, strength));
-		if (plugin.debug) plugin.outConsole(player.getName() + " has activated super pickaxe. Duration: " + duration);
-		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		if (plugin.debug) plugin.outConsole("{0} has activated super pickaxe. Duration: {1}", player.getName(), duration);
+	
+		class SuperPickThread extends BukkitRunnable
 		{
 			@Override
 			public void run()
@@ -397,23 +397,15 @@ public class PlayerListener implements Listener
 				data.setScooldown(true);
 				int cooldown = (duration*plugin.superpickcd);
 				data.setSuperpickcd(cooldown);
-				if (plugin.debug) plugin.outConsole(player.getName() + " has a cooldown of " + cooldown + " for super pickaxe");
-			}				
-		},(duration));
-	}
-	
-	/**Unlimited Ammo!**/
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerShoot(PVPGunPlusFireGunEvent event)
-	{
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PVPGunPlus"))
-		{
-			Player player = event.getShooterAsPlayer();
-			PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-			if (data.isUnlimtdammo())
-			{
-				event.setAmountAmmoNeeded(0);
+				if (plugin.debug) plugin.outConsole("{0} has a cooldown of {1} for super pickaxe", player.getName(), cooldown);
 			}
 		}
+		new SuperPickThread().runTaskLater(plugin, duration);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerRespawn(PlayerRespawnEvent event)
+	{
+		plugin.updateHealthTag(event.getPlayer());
 	}
 }

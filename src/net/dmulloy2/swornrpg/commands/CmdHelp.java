@@ -1,209 +1,95 @@
 package net.dmulloy2.swornrpg.commands;
 
+import java.util.ArrayList;
 import net.dmulloy2.swornrpg.SwornRPG;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-/**
- * @author dmulloy2
- */
 
 public class CmdHelp extends SwornRPGCommand
 {
-	public CmdHelp (SwornRPG plugin)
+	public CmdHelp(SwornRPG plugin)
 	{
 		super(plugin);
-		this.name = "srpg";
-		this.aliases.add("swornrpg");
-		this.description = "SwornRPG root command";
-		this.optionalArgs.add("help");
-		this.optionalArgs.add("misc");
-		this.optionalArgs.add("ride");
-		this.optionalArgs.add("save");
-		this.optionalArgs.add("reload");
-		this.optionalArgs.add("chat");
-		this.optionalArgs.add("level");
-		this.mustBePlayer = false;
-	}
-	
-	//Permission Strings
-	public String adminChatPerm = "srpg.adminchat";
-	public String adminRidePerm = "srpg.ride";
-	public String adminSayPerm = "srpg.asay";
-	public String adminResetPerm = "srpg.levelr";
-	public String councilChatPerm = "srpg.council";
-	public String adminReloadPerm = "srpg.reload";
-	public String hatPerm = "srpg.hat";
-	public String matchPerm = "srpg.match";
-	public String tagPerm = "srpg.tag";
-	public String tagresetPerm = "srpg.tagr";
-	public String adminItemPerm = "srpg.iname";
-	public String adminMatchPerm = "srpg.match";
+		this.name = "help";
+		this.description = "Display SwornRPG help";
+		this.optionalArgs.add("page");
+		this.usesPrefix = true;
+	}	
 	
 	@Override
 	public void perform()
 	{
-		if(args.length == 0)
+		if (helpPages == null) updateHelp();
+		
+		int page = 0;
+		if (args.length > 0)
 		{
-			displayHelp(sender);
+			page = Integer.parseInt(args[0]);
 		}
-		else if (args[0].equalsIgnoreCase("reload"))
+		
+		if (page == 0)
+			page = 1;
+		
+		sendMessage("&4==== &6SwornRPG Help &4(&6"+page+"&4/&6"+helpPages.size()+"&4) ====");
+		
+		page -= 1;
+		
+		if (page < 0 || page >= helpPages.size())
 		{
-			if (hasPerm(sender, adminReloadPerm))
-			{
-				plugin.reload();
-				plugin.updateBlockDrops();
-				sendpMessage(plugin.getMessage("config_reloaded"));
-				if (sender instanceof Player)
-				{
-					plugin.outConsole("Configuration reloaded");
-				}
-			}
-			else
-			{
-				sendpMessage(plugin.getMessage("noperm"));
-			}
+			sendMessage("&cThis page does not exist");
+			return;
 		}
-		else if (args[0].equalsIgnoreCase("save"))
-		{
-			if(hasPerm(sender, adminReloadPerm))
-			{
-				plugin.getPlayerDataCache().save();
-				sendpMessage(plugin.getMessage("data_saved"));
-			}
-			else
-			{
-				sendpMessage(plugin.getMessage("noperm"));
-			}
-		}
-		else if (args[0].equalsIgnoreCase("help"))
-		{
-			displayHelp(sender);	  
-		}
-		else if (args[0].equalsIgnoreCase("ride"))
-		{
-			sendMessage("&4====== &6SwornRPG Ride Commands &4======"); 
-			sendMessage("&c/<command> &4<required> &6[optional]");
-			if(hasPerm(sender, adminRidePerm))
-			{
-				sendMessage("&c/ride &4<player> &eRide another player");
-				sendMessage("&c/unride &eStop riding another player");
-				sendMessage("&c/eject &eKick someone off your head");
-			}
-		}
-		else if (args[0].equalsIgnoreCase("chat"))
-		{
-			sendMessage("&4====== &6SwornRPG Chat Commands &4======"); 
-			sendMessage("&c/<command> &4<required> &6[optional]");
-			if (hasPerm(sender, adminChatPerm))
-			{
-				sendMessage("&c/a &4<message> &eTalk in admin chat");
-			}
-			if (hasPerm(sender, councilChatPerm))
-			{
-				sendMessage("&c/hc &4<message> &eTalk in council chat");
-			}
-			if (hasPerm(sender, adminSayPerm))
-			{
-				sendMessage("&c/asay &4<message> &eAlternate admin say command");
-			}
-		}
-		else if (args[0].equalsIgnoreCase("tag"))
-		{
-			sendMessage("&4====== &6SwornRPG Tag Commands &4======"); 
-			sendMessage("&c/<command> &4<required> &6[optional]");
-			if (hasPerm(sender, tagPerm))
-			{
-				sendMessage("&c/tag &6[player] &4<tag> &eChange the color of the name above your head");
-			}
-			if (hasPerm(sender, tagresetPerm))
-			{
-				sendMessage("&c/tagr &6player] &eReset a player's tag");
-			}
-		}
-		else if (args[0].equalsIgnoreCase("level"))
-		{
-			sendMessage("&4====== &6SwornRPG Level Commands &4======"); 
-			sendMessage("&c/<command> &4<required> &6[optional]");
-			sendMessage("&c/level &6[name] &eDisplays your current level");
-			if (hasPerm(sender, adminResetPerm))
-			{
-				sendMessage("&c/levelr &6[name] &eReset a player's level.");
-				sendMessage("&c/addxp &4<name> &eGive xp to a player");
-			}
-			sendMessage("&c/frenzy &eEnter Frenzy mode.");
-			sendMessage("&c/mine &eActivate super pickaxe");
-			sendMessage("&c/ammo &eUnlimited ammo ability");
-		}
-		else if (args[0].equalsIgnoreCase("misc"))
-		{
-			sendMessage("&4====== &6SwornRPG Misc Commands &4======"); 
-			sendMessage("&c/<command> &4<required> &6[optional]");
-			sendMessage("&c/deathmessage &eToggles death coordinate books/messages");
-			sendMessage("&c/standup &eGet out of your chair");
-			sendMessage("&c/sitdown &eSit in a chair");
-			sendMessage("&c/stafflist &eList online staff");
-			if (hasPerm(sender, adminItemPerm))
-			{
-				sendMessage("&c/iname &4<name> &eSet the name of an item");
-			}
-			if (hasPerm(sender, adminMatchPerm))
-			{
-				sendMessage("&c/match &4<string> &eMatch a string with the closest player");
-			}
-		}
-		else if (args[0].equalsIgnoreCase("marriage"))
-		{
-			sendMessage("&4====== &6SwornRPG Marriage Commands &4======"); 
-			sendMessage("&c/<command> &4<required> &6[optional]");
-			sender.sendMessage(ChatColor.RED + "/propose" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Request to marry a player");
-			sender.sendMessage(ChatColor.RED + "/deny" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Deny a player's hand in marriage");
-			sender.sendMessage(ChatColor.RED + "/marry" + ChatColor.DARK_RED + " <player> " + ChatColor.YELLOW + "Marry another player");
-			sender.sendMessage(ChatColor.RED + "/spouse" + ChatColor.GOLD + " [player] " + ChatColor.YELLOW + "Shows information about a player's spouse");
-		}
-		else
-		{
-			displayHelp(sender);
-		}
+		for (String string : helpPages.get(page))
+			sendMessage(string);
 	}
-    //Main help menu
-    public void displayHelp(CommandSender p)
-    {
-    	sendMessage("&4====== &6" + plugin.getDescription().getFullName() + " &4======"); 
-    	sendMessage("&c/<command> &4<required> &6[optional]");
-    	if (hasPerm(p, adminReloadPerm))
-    	{
-    		sendMessage("&c/srpg &4reload &eReload the configuration");
-    		sendMessage("&c/srpg &4save &eSave all player data");
-    	}
-    	sendMessage("&c/srpg &4help &eDisplay this help menu");			
-    	if (hasPerm(p, adminRidePerm))
-    	{
-    		sendMessage("&c/srpg &4ride &eDisplay ride commands");
-    	}
-    	if (hasPerm(p, adminChatPerm))
-    	{
-    		sendMessage("&c/srpg &4chat &eDisplay chat commands");
-    	}
-    	if (hasPerm(p, tagPerm))
-    	{
-    		sendMessage("&c/srpg &4tag &eDisplay tag commands");		
-    	}
-    	sendMessage("&c/srpg &4level &eDisplay level commands");
-    	sendMessage("&c/srpg &4marriage &eDisplay marriage commands");
-    	sendMessage("&c/srpg &4misc &eDisplay miscellaneous commands");
-//    	sendMessage("&c/srpg &4top &eDisplay level leaderboard");
-    	if (hasPerm(p, hatPerm))
-    	{
-    		sendMessage("&c/hat &6[remove] &eGet a new hat!");
-    	}
-    }
-    
-    //Perms check
-	public static boolean hasPerm(CommandSender player, String command)
+	
+	/**Build the help pages**/
+	public ArrayList<ArrayList<String>> helpPages;
+	
+	public void updateHelp()
 	{
-		return player.hasPermission(command) || player.isOp();
+		helpPages = new ArrayList<ArrayList<String>>();
+		ArrayList<String> pageLines;
+
+		pageLines = new ArrayList<String>();
+		pageLines.add(new CmdHelp(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdLeaderboard(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdVersion(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdAChat(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdAddxp(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdASay(plugin).getUsageTemplate(true));
+		helpPages.add(pageLines);
+		
+		pageLines = new ArrayList<String>();
+		pageLines.add(new CmdCoordsToggle(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdDeny(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdDivorce(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdEject(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdFrenzy(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdHighCouncil(plugin).getUsageTemplate(true));
+		helpPages.add(pageLines);
+		
+		pageLines = new ArrayList<String>();
+		pageLines.add(new CmdItemName(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdLevel(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdLevelr(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdMarry(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdMatch(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdMine(plugin).getUsageTemplate(true));
+		helpPages.add(pageLines);
+		
+		pageLines = new ArrayList<String>();
+		pageLines.add(new CmdPropose(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdRide(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdSitdown(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdSpouse(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdStaffList(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdStandup(plugin).getUsageTemplate(true));
+		helpPages.add(pageLines);
+		
+		pageLines = new ArrayList<String>();
+		pageLines.add(new CmdTag(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdTagr(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdUnride(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdUnlimitedAmmo(plugin).getUsageTemplate(true));
+		helpPages.add(pageLines);
 	}
 }

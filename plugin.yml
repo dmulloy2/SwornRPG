@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 2.2.1
+version: 2.4.1
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, Vault, PVPGunPlus]
@@ -25,7 +25,7 @@ commands:
     permission: srpg.hat
     usage: |
       /<command>
-      /<command> [remove]
+      /<command> remove
     aliases: [headgear]
   asay:
     description: Alternate admin say command
@@ -58,20 +58,28 @@ commands:
   tag:
     description: Change the tag above your head
     permission: srpg.tag
-    usage: /<command> [player] <tag>
+    usage: |
+      /<command> <tag>
+      /<command> <player> <tag>
     aliases: [settag]
   tagr:
     description: Removes/resets a player's tag
     permission: srpg.tagr
-    usage: /<command> [player] <tag>
+    usage: |
+      /<command>
+      /<command> <tag>
     aliases: [resettag]
   level:
     description: Shows a player's level
-    usage: /<command> [player]
+    usage: |
+      /<command>
+      /<command> <player>
   levelr:
     description: Resets a player's level
     permission: srpg.levelr
-    usage: /<command> [player]
+    usage: |
+      /<command>
+      /<command> <player>
     aliases: [resetlevel]
   deathcoords:
     description: Toggle death coordinate messages
@@ -91,7 +99,9 @@ commands:
     aliases: [reject]
   spouse:
     description: Shows information on a player's spouse
-    usage: /<command> [player]
+    usage: |
+      /<command>
+      /<command> <player>
     aliases: [spouseinfo]
   divorce:
     description: Divorce your spouse

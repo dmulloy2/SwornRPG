@@ -152,13 +152,15 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		ret.append(name);
 
 		for (String s : optionalArgs)
+		{
 			ret.append(String.format(" &6[" + s + "]"));
+		}
 		
 		for (String s : requiredArgs)
 			ret.append(String.format(" &4<" + s + ">"));
 		
 		if (displayHelp)
-			ret.append("&e" + description);
+			ret.append(" &e" + description);
 		
 		return FormatUtil.format(ret.toString());
 	}

@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
@@ -39,21 +40,27 @@ public class CmdUnlimitedAmmo extends SwornRPGCommand
 			return;
 		}
 		int level = data.getLevel();
-		final int duration = (20*(plugin.ammobaseduration + (level*plugin.ammomultiplier)));
+		int duration = (20*(plugin.ammobaseduration + (level*plugin.ammomultiplier)));
 		data.setUnlimtdammo(true);
 		sendpMessage(plugin.getMessage("ammo_now_unlimited"));
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+		if (plugin.debug) plugin.outConsole("{0} has activated super pickaxe. Duration: {1}", player.getName(), duration);
+		new UnlimitedAmmoThread().runTaskLater(plugin, duration);
+	}
+	
+	public class UnlimitedAmmoThread extends BukkitRunnable
+	{
+		@Override
+		public void run()
 		{
-			@Override
-			public void run()
-			{
-				data.setUnlimtdammo(false);
-				sendpMessage(plugin.getMessage("ammo_nolonger_unlimited"));
-				data.setAmmocooling(true);
-				int cooldown = (duration*plugin.ammocooldown);
-				data.setAmmocd(cooldown);
-				if (plugin.debug) plugin.outConsole(player.getName() + " has an ammo cooldown of " + cooldown);
-			}
-		},duration);
+			PlayerData data = getPlayerData(player);
+			int level = data.getLevel();
+			int duration = (20*(plugin.ammobaseduration + (level*plugin.ammomultiplier)));
+			data.setUnlimtdammo(false);
+			sendpMessage(plugin.getMessage("ammo_nolonger_unlimited"));
+			data.setAmmocooling(true);
+			int cooldown = (duration*plugin.ammocooldown);
+			data.setAmmocd(cooldown);
+			if (plugin.debug) plugin.outConsole("{0} has a cooldown of {1} for super pickaxe", player.getName(), cooldown);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -31,9 +31,9 @@ public class CmdAddxp extends SwornRPGCommand
 		Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 			return;
-		PlayerData data = getPlayerData(target);
+		
 		int xptoadd = Integer.parseInt(args[1]);
-		data.setPlayerxp(data.getPlayerxp() + xptoadd);
+		plugin.getServer().getPluginManager().callEvent(new PlayerXpGainEvent(target, xptoadd, ""));
 		sendpMessage(plugin.getMessage("addxp_give"), xptoadd, target);
 		sendMessageTarget(plugin.getMessage("addxp_given"), target, xptoadd);
 	}

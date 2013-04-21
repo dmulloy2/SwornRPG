@@ -85,8 +85,8 @@ public class ExperienceListener implements Listener
 			/**Debug Message**/
 			if (plugin.debug) 
 			{
-				plugin.outConsole(killedp + " lost " + msgxp + " xp after getting killed by  " + killerp);
-				plugin.outConsole(killerp + " gained " + killxp + " xp for killing " + killedp);
+				plugin.outConsole("{0} lost {1} xp after getting killed by {2}", killedp, msgxp, killerp);
+				plugin.outConsole("{0} gained {1} xp for killing {2}" , killerp, killxp, killedp);
 			} 
 			
 		}
@@ -176,7 +176,7 @@ public class ExperienceListener implements Listener
 			
 			/**Call Event**/
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
-			if (plugin.debug) plugin.outConsole(killer.getName() + "gained " + killxp + " xp for killing " + mobname);
+			if (plugin.debug) plugin.outConsole(killer.getName() + "{0} gained {1} xp for killing {2}", killer.getName(), killxp, mobname);
 		}
 	}
 	
@@ -224,11 +224,13 @@ public class ExperienceListener implements Listener
 		int newlevel = event.getNewLevel();
 		if (newlevel - oldlevel != 1)
 			return;
+		
 		int xpgained = plugin.xplevelgain;
+		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
 		
 		/**Call Event**/
-		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
 		pm.callEvent(new PlayerXpGainEvent (player, xpgained, message));
+		if (plugin.debug) plugin.outConsole("{0} gained {1} xp for gaining Minecraft xp", player.getName(), xpgained);
 	}
 	
 	/**Rewards items and money on player levelup**/
@@ -250,7 +252,7 @@ public class ExperienceListener implements Listener
 		/**Send messages**/
 		int level = data.getLevel();
 		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
-		if (plugin.debug) plugin.outConsole(player.getName() + " leveled up to level " + level);
+		if (plugin.debug) plugin.outConsole("{0} leveled up to level {1}", player.getName(), level);
 		
 		/**Award money if enabled**/
 		if (plugin.money == true)
@@ -279,14 +281,26 @@ public class ExperienceListener implements Listener
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerXpGain(PlayerXpGainEvent event)
-	{
+	{	
+		/**Cancel event if in a disabled world**/
+		Player player = event.getPlayer();
+		if (plugin.disabledworlds.size() != 0)
+		{
+			for (String string : plugin.disabledworlds)
+			{
+				World world = plugin.getServer().getWorld(string);
+				if (world != null && player.getLocation().getWorld().equals(world))
+				{
+					event.setCancelled(true);
+				}
+			}
+		}
+		
 		/**Cancellation check**/
 		if (event.isCancelled())
 			return;
-		
-		Player player = event.getPlayer();
 		String message = event.getMessage();
-		
+
 		/**Add the xp gained to their overall xp**/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		int xpgained = event.getXpGained();
@@ -294,7 +308,8 @@ public class ExperienceListener implements Listener
 		data.setTotalxp(data.getTotalxp() + xpgained);
 		
 		/**Send the message**/
-		player.sendMessage(message);
+		if (message != "")
+			player.sendMessage(message);
 		
 		/**Levelup check**/
 		int xp = data.getPlayerxp();

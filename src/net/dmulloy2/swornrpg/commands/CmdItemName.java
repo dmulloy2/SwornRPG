@@ -35,12 +35,13 @@ public class CmdItemName extends SwornRPGCommand
 	    else
 	    {
 	    	ItemMeta meta = hand.getItemMeta();
-	    	String name = new String();
+	    	StringBuilder name = new StringBuilder();
 	    	for (int i = 0; i < args.length; i++) 
 	    	{ 
-	    		name = name.concat(args[i].replaceAll("&", "§") + " ");
+	    		name = name.append(args[i].replaceAll("&", "§") + " ");
 		    }
-	    	meta.setDisplayName(name);
+	    	name.deleteCharAt(name.lastIndexOf(" "));
+	    	meta.setDisplayName(name.toString());
 	    	hand.setItemMeta(meta);
 	    	String inhand = hand.getType().toString().toLowerCase().replaceAll("_", " ");
 	    	sendpMessage(plugin.getMessage("item_name"), inhand, name);

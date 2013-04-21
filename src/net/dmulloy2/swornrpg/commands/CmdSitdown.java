@@ -1,14 +1,8 @@
 package net.dmulloy2.swornrpg.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.Vector;
-
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
@@ -20,7 +14,7 @@ public class CmdSitdown extends SwornRPGCommand
 		super(plugin);
 		this.name = "sitdown";
 		this.aliases.add("sit");
-		this.description = "Sit down on a block";
+		this.description = "Sit in a chair";
 		this.mustBePlayer = true;
 	}
 	
@@ -28,16 +22,6 @@ public class CmdSitdown extends SwornRPGCommand
 	public void perform()
 	{
 		PlayerData data = getPlayerData(player);
-		PluginManager pm = Bukkit.getPluginManager();
-		if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
-		{
-			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-			if (otherFaction.isWarZone())
-			{
-				sendpMessage(plugin.getMessage("chair_warzone"));
-				return;
-			}
-		}
 		Block block = player.getTargetBlock(null, 100);
 		if (block == null)
 		{
@@ -46,11 +30,6 @@ public class CmdSitdown extends SwornRPGCommand
 		else
 		{
 			String seat = block.getType().toString().toLowerCase().replaceAll("_", " ");
-			if (plugin.debug)
-			{
-				plugin.outConsole("Seat: " + seat);
-				plugin.outConsole("Block: " + block);
-			}
 			if (seat.contains("step")||seat.contains("stair"))
 			{
 				data.setSitting(true);	

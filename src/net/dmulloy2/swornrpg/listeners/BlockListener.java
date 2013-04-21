@@ -55,9 +55,12 @@ public class BlockListener implements Listener
 		return i;
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event) 
 	{
+		if (event.isCancelled())
+			return;
+		
 		try 
 		{
 			Block block = event.getBlock();
@@ -69,11 +72,12 @@ public class BlockListener implements Listener
 			if (blockType.equals(Material.IRON_DOOR_BLOCK))
 			{
 				/**Config and GameMode check**/
-				if ((plugin.irondoorprotect == true) && (gm == (GameMode.SURVIVAL)))
+				if ((plugin.irondoorprotect == true) && (gm != (GameMode.CREATIVE)))
 				{
 					/**Protect the iron door!**/
 					event.setCancelled(true);
 					player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("iron_door_protect")));
+					if (plugin.debug) plugin.outConsole("An iron door was protected from {0}", player.getName());
 				}
 			}
 			
@@ -117,7 +121,7 @@ public class BlockListener implements Listener
 		}
 		catch (Exception localException)
 		{
-			if (plugin.debug) localException.printStackTrace();
+			if (plugin.debug) plugin.outConsole("Error with block break: {0}", localException.getMessage());
 		}
 	}
 }

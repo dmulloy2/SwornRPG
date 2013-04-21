@@ -40,7 +40,7 @@ public class CommandHandler implements CommandExecutor
 		} 
 		else
 		{
-			plugin.outConsole("Entry for command " + command.getName() + " is missing in plugin.yml");
+			plugin.outConsole("Entry for command {0} is missing in plugin.yml", command.getName());
 		}
 	}
 

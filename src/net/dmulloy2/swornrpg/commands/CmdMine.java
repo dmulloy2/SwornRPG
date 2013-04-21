@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
@@ -47,24 +48,12 @@ public class CmdMine extends SwornRPGCommand
 					sendpMessage(plugin.getMessage("superpick_question"));
 					sendpMessage(plugin.getMessage("superpick_activated"));
 					int level = data.getLevel();
-					final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
+					int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
 					int strength = 1;
 					data.setSpick(true);
 					player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect((int) duration, strength));
-					if (plugin.debug) plugin.outConsole(player.getName() + "has activated super pickaxe. Duration: " + duration);
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							sendpMessage(plugin.getMessage("superpick_wearoff"));
-							data.setSpick(false);
-							data.setScooldown(true);
-							int cooldown = (duration*plugin.superpickcd);
-							data.setSuperpickcd(cooldown);
-							if (plugin.debug) plugin.outConsole(player.getName() + "has a cooldown of " + cooldown + " for super pickaxe");
-						}				
-					},(duration));
+					if (plugin.debug) plugin.outConsole("{0} has activated super pickaxe. Duration: {1}", player.getName(), duration);
+					new SuperPickThread().runTaskLater(plugin, duration);
 				}
 				else
 				{
@@ -79,6 +68,23 @@ public class CmdMine extends SwornRPGCommand
 		else
 		{
 			sendpMessage(plugin.getMessage("command_disabled"));
+		}
+	}
+	
+	public class SuperPickThread extends BukkitRunnable
+	{
+		@Override
+		public void run()
+		{
+			PlayerData data = getPlayerData(player);
+			int level = data.getLevel();
+			int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
+			sendpMessage(plugin.getMessage("superpick_wearoff"));
+			data.setSpick(false);
+			data.setScooldown(true);
+			int cooldown = (duration*plugin.superpickcd);
+			data.setSuperpickcd(cooldown);
+			if (plugin.debug) plugin.outConsole(player.getName() + "{0} has a cooldown of {1} for super pickaxe", player.getName(), cooldown);
 		}
 	}
 }

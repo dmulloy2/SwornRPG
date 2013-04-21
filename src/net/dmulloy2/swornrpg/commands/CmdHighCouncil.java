@@ -17,7 +17,7 @@ public class CmdHighCouncil extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "hc";
-		this.description = "High Council chat";
+		this.description = "Talk in council chat";
 		this.aliases.add("council");
 		this.requiredArgs.add("message");
 		this.permission = PermissionType.CMD_COUNCIL.permission;

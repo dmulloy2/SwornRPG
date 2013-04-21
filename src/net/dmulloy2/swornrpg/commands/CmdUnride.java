@@ -25,17 +25,22 @@ public class CmdUnride extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		PlayerData data = getPlayerData(player);
+		if (data.isSitting())
+		{
+			sendpMessage(plugin.getMessage("unride_sitting"));
+			return;
+		}
 		if (player.getVehicle() != null)
 		{
 			Entity target = player.getVehicle();
 			if (target instanceof Player)
 			{
 				Player targetp = (Player)player.getVehicle();
-				PlayerData data = getPlayerData(targetp);
-				data.setVehicle(false);
+				PlayerData data1 = getPlayerData(targetp);
+				data1.setVehicle(false);
 			}
 			player.leaveVehicle();
-			PlayerData data = getPlayerData(player);
 			data.setRiding(false);
 		}
 		else

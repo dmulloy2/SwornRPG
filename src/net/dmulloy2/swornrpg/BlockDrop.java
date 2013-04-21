@@ -6,26 +6,29 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
-public class BlockDrop {
-
+public class BlockDrop
+{
 	final ItemStack item;
 	final int chance;
 	
-	public BlockDrop(final ItemStack itemStack, final int chance) {
+	public BlockDrop(final ItemStack itemStack, final int chance) 
+	{
 		this.item = itemStack;
 		this.chance = chance;
 	}
 	
-	public ItemStack getItem() {
+	public ItemStack getItem()
+	{
 		return item;
 	}
 	
-	public int getChance() {
+	public int getChance()
+	{
 		return chance;
 	}
 	
-	public String toString() {
+	public String toString()
+	{
 		return "[" + item.getType().toString().toLowerCase().replaceAll("_", " ") + ", " + chance + "]";
 	}
-	
 }

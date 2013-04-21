@@ -18,7 +18,7 @@ public class CmdMatch extends SwornRPGCommand
 		super(plugin);
 		this.name = "match";
 		this.aliases.add("matchplayer");
-		this.description = "Match a string with a player";
+		this.description = "Match a string with the closest player";
 		this.requiredArgs.add("string");
 		this.permission = PermissionType.CMD_MATCH.permission;
 		this.mustBePlayer = false;

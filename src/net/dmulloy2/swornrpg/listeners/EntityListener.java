@@ -10,7 +10,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.util.Vector;
 
 /**
@@ -96,7 +100,35 @@ public class EntityListener implements Listener
 		}
 		catch (Exception localException)
 		{
-			if (plugin.debug) localException.printStackTrace();
+			if (plugin.debug) plugin.outConsole("Error with EntityDamage: {0}", localException.getMessage());
 		}
+	}
+	
+	/**Mob Health (Damage)**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamage2(EntityDamageEvent event)
+	{
+		plugin.updateHealthTag(event.getEntity());
+	}
+	
+	/**Mob Health (Regain)**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityRegainHealth(EntityRegainHealthEvent event)
+	{
+		plugin.updateHealthTag(event.getEntity());
+	}
+	
+	/**Mob Health (Death)**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDeath(EntityDeathEvent event)
+	{
+		plugin.updateHealthTag(event.getEntity());
+	}
+	
+	/**Mob Health (Spawn)**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onCreatureSpawn(CreatureSpawnEvent event)
+	{
+		plugin.updateHealthTag(event.getEntity());
 	}
 }

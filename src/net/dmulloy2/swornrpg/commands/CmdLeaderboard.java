@@ -13,7 +13,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "top";
-		this.description = "Leaderboard";
+		this.description = "Display level leaderboard";
 		this.aliases.add("lb");
 		this.mustBePlayer = true;
 		this.usesPrefix = true;
