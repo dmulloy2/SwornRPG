@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 2.5.3
+version: "${project.version}"
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, Vault, PVPGunPlus]

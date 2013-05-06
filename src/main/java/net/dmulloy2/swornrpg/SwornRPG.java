@@ -141,6 +141,10 @@ public class SwornRPG extends JavaPlugin
 		if (!getDataFolder().exists())
 			getDataFolder().mkdir();
 		
+		/**Save Messages and Register Resource Handler**/
+		saveResource("messages.properties", true);
+		resourceHandler = new ResourceHandler(this, getClassLoader());
+		
 		/**Check for Config**/
         File file = new File(getDataFolder(), "config.yml");
         if (!file.exists())
@@ -152,10 +156,6 @@ public class SwornRPG extends JavaPlugin
         /**Load Config**/
 		loadConfig();
 		reloadConfig();
-		
-		/**Save Messages and Register Resource Handler**/
-		saveResource("messages.properties", true);
-		resourceHandler = new ResourceHandler(this, getClassLoader());
 		
 		/**Update Block Tables**/
 		updateBlockDrops();
@@ -661,7 +661,7 @@ public class SwornRPG extends JavaPlugin
 					StringBuilder tag = new StringBuilder();
 					for (int i=0; i<hearts; i++)
 					{
-						tag.append("❤");
+						tag.append("\u2764");
 					}
 
 					String displayName = tag.toString();
