@@ -79,9 +79,7 @@ public class SwornRPG extends JavaPlugin
 	private @Getter LogHandler logHandler;
 	private @Getter PlayerHealthBar playerHealthBar;
 	private @Getter AbilitiesManager abilitiesManager;
-	
-	public static SwornRPG p;
-	
+
 	/**Private objects**/
     private FileConfiguration tagsConfig = null;
     private File tagsConfigFile = null;
@@ -112,8 +110,6 @@ public class SwornRPG extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		p = this;
-		
 		long start = System.currentTimeMillis();
 		
 		/**Register Listener events**/

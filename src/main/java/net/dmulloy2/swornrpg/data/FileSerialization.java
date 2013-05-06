@@ -3,10 +3,6 @@ package net.dmulloy2.swornrpg.data;
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-
-import net.dmulloy2.swornrpg.SwornRPG;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -37,7 +33,7 @@ public class FileSerialization
 		} 
 		catch (Exception ex) 
 		{
-			SwornRPG.p.outConsole(Level.SEVERE, "Exception ocurred while attempting to save file: {0}", file.getName());
+			System.err.println("[SwornRPG] Exception ocurred while attempting to save file: " + file.getName());
 			ex.printStackTrace();
 		}
 	}
@@ -57,10 +53,10 @@ public class FileSerialization
 		}
 		catch (Exception ex) 
 		{
-			SwornRPG.p.outConsole(Level.SEVERE, "Exception ocurred while attempting to load file: {0}", file.getName());
+			System.err.println("[SwornRPG] Exception ocurred while attempting to load file: " + file.getName());
 			if (file.renameTo(new File(file.getParent(), file.getName() + "_bad"))) 
 			{
-				SwornRPG.p.outConsole("Renamed bad file: {0} to: {0}_bad", file.getName());
+				System.err.println("[SwornRPG] Renamed bad file to: "+file.getName()+"_bad");
 			}
 			
 			return null;
