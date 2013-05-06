@@ -117,7 +117,7 @@ public class PlayerDataCache
 	
 	public void save() 
 	{
-		plugin.outConsole("Saving " + folderName + " to disk...");
+		plugin.outConsole("Saving {0} to disk...", folderName);
 		long start = System.currentTimeMillis();
 		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet()) 
 		{
@@ -129,7 +129,7 @@ public class PlayerDataCache
 			}
 		}
 		cleanupData();
-		plugin.outConsole("Players saved! [" + (System.currentTimeMillis() - start) + "ms]");
+		plugin.outConsole("Players saved! [{0} ms]", (System.currentTimeMillis() - start));
 	}
 	
 	private boolean isFileAlreadyLoaded(final String fileName, final Map<String, PlayerData> map) 

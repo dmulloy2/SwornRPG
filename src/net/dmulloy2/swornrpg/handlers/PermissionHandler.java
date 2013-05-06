@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 
 public class PermissionHandler 
 {
-	public PermissionHandler(final SwornRPG plugin) 
+	public PermissionHandler(SwornRPG plugin)
 	{
 	}
-
+	
 	public boolean hasPermission(CommandSender sender, Permission permission) 
 	{
 		return (permission == null) ? true : hasPermission(sender, getPermissionString(permission));

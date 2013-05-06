@@ -2,26 +2,32 @@ package net.dmulloy2.swornrpg.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.TooBigException;
+import net.dmulloy2.swornrpg.util.Util;
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -29,16 +35,18 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.material.MaterialData;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 
 /**
  * @author dmulloy2
@@ -59,24 +67,22 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if(plugin.salvaging == false)
+		if (plugin.salvaging == false)
 			return;
 		
 		if (!event.hasBlock())
 			return;
 	
-		if (event.getClickedBlock() == null)
+		Block block = event.getClickedBlock();
+		if (block == null)
 			return;
 		
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
 	
 		Player pl = event.getPlayer();
-	
 		if (!(pl.getGameMode() == (GameMode.SURVIVAL)))
 			return;
-	
-		Block block = event.getClickedBlock();
 	
 		String blockType = null;
 		if (block.getType().equals(Material.IRON_BLOCK))
@@ -111,7 +117,7 @@ public class PlayerListener implements Listener
 						plural = "s";
 					String salvagem = item.getType().toString().toLowerCase().replaceAll("_", " ");
 					pl.sendMessage(FormatUtil.format(plugin.getMessage("salvage_success"), article, salvagem, amt, (blockType.toLowerCase() + materialExtension + plural)));
-					plugin.outConsole(pl.getName() + " salvaged " + item.getType().toString().toLowerCase().replaceAll("_", " ") + " for " + amt + " " + blockType.toLowerCase() + materialExtension + plural);
+					plugin.outConsole(plugin.getMessage("log_salvage"), pl.getName(), item.getType().toString().toLowerCase().replaceAll("_", " "), amt, blockType.toLowerCase(), materialExtension, plural);
 					Inventory inv = pl.getInventory();
 					inv.removeItem(new ItemStack[] { item });
 					Material give= null;
@@ -140,72 +146,86 @@ public class PlayerListener implements Listener
      */
 	@EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event)
-    {
+	{
 		/**Checks to make sure death books are enabled in the config**/
 		if (plugin.deathbook == false)
 			return;
 		
 		final Player player = event.getEntity();
+		if (player == null)
+			return;
+		
 		/**Warzone check**/
-		PluginManager pm = plugin.getServer().getPluginManager();
-		if (pm.isPluginEnabled("Factions")||pm.isPluginEnabled("SwornNations"))
-		{
-			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-			if (otherFaction.isWarZone())
-				return;
-		}
+		if (plugin.checkFactions(player, true))
+			return;
+		
+		/**Coordinates**/
+		double x = (int) Math.floor(player.getLocation().getX());
+		double y = (int) Math.floor(player.getLocation().getY());
+		double z = (int) Math.floor(player.getLocation().getZ());
 		
 		/**Player death book toggle check**/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (!(data.isDeathbookdisabled()))
 		{
 			/**Check for essentials**/
-			if (!(pm.isPluginEnabled("Essentials")))
-			{
-				/**If not found, create a book with their death coords**/
-				double x = (int) Math.floor(player.getLocation().getX());
-				double y = (int) Math.floor(player.getLocation().getY());
-				double z = (int) Math.floor(player.getLocation().getZ());
-				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-				BookMeta meta = (BookMeta)book.getItemMeta();
-				pages.add(plugin.prefix + ChatColor.RED + player.getName() + ChatColor.GOLD + " died at " + ChatColor.RED + x + ", " + y + ", " + z);
-				meta.setTitle(ChatColor.RED + "DeathCoords");
-				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
-				meta.setPages(pages);
-				book.setItemMeta(meta);
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						InventoryWorkaround.addItems(player.getInventory(), book);
-					}				
-				},20);
-				this.pages.clear();
-				if (plugin.debug) plugin.outConsole("{0} was given a book with their death coords", player.getName());
-			}
-			else
-			{
-				/**If essentials is found, send the message via mail**/
-				double x = (int) Math.floor(player.getLocation().getX());
-				double y = (int) Math.floor(player.getLocation().getY());
-				double z = (int) Math.floor(player.getLocation().getZ());
-				ConsoleCommandSender ccs = plugin.getServer().getConsoleSender();
+			PluginManager pm = plugin.getServer().getPluginManager();
+			
+			/**If essentials is found, send the message via mail**/
+			if (pm.isPluginEnabled("Essentials"))
+			{		
 				Entity killer = event.getEntity().getKiller();
+				
+				/**Initialize Essentials Hook**/
+				IEssentials ess = null;
+				Plugin essPlugin = pm.getPlugin("Essentials"); //No need for null check, we already established that it was enabled
+				ess = (IEssentials) essPlugin;
+				User user = ess.getUser(player); //If essentials is functioning, the player should have a user instance
+				
 				if (killer instanceof Player)
 				{
 					Player killerp = event.getEntity().getKiller();
 					String killern = killerp.getName();
-					plugin.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You were killed by" + killern  + "at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+					String world = player.getWorld().getName();
+
+					String mail = FormatUtil.format(plugin.getMessage("mail_pvp_format"), killern, x, y, z, world, TimeUtil.getLongDateCurr());
+					user.addMail(mail);
+					
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					if (plugin.debug) plugin.outConsole("{0} was sent a mail message with their death coords", player.getName());
+					if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 				else
 				{
-					plugin.getServer().dispatchCommand(ccs, "mail send " + player.getName() + " You died at " + x + ", " + y + ", " + z + " on " + TimeUtil.getLongDateCurr());
+					String world = player.getWorld().getName();
+					
+					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"), x, y, z, world, TimeUtil.getLongDateCurr());
+					user.addMail(mail);
+					
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					if (plugin.debug) plugin.outConsole("{0} was sent a mail message with their death coords", player.getName());
+					if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
+			}
+			else
+			{
+				/**If not found, create a book with their death coords**/
+				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+				BookMeta meta = (BookMeta)book.getItemMeta();
+				pages.add(FormatUtil.format(plugin.getMessage("book_format"), player.getName(), x, y, z));
+				meta.setTitle(ChatColor.RED + "DeathCoords");
+				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
+				meta.setPages(pages);
+				book.setItemMeta(meta);
+				class BookGiveTask extends BukkitRunnable
+				{
+					@Override
+					public void run()
+					{
+						player.getInventory().addItem(book);
+						pages.clear();
+					}	
+				}
+				new BookGiveTask().runTaskLater(plugin, 20);
+				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "given", "book");
 			}
 		}
     }
@@ -216,13 +236,21 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 		String playerp = player.getName();
 		
-		plugin.updateHealthTag(player);
+		/**Player Health (Join)**/
+		try 
+		{
+			plugin.getPlayerHealthBar().updateHealth(player);
+		}
+		catch (NoSuchMethodException | IllegalStateException e)
+		{
+			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
+		}
 		
 		/**Try to get the player's data from the cache otherwise create a new data entry**/
 		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		if (data == null)
 		{
-			if (plugin.debug) plugin.outConsole("Creating a new player data file for: {0}", playerp);
+			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_new_data"), player.getName());
 			plugin.getPlayerDataCache().newData(playerp);
 			
 			/**Basic data that a player needs**/
@@ -251,8 +279,7 @@ public class PlayerListener implements Listener
 				} 
 				catch (TooBigException e) 
 				{
-					plugin.getLogger().severe("Error while changing name from memory:");
-					plugin.getLogger().severe(e.getMessage());
+					plugin.outConsole(Level.SEVERE, plugin.getMessage("log_tag_error"), e.getMessage());
 				}
 			}
 		}
@@ -316,7 +343,7 @@ public class PlayerListener implements Listener
 	
 	/**Checks to make sure that if a player is riding another player, teleportation is not disabled**/
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerTeleoprt(PlayerTeleportEvent event)
+	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
@@ -351,61 +378,153 @@ public class PlayerListener implements Listener
 	public void onSuperPickActivate(PlayerInteractEvent event)
 	{
 		Action action = event.getAction();
-		if (!(action == (Action.RIGHT_CLICK_AIR)))
-			return;
-		
-		final Player player = event.getPlayer();
-		String inhand = player.getItemInHand().toString().toLowerCase().replaceAll("_", " ");
-		if (!(inhand.contains("pickaxe")&&!inhand.contains("wood")&&!inhand.contains("gold")))
-			return;
-		
-		if (plugin.spenabled != true)
-			return;
-		
-		if (player.getItemInHand() == null)
-			return;
-		
-		final PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (data.isScooldown())
-		{
-			player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_cooldown_header")));
-			player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_cooldown_time"), (data.getSuperpickcd()/20)));
-			return;
-		}
-		
-		if (data.isSpick())
-		{
-			return;
-		}
-		
-		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_question")));
-		player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_activated")));
-		int level = data.getLevel();
-		final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
-		int strength = 1;
-		data.setSpick(true);
-		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(duration, strength));
-		if (plugin.debug) plugin.outConsole("{0} has activated super pickaxe. Duration: {1}", player.getName(), duration);
+		Player player = event.getPlayer();
+		plugin.getAbilitiesManager().activateSpick(player, false, action);
+	}
 	
-		class SuperPickThread extends BukkitRunnable
+	/**Frenzy!**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onFrenzyActicate(PlayerInteractEvent event)
+	{
+		Action action = event.getAction();
+		Player player = event.getPlayer();
+		String inhand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+		String[] array = inhand.split(" ");
+			
+		if (array.length < 2)
 		{
-			@Override
-			public void run()
-			{
-				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("superpick_wearoff")));
-				data.setSpick(false);
-				data.setScooldown(true);
-				int cooldown = (duration*plugin.superpickcd);
-				data.setSuperpickcd(cooldown);
-				if (plugin.debug) plugin.outConsole("{0} has a cooldown of {1} for super pickaxe", player.getName(), cooldown);
-			}
+			return;
 		}
-		new SuperPickThread().runTaskLater(plugin, duration);
+			
+		/**If it is not a diamond or iron tool, return**/
+		if (!array[0].equals("diamond") && !array[0].equals("iron"))
+		{
+			return;
+		}
+			
+		/**If it is not a shovel or pickaxe, return**/
+		if (!array[1].equals("sword"))
+		{
+			return;
+		}
+		
+		plugin.getAbilitiesManager().activateFrenzy(player, false, action);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerRespawn(PlayerRespawnEvent event)
 	{
-		plugin.updateHealthTag(event.getPlayer());
+		/**Player Health (Respawn)**/
+		Player player = event.getPlayer();
+		try 
+		{
+			plugin.getPlayerHealthBar().updateHealth(player);
+		}
+		catch (NoSuchMethodException | IllegalStateException e)
+		{
+			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerFish(PlayerFishEvent event)
+	{
+		if (event.isCancelled())
+			return;
+		
+		if (event.getCaught() == null)
+			return;
+		
+		if (plugin.fishing == true)
+		{
+			/**XP Gain**/
+			if (event.getCaught().getType().toString().equalsIgnoreCase("dropped_item"))
+			{
+				String mobname = "fish";
+				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain, mobname);
+				PlayerXpGainEvent xpgainevent = new PlayerXpGainEvent(event.getPlayer(), plugin.fishinggain, message);
+				plugin.getServer().getPluginManager().callEvent(xpgainevent);
+			}
+		}
+			
+		/**Fish Drops**/
+		Player player = event.getPlayer();
+		GameMode gm = player.getGameMode();
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		Location loc = player.getLocation();
+		int level = data.getLevel();
+		if (level <= 10)
+			level = 10;
+		for (int i=0; i<data.getLevel(); i++)
+		{
+			if (plugin.fishDropsMap.containsKey(i))
+			{
+				if (gm == GameMode.SURVIVAL) 
+				{ 
+					for (BlockDrop fishDrop : plugin.fishDropsMap.get(i))
+					{
+						int r = Util.random(fishDrop.getChance());
+						
+						if (r == 0) 
+						{
+							drop(loc, fishDrop.getItem().getTypeId(), fishDrop.getItem().getData().getData());
+							String name = fishDrop.getItem().toString().toLowerCase().replaceAll("_", " ");
+							player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_drop"), name));
+						}
+					}
+				}	
+			}
+		}
+	}
+	
+	public Item drop(Location loc, int id)
+	{
+		return drop(loc, id, (byte)0);
+	}
+
+	public Item drop(Location loc, int id, byte type)
+	{
+		Item i;
+		if (type > 0)
+		{
+			MaterialData data = new MaterialData(id);
+			data.setData(type);
+			ItemStack itm = data.toItemStack(1);
+			i = loc.getWorld().dropItem(loc, itm);
+		} 
+		else
+		{
+			i = loc.getWorld().dropItem(loc, new ItemStack(id, 1));
+		}
+		return i;
+	}
+	
+	/**Dexterity : Burst**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
+	{
+		Player player = event.getPlayer();
+		if (player == null)
+			return;
+		
+		if (plugin.checkFactions(player, false))
+			return;
+		
+		if (player.isSneaking())
+			return;
+		
+		GameMode gm = player.getGameMode();
+		if (gm == GameMode.CREATIVE)
+			return;
+		
+		if (player.isSprinting())
+		{
+			int rand = Util.random(20);
+			if (rand == 0)
+			{			
+				player.addPotionEffect(PotionEffectType.SPEED.createEffect((int) 20, 1));
+				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("speed_boost")));
+			}
+		}
 	}
 }

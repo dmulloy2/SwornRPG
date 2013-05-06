@@ -1,11 +1,15 @@
 package net.dmulloy2.swornrpg.listeners;
 
+import java.util.logging.Level;
+
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,8 +17,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 /**
@@ -60,12 +66,23 @@ public class EntityListener implements Listener
 			}
 			else if (att instanceof Player)
 			{
-				if (plugin.axekb == true)
+				Player p = (Player)att;
+				String gun = p.getItemInHand().getType().toString().toLowerCase();
+				if (gun == null || gun.contains("air"))
 				{
-					Player p = (Player)att;
-					String gun = p.getItemInHand().getType().toString().toLowerCase();
-					if (gun == null) return;
-					if (gun.contains("_axe")) 
+					int rand = Util.random(20);
+					if (rand == 0)
+					{
+						if (defender instanceof Player)
+						{
+							Player d = (Player)defender;
+							d.addPotionEffect(PotionEffectType.CONFUSION.createEffect((int) 60, 1));
+						}
+					}
+				}
+				if (gun.contains("_axe")) 
+				{
+					if (plugin.axekb == true)
 					{
 						int randomBlowBack = Util.random(9);
 						if (randomBlowBack == 0) 
@@ -90,9 +107,9 @@ public class EntityListener implements Listener
 							
 							String inhand = gun.replaceAll("_", " ");
 							if (defender instanceof Player)
-								((Player)defender).sendMessage(FormatUtil.format(plugin.getMessage("axe_blowbackee"), ((Player)att).getName(), inhand));
+								((Player)defender).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("axe_blowbackee"), ((Player)att).getName(), inhand));
 							if (att instanceof Player)
-								((Player)att).sendMessage(FormatUtil.format(plugin.getMessage("axe_blowbacker"), ((Player)defender).getName(), inhand));
+								((Player)att).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("axe_blowbacker"), ((Player)defender).getName(), inhand));
 						}
 					}
 				}
@@ -100,35 +117,122 @@ public class EntityListener implements Listener
 		}
 		catch (Exception localException)
 		{
-			if (plugin.debug) plugin.outConsole("Error with EntityDamage: {0}", localException.getMessage());
+			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_damage"), localException.getMessage());
 		}
 	}
-	
-	/**Mob Health (Damage)**/
-	@EventHandler(priority = EventPriority.MONITOR)
+
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamage2(EntityDamageEvent event)
 	{
-		plugin.updateHealthTag(event.getEntity());
+		/**Mob Health (Damage)**/
+		Entity entity = event.getEntity();
+		if (entity instanceof Player)
+		{
+			try 
+			{
+				plugin.getPlayerHealthBar().updateHealth((Player)entity);
+			}
+			catch (NoSuchMethodException | IllegalStateException e)
+			{
+				plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
+			}
+		}
+		else if (entity instanceof LivingEntity)
+		{
+			plugin.updateHealthTag(entity);
+		}
+		
+		if (event.getCause() == DamageCause.FALL)
+		{
+			if (event.getDamage() == 0)
+				return;
+			
+			if (!(event.getEntity() instanceof Player))
+				return;
+			
+			int rand = Util.random(50);
+			if (rand == 0)
+			{
+				event.setDamage(0);
+				((Player) event.getEntity()).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("graceful_roll")));
+			}
+		}
 	}
 	
 	/**Mob Health (Regain)**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event)
 	{
-		plugin.updateHealthTag(event.getEntity());
+		Entity entity = event.getEntity();
+		if (entity instanceof Player)
+		{
+			try 
+			{
+				plugin.getPlayerHealthBar().updateHealth((Player)entity);
+			}
+			catch (NoSuchMethodException | IllegalStateException e)
+			{
+				plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
+			}
+		}
+		else if (entity instanceof LivingEntity)
+		{
+			plugin.updateHealthTag(entity);
+		}
 	}
 	
-	/**Mob Health (Death)**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		plugin.updateHealthTag(event.getEntity());
+		/**Succor**/
+		if (event.getEntity().getKiller() instanceof Player)
+		{
+			Player player = (Player)event.getEntity().getKiller();
+			if (player == null)
+				return;
+			
+			int health = player.getHealth();
+			if (health == 20)
+				return;
+			
+			int rand = Util.random(50);
+			if (rand == 0)
+			{
+				player.setHealth(player.getHealth() + 1);
+			}
+		}
 	}
 	
 	/**Mob Health (Spawn)**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
-		plugin.updateHealthTag(event.getEntity());
+		Entity entity = event.getEntity();
+		plugin.updateHealthTag(entity);
+	}
+	
+	/**Insta-Kill**/
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
+	{
+		if (event.getEntity() instanceof Player)
+			return;
+		
+		if (!(event.getDamager() instanceof Player))
+			return;
+		
+		if (event.getEntity() instanceof LivingEntity)
+		{
+			LivingEntity entity = (LivingEntity)event.getEntity();
+			if (((Player)event.getDamager()).getGameMode() == GameMode.CREATIVE)
+				return;
+		
+			int rand = Util.random(100);
+			if (rand == 0)
+			{
+				entity.setHealth(0);
+				((Player)event.getDamager()).sendMessage(FormatUtil.format(plugin.getMessage("insta_kill")));
+			}
+		}
 	}
 }

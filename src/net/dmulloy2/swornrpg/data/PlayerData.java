@@ -31,6 +31,7 @@ public class PlayerData implements ConfigurationSerializable
 	private boolean spick;
 	private boolean unlimtdammo;
 	private boolean ammocooling;
+	private boolean frenzy;
 	
 	private int playerxp;
 	private int oldlevel;

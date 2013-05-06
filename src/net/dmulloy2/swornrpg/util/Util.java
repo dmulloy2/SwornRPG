@@ -6,7 +6,6 @@ import java.util.Random;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -19,7 +18,6 @@ import org.bukkit.entity.Player;
 
 public class Util 
 {
-
 	public static SwornRPG plugin;
 	public static Server server;
 
@@ -29,8 +27,8 @@ public class Util
 		server = plugin.getServer();
 	}
 
-	public static Player matchPlayer(String p) {
-		List<Player> players = Bukkit.matchPlayer(p);
+	public static Player matchPlayer(String pl) {
+		List<Player> players = server.matchPlayer(pl);
 		
 		if (players.size() >= 1)
 			return players.get(0);
@@ -38,12 +36,12 @@ public class Util
 		return null;
 	}
 	
-	public static OfflinePlayer matchOfflinePlayer(String p) {
-		if (matchPlayer(p) != null)
-			return matchPlayer(p);
+	public static OfflinePlayer matchOfflinePlayer(String pl) {
+		if (matchPlayer(pl) != null)
+			return matchPlayer(pl);
 		
-		for (OfflinePlayer o : Bukkit.getOfflinePlayers()) {
-			if (o.getName().equalsIgnoreCase(p))
+		for (OfflinePlayer o : server.getOfflinePlayers()) {
+			if (o.getName().equalsIgnoreCase(pl))
 				return o;
 		}
 		

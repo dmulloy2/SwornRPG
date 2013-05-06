@@ -26,6 +26,11 @@ public class CmdSpouse extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		if (plugin.marriage == false)
+		{
+			sendpMessage(plugin.getMessage("command_disabled"));
+			return;
+		}
 		OfflinePlayer target = null;
 		if (args.length == 1)
 		{

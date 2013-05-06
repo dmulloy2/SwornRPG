@@ -42,6 +42,8 @@ import net.milkbowl.vault.economy.Economy;
 
 /**Bukkit imports**/
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -52,15 +54,15 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.kitteh.tag.TagAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.Faction;
 
 /**
  * @author dmulloy2
@@ -75,34 +77,45 @@ public class SwornRPG extends JavaPlugin
 	private @Getter CommandHandler commandHandler;
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter LogHandler logHandler;
+	private @Getter PlayerHealthBar playerHealthBar;
+	private @Getter AbilitiesManager abilitiesManager;
+	
+	public static SwornRPG p;
 	
 	/**Private objects**/
     private FileConfiguration tagsConfig = null;
     private File tagsConfigFile = null;
 
 	/**Hash maps**/
-    private HashMap<String, String> tagChanges;
+    private HashMap<String, String> tagChanges = new HashMap<String, String>();
     public HashMap<String, String> proposal = new HashMap<String, String>();
 	public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
     public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
+    public Map<Integer, List<BlockDrop>> fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
     
     /**Configuration/Update Checking**/
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
-	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth;
+	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
+	marriage, taming, confusion, fishing, herbalism;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
-	campingrad, onlinegain;
+	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain;
 	private double newVersion, currentVersion;
     public String salvage, tagformat;
-    public List<String> disabledworlds;
+    public List<String> disabledWorlds;
 	
 	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
 	public String noperm = ChatColor.RED + "Error, you do not have permission to perform this command";
 
+	@Override
 	public void onEnable()
 	{
+		p = this;
+		
+		long start = System.currentTimeMillis();
+		
 		/**Register Listener events**/
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new PlayerListener(this), this);
@@ -113,36 +126,47 @@ public class SwornRPG extends JavaPlugin
 		/**Register Handlers**/
 		commandHandler = new CommandHandler(this);
 		permissionHandler = new PermissionHandler(this);
-		resourceHandler = new ResourceHandler(this, getClassLoader());
 		logHandler = new LogHandler(this);
 		playerDataCache = new PlayerDataCache(this);
+		playerHealthBar = new PlayerHealthBar(this);
+		abilitiesManager = new AbilitiesManager();
 		
-		/**Version checker stuff**/
+		/**Initialize the Abilities Manager**/
+		abilitiesManager.initialize(this);
+		
+		/**Version Checker**/
 		currentVersion = Double.valueOf(getDescription().getVersion().replaceFirst("\\.", ""));
 		
-		/**Configuration**/
+		/**Check for Data Folder**/
 		if (!getDataFolder().exists())
 			getDataFolder().mkdir();
 		
+		/**Check for Config**/
         File file = new File(getDataFolder(), "config.yml");
         if (!file.exists())
         {
-        	outConsole("Configuration not found, generating a new one");
+        	outConsole(getMessage("log_configuration"));
         	saveDefaultConfig();
         }
         
+        /**Load Config**/
 		loadConfig();
 		reloadConfig();
-		saveResource("messages.properties", true);
 		
+		/**Save Messages and Register Resource Handler**/
+		saveResource("messages.properties", true);
+		resourceHandler = new ResourceHandler(this, getClassLoader());
+		
+		/**Update Block Tables**/
 		updateBlockDrops();
+		updateFishDrops();
 		
 		/**Check for TagAPI**/
 		if (pm.isPluginEnabled("TagAPI"))
 		{
 			/**If found, enable Tags**/
 			pm.registerEvents(new TagListener(this), this);
-			outConsole("TagAPI found, enabling all Tag related features");
+			outConsole(getMessage("log_tag_found"));
 			for (Player player : getServer().getOnlinePlayers()) 
 			{
 				String oldName = player.getName();
@@ -155,8 +179,7 @@ public class SwornRPG extends JavaPlugin
 					} 
 					catch (TooBigException e) 
 					{
-						outConsole(Level.SEVERE, "Error while changing name from memory:");
-						outConsole(Level.SEVERE, e.getMessage());
+						outConsole(Level.SEVERE, getMessage("log_tag_error"), e.getMessage());
 					}
 					TagAPI.refreshPlayer(player);
 				}
@@ -164,7 +187,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		else
 		{
-			outConsole("TagAPI not found, disabling all Tag related features");
+			outConsole(getMessage("log_tag_notfound"));
 		}
 		
 		/**Register Prefixed Commands**/
@@ -200,6 +223,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdStaffList (this));
 		commandHandler.registerCommand(new CmdSitdown (this));
 		commandHandler.registerCommand(new CmdUnlimitedAmmo (this));
+		commandHandler.registerCommand(new CmdSkills (this));
 		
 		/**Set permission messages**/
 		getCommand("ride").setPermissionMessage(noperm);
@@ -217,9 +241,17 @@ public class SwornRPG extends JavaPlugin
 		getCommand("itemname").setPermissionMessage(noperm);
 		getCommand("addxp").setPermissionMessage(noperm);
 		
-		if (playerhealth)
-			for (Player player : getServer().getOnlinePlayers())
-				updateHealthTag(player);
+		for (Player player : getServer().getOnlinePlayers())
+		{
+			try 
+			{
+				playerHealthBar.updateHealth(player);
+			}
+			catch (NoSuchMethodException | IllegalStateException e)
+			{
+				if (debug) outConsole(Level.SEVERE, getMessage("log_health_error"), e.getMessage());
+			}
+		}
 
 		/**Initializes the Util class**/
 		Util.Initialize(this);
@@ -241,13 +273,13 @@ public class SwornRPG extends JavaPlugin
 		/**Ammo cooldown**/
 		if (pm.isPluginEnabled("PVPGunPlus"))
 		{
-			outConsole("PVPGunPlus found, enabling gun-related features");
+			outConsole(getMessage("log_gun_found"));
 			pm.registerEvents(new PVPGunPlusListener(this), this);
 			if (ammoenabled)
 				new AmmoCooldownThread().runTaskTimer(this, 0, 20);
 		}
 		else
-			outConsole("PVPGunPlus not found, disabling all gun-related features");
+			outConsole(getMessage("log_gun_notfound"));
 		
 		/**Update Checker**/
 		if (update)
@@ -256,23 +288,24 @@ public class SwornRPG extends JavaPlugin
 		/**Online Time**/
 		if (onlinetime)
 			new OnlineGainThread().runTaskTimer(this, 0, 1200);
-		
-		outConsole("{0} has been enabled", getDescription().getFullName());
+
+		long finish = System.currentTimeMillis();
+		outConsole(getMessage("log_enabled"), getDescription().getFullName(), finish - start);
 	}
 	
+	@Override
 	public void onDisable()
 	{
+		long start = System.currentTimeMillis();
+		
 		playerDataCache.save();
 
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
 		
-		outConsole("{0} has been disabled", getDescription().getFullName());
-	}
-	
-	public void onLoad()
-	{
-		tagChanges = new HashMap<String, String>();
+		long finish = System.currentTimeMillis();
+		
+		outConsole(getMessage("log_disabled"), getDescription().getFullName(), finish - start);
 	}
 	    
 	/**Console logging**/
@@ -300,8 +333,11 @@ public class SwornRPG extends JavaPlugin
 		campingrad = getConfig().getInt("campingradius");
 		healthtags = getConfig().getBoolean("healthtags.enabled");
 		tagformat = getConfig().getString("healthtags.format");
-		disabledworlds = getConfig().getStringList("disabled-worlds");
+		disabledWorlds = getConfig().getStringList("disabled-worlds");
 		playerhealth = getConfig().getBoolean("playerhealth.enabled");
+		marriage = getConfig().getBoolean("marriage");
+		confusion = getConfig().getBoolean("confusion.enabled");
+		confusionduration = getConfig().getInt("confusion.duration");
 		
 		/**Salvaging**/
 		salvaging = getConfig().getBoolean("salvaging");
@@ -339,6 +375,12 @@ public class SwornRPG extends JavaPlugin
 		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
 		onlinetime = getConfig().getBoolean("levelingmethods.onlinetime.enabled");
 		onlinegain = getConfig().getInt("levelingmethods.onlinetime.xpgain");
+		taming = getConfig().getBoolean("levelingmethods.taming.enabled");
+		taminggain = getConfig().getInt("levelingmethods.taming.xpgain");
+		fishing = getConfig().getBoolean("levelingmethods.fishing.enabled");
+		fishinggain = getConfig().getInt("levelingmethods.fishing.xpgain");
+		herbalism = getConfig().getBoolean("levelingmethods.herbalism.enabled");
+		herbalismgain = getConfig().getInt("levelingmethods.herbalism.xpgain");
 		
 		/**SuperPick**/
 		spenabled = getConfig().getBoolean("superpickaxe.enabled");
@@ -432,7 +474,7 @@ public class SwornRPG extends JavaPlugin
         } 
         catch (IOException ex) 
         {
-        	outConsole(Level.SEVERE, "Could not save config to {0}", tagsConfigFile);
+        	outConsole(Level.SEVERE, getMessage("log_tag_save"), tagsConfigFile);
         }
     }
     
@@ -442,12 +484,11 @@ public class SwornRPG extends JavaPlugin
 		if (pm.isPluginEnabled("Vault"))
 		{
 			setupEconomy();
-			outConsole("Vault found, enabling money related features");
+			outConsole(getMessage("log_vault_found"));
 		} 
 		else 
 		{
-			outConsole("Vault not found. Vault is required for money rewards");
-			outConsole("Disabling all money related fetures");
+			outConsole(getMessage("log_vault_notfound"));
 		}
 	}
 	
@@ -483,9 +524,9 @@ public class SwornRPG extends JavaPlugin
                 return Double.valueOf(firstNodes.item(0).getNodeValue().replaceAll("[a-zA-Z ]", "").replaceFirst("\\.", ""));
             }
         }
-        catch (Exception localException) 
+        catch (Exception e) 
         {
-        	if (debug) localException.printStackTrace();
+        	if (debug) outConsole(Level.SEVERE, getMessage("log_update_error"), e.getMessage());
         }
         
         return currentVersion;
@@ -493,10 +534,19 @@ public class SwornRPG extends JavaPlugin
     
     public boolean updateNeeded()
     {
-    	if (newVersion > currentVersion)
-    		return true;
-    	else
-    		return false;
+    	try 
+    	{
+			newVersion = updateCheck(currentVersion);
+			if (newVersion > currentVersion) 
+			{
+				return true;
+			}
+    	} 
+    	catch (Exception e) 
+    	{
+    		if (debug) outConsole(Level.SEVERE, getMessage("log_update_error"), e.getMessage());
+    	}
+    	return false;
     }
     
     /**Get messages**/
@@ -508,7 +558,7 @@ public class SwornRPG extends JavaPlugin
 		} 
 		catch (MissingResourceException ex) 
 		{
-			outConsole(Level.WARNING, "Messages locale is missing key for: {0}",  string);
+			outConsole(Level.WARNING, getMessage("log_message_null"),  string); //messageception :3
 			return null;
 		}
 	}
@@ -520,6 +570,7 @@ public class SwornRPG extends JavaPlugin
 		reloadtagsConfig();
 		loadConfig();
 		updateBlockDrops();
+		updateFishDrops();
 	}
 	
 	/**Update Block Drops**/
@@ -552,104 +603,149 @@ public class SwornRPG extends JavaPlugin
 			
 			blockDropsMap.put(Integer.valueOf(entry.getKey()), blockDrops);
 		}
-		if (debug) outConsole(blockDropsMap.toString());
+		if (debug) System.out.println("[SwornRPG] Block drops map: " + blockDropsMap.toString());
 	}
 	
-	/**Mob Health Tags & Player Health Tags**/
+	/**Update Fish Drops**/
+	@SuppressWarnings("unchecked")
+	public void updateFishDrops() 
+	{
+		Map<String, ?> map = getConfig().getConfigurationSection("fish-drops").getValues(true);
+		
+		for (Entry<String, ?> entry : map.entrySet()) 
+		{
+			List<String> values = (List<String>) entry.getValue();
+			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
+			for (String value : values) 
+			{
+				String[] ss = value.split(":");
+				int type = Integer.valueOf(ss[0]);
+				short data = 0;
+				int chance = 0;
+				if (ss.length == 3)
+				{
+					data = Short.valueOf(ss[1]);
+					chance = Integer.valueOf(ss[2]);
+				} 
+				else 
+				{
+					chance = Integer.valueOf(ss[1]);
+				}
+				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+			}
+			
+			fishDropsMap.put(Integer.valueOf(entry.getKey()), blockDrops);
+		}
+		if (debug) System.out.println("[SwornRPG] Fish drops map: " + fishDropsMap.toString());
+	}
+	
+	/**Mob Health Tags**/	
 	public void updateHealthTag(Entity entity)
 	{
-		if (entity instanceof Player)
+		try
 		{
-			if (playerhealth == true)
-			{
-				Player player = (Player)entity;
-				int health = player.getHealth()/2;
-				
-				StringBuilder tag = new StringBuilder();
-				for (int i=0; i<health; i++)
-				{
-					tag.append("❤");
-				}
-				
-			    ScoreboardManager manager = getServer().getScoreboardManager();
-			    Scoreboard board = manager.getNewScoreboard();
-			    board.registerNewObjective("showhealth", "health");
-			     
-			    Objective objective = board.getObjective("showhealth");
-			    objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-			    
-			    /**Determine Color**/
-			    ChatColor color = null;
-			    if (health >= 8) //health 8, 9, or 10
-			    	color = ChatColor.GREEN;
-			    else if (health <= 7 && health > 3) //health 4, 5, 6, or 7
-			    	color = ChatColor.YELLOW;
-			    else if (health <= 3) //health 1, 2, or 3
-			    	color = ChatColor.RED;
-			    else //health null?
-			    	color = ChatColor.WHITE;
-			    
-			    /**Set Display Name**/
-			    objective.setDisplayName(color + tag.toString());
-			    
-			    for (Player online : getServer().getOnlinePlayers())
-			    {
-			    	online.setScoreboard(board);
-			    }
-			}
-		}
-		else 
-		{
-			if ((entity instanceof LivingEntity) && !(entity instanceof Player))
+			if (entity instanceof LivingEntity && !(entity instanceof Player))
 			{
 				if (healthtags == true)
 				{
 					LivingEntity lentity = (LivingEntity)entity;
-					if (lentity.getHealth() == lentity.getMaxHealth())
-					{
-						lentity.setCustomNameVisible(false);
-						return;
-					}
-				
-					lentity.setCustomNameVisible(true);
-					int health = lentity.getHealth() / 2;
-					int maxhealth = lentity.getMaxHealth() / 2;
+					final int health = Math.round(lentity.getHealth() / 2);
+					final int maxhealth = Math.round(lentity.getMaxHealth() / 2);
+					final int hearts = Math.round((health * 10) / maxhealth);
 					
-					/**Determine Proportions**/
-					int proportion = 0;
-					if (health >= 100)
-						proportion = maxhealth / 10;
-					else if (health < 100 && health >= 50)
-						proportion = maxhealth / 5;
-					else if (health < 50 && health >= 25)
-						proportion = maxhealth / 2;
-					else if (health < 25 && health >= 1)
-						proportion = maxhealth;
+					if (health == maxhealth)
+						lentity.setCustomNameVisible(false);
 					else
-						return;
-						
+						lentity.setCustomNameVisible(true);
+					
 					StringBuilder tag = new StringBuilder();
-					for (int i=0; i<health && i<proportion; i++)
+					for (int i=0; i<hearts; i++)
 					{
 						tag.append("❤");
 					}
+
+					String displayName = tag.toString();
+					if (displayName.endsWith(" ")) displayName.trim();
 					
-				    /**Determine Color**/
-				    ChatColor color = null;
-				    int hearts = (health * 10) / maxhealth;
-				    if (hearts >= 8) //health 8, 9, or full
-				    	color = ChatColor.GREEN;
-				    else if (hearts <= 7 && health > 3) //health 4, 5, 6, or 7
-				    	color = ChatColor.YELLOW;
-				    else if (hearts <= 3) //health 1, 2, or 3
-				    	color = ChatColor.RED;
-				    else //health null?
-				    	color = ChatColor.WHITE;
-				    
-				    lentity.setCustomName(color + tag.toString());
+					/**Determine Color**/
+					ChatColor color = null;
+					if (hearts >= 8) //health 8, 9, or full
+						color = ChatColor.GREEN;
+					else if (hearts <= 7 && health > 3) //health 4, 5, 6, or 7
+						color = ChatColor.YELLOW;
+					else if (hearts <= 3) //health 1, 2, or 3
+						color = ChatColor.RED;
+					else //health null? (default to yellow, white hearts are ugly)
+						color = ChatColor.YELLOW;
+					    
+					lentity.setCustomName(color + displayName);
 				}
 			}
 		}
+		catch (Exception e)
+		{
+			if (debug) outConsole(getMessage("log_health_error"), e.getMessage());
+		}
+	}
+	
+	/**Camping Check**/
+	public boolean checkCamper(Player player)
+	{
+		Location loc = player.getLocation();
+		World world = loc.getWorld();
+		int RADIUS = campingrad;
+		for (int dx = -RADIUS; dx <= RADIUS; dx++) 
+		{
+			for (int dy = -RADIUS; dy <= RADIUS; dy++) 
+			{
+				for (int dz = -RADIUS; dz <= RADIUS; dz++) 
+				{
+					int id = world.getBlockTypeIdAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz);
+					if (id == 52)
+					{
+						player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**WarZone/SafeZone Check**/
+	public boolean checkFactions(Player player, boolean both)
+	{
+		PluginManager pm = getServer().getPluginManager();
+		if (pm.isPluginEnabled("Factions") || pm.isPluginEnabled("SwornNations"))
+		{
+			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
+			if (otherFaction.isWarZone())
+			{
+				return true;
+			}
+			if (both && otherFaction.isSafeZone())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**DisabledWorld Check**/
+	public boolean isDisabledWorld(Player player)
+	{
+		if (!(disabledWorlds.isEmpty()))
+		{
+			for (String string : disabledWorlds)
+			{
+				World world = getServer().getWorld(string);
+				if (world != null && player.getLocation().getWorld().equals(world))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**Timers and Runnables**/
@@ -735,12 +831,13 @@ public class SwornRPG extends JavaPlugin
 				newVersion = updateCheck(currentVersion);
 				if (newVersion > currentVersion) 
 				{
-					outConsole("A new version of SwornRPG is now available!");
-					outConsole("Update SwornRPG at: {0}", getMessage("update_url"));
+					outConsole(getMessage("log_update"));
+					outConsole(getMessage("log_update_url"), getMessage("update_url"));
 				}
 			} 
 			catch (Exception e) 
 			{
+				if (debug) outConsole(Level.SEVERE, getMessage("log_update_error"), e.getMessage());
 			}
 		}
 	}

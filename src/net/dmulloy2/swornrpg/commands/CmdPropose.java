@@ -25,6 +25,11 @@ public class CmdPropose extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		if (plugin.marriage == false)
+		{
+			sendpMessage(plugin.getMessage("command_disabled"));
+			return;
+		}
 		PlayerData data = getPlayerData(player);
 		Player target = Util.matchPlayer(args[0]);
 		if (target != null)

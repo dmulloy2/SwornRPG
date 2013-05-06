@@ -2,6 +2,10 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdVersion extends SwornRPGCommand
 {
 	public CmdVersion(SwornRPG plugin)

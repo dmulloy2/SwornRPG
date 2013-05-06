@@ -77,7 +77,7 @@ public class BlockListener implements Listener
 					/**Protect the iron door!**/
 					event.setCancelled(true);
 					player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("iron_door_protect")));
-					if (plugin.debug) plugin.outConsole("An iron door was protected from {0}", player.getName());
+					if (plugin.debug) plugin.outConsole(plugin.getMessage("log_irondoor_protect"), player.getName());
 				}
 			}
 			
@@ -95,7 +95,7 @@ public class BlockListener implements Listener
 			}
 			
 			/**Rare Drops**/
-			if (plugin.blockDropsMap.containsKey(blockType.getId()) && !event.isCancelled())
+			if (plugin.blockDropsMap.containsKey(blockType.getId()))
 			{
 				if (plugin.randomdrops && gm == GameMode.SURVIVAL) 
 				{
@@ -121,7 +121,7 @@ public class BlockListener implements Listener
 		}
 		catch (Exception localException)
 		{
-			if (plugin.debug) plugin.outConsole("Error with block break: {0}", localException.getMessage());
+			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_block"), localException.getMessage());
 		}
 	}
 }

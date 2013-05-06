@@ -54,7 +54,7 @@ public class CmdTagr extends SwornRPGCommand
 		else
 		{
 			sendpMessage(plugin.getMessage("no_tagapi"));
-			plugin.outConsole("You must have TagAPI installed to perform Tag related commands. http://dev.bukkit.org/server-mods/tag");
+			plugin.outConsole(plugin.getMessage("log_tagapi_null"));
 		}
 	}
 }

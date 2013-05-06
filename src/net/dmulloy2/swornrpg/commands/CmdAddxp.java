@@ -34,7 +34,7 @@ public class CmdAddxp extends SwornRPGCommand
 		
 		int xptoadd = Integer.parseInt(args[1]);
 		plugin.getServer().getPluginManager().callEvent(new PlayerXpGainEvent(target, xptoadd, ""));
-		sendpMessage(plugin.getMessage("addxp_give"), xptoadd, target);
+		sendpMessage(plugin.getMessage("addxp_give"), xptoadd, target.getName());
 		sendMessageTarget(plugin.getMessage("addxp_given"), target, xptoadd);
 	}
 }

@@ -19,7 +19,8 @@ public enum PermissionType
 	CMD_LEVELR("levelr"),
 	CMD_INAME("iname"),
 	CMD_MATCH("match"),
-	CMD_ADDXP("addxp");
+	CMD_ADDXP("addxp"), 
+	CMD_RELOAD("reload");
 	
 	public final Permission permission;
 	

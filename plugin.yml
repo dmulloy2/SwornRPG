@@ -1,6 +1,6 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: 2.4.1
+version: 2.5.3
 author: dmulloy2
 description: The mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, Vault, PVPGunPlus]
@@ -136,6 +136,10 @@ commands:
     description: Unlimited ammo for your gun
     usage: /<command>
     aliases: [unlimitedammo]
+  skills:
+    description: Check your SwornRPG skill levels
+    usage: /<command>
+    aliases: [skill]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins

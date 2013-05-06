@@ -1,38 +1,41 @@
-################################################################################################
-#                                                                                              #
-#                                  SwornRPG Configuration File                                 #
-#                                      Created by dmulloy2                                     #
-#  Detailed explanation here: http://dev.bukkit.org/server-mods/swornrpg/pages/configuration/  #
-#                                                                                              #
-################################################################################################
+##########################################################################################################
+#                                                                                                        #
+#                                       SwornRPG Configuration File                                      #
+#                                           Created by dmulloy2                                          #
+#  Detailed explanation here: http://dev.bukkit.org/server-mods/swornrpg/pages/sworn-rpg-configuration/  #
+#                                                                                                        #
+##########################################################################################################
 
 debug: false
-# Enables/disables extra logging to console
+# Enable/disable extra logging to console
 
 updatechecker: true
-# Enables/disables checking for updates
+# Enable/disable checking for updates
 
 irondoorprotect: true
-# Enables/disables the protection of iron doors
+# Enable/disable the protection of iron doors
 
 randomdrops: true
-# Enables/disables the random chance that a random drop will drop from a block
+# Enable/disable the random chance that a random drop will drop from a block
 
 axekb: true
-# Enables/disables the random chance that players can get knocked back by axes
+# Enable/disable the random chance that players can get knocked back by axes
 
 arrowfire: true
-# Enables/disables the random chance that players can catch fire when shot by arrows
+# Enable/disable the random chance that players can catch fire when shot by arrows
 
 deathbook: true
 # Will a player receive a book/message with their death coordinates?
 # If essentials is found, the plugin will send a mail message. If not, it will give a book
 
+marriage: true
+# Enable/disable marriage
+
 campingradius: 16
 # If a player is within x radius of a mob spawner, cancel xp gain
 
 salvaging: true
-# Enables/disables salvaging
+# Enable/disable salvaging
 
 salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 5; 311, Diamond, 8; 312, Diamond, 7; 313, Diamond, 4; 314, Gold, 5; 315, Gold, 8; 316, Gold, 7; 317, Gold, 4; 267, Iron, 2; 256, Iron, 1; 257, Iron, 3; 258, Iron, 3; 292, Iron, 2; 276, Diamond, 2; 277, Diamond, 1; 278, Diamond, 3; 279, Diamond, 3; 293, Diamond, 2; 283, Gold, 2; 284, Gold, 1; 285, Gold, 3; 286, Gold, 3; 294, Gold, 2"
 # Items that can be salvaged, formatted: "id, Material, how many items it returns; ...; lastid, Lastmaterial, lastitems"
@@ -84,7 +87,19 @@ levelingmethods:
     enabled: true
     xpgain: 1
     # Xp gained per minute of online time
-  
+  taming:
+    enabled: true
+    xpgain: 5
+    # Xp gain when a player tames a mob
+  fishing:
+    enabled: true
+    xpgain: 5
+    # Xp gain when a player catches a fish
+  herbalism:
+    enabled: true
+    xpgain: 1
+    # Xp gain when a player farms (per crop)
+
 levelingrewards:
 # What do players receive for leveling up?
   money:
@@ -107,6 +122,12 @@ playerhealth:
 disabled-worlds:
 # Worlds SwornRPG is disabled in
 - disabled_world
+
+confusion:
+# Confusion when a player punches another player in the face
+  enabled: true
+  duration: 3
+  # Duration in seconds
     
 block-drops:
 # Configure rare drops here
@@ -162,3 +183,29 @@ block-drops:
     - "289:15"
     - "352:10"
     - "87:50"
+
+fish-drops:
+# Items dropped when fishing
+# Format: - "itemid:chance"
+# Done by player level (Cap is at level 10 for fish drops)
+  0:
+    - "301:10"
+    - "268:5"
+  1:
+    - "269:5"
+    - "346:10"
+  2:
+    - "270:15"
+    - "298:5"
+  3:
+    - "300:5"
+    - "271:5"
+  4:
+    - "290:5"
+    - "291:15"
+  5:
+    - "273:10"
+    - "275:5"
+  6:
+    - "272:15"
+    - "274:15"

@@ -25,6 +25,11 @@ public class CmdMarry extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		if (plugin.marriage == false)
+		{
+			sendpMessage(plugin.getMessage("command_disabled"));
+			return;
+		}
 		if (plugin.proposal.containsKey(sender.getName()))
 		{
 			Player target = Bukkit.getServer().getPlayer((String)plugin.proposal.get(sender.getName()));
