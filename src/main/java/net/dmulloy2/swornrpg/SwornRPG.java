@@ -126,6 +126,7 @@ public class SwornRPG extends JavaPlugin
 		playerDataCache = new PlayerDataCache(this);
 		playerHealthBar = new PlayerHealthBar(this);
 		abilitiesManager = new AbilitiesManager();
+		resourceHandler = new ResourceHandler(this, getClassLoader());
 		
 		/**Initialize the Abilities Manager**/
 		abilitiesManager.initialize(this);
@@ -136,11 +137,7 @@ public class SwornRPG extends JavaPlugin
 		/**Check for Data Folder**/
 		if (!getDataFolder().exists())
 			getDataFolder().mkdir();
-		
-		/**Save Messages and Register Resource Handler**/
-		saveResource("messages.properties", true);
-		resourceHandler = new ResourceHandler(this, getClassLoader());
-		
+
 		/**Check for Config**/
         File file = new File(getDataFolder(), "config.yml");
         if (!file.exists())

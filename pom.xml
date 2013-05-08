@@ -58,18 +58,21 @@
     </plugins>
     <resources>
       <resource>
-        <targetPath>.</targetPath>
+  	    <targetPath>.</targetPath>
+        <directory>${basedir}/src/main/resources/</directory>
         <filtering>true</filtering>
-        <directory>${basedir}/src/main/resources</directory>
         <includes>
-          <include>*.yml</include>
+          <include>config.yml</include>
+          <include>plugin.yml</include>
+          <include>tags.yml</include>
+          <include>messages.properties</include>
         </includes>
       </resource>
       <resource>
         <targetPath>.</targetPath>
         <directory>${basedir}</directory>
         <includes>
-          <include>License</include>
+          <include>License.txt</include>
         </includes>
       </resource>
     </resources>
