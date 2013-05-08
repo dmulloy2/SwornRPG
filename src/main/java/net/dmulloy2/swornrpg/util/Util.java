@@ -1,6 +1,5 @@
 package net.dmulloy2.swornrpg.util;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,7 +26,8 @@ public class Util
 		server = plugin.getServer();
 	}
 
-	public static Player matchPlayer(String pl) {
+	public static Player matchPlayer(String pl)
+	{
 		List<Player> players = server.matchPlayer(pl);
 		
 		if (players.size() >= 1)
@@ -36,29 +36,20 @@ public class Util
 		return null;
 	}
 	
-	public static OfflinePlayer matchOfflinePlayer(String pl) {
+	public static OfflinePlayer matchOfflinePlayer(String pl)
+	{
 		if (matchPlayer(pl) != null)
 			return matchPlayer(pl);
 		
-		for (OfflinePlayer o : server.getOfflinePlayers()) {
+		for (OfflinePlayer o : server.getOfflinePlayers())
+		{
 			if (o.getName().equalsIgnoreCase(pl))
 				return o;
 		}
 		
 		return null;
 	}
-
-	public static List<Player> Who()
-	{
-		Player[] players = server.getOnlinePlayers();
-		List<Player> players1 = new ArrayList<Player>();
-		for (int i = 0; i < players.length; i++) 
-		{
-			players1.add(players[i]);
-		}
-		return players1;
-	}	
-
+	
 	public static double magnitude(int x1, int y1, int z1, int x2, int y2, int z2) 
 	{
 		int xdist = x1 - x2;
