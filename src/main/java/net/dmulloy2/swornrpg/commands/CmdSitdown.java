@@ -27,6 +27,10 @@ public class CmdSitdown extends SwornRPGCommand
 		{
 			sendpMessage(plugin.getMessage("no_block"));
 		}
+		else if (player.getLocation().distance(block.getLocation()) > 5)
+		{
+			sendpMessage(plugin.getMessage("too_far_away"));
+		}
 		else
 		{
 			String seat = block.getType().toString().toLowerCase().replaceAll("_", " ");
