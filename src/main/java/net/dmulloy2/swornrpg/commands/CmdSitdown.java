@@ -22,7 +22,7 @@ public class CmdSitdown extends SwornRPGCommand
 	public void perform()
 	{
 		PlayerData data = getPlayerData(player);
-		Block block = player.getTargetBlock(null, 100);
+		Block block = player.getTargetBlock(null, 10);
 		if (block == null)
 		{
 			sendpMessage(plugin.getMessage("no_block"));
