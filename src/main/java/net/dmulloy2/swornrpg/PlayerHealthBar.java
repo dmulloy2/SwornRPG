@@ -27,10 +27,12 @@ public class PlayerHealthBar
 	public void updateHealth(Player player) throws NoSuchMethodException, IllegalStateException
 	{
 		ScoreboardManager manager = plugin.getServer().getScoreboardManager();
-		Scoreboard board = manager.getNewScoreboard();
+		Scoreboard board;
 		
 		if (plugin.playerhealth == false)
 		{
+			board = player.getScoreboard();
+			if (board == null) return;
 			if (board.getObjective(DisplaySlot.BELOW_NAME) != null)
 				board.getObjective(DisplaySlot.BELOW_NAME).unregister();
 			if (board.getObjective("showhealth") != null)
@@ -48,6 +50,7 @@ public class PlayerHealthBar
 		if (player.getHealth() > 0)
 			try 
 		{
+			board = manager.getNewScoreboard();
 			Set<Team> teams = board.getTeams();
 			for (Team team : teams)
 			{

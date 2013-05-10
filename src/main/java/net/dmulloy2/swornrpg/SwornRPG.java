@@ -105,8 +105,7 @@ public class SwornRPG extends JavaPlugin
     public String salvage, tagformat;
     public List<String> disabledWorlds;
 	
-	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
-	public String noperm = ChatColor.RED + "Error, you do not have permission to perform this command";
+	public String prefix, noperm;
 
 	@Override
 	public void onEnable()
@@ -183,6 +182,10 @@ public class SwornRPG extends JavaPlugin
 		{
 			outConsole(getMessage("log_tag_notfound"));
 		}
+		
+		/**Define Some Messages**/
+		prefix = FormatUtil.format(getMessage("prefix") + " ");
+		noperm = FormatUtil.format(getMessage("noperm"));
 		
 		/**Register Prefixed Commands**/
 		commandHandler.setCommandPrefix("srpg");
