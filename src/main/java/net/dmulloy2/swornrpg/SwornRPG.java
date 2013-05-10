@@ -659,7 +659,6 @@ public class SwornRPG extends JavaPlugin
 					}
 
 					String displayName = tag.toString();
-					if (displayName.endsWith(" ")) displayName.trim();
 					
 					/**Determine Color**/
 					ChatColor color = null;
