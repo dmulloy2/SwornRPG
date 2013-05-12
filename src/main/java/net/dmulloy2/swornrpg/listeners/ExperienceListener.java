@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.listeners;
 
 import java.util.List;
+
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
@@ -17,10 +18,10 @@ import org.bukkit.NetherWartsState;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -34,8 +35,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.CocoaPlant;
-import org.bukkit.material.NetherWarts;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
+import org.bukkit.material.NetherWarts;
 import org.bukkit.plugin.PluginManager;
 
 /**
@@ -375,9 +376,9 @@ public class ExperienceListener implements Listener
 				/**Wolf/Ocelot's Pal**/
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
 				int level = data.getLevel();
-				if (level == 0) level = 1;
-				if (level == 50) level = 50;
-				int rand2 = Util.random(75 - level);
+				if (level <= 0) level = 1;
+				if (level >= 50) level = 50;
+				int rand2 = Util.random(150/level);
 				if (rand2 == 0)
 				{ 
 					if (event.getEntity() instanceof Wolf)
@@ -393,7 +394,7 @@ public class ExperienceListener implements Listener
 				}
 				
 				/**Taming Bomb!**/
-				int rand1 = Util.random(100/level);
+				int rand1 = Util.random(150/level);
 				if (rand1 == 0)
 				{
 					boolean msg = false;

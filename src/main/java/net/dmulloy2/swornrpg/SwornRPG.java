@@ -96,11 +96,13 @@ public class SwornRPG extends JavaPlugin
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
-	marriage, taming, confusion, fishing, herbalism;
+	marriage, taming, confusion, fishing, herbalism, savecache;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
-	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain;
+	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain,
+	saveinterval;
+	
 	private double newVersion, currentVersion;
     public String salvage, tagformat;
     public List<String> disabledWorlds;
@@ -126,6 +128,9 @@ public class SwornRPG extends JavaPlugin
 		playerDataCache = new PlayerDataCache(this);
 		playerHealthBar = new PlayerHealthBar(this);
 		abilitiesManager = new AbilitiesManager();
+		
+		/**Resource Handler / Messages**/
+		saveResource("messages.properties", true);
 		resourceHandler = new ResourceHandler(this, getClassLoader());
 		
 		/**Initialize the Abilities Manager**/
@@ -257,7 +262,11 @@ public class SwornRPG extends JavaPlugin
 		checkVault(pm);
 
 		/**Schedule player data cache saving**/
-		new AutoSaveThread().runTaskTimer(this, 12000L, 12000L);
+		if (savecache)
+		{
+			int interval = 20 * 60 * saveinterval;
+			new AutoSaveThread().runTaskTimer(this, interval, interval);
+		}
 		
 		/**Frenzy cooldown**/
 		if (frenzyenabled)
@@ -335,7 +344,9 @@ public class SwornRPG extends JavaPlugin
 		marriage = getConfig().getBoolean("marriage");
 		confusion = getConfig().getBoolean("confusion.enabled");
 		confusionduration = getConfig().getInt("confusion.duration");
-		
+		savecache = getConfig().getBoolean("autosave.enabled");
+		saveinterval = getConfig().getInt("autosave.interval");
+
 		/**Salvaging**/
 		salvaging = getConfig().getBoolean("salvaging");
 		salvage = getConfig().getString("salvage");
