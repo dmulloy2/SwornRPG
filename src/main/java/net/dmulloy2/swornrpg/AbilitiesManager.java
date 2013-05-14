@@ -79,21 +79,33 @@ public class AbilitiesManager
 			return;
 		}
 		
-		/**Check if the player is on the waiting list**/
-		if (frenzyWaiting.containsKey(player.getName()))
+		/**The player is activating using an item**/
+		if (command == false)
 		{
-			/**Cooldown Check**/
-			if (data.isFcooldown())
+			/**Check if the player is on the waiting list**/
+			if (frenzyWaiting.containsKey(player.getName()))
 			{
-				sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzycd()));
+				/**Cooldown Check**/
+				if (data.isFcooldown())
+				{
+					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzycd()));
+					frenzyWaiting.remove(player.getName());
+					return;
+				}
 				frenzyWaiting.remove(player.getName());
+			}
+			else
+			{
 				return;
 			}
-			frenzyWaiting.remove(player.getName());
 		}
 		else
 		{
-			return;
+			if (data.isFcooldown())
+			{
+				sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzycd()));
+				return;
+			}
 		}
 		
 		/**Activate Frenzy!**/
@@ -202,21 +214,33 @@ public class AbilitiesManager
 			return;
 		}
 		
-		/**Check if the player is on the waiting list**/
-		if (spickWaiting.containsKey(player.getName()))
+		/**The player is activating using an item**/
+		if (command == false)
 		{
-			/**Cooldown Check**/
-			if (data.isScooldown())
+			/**Check if the player is on the waiting list**/
+			if (spickWaiting.containsKey(player.getName()))
 			{
-				sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperpickcd()));
+				/**Cooldown Check**/
+				if (data.isScooldown())
+				{
+					sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperpickcd()));
+					spickWaiting.remove(player.getName());
+					return;
+				}
 				spickWaiting.remove(player.getName());
+			}
+			else
+			{
 				return;
 			}
-			spickWaiting.remove(player.getName());
 		}
 		else
 		{
-			return;
+			if (data.isScooldown())
+			{
+				sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperpickcd()));
+				return;
+			}
 		}
 
 		/**Activate Super Pickaxe!**/
