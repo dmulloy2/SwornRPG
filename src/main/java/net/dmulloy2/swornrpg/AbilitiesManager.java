@@ -76,7 +76,7 @@ public class AbilitiesManager
 				frenzyWaiting.put(player.getName(), System.currentTimeMillis());
 				new FrenzyRemoveThread(player).runTaskLater(plugin, 60);
 			}
-			return; // Nothing more here.
+			return;
 		}
 		
 		/**Check if the player is on the waiting list**/
@@ -104,13 +104,13 @@ public class AbilitiesManager
 		if (level == 0)
 			level = 1;
 		/**Duration = frenzy base duraton + (frenzy multiplier x level)**/
-		final int duration = (20*(plugin.frenzyd + (level*plugin.frenzym)));
-		player.addPotionEffect(PotionEffectType.SPEED.createEffect((int) duration, strength));
-		player.addPotionEffect(PotionEffectType.INCREASE_DAMAGE.createEffect((int) duration, strength));
-		player.addPotionEffect(PotionEffectType.REGENERATION.createEffect((int) duration, strength));
-		player.addPotionEffect(PotionEffectType.JUMP.createEffect((int) duration, strength));
-		player.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect((int) duration, strength));
-		player.addPotionEffect(PotionEffectType.DAMAGE_RESISTANCE.createEffect((int) duration, strength));
+		final int duration = Integer.valueOf(Math.round(20*(plugin.frenzyd + (level*plugin.frenzym))));
+		player.addPotionEffect(PotionEffectType.SPEED.createEffect(duration, strength));
+		player.addPotionEffect(PotionEffectType.INCREASE_DAMAGE.createEffect(duration, strength));
+		player.addPotionEffect(PotionEffectType.REGENERATION.createEffect(duration, strength));
+		player.addPotionEffect(PotionEffectType.JUMP.createEffect(duration, strength));
+		player.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(duration, strength));
+		player.addPotionEffect(PotionEffectType.DAMAGE_RESISTANCE.createEffect(duration, strength));
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_frenzy_activate"), player.getName(), duration);
 		class FrenzyThread extends BukkitRunnable
 		{
@@ -224,10 +224,10 @@ public class AbilitiesManager
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
-		final int duration = (20*(plugin.spbaseduration + (level*plugin.superpickm)));
+		final int duration = Integer.valueOf(Math.round(20*(plugin.spbaseduration + (level*plugin.superpickm))));
 		int strength = 1;
 		data.setSpick(true);
-		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect((int) duration, strength));
+		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(duration, strength));
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_superpick_activate"), player.getName(), duration);
 		class SuperPickThread extends BukkitRunnable
 		{
@@ -275,7 +275,7 @@ public class AbilitiesManager
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
-		final int duration = (20*(plugin.ammobaseduration + (level*plugin.ammomultiplier)));
+		final int duration = Integer.valueOf(Math.round(20*(plugin.ammobaseduration + (level*plugin.ammomultiplier))));
 		data.setUnlimtdammo(true);
 		sendpMessage(player, plugin.getMessage("ammo_now_unlimited"));
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_ammo_activate"), player.getName(), duration);
