@@ -1,9 +1,10 @@
 package net.dmulloy2.swornrpg;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -21,8 +22,6 @@ public class AbilitiesManager
 	public void initialize(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		new FrenzyRemoveThread().runTaskTimer(plugin, 0, 20);
-		new SpickRemoveThread().runTaskTimer(plugin, 0, 20);
 	}
 	
 	public HashMap<String, Long> frenzyWaiting = new HashMap<String, Long>();
@@ -75,6 +74,7 @@ public class AbilitiesManager
 			{
 				sendpMessage(player, plugin.getMessage("ability_ready"), "Sword");
 				frenzyWaiting.put(player.getName(), System.currentTimeMillis());
+				new FrenzyRemoveThread(player).runTaskLater(plugin, 60);
 			}
 			return; // Nothing more here.
 		}
@@ -197,6 +197,7 @@ public class AbilitiesManager
 			{
 				sendpMessage(player, plugin.getMessage("ability_ready"), inhand);
 				spickWaiting.put(player.getName(), System.currentTimeMillis());
+				new SpickRemoveThread(player).runTaskLater(plugin, 60);
 			}
 			return;
 		}
@@ -309,14 +310,25 @@ public class AbilitiesManager
 	/**If the player has been on the frenzy waiting list for more than 3 seconds, remove them from the list**/
 	public class FrenzyRemoveThread extends BukkitRunnable
 	{
+		public Player player;
+		public FrenzyRemoveThread(Player player)
+		{
+			this.player = player;
+		}
+		
 		@Override
 		public void run()
 		{
-			for (long time : frenzyWaiting.values())
+			for (Entry<String, Long> entrySet : frenzyWaiting.entrySet())
 			{
-				if ((System.currentTimeMillis() - time) >= 60)
+				if (entrySet.getKey() == player.getName())
 				{
-					frenzyWaiting.remove(time);
+					if ((System.currentTimeMillis() - entrySet.getValue()) >= 60)
+					{
+						frenzyWaiting.remove(player.getName());
+						if (player.isOnline())
+							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), player.getItemInHand().getType().name()));
+					}
 				}
 			}
 		}
@@ -325,14 +337,25 @@ public class AbilitiesManager
 	/**If the player has been on the spick waiting list for more than 3 seconds, remove them from the list**/
 	public class SpickRemoveThread extends BukkitRunnable
 	{
+		public Player player;
+		public SpickRemoveThread(Player player)
+		{
+			this.player = player;
+		}
+		
 		@Override
 		public void run()
 		{
-			for (long time : spickWaiting.values())
+			for (Entry<String, Long> entrySet : spickWaiting.entrySet())
 			{
-				if ((System.currentTimeMillis() - time) >= 60)
+				if (entrySet.getKey() == player.getName())
 				{
-					spickWaiting.remove(time);
+					if ((System.currentTimeMillis() - entrySet.getValue()) >= 60)
+					{
+						spickWaiting.remove(player.getName());
+						if (player.isOnline())
+							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), player.getItemInHand().getType().name()));
+					}
 				}
 			}
 		}

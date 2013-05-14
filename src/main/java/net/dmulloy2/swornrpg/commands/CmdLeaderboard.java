@@ -32,8 +32,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		sendpMessage(plugin.getMessage("leaderboard_wait"));
 		Map<String, PlayerData> data = plugin.getPlayerDataCache().getAllPlayerData();
-		sendpMessage("&eOrdering Statistics of &a{0} &ePlayers...", data.size());
 		HashMap<String, Integer> xpmap = new HashMap<String, Integer>();
 		for (Entry<String, PlayerData> entrySet : data.entrySet())
 		{
@@ -56,7 +56,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		
 		List<String>lines = new ArrayList<String>();
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format("&e==== &aSwornRPG Leaderboard &e===="));
+		line.append(FormatUtil.format(plugin.getMessage("leaderboard_header")));
 		lines.add(line.toString());
 		
 		int pos = 1;
@@ -75,7 +75,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 						int xp = data2.getTotalxp();
 					
 						line = new StringBuilder();
-						line.append(FormatUtil.format("&a{0}&e) &a{1} &eLevel: &a{2} &eXP: &a{3}", pos, player.getName(), level, xp));
+						line.append(FormatUtil.format(plugin.getMessage("leaderboard_format"), pos, player.getName(), level, xp));
 						lines.add(line.toString());
 						pos++;
 					}
@@ -86,6 +86,6 @@ public class CmdLeaderboard extends SwornRPGCommand
 		for (String s : lines)
 			sendMessage(s);
 		
-		sendpMessage("&eCheck your stats with &c/level&e!");
+		sendpMessage(plugin.getMessage("leaderboard_check"));
 	}
 }
