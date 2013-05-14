@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
@@ -19,8 +20,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.entity.Player;
-
-import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 
 /**
  * @author dmulloy2
