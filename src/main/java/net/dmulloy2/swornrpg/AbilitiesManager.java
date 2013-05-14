@@ -327,7 +327,10 @@ public class AbilitiesManager
 					{
 						frenzyWaiting.remove(player.getName());
 						if (player.isOnline())
-							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), player.getItemInHand().getType().name()));
+						{
+							String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
+						}
 					}
 				}
 			}
@@ -354,7 +357,10 @@ public class AbilitiesManager
 					{
 						spickWaiting.remove(player.getName());
 						if (player.isOnline())
-							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), player.getItemInHand().getType().name()));
+						{
+							String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
+						}
 					}
 				}
 			}
