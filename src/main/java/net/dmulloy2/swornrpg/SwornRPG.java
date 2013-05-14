@@ -96,12 +96,12 @@ public class SwornRPG extends JavaPlugin
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
-	marriage, taming, confusion, fishing, herbalism, savecache;
+	marriage, taming, confusion, fishing, herbalism, savecache, enchanting;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
 	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain,
-	saveinterval;
+	saveinterval, enchantbase;
 	
 	private double newVersion, currentVersion;
     public String salvage, tagformat;
@@ -389,6 +389,8 @@ public class SwornRPG extends JavaPlugin
 		fishinggain = getConfig().getInt("levelingmethods.fishing.xpgain");
 		herbalism = getConfig().getBoolean("levelingmethods.herbalism.enabled");
 		herbalismgain = getConfig().getInt("levelingmethods.herbalism.xpgain");
+		enchanting = getConfig().getBoolean("levelingmethods.enchanting.enabled");
+		enchantbase = getConfig().getInt("levelingmethods.enchanting.xpgain");
 		
 		/**SuperPick**/
 		spenabled = getConfig().getBoolean("superpickaxe.enabled");

@@ -29,6 +29,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -416,6 +417,35 @@ public class ExperienceListener implements Listener
 					}
 				}
 			}
+		}
+	}
+	
+	/**Enchanting XP**/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerEnchant(EnchantItemEvent event)
+	{
+		Player player = event.getEnchanter();
+		if (player == null)
+			return;
+		
+		int cost = event.getExpLevelCost();
+		if (cost < 15)
+			return;
+		
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		int level = data.getLevel();
+		if (level == 0) level = 1;
+		if (level > 30) level = 30;
+		
+		if (plugin.enchanting == true)
+		{
+			player.setExp(player.getExp() + level + cost);
+		
+			int xp = (cost/2) + plugin.enchantbase;
+			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
+		
+			PlayerXpGainEvent xpgain = new PlayerXpGainEvent(player, xp, message);
+			plugin.getServer().getPluginManager().callEvent(xpgain);
 		}
 	}
 	

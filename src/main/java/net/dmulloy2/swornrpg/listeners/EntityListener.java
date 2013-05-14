@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.listeners;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -76,7 +77,7 @@ public class EntityListener implements Listener
 						if (defender instanceof Player)
 						{
 							Player d = (Player)defender;
-							d.addPotionEffect(PotionEffectType.CONFUSION.createEffect((int) 60, 1));
+							d.addPotionEffect(PotionEffectType.CONFUSION.createEffect(60, 1));
 						}
 					}
 				}
@@ -192,14 +193,20 @@ public class EntityListener implements Listener
 				return;
 			
 			int health = player.getHealth();
-			if (health == 20)
-				return;
-			
-			int rand = Util.random(50);
-			if (rand == 0)
+			if (health < 20)
 			{
-				player.setHealth(player.getHealth() + 1);
+				PlayerData data = plugin.getPlayerDataCache().getData(player);
+				int level = data.getLevel();
+				if (level > 25) level = 25;
+				if (level == 0) level = 1;
+				
+				int rand = Util.random(75/level);
+				if (rand == 0)
+				{
+					player.setHealth(player.getHealth() + 1);
+				}
 			}
+			// Hunting Drops Coming Soon... Maybe O.o
 		}
 	}
 	

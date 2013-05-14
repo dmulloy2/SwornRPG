@@ -104,6 +104,10 @@ levelingmethods:
     enabled: true
     xpgain: 1
     # Xp gain when a player farms (per crop)
+  enchanting:
+    enabled: true
+    xpgain: 5
+    # Xp gain multiplier (Formula = (enchanting cost / 2) + multiplier)
 
 levelingrewards:
 # What do players receive for leveling up?

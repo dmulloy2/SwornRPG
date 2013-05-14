@@ -15,9 +15,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.entity.Player;
+
+import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 
 /**
  * @author dmulloy2
@@ -122,6 +125,33 @@ public class BlockListener implements Listener
 		catch (Exception localException)
 		{
 			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_block"), localException.getMessage());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onBlockPlace(BlockPlaceEvent event)
+	{
+		Player player = event.getPlayer();
+		if (player == null)
+			return;
+		
+		Block block = event.getBlock();
+		if (block == null)
+			return;
+		
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		int level = data.getLevel();
+		if (level == 0) level = 1;
+		if (level > 50) level = 50;
+		
+		int rand = Util.random(300/level);
+		if (rand == 0)
+		{
+			ItemStack itemStack = new ItemStack(block.getState().getType(), 1);
+			InventoryWorkaround.addItems(player.getInventory(), itemStack);
+			
+			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
+			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
 		}
 	}
 }
