@@ -1,5 +1,6 @@
 package net.dmulloy2.swornrpg;
 
+import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -23,8 +24,10 @@ public class PlayerHealthBar
 	{
 		this.plugin = plugin;
 	}
+	
+	private HashMap<String, Scoreboard> boards = new HashMap<String, Scoreboard>();
 
-	public void updateHealth(Player player) throws NoSuchMethodException, IllegalStateException
+	public void register(Player player) throws NoSuchMethodException, IllegalStateException
 	{
 		ScoreboardManager manager = plugin.getServer().getScoreboardManager();
 		Scoreboard board;
@@ -92,14 +95,43 @@ public class PlayerHealthBar
 			score.setScore(player.getHealth());
 			objective.setDisplayName(board.getPlayerTeam(player).getDisplayName());
 			
-			for (Player players : plugin.getServer().getOnlinePlayers())
-			{
-				players.setScoreboard(board);
-			}
+			boards.put(player.getName(), board);
+			player.setScoreboard(board);
 		}
 		catch (Exception e)
 		{
 			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
 		}
+	}
+	
+	public void updateHealth(Player player) throws NoSuchMethodException, IllegalStateException
+	{
+		if (!boards.containsKey(player.getName()))
+			register(player);
+		
+		Scoreboard board = boards.get(player.getName());
+		Objective objective = board.getObjective(DisplaySlot.BELOW_NAME);
+		Score score = objective.getScore(player);
+		score.setScore(player.getHealth());
+		
+		final int health = Math.round(player.getHealth() / 2);
+		
+		Team oldteam = board.getPlayerTeam(player);
+		if (oldteam != null)
+			oldteam.removePlayer(player);
+		
+		board.getTeam("health"+Integer.toString(health)).addPlayer(player);
+		objective.setDisplayName(board.getPlayerTeam(player).getDisplayName());
+	}
+	
+	public void clear()
+	{
+		boards.clear();
+	}
+	
+	public void unregister(Player player)
+	{
+		if (boards.containsKey(player.getName()))
+			boards.remove(player.getName());
 	}
 }

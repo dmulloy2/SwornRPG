@@ -20,10 +20,10 @@ public class CmdVersion extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		sendMessage("&4==== &6SwornRPG &4====");
-		sendMessage("&6Author: &edmulloy2");
-		sendMessage("&6Loaded Version: &e{0}", plugin.getDescription().getFullName());
-		sendMessage("&6Update Available: &e{0}", plugin.updateNeeded() ? "true" : "false");
-		sendMessage("&6Download:&e http://dev.bukkit.org/server-mods/swornrpg");
+		sendMessage(plugin.getMessage("version_header"));
+		sendMessage(plugin.getMessage("version_author"));
+		sendMessage(plugin.getMessage("version_loaded"), plugin.getDescription().getFullName());
+		sendMessage(plugin.getMessage("version_update"), plugin.updateNeeded() ? "true" : "false");
+		sendMessage(plugin.getMessage("version_download"));
 	}
 }

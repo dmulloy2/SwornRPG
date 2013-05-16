@@ -38,6 +38,7 @@ public class PlayerData implements ConfigurationSerializable
 	private int xpneeded;
 	private int level;
 	private int totalxp;
+	private int herbalism;
 	
 	private long timeOfLastUpdate;
 	private long onlineTime;

@@ -225,7 +225,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdStaffList (this));
 		commandHandler.registerCommand(new CmdSitdown (this));
 		commandHandler.registerCommand(new CmdUnlimitedAmmo (this));
-		commandHandler.registerCommand(new CmdSkills (this));
+		commandHandler.registerCommand(new CmdAbilities (this));
 		
 		/**Set permission messages**/
 		getCommand("ride").setPermissionMessage(noperm);
@@ -305,6 +305,7 @@ public class SwornRPG extends JavaPlugin
 		long start = System.currentTimeMillis();
 		
 		playerDataCache.save();
+		playerHealthBar.clear();
 
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);

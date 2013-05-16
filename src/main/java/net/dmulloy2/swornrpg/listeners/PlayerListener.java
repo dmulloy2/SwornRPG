@@ -339,6 +339,8 @@ public class PlayerListener implements Listener
 		{
 			data.setUnlimtdammo(false);
 		}
+		
+		plugin.getPlayerHealthBar().unregister(player);
 	}
 	
 	/**Checks to make sure that if a player is riding another player, teleportation is not disabled**/
@@ -379,6 +381,7 @@ public class PlayerListener implements Listener
 	{
 		Action action = event.getAction();
 		Player player = event.getPlayer();
+		
 		plugin.getAbilitiesManager().activateSpick(player, false, action);
 	}
 	
@@ -522,7 +525,7 @@ public class PlayerListener implements Listener
 			int rand = Util.random(20);
 			if (rand == 0)
 			{			
-				player.addPotionEffect(PotionEffectType.SPEED.createEffect((int) 20, 1));
+				player.addPotionEffect(PotionEffectType.SPEED.createEffect(40, 1));
 				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("speed_boost")));
 			}
 		}

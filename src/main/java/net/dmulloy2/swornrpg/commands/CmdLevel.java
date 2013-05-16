@@ -57,15 +57,16 @@ public class CmdLevel extends SwornRPGCommand
 			sendpMessage(plugin.getMessage("noplayer"));
 			return;
 		}
+		
 		int level = data.getLevel();
 		int nextlevel = level+1;
 		int totalxp = data.getTotalxp();
-		int totalxpneeded = (Math.abs(data.getTotalxp()) + data.getXpneeded());
 		int xptonext = (data.getXpneeded() - data.getPlayerxp());
-		String name;
-		String title;
+		
+		String name, title;
 		String senderp = sender.getName();
 		String targetp = target.getName();
+		
 		if (targetp == senderp)
 		{
 			name = "You are";
@@ -76,9 +77,25 @@ public class CmdLevel extends SwornRPGCommand
 			name = targetp + " is";
 			title = targetp;
 		}
-		sendpMessage(plugin.getMessage("level_header"), title);
-		sendpMessage(plugin.getMessage("level_level"), name, level);
-		sendpMessage(plugin.getMessage("level_xptonext"), name, xptonext, nextlevel);
-		sendpMessage(plugin.getMessage("level_amount"), totalxp, totalxpneeded);
+		
+		sendMessage(plugin.getMessage("level_header"), title);
+		sendMessage(plugin.getMessage("level_info"), name, level, totalxp);
+		sendMessage(plugin.getMessage("level_xptonext"), name, xptonext, nextlevel);
+
+		int scale = 20;
+		int bars = Math.round(scale - ((xptonext * scale) / data.getXpneeded()));
+		StringBuilder bar = new StringBuilder();
+		for (int i=0; i<bars; i++)
+		{
+			bar.append("&a=");
+		}
+		
+		int left = scale - bars;
+		for (int ii=0; ii<left; ii++)
+		{
+			bar.append("&e=");
+		}
+		
+		sendMessage(plugin.getMessage("level_bar"), bar.toString());
 	}
 }

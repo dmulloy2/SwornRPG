@@ -92,7 +92,7 @@ public class CmdHelp extends SwornRPGCommand
 		pageLines.add(new CmdTagr(plugin).getUsageTemplate(true));
 		pageLines.add(new CmdUnride(plugin).getUsageTemplate(true));
 		pageLines.add(new CmdUnlimitedAmmo(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdSkills(plugin).getUsageTemplate(true));
+		pageLines.add(new CmdAbilities(plugin).getUsageTemplate(true));
 		helpPages.add(pageLines);
 	}
 }

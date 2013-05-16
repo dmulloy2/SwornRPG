@@ -4,12 +4,12 @@ import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
@@ -138,16 +138,29 @@ public class BlockListener implements Listener
 		if (block == null)
 			return;
 		
+		if (event.isCancelled())
+			return;
+		
+		GameMode gm = player.getGameMode();
+		if (gm == GameMode.CREATIVE)
+			return;
+		
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int level = data.getLevel();
 		if (level == 0) level = 1;
-		if (level > 50) level = 50;
+		if (level > 100) level = 100;
 		
 		int rand = Util.random(300/level);
 		if (rand == 0)
 		{
-			ItemStack itemStack = new ItemStack(block.getState().getType(), 1);
-			InventoryWorkaround.addItems(player.getInventory(), itemStack);
+			BlockState blockState =  block.getState();
+			MaterialData blockData = blockState.getData();
+			Material blockMat = blockState.getType();
+			
+			ItemStack itemStack = new ItemStack(blockMat, 1);
+			itemStack.setData(blockData);
+			
+			player.getInventory().addItem(itemStack);
 			
 			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));

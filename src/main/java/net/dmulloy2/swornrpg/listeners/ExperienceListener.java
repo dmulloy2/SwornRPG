@@ -233,12 +233,21 @@ public class ExperienceListener implements Listener
 		if (gm != GameMode.SURVIVAL)
 			return;
 			
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		int concurrentHerbalism = data.getHerbalism();
 		if (herbalismNeeded(blockState))
 		{
-			String blockName = block.getType().toString().toLowerCase().replaceAll("_", " ");
-			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), plugin.herbalismgain, blockName);
-			PlayerXpGainEvent xpgain = new PlayerXpGainEvent(event.getPlayer(), 0, message);
-			plugin.getServer().getPluginManager().callEvent(xpgain);
+			if (concurrentHerbalism >= 10)
+			{
+				String blockName = block.getType().toString().toLowerCase().replaceAll("_", " ");
+				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), plugin.herbalismgain, blockName);
+				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(event.getPlayer(), 1, message);
+				plugin.getServer().getPluginManager().callEvent(xpgain);
+			}
+			else
+			{
+				data.setHerbalism(data.getHerbalism() + 1);
+			}
 		}
 	}
 	
@@ -500,9 +509,12 @@ public class ExperienceListener implements Listener
 			if (pm.isPluginEnabled("Vault"))
 			{
 				Economy economy = plugin.getEconomy();
-				double money = (int) level*plugin.basemoney;
-				economy.depositPlayer(player.getName(), money);
-				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
+				if (economy != null)
+				{
+					int money = level*plugin.basemoney;
+					economy.depositPlayer(player.getName(), money);
+					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
+				}
 			}
 		}
 		

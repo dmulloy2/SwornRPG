@@ -136,10 +136,10 @@ commands:
     description: Unlimited ammo for your gun
     usage: /<command>
     aliases: [unlimitedammo]
-  skills:
-    description: Check your SwornRPG skill levels
+  abilities:
+    description: Check your SwornRPG ability levels
     usage: /<command>
-    aliases: [skill]
+    aliases: [skills]
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
