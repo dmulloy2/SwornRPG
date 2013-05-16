@@ -30,30 +30,11 @@ public class PlayerHealthBar
 	public void register(Player player) throws NoSuchMethodException, IllegalStateException
 	{
 		ScoreboardManager manager = plugin.getServer().getScoreboardManager();
-		Scoreboard board;
-		
-		if (plugin.playerhealth == false)
-		{
-			board = player.getScoreboard();
-			if (board == null) return;
-			if (board.getObjective(DisplaySlot.BELOW_NAME) != null)
-				board.getObjective(DisplaySlot.BELOW_NAME).unregister();
-			if (board.getObjective("showhealth") != null)
-				board.getObjective("showhealth").unregister();
-			
-			Set<Team> teams = board.getTeams();
-			for (Team team : teams)
-			{
-				if (team.getName().contains("health"))
-					team.unregister();
-			}
-			return;
-		}
-		
+
 		if (player.getHealth() > 0)
 			try 
 		{
-			board = manager.getNewScoreboard();
+			Scoreboard board = manager.getNewScoreboard();
 			Set<Team> teams = board.getTeams();
 			for (Team team : teams)
 			{
@@ -106,6 +87,26 @@ public class PlayerHealthBar
 	
 	public void updateHealth(Player player) throws NoSuchMethodException, IllegalStateException
 	{
+		if (plugin.playerhealth == false)
+		{
+			Scoreboard board = player.getScoreboard();
+			if (board == null) return;
+			if (board.getObjective(DisplaySlot.BELOW_NAME) != null)
+				board.getObjective(DisplaySlot.BELOW_NAME).unregister();
+			if (board.getObjective("showhealth") != null)
+				board.getObjective("showhealth").unregister();
+			
+			Set<Team> teams = board.getTeams();
+			for (Team team : teams)
+			{
+				if (team.getName().contains("health"))
+					team.unregister();
+			}
+			return;
+		}
+		
+		if (player.getHealth() == 0) return;
+		
 		if (!boards.containsKey(player.getName()))
 			register(player);
 		
@@ -120,7 +121,10 @@ public class PlayerHealthBar
 		if (oldteam != null)
 			oldteam.removePlayer(player);
 		
-		board.getTeam("health"+Integer.toString(health)).addPlayer(player);
+		Team newTeam = board.getTeam("health"+health);
+		if (newTeam != null)
+			newTeam.addPlayer(player);
+
 		objective.setDisplayName(board.getPlayerTeam(player).getDisplayName());
 	}
 	

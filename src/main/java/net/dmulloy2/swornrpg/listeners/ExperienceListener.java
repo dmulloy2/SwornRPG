@@ -239,10 +239,10 @@ public class ExperienceListener implements Listener
 		{
 			if (concurrentHerbalism >= 10)
 			{
-				String blockName = block.getType().toString().toLowerCase().replaceAll("_", " ");
-				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), plugin.herbalismgain, blockName);
-				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(event.getPlayer(), 1, message);
+				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), plugin.herbalismgain);
+				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(event.getPlayer(), 10, message);
 				plugin.getServer().getPluginManager().callEvent(xpgain);
+				data.setHerbalism(0);
 			}
 			else
 			{

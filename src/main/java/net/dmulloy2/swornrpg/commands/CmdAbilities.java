@@ -90,6 +90,6 @@ public class CmdAbilities extends SwornRPGCommand
 				sendMessage(plugin.getMessage("ability_ammo"), (plugin.ammobaseduration + (level*plugin.ammomultiplier)));
 		}
 		
-		sendpMessage(plugin.getMessage("ability_level"));
+		sendMessage(plugin.getMessage("ability_level"));
 	}
 }
