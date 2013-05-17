@@ -3,39 +3,39 @@
 
 **Introducing SwornRPG, the fully featured (and much less laggy and exploitable) alternative to mcMMO! SwornRPG is based upon a very simplistic leveling system, where daily tasks, like farming, fighting players and mobs, enchanting, taming, and being on the server, contribute experience to one single experience pool. As with any good leveling system, SwornRPG awards players with diamonds and cash (both configurable) every time they amass enough xp to level up! Players also receive increased ability times and greater chances for many of SwornRPG's extra features! Players can check their xp and level using /level and check the leaderboard with /srpg top. This plugin also has many, many other features that would not fit on this page!
 
-<<color maroon>>**Thanks for over 3,500 downloads!!!**<</color>>
+**Thanks for over 3,500 downloads!!!**
 ----
 == Check SwornRPG out on Bukkit Dev!
 http://dev.bukkit.org/server-mods/swornrpg
 ----
-== <<color maroon>>Commands<</color>>
-|**Command**||**Description**||**Permission**|
-|/srpg||SwornRPG root command|||
-|/a||Admin only chat||srpg.adminchat|
-|/hc||High Council chat||srpg.council|
-|/ride||Ride another player||srpg.ride|
-|/unride||Get off a player||srpg.ride|
-|/eject||Kick a player off your head||srpg.ride|
-|/asay||Send a colored message to the server||srpg.asay|
-|/iname||Set the name of the item in your hand||srpg.iname|
-|/hat||Puts the item in your hand on your head||srpg.hat|
-|/iname||Set the name of your in-hand item||srpg.iname|
-|/levelr||Reset a player's level||srpg.levelr|
-|/frenzy||Level based strength ability|||
-|/mine||Super pickaxe based on level|||
-|/ammo||Unlimited ammo based on level (Requires PVPGunPlus)|||
-|/level||Check your level|||
-|/match||Match a string with a player|||
-|/staff||List online staff with permission srpg.staff|||
-|Tags||See [[player tags|here]]|||
-|Marriage||See [[marriage|here]]||||
+== Commands
+|**Command**|**Description**|**Permission**|
+|/srpg|SwornRPG root command||
+|/a|Admin only chat|srpg.adminchat|
+|/hc|High Council chat|srpg.council|
+|/ride|Ride another player|srpg.ride|
+|/unride|Get off a player|srpg.ride|
+|/eject|Kick a player off your head|srpg.ride|
+|/asay|Send a colored message to the server|srpg.asay|
+|/iname|Set the name of the item in your hand|srpg.iname|
+|/hat|Puts the item in your hand on your head|srpg.hat|
+|/iname|Set the name of your in-hand item|srpg.iname|
+|/levelr|Reset a player's level|srpg.levelr|
+|/frenzy|Level based strength ability||
+|/mine|Super pickaxe based on level||
+|/ammo|Unlimited ammo based on level (Requires PVPGunPlus)||
+|/level|Check your level||
+|/match|Match a string with a player||
+|/staff|List online staff with permission srpg.staff||
+|Tags|See [[player tags|here]]||
+|Marriage|See [[marriage|here]]||
 ----
 
-==<<color maroon>>Salvaging<</color>>
+==Salvaging
 This plugin allows for the salvaging of used armor. Salvaging the used armor gives the player SOME of the ingots back, but it is designed to be inefficient. For example: If you salvage a full set of unused diamond armor, you will only get 20 diamonds back (using the config defaults). If the armor is used, the plugin calculates how many ingots the player should receive based on what you defined in the configuration.
 {{http://i.troll.ws/94107e8e.png}}
 ----
-==<<color maroon>>Other Features<</color>>
+==Other Features
 *Protects Iron doors from being directly broken
 *Certain blocks have a random chance of dropping random materials (Completely configurable)
 *Arrows have a random chance of setting the player on fire
@@ -49,46 +49,46 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 *Players will get a little speed boost randomly
 *Players have a random chance of not taking fall damage
 ----
-==<<color maroon>>Permissions<</color>>
-|**Permission**||**Description**||**Inheritance**|
-|srpg.*||Allows access to all SwornRPG features!||All|
-|srpg.moderator||Allows access to features meant for moderators||Guard|
-|srpg.guard||Allows access to features meant for guards/lower staff||Member|
+==Permissions
+|**Permission**|**Description**|**Inheritance**|
+|srpg.*|Allows access to all SwornRPG features!|All|
+|srpg.moderator|Allows access to features meant for moderators|Guard|
+|srpg.guard|Allows access to features meant for guards/lower staff|Member|
 *Individual nodes can be found [[https://github.com/dmulloy2/SwornRPG/blob/master/plugin.yml|here]]
 ----
-==<<color maroon>>Configuration<</color>>
+==Configuration
 *A detailed configuration guide can be found [[sworn-rpg-configuration|here]]
 *The default configuration can be found [[https://github.com/dmulloy2/SwornRPG/blob/master/config.yml|here]]
 ----
-==<<color maroon>>Soft Dependencies<</color>>
+==Soft Dependencies
 *These plugins add certain functionality to SwornRPG:
-|**Name**||**Additions**||**Download Link**|
-|PVPGunPlus||Unlimited Ammo ability||[[http://dev.bukkit.org/server-mods/pvpgun/|Here]]
-|TagAPI||Colored Player Nameplates||[[http://dev.bukkit.org/server-mods/tag/|Here]]
-|Essentials||Mail messages with Death Coords||[[http://dev.bukkit.org/server-mods/essentials/|Here]]
-|Vault||Cash rewards on levelup||[[http://dev.bukkit.org/server-mods/vault/|Here]]
+|**Name**|**Additions**|**Download Link**|
+|PVPGunPlus|Unlimited Ammo ability|[[http://dev.bukkit.org/server-mods/pvpgun/|Here]]
+|TagAPI|Colored Player Nameplates|[[http://dev.bukkit.org/server-mods/tag/|Here]]
+|Essentials|Mail messages with Death Coords|[[http://dev.bukkit.org/server-mods/essentials/|Here]]
+|Vault|Cash rewards on levelup|[[http://dev.bukkit.org/server-mods/vault/|Here]]
 *SwornRPG also performs Factions Safe- and War-Zone checks
 ----
-==<<color maroon>>SwornRPG is Open Sourced!<</color>>
+==SwornRPG is Open Sourced!
 Check out our repository on [[https://github.com/dmulloy2/SwornRPG|GitHub]]
 ----
-==<<color maroon>>Check out SwornRPG in action!<</color>>
+==Check out SwornRPG in action!
 {{http://www.minepick.com/uploads/1363056871_banner_2.0.jpg}}
 {{http://minesworn.com/images/Minestatussworn.gif}}
 {{https://mcservers.org/images/184.171.168.170:25594/600x100/08.jpg}}
 *//If you have a server that uses SwornRPG, send me a message or post below to have it added to this list//
 ----
-==<<color maroon>>Reporting Bugs<</color>>
+==Reporting Bugs
 When reporting bugs (either in the comments below, or in a ticket), please follow this template:
 * Provide any relevant stack traces (Use pastie or pastebin)
 * Provide the version of both CraftBukkit/Spigot and SwornRPG (found with /version and /srpg v, respectively)
 * Provide a detailed description of the problem and how it came about, as well as all (if any) steps taken to remedy the problem 
-=== <<color maroon>>Notes<</color>>
+=== Notes
 * Support will not be given for either of the following: Offline Servers and Servers running ancient versions of either Bukkit/Spigot or Java.
 * SwornRPG has been fully tested (as well as built with) with the latest builds of both Java and Bukkit.
 ----
 
-==<<color maroon>>Donations!<</color>>
+==Donations!
 If SwornRPG has made a significant impact on your server and you feel like donating, click the button below! (Please do not donate more than you can afford!)
 
 <<center>>[[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JGGUVDY29DERY|{{https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif}}]]<</center>>
