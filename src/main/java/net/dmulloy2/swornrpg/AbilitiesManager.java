@@ -72,7 +72,8 @@ public class AbilitiesManager
 		{
 			if (!frenzyWaiting.containsKey(player.getName()))
 			{
-				sendpMessage(player, plugin.getMessage("ability_ready"), "Sword");
+				String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 				frenzyWaiting.put(player.getName(), System.currentTimeMillis());
 				new FrenzyRemoveThread(player).runTaskLater(plugin, 60);
 			}
