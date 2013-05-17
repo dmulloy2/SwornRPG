@@ -69,27 +69,8 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 |Vault|Cash rewards on levelup|[[http://dev.bukkit.org/server-mods/vault/|Here]]
 *SwornRPG also performs Factions Safe- and War-Zone checks
 ----
-==SwornRPG is Open Sourced!
-Check out our repository on [[https://github.com/dmulloy2/SwornRPG|GitHub]]
-----
 ==Check out SwornRPG in action!
-{{http://www.minepick.com/uploads/1363056871_banner_2.0.jpg}}
+{{http://i.troll.ws/472d7ad1.gif}}
 {{http://minesworn.com/images/Minestatussworn.gif}}
-{{https://mcservers.org/images/184.171.168.170:25594/600x100/08.jpg}}
 *//If you have a server that uses SwornRPG, send me a message or post below to have it added to this list//
-----
-==Reporting Bugs
-When reporting bugs (either in the comments below, or in a ticket), please follow this template:
-* Provide any relevant stack traces (Use pastie or pastebin)
-* Provide the version of both CraftBukkit/Spigot and SwornRPG (found with /version and /srpg v, respectively)
-* Provide a detailed description of the problem and how it came about, as well as all (if any) steps taken to remedy the problem 
-=== Notes
-* Support will not be given for either of the following: Offline Servers and Servers running ancient versions of either Bukkit/Spigot or Java.
-* SwornRPG has been fully tested (as well as built with) with the latest builds of both Java and Bukkit.
-----
-
-==Donations!
-If SwornRPG has made a significant impact on your server and you feel like donating, click the button below! (Please do not donate more than you can afford!)
-
-<<center>>[[https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JGGUVDY29DERY|{{https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif}}]]<</center>>
 ----
