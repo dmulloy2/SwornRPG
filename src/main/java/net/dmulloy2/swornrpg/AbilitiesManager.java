@@ -48,7 +48,7 @@ public class AbilitiesManager
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isFrenzy())
 		{
-			if (command) sendpMessage(player, plugin.getMessage("frenzy_in_progress"));
+			if (command) sendpMessage(player, plugin.getMessage("ability_in_progress"), "Frenzy Mode");
 			return;
 		}
 		
@@ -184,7 +184,7 @@ public class AbilitiesManager
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSpick())
 		{
-			if (command) sendpMessage(player, plugin.getMessage("superpick_inprogress"));
+			if (command) sendpMessage(player, plugin.getMessage("ability_in_progress"), "Super Pickaxe");
 			return;
 		}
 		
@@ -285,7 +285,7 @@ public class AbilitiesManager
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isUnlimtdammo())
 		{
-			sendpMessage(player, plugin.getMessage("already_using_ammo"));
+			sendpMessage(player, plugin.getMessage("ability_in_progress"), "Unlimited Ammo");
 			return;
 		}
 		
