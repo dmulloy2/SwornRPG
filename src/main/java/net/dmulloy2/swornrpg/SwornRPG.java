@@ -51,6 +51,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -105,7 +106,7 @@ public class SwornRPG extends JavaPlugin
 	
 	private double newVersion, currentVersion;
     public String salvage, tagformat;
-    public List<String> disabledWorlds;
+    public List<String> disabledWorlds, redeemBlacklist;
 	
 	public String prefix, noperm;
 
@@ -347,6 +348,7 @@ public class SwornRPG extends JavaPlugin
 		confusionduration = getConfig().getInt("confusion.duration");
 		savecache = getConfig().getBoolean("autosave.enabled");
 		saveinterval = getConfig().getInt("autosave.interval");
+		redeemBlacklist = getConfig().getStringList("redeem-blacklist");
 
 		/**Salvaging**/
 		salvaging = getConfig().getBoolean("salvaging");
@@ -723,19 +725,40 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/**WarZone/SafeZone Check**/
-	public boolean checkFactions(Player player, boolean both)
+	public boolean checkFactions(Player player, boolean safeZoneCheck)
 	{
 		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("Factions") || pm.isPluginEnabled("SwornNations"))
+		if (pm.isPluginEnabled("Factions"))
+		{
+			Plugin pl = pm.getPlugin("Factions");
+			String version = pl.getDescription().getVersion();
+			if (version.startsWith("1.6."))
+			{
+				Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
+				if (safeZoneCheck == true)
+				{
+					if (otherFaction.isWarZone() || otherFaction.isSafeZone())
+						return true;
+				}
+				else
+				{
+					if (otherFaction.isWarZone())
+						return true;
+				}
+			}
+		}
+		if (pm.isPluginEnabled("SwornNations"))
 		{
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-			if (otherFaction.isWarZone())
+			if (safeZoneCheck == true)
 			{
-				return true;
+				if (otherFaction.isWarZone() || otherFaction.isSafeZone())
+					return true;
 			}
-			if (both && otherFaction.isSafeZone())
+			else
 			{
-				return true;
+				if (otherFaction.isWarZone())
+					return true;
 			}
 		}
 		return false;

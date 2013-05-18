@@ -1,8 +1,6 @@
 package net.dmulloy2.swornrpg;
 
 import java.util.HashMap;
-import java.util.Map.Entry;
-
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import org.bukkit.GameMode;
@@ -344,18 +342,17 @@ public class AbilitiesManager
 		@Override
 		public void run()
 		{
-			for (Entry<String, Long> entrySet : frenzyWaiting.entrySet())
+			if (frenzyWaiting.containsKey(player.getName()))
 			{
-				if (entrySet.getKey() == player.getName())
+				long value = frenzyWaiting.get(player.getName()).longValue();
+				long current = System.currentTimeMillis();
+				if (current - value >= 60)
 				{
-					if ((System.currentTimeMillis() - entrySet.getValue()) >= 60)
+					frenzyWaiting.remove(player.getName());
+					if (player.isOnline())
 					{
-						frenzyWaiting.remove(player.getName());
-						if (player.isOnline())
-						{
-							String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
-							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
-						}
+						String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
 					}
 				}
 			}
@@ -374,18 +371,17 @@ public class AbilitiesManager
 		@Override
 		public void run()
 		{
-			for (Entry<String, Long> entrySet : spickWaiting.entrySet())
+			if (spickWaiting.containsKey(player.getName()))
 			{
-				if (entrySet.getKey() == player.getName())
+				long value = spickWaiting.get(player.getName()).longValue();
+				long current = System.currentTimeMillis();
+				if (current - value >= 60)
 				{
-					if ((System.currentTimeMillis() - entrySet.getValue()) >= 60)
+					spickWaiting.remove(player.getName());
+					if (player.isOnline())
 					{
-						spickWaiting.remove(player.getName());
-						if (player.isOnline())
-						{
-							String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
-							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
-						}
+						String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
 					}
 				}
 			}

@@ -27,9 +27,7 @@ import org.bukkit.entity.Player;
 	
 public class BlockListener implements Listener 
 {
-	
 	public SwornRPG plugin;
-	
 	public BlockListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
@@ -145,6 +143,13 @@ public class BlockListener implements Listener
 		if (gm == GameMode.CREATIVE)
 			return;
 		
+		BlockState blockState =  block.getState();
+		MaterialData blockData = blockState.getData();
+		Material blockMat = blockState.getType();
+		
+		if (isBlackListed(blockMat))
+			return;
+		
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int level = data.getLevel();
 		if (level == 0) level = 1;
@@ -152,11 +157,7 @@ public class BlockListener implements Listener
 		
 		int rand = Util.random(300/level);
 		if (rand == 0)
-		{
-			BlockState blockState =  block.getState();
-			MaterialData blockData = blockState.getData();
-			Material blockMat = blockState.getType();
-			
+		{	
 			ItemStack itemStack = new ItemStack(blockMat, 1);
 			itemStack.setData(blockData);
 			
@@ -165,5 +166,23 @@ public class BlockListener implements Listener
 			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
 		}
+	}
+	
+	/**Blacklist Check**/
+	public boolean isBlackListed(Material mat)
+	{
+		for (String string : plugin.redeemBlacklist)
+		{
+			Material material = null;
+			try { material = Material.getMaterial(string.toUpperCase()); }
+			catch (Exception e) { material = Material.getMaterial(Integer.parseInt(string)); }
+
+			if (material != null)
+			{
+				if (material == mat)
+					return true;
+			}
+		}
+		return false;
 	}
 }

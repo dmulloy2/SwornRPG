@@ -218,3 +218,10 @@ fish-drops:
   6:
     - "272:15"
     - "274:15"
+    
+redeem-blacklist:
+# Blacklisted Materials for Building redeem
+- beacon
+- diamond_block
+- iron_block
+- gold_block

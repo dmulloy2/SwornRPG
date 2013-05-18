@@ -72,5 +72,4 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 ==Check out SwornRPG in action!
 {{http://i.troll.ws/472d7ad1.gif}}
 {{http://minesworn.com/images/Minestatussworn.gif}}
-*//If you have a server that uses SwornRPG, send me a message or post below to have it added to this list//
 ----
