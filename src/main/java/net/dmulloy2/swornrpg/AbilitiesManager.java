@@ -56,7 +56,7 @@ public class AbilitiesManager
 		{
 			for (Action action : actions)
 			{
-				if (action == Action.LEFT_CLICK_AIR || action == Action.PHYSICAL)
+				if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.PHYSICAL)
 					activate = true;
 			}
 		}
