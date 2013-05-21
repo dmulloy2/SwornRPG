@@ -1,8 +1,10 @@
 package net.dmulloy2.swornrpg;
 
 import java.util.HashMap;
+
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
