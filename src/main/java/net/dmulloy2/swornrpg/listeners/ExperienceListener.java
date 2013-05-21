@@ -239,8 +239,9 @@ public class ExperienceListener implements Listener
 		{
 			if (concurrentHerbalism >= 10)
 			{
-				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), plugin.herbalismgain);
-				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(event.getPlayer(), 10, message);
+				int xp = plugin.herbalismgain * 10;
+				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), xp);
+				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(player, xp, message);
 				plugin.getServer().getPluginManager().callEvent(xpgain);
 				data.setHerbalism(0);
 			}
