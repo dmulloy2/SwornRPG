@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
@@ -158,10 +159,15 @@ public class BlockListener implements Listener
 		int rand = Util.random(300/level);
 		if (rand == 0)
 		{	
+			if (blockMat == Material.CROPS) blockMat = Material.SEEDS;
+			if (blockMat == Material.NETHER_WARTS) blockMat = Material.NETHER_STALK;
+			if (blockMat == Material.PUMPKIN_STEM) blockMat = Material.PUMPKIN_SEEDS;
+			if (blockMat == Material.MELON_STEM) blockMat = Material.MELON_SEEDS;
+			
 			ItemStack itemStack = new ItemStack(blockMat, 1);
 			itemStack.setData(blockData);
 			
-			player.getInventory().addItem(itemStack);
+			InventoryWorkaround.addItems(player.getInventory(), itemStack);
 			
 			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
