@@ -449,8 +449,6 @@ public class ExperienceListener implements Listener
 		
 		if (plugin.enchanting == true)
 		{
-			player.setExp(player.getExp() + level + cost);
-		
 			int xp = (cost/2) + plugin.enchantbase;
 			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
 		
