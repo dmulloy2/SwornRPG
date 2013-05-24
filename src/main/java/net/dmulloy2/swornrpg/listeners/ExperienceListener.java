@@ -469,6 +469,13 @@ public class ExperienceListener implements Listener
 		if (player == null)
 			return;
 		
+		/**Disabled World Check**/
+		if (plugin.isDisabledWorld(player))
+		{
+			event.setCancelled(true);
+			return;
+		}
+		
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		
 		/**Prior Skill Data**/
@@ -544,6 +551,10 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerXpGain(PlayerXpGainEvent event)
 	{	
+		/**Cancellation check**/
+		if (event.isCancelled())
+			return;
+		
 		/**Cancel event if in a disabled world**/
 		Player player = event.getPlayer();
 		if (player == null)
@@ -551,11 +562,10 @@ public class ExperienceListener implements Listener
 		
 		/**Disabled World Check**/
 		if (plugin.isDisabledWorld(player))
+		{
+			event.setCancelled(true);
 			return;
-		
-		/**Cancellation check**/
-		if (event.isCancelled())
-			return;
+		}
 		
 		/**Send The Message**/
 		String message = event.getMessage();
