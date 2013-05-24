@@ -129,6 +129,9 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
+		if (event.isCancelled())
+			return;
+		
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
@@ -137,7 +140,7 @@ public class BlockListener implements Listener
 		if (block == null)
 			return;
 		
-		if (event.isCancelled())
+		if (plugin.isDisabledWorld(player))
 			return;
 		
 		GameMode gm = player.getGameMode();
@@ -147,6 +150,9 @@ public class BlockListener implements Listener
 		BlockState blockState =  block.getState();
 		MaterialData blockData = blockState.getData();
 		Material blockMat = blockState.getType();
+		
+		if (blockMat == Material.FIRE)
+			return;
 		
 		if (isBlackListed(blockMat))
 			return;
