@@ -171,7 +171,9 @@ public class BlockListener implements Listener
 			if (blockMat == Material.MELON_STEM) blockMat = Material.MELON_SEEDS;
 			
 			ItemStack itemStack = new ItemStack(blockMat, 1);
-			itemStack.setData(blockData);
+			
+			try { itemStack.setData(blockData); }
+			catch (Exception e) {}
 			
 			InventoryWorkaround.addItems(player.getInventory(), itemStack);
 			
