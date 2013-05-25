@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -38,7 +39,7 @@ public class CmdItemName extends SwornRPGCommand
 	    	StringBuilder name = new StringBuilder();
 	    	for (int i = 0; i < args.length; i++) 
 	    	{ 
-	    		name = name.append(args[i].replaceAll("&", "§") + " ");
+	    		name = name.append(ChatColor.translateAlternateColorCodes('&', args[i]) + " ");
 		    }
 	    	name.deleteCharAt(name.lastIndexOf(" "));
 	    	meta.setDisplayName(name.toString());

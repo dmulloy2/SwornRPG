@@ -4,6 +4,10 @@
   <artifactId>swornrpg</artifactId>
   <version>2.6.1</version>
   <name>SwornRPG</name>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <repositories>
     <repository>
