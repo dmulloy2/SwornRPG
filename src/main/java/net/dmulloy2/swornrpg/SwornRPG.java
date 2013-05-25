@@ -48,6 +48,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -670,6 +671,16 @@ public class SwornRPG extends JavaPlugin
 						lentity.setCustomNameVisible(false);
 					else
 						lentity.setCustomNameVisible(true);
+					
+					EntityType[] blockedTypes = new EntityType[]{EntityType.VILLAGER, EntityType.ENDER_DRAGON, EntityType.WITHER};
+					for (EntityType blockedType : blockedTypes)
+					{
+						if (entity.getType() == blockedType)
+						{
+							lentity.setCustomNameVisible(false);
+							lentity.setCustomName("");
+						}
+					}
 					
 					StringBuilder tag = new StringBuilder();
 					for (int i=0; i<hearts; i++)
