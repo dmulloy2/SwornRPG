@@ -172,8 +172,11 @@ public class BlockListener implements Listener
 			
 			ItemStack itemStack = new ItemStack(blockMat, 1);
 			
-			try { itemStack.setData(blockData); }
-			catch (Exception e) {}
+			if (blockData != null)
+			{
+				try { itemStack.setData(blockData); }
+				catch (Exception e) {}
+			}
 			
 			InventoryWorkaround.addItems(player.getInventory(), itemStack);
 			
