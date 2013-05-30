@@ -151,8 +151,11 @@ public class BlockListener implements Listener
 		MaterialData blockData = blockState.getData();
 		Material blockMat = blockState.getType();
 		
-		if (blockMat == Material.FIRE)
-			return;
+		if (blockMat == Material.FIRE) return;
+		if (blockMat == Material.CROPS) return;
+		if (blockMat == Material.NETHER_WARTS) return;
+		if (blockMat == Material.PUMPKIN_STEM) return;
+		if (blockMat == Material.MELON_STEM) return;
 		
 		if (isBlackListed(blockMat))
 			return;
@@ -165,11 +168,6 @@ public class BlockListener implements Listener
 		int rand = Util.random(300/level);
 		if (rand == 0)
 		{	
-			if (blockMat == Material.CROPS) blockMat = Material.SEEDS;
-			if (blockMat == Material.NETHER_WARTS) blockMat = Material.NETHER_STALK;
-			if (blockMat == Material.PUMPKIN_STEM) blockMat = Material.PUMPKIN_SEEDS;
-			if (blockMat == Material.MELON_STEM) blockMat = Material.MELON_SEEDS;
-			
 			ItemStack itemStack = new ItemStack(blockMat, 1);
 			
 			if (blockData != null)
