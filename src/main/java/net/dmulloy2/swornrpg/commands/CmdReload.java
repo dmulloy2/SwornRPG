@@ -18,7 +18,8 @@ public class CmdReload extends SwornRPGCommand
 	
 	public void perform()
 	{
+		sendpMessage("&aReloading Configuration...");
 		plugin.reload();
-		sendpMessage(plugin.getMessage("config_reloaded"));
+		sendpMessage("&aReload Complete!");
 	}
 }

@@ -199,6 +199,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerPrefixedCommand(new CmdHelp (this));
 		commandHandler.registerPrefixedCommand(new CmdLeaderboard (this));
 		commandHandler.registerPrefixedCommand(new CmdVersion (this));
+		commandHandler.registerPrefixedCommand(new CmdReload (this));
 		
 		/**Register Non-Prefixed Commands**/
 		commandHandler.registerCommand(new CmdAChat (this));
