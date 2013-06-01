@@ -225,8 +225,3 @@ redeem-blacklist:
 - diamond_block
 - iron_block
 - gold_block
-
-ride:
-  enabled: true
-  must-be-pointing: false
-  # Does the player have to be pointing at the vehicle?

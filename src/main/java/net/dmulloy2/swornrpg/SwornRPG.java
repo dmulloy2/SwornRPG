@@ -98,8 +98,7 @@ public class SwornRPG extends JavaPlugin
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
-	marriage, taming, confusion, fishing, herbalism, savecache, enchanting, rideenabled,
-	ridepointing;
+	marriage, taming, confusion, fishing, herbalism, savecache, enchanting;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
@@ -352,8 +351,6 @@ public class SwornRPG extends JavaPlugin
 		savecache = getConfig().getBoolean("autosave.enabled");
 		saveinterval = getConfig().getInt("autosave.interval");
 		redeemBlacklist = getConfig().getStringList("redeem-blacklist");
-		rideenabled = getConfig().getBoolean("ride.enabled");
-		ridepointing = getConfig().getBoolean("ride.must-be-pointing");
 
 		/**Salvaging**/
 		salvaging = getConfig().getBoolean("salvaging");
