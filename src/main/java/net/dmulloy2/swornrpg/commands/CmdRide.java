@@ -1,7 +1,5 @@
 package net.dmulloy2.swornrpg.commands;
 
-import java.util.List;
-
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
@@ -39,24 +37,26 @@ public class CmdRide extends SwornRPGCommand
 		
 		if (plugin.ridepointing)
 		{
-			List<Block> blocks = player.getLineOfSight(null, 10);
-			for (Block block : blocks)
+			Block block = player.getTargetBlock(null, 10);
+			Location loc = block.getLocation();
+			for (Player pl : plugin.getServer().getOnlinePlayers())
 			{
-				Location loc = block.getLocation();
-				for (Player pl : plugin.getServer().getOnlinePlayers())
+				if (pl.getLocation() == loc)
 				{
-					if (pl.getLocation() == loc)
-					{
-						PlayerData data = getPlayerData(player);
-						data.setRiding(true);
+					PlayerData data = getPlayerData(player);
+					data.setRiding(true);
 						
-						PlayerData targetData = getPlayerData(pl);
-						targetData.setVehicle(true);
+					PlayerData targetData = getPlayerData(pl);
+					targetData.setVehicle(true);
 						
-						pl.setPassenger(player);
-					}
+					pl.setPassenger(player);
+					
+					sendpMessage(plugin.getMessage("now_riding"), pl.getName());
+					return;
 				}
 			}
+			
+			sendpMessage(plugin.getMessage("noplayer"));
 		}
 		else
 		{
@@ -82,13 +82,13 @@ public class CmdRide extends SwornRPGCommand
 			{
 				@Override
 				public void run()
-				{
-					sendpMessage(plugin.getMessage("now_riding"), target.getName());
-					
+				{	
 					data.setRiding(true);
 					targetData.setVehicle(true);
 					
 					target.setPassenger(player);
+					
+					sendpMessage(plugin.getMessage("now_riding"), target.getName());
 				}	
 			}
 			new PassengerTask().runTaskLater(plugin, 20);
