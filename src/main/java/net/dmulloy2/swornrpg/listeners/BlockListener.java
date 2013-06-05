@@ -129,57 +129,57 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (event.isCancelled())
-			return;
-		
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
-		Block block = event.getBlock();
-		if (block == null)
-			return;
-		
-		if (plugin.isDisabledWorld(player))
-			return;
-		
-		GameMode gm = player.getGameMode();
-		if (gm == GameMode.CREATIVE)
-			return;
-		
-		BlockState blockState =  block.getState();
-		MaterialData blockData = blockState.getData();
-		Material blockMat = blockState.getType();
-		
-		if (blockMat == Material.FIRE) return;
-		if (blockMat == Material.CROPS) return;
-		if (blockMat == Material.NETHER_WARTS) return;
-		if (blockMat == Material.PUMPKIN_STEM) return;
-		if (blockMat == Material.MELON_STEM) return;
-		
-		if (isBlackListed(blockMat))
-			return;
-		
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		int level = data.getLevel();
-		if (level == 0) level = 1;
-		if (level > 100) level = 100;
-		
-		int rand = Util.random(300/level);
-		if (rand == 0)
-		{	
-			ItemStack itemStack = new ItemStack(blockMat, 1);
+		try
+		{
+			if (event.isCancelled())
+				return;
 			
-			if (blockData != null)
-			{
-				try { itemStack.setData(blockData); }
-				catch (Exception e) {}
+			Player player = event.getPlayer();
+			if (player == null)
+				return;
+			
+			Block block = event.getBlock();
+			if (block == null)
+				return;
+			
+			if (plugin.isDisabledWorld(player))
+				return;
+			
+			GameMode gm = player.getGameMode();
+			if (gm == GameMode.CREATIVE)
+				return;
+			
+			BlockState blockState =  block.getState();
+			MaterialData blockData = blockState.getData();
+			Material blockMat = blockState.getType();
+			
+			if (isBlackListed(blockMat))
+				return;
+			
+			PlayerData data = plugin.getPlayerDataCache().getData(player);
+			int level = data.getLevel();
+			if (level == 0) level = 1;
+			if (level > 100) level = 100;
+			
+			int rand = Util.random(300/level);
+			if (rand == 0)
+			{	
+				ItemStack itemStack = new ItemStack(blockMat, 1);
+				
+				if (blockData != null)
+				{
+					itemStack.setData(blockData);
+				}
+				
+				InventoryWorkaround.addItems(player.getInventory(), itemStack);
+				
+				String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
+				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
 			}
-			
-			InventoryWorkaround.addItems(player.getInventory(), itemStack);
-			
-			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
+		}
+		catch (Exception e)
+		{
+			//
 		}
 	}
 	
@@ -198,6 +198,21 @@ public class BlockListener implements Listener
 					return true;
 			}
 		}
+		
+		String[] defaultBlackList = new String[]{"FIRE", "CROPS", "POTATOES", "CARROTS", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM"};
+		for (String s : defaultBlackList)
+		{
+			Material material = null;
+			try { material = Material.getMaterial(s.toUpperCase()); }
+			catch (Exception e) { material = Material.getMaterial(Integer.parseInt(s)); }
+
+			if (material != null)
+			{
+				if (material == mat)
+					return true;
+			}
+		}
+		
 		return false;
 	}
 }
