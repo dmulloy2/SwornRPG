@@ -510,6 +510,9 @@ public class PlayerListener implements Listener
 		if (player == null)
 			return;
 		
+		if (plugin.isDisabledWorld(player))
+			return;
+		
 		if (plugin.checkFactions(player, false))
 			return;
 		

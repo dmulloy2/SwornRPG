@@ -129,57 +129,57 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		try
-		{
-			if (event.isCancelled())
-				return;
+		if (event.isCancelled())
+			return;
 			
-			Player player = event.getPlayer();
-			if (player == null)
-				return;
+		if (plugin.blockredemption == false)
+			return;
 			
-			Block block = event.getBlock();
-			if (block == null)
-				return;
+		Player player = event.getPlayer();
+		if (player == null)
+			return;
 			
-			if (plugin.isDisabledWorld(player))
-				return;
+		Block block = event.getBlock();
+		if (block == null)
+			return;
 			
-			GameMode gm = player.getGameMode();
-			if (gm == GameMode.CREATIVE)
-				return;
+		if (plugin.isDisabledWorld(player))
+			return;
 			
-			BlockState blockState =  block.getState();
-			MaterialData blockData = blockState.getData();
-			Material blockMat = blockState.getType();
+		GameMode gm = player.getGameMode();
+		if (gm == GameMode.CREATIVE)
+			return;
 			
-			if (isBlackListed(blockMat))
-				return;
+		BlockState blockState =  block.getState();
+		MaterialData blockData = blockState.getData();
+		
+		int itemId = blockState.getTypeId();
+		Material blockMat = Material.getMaterial(itemId);
+		if (blockMat == null)
+			return;
+
+		if (isBlackListed(blockMat))
+			return;
+		
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		int level = data.getLevel();
+		if (level == 0) level = 1;
+		if (level > 100) level = 100;
 			
-			PlayerData data = plugin.getPlayerDataCache().getData(player);
-			int level = data.getLevel();
-			if (level == 0) level = 1;
-			if (level > 100) level = 100;
-			
-			int rand = Util.random(300/level);
-			if (rand == 0)
-			{	
-				ItemStack itemStack = new ItemStack(blockMat, 1);
+		int rand = Util.random(300/level);
+		if (rand == 0)
+		{	
+			ItemStack itemStack = new ItemStack(blockMat, 1);
 				
-				if (blockData != null)
-				{
-					itemStack.setData(blockData);
-				}
-				
-				InventoryWorkaround.addItems(player.getInventory(), itemStack);
-				
-				String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
-				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
+			if (blockData != null)
+			{
+				itemStack.setData(blockData);
 			}
-		}
-		catch (Exception e)
-		{
-			//
+				
+			InventoryWorkaround.addItems(player.getInventory(), itemStack);
+			
+			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
+			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
 		}
 	}
 	
@@ -199,7 +199,7 @@ public class BlockListener implements Listener
 			}
 		}
 		
-		String[] defaultBlackList = new String[]{"FIRE", "CROPS", "POTATOES", "CARROTS", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM"};
+		String[] defaultBlackList = new String[]{"FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM"};
 		for (String s : defaultBlackList)
 		{
 			Material material = null;
