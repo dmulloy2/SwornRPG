@@ -29,7 +29,7 @@ public class CmdItemName extends SwornRPGCommand
 	public void perform()
 	{
 	    ItemStack hand = player.getItemInHand();
-	    if ((hand == null)||hand.getType().equals(Material.AIR))
+	    if (hand == null || hand.getType().equals(Material.AIR))
 	    {
 	    	sendpMessage(plugin.getMessage("hand_empty"));
 	    }

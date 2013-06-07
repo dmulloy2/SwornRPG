@@ -81,7 +81,7 @@ public class ExperienceListener implements Listener
 				return;
 			
 			String message = "";
-			PluginManager pm = plugin.getServer().getPluginManager();
+			PluginManager pm = plugin.getPluginManager();
 			
 			/**Killer Xp Gain**/
 			int killxp = plugin.killergain;
@@ -124,7 +124,6 @@ public class ExperienceListener implements Listener
 		{
 			Player killer = event.getEntity().getKiller();
 			String mobname = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
-			PluginManager pm = plugin.getServer().getPluginManager();
 			
 			/**Warzone and Safezone check**/
 			if (plugin.checkFactions(killer, true))
@@ -167,6 +166,7 @@ public class ExperienceListener implements Listener
 			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article,  mobname));
 			
 			/**Call Event**/
+			PluginManager pm = plugin.getPluginManager();
 			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
 			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
 		}
@@ -202,7 +202,7 @@ public class ExperienceListener implements Listener
 		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
 		
 		/**Call Event**/
-		PluginManager pm = plugin.getServer().getPluginManager();
+		PluginManager pm = plugin.getPluginManager();
 		pm.callEvent(new PlayerXpGainEvent (player, xpgained, message));
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_mcxpgain"), player.getName(), xpgained);
 	}
@@ -242,7 +242,7 @@ public class ExperienceListener implements Listener
 				int xp = plugin.herbalismgain * 10;
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), xp);
 				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(player, xp, message);
-				plugin.getServer().getPluginManager().callEvent(xpgain);
+				plugin.getPluginManager().callEvent(xpgain);
 				data.setHerbalism(0);
 			}
 			else
@@ -382,7 +382,7 @@ public class ExperienceListener implements Listener
 					article = "a";
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.taminggain, article, mobname);
 				PlayerXpGainEvent xpgainevent = new PlayerXpGainEvent(player, plugin.taminggain, message);
-				plugin.getServer().getPluginManager().callEvent(xpgainevent);
+				plugin.getPluginManager().callEvent(xpgainevent);
 				
 				/**Wolf/Ocelot's Pal**/
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -453,7 +453,7 @@ public class ExperienceListener implements Listener
 			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
 		
 			PlayerXpGainEvent xpgain = new PlayerXpGainEvent(player, xp, message);
-			plugin.getServer().getPluginManager().callEvent(xpgain);
+			plugin.getPluginManager().callEvent(xpgain);
 		}
 	}
 	
@@ -587,7 +587,7 @@ public class ExperienceListener implements Listener
 		if ((xp - xpneeded) >= 0)
 		{
 			/**If so, call levelup event**/
-			PluginManager pm = plugin.getServer().getPluginManager();
+			PluginManager pm = plugin.getPluginManager();
 			pm.callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
 		}
 	}

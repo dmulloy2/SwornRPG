@@ -12,9 +12,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 
 public class TagListener implements Listener 
 {
-	
     public SwornRPG plugin;
-
     public TagListener(SwornRPG plugin) 
     {
         this.plugin = plugin;

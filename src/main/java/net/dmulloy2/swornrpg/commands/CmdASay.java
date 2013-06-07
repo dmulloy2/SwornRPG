@@ -18,17 +18,19 @@ public class CmdASay extends SwornRPGCommand
 		this.description = "Alternate admin say command";
 		this.requiredArgs.add("message");
 		this.permission = PermissionType.CMD_ASAY.permission;
+		
+		this.mustBePlayer = false;
 	}
 
 	@Override
 	public void perform()
 	{
-		int amt = args.length;
-		String str = "";
-		for (int i = 0; i < amt; i++) 
+		StringBuilder message = new StringBuilder();
+		for (int i=0; i<args.length; i++)
 		{
-			str = str + args[i] + " ";
+			message.append(args[i] + " ");
 		}
-		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("admin_say"), str));
+		
+		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("admin_say"), message.toString()));
 	}
 }

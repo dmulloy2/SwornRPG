@@ -22,14 +22,11 @@ public class PVPGunPlusListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerShoot(PVPGunPlusFireGunEvent event)
 	{
-		if (plugin.getServer().getPluginManager().isPluginEnabled("PVPGunPlus"))
+		Player player = event.getShooterAsPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		if (data.isUnlimtdammo())
 		{
-			Player player = event.getShooterAsPlayer();
-			PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-			if (data.isUnlimtdammo())
-			{
-				event.setAmountAmmoNeeded(0);
-			}
+			event.setAmountAmmoNeeded(0);
 		}
 	}
 }

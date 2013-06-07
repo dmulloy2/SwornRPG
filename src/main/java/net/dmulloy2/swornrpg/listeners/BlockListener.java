@@ -62,9 +62,15 @@ public class BlockListener implements Listener
 		if (event.isCancelled())
 			return;
 		
+		Block block = event.getBlock();
+		if (block == null)
+			return;
+		
+		if (plugin.isDisabledWorld(block))
+			return;
+		
 		try 
 		{
-			Block block = event.getBlock();
 			Material blockType = block.getType();
 			Player player = event.getPlayer();
 			GameMode gm = player.getGameMode();
@@ -142,10 +148,10 @@ public class BlockListener implements Listener
 		Block block = event.getBlock();
 		if (block == null)
 			return;
-			
-		if (plugin.isDisabledWorld(player))
+		
+		if (plugin.isDisabledWorld(block))
 			return;
-			
+
 		GameMode gm = player.getGameMode();
 		if (gm == GameMode.CREATIVE)
 			return;

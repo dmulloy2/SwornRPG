@@ -19,7 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class AbilitiesManager
 {
 	public SwornRPG plugin;
-	public void initialize(SwornRPG plugin)
+	public AbilitiesManager(SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}

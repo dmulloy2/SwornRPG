@@ -4,9 +4,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 
 /**
  * @author dmulloy2
@@ -14,7 +12,6 @@ import org.bukkit.plugin.PluginManager;
 
 public class CmdTagr extends SwornRPGCommand
 {
-	PluginManager pm = Bukkit.getPluginManager();
 	public CmdTagr (SwornRPG plugin)
 	{
 		super(plugin);
@@ -29,7 +26,7 @@ public class CmdTagr extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (pm.isPluginEnabled("TagAPI"))
+		if (plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
 			if (args.length == 0) 
 			{

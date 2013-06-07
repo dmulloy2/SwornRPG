@@ -36,5 +36,4 @@ public class PermissionHandler
 	{
 		return "srpg." + permission.getNode().toLowerCase();
 	}
-
 }

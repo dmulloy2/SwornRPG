@@ -6,6 +6,7 @@ import java.util.List;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.commands.CmdHelp;
 import net.dmulloy2.swornrpg.commands.SwornRPGCommand;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -77,8 +78,7 @@ public class CommandHandler implements CommandExecutor
 		return commandPrefix != null;
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label,
-			String[] args) 
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
 	{
 		List<String> argsList = new ArrayList<String>();
 		
@@ -91,8 +91,12 @@ public class CommandHandler implements CommandExecutor
 			for (SwornRPGCommand command : registeredPrefixedCommands) 
 			{
 				if (commandName.equalsIgnoreCase(command.getName()) || command.getAliases().contains(commandName.toLowerCase()))
+				{
 					command.execute(sender, argsList.toArray(new String[0]));
+					return true;
+				}
 			}
+			sender.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("unknown_command"), args[0]));
 		} 
 		else 
 		{

@@ -4,7 +4,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -21,23 +20,26 @@ public class CmdHighCouncil extends SwornRPGCommand
 		this.aliases.add("council");
 		this.requiredArgs.add("message");
 		this.permission = PermissionType.CMD_COUNCIL.permission;
+		
 		this.mustBePlayer = false;
 	}
 	
 	@Override
 	public void perform()
 	{
-		int amt = args.length;
-		String str = "";
-		for (int i = 0; i < amt; i++)
+		StringBuilder message = new StringBuilder();
+		for (int i=0; i<args.length; i++)
 		{
-			str = str + args[i] + " ";
+			message.append(args[i] + " ");
 		}
+		
 		String sname;
 		if (sender instanceof Player)
 			sname = sender.getName();
 		else
 			sname = "Console";
-		Bukkit.getServer().broadcast(FormatUtil.format(plugin.getMessage("council"), sname, str), "srpg.council");
+		
+		String node = PermissionType.CMD_COUNCIL.permission.getNode();
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("council"), sname, message.toString()), node);
 	}
 }

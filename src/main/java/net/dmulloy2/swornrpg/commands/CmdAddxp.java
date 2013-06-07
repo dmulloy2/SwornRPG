@@ -22,6 +22,7 @@ public class CmdAddxp extends SwornRPGCommand
 		this.requiredArgs.add("xp");
 		this.description = "Manually give xp to a player";
 		this.permission = PermissionType.CMD_ADDXP.permission;
+		
 		this.mustBePlayer = true;
 	}
 	
@@ -33,7 +34,7 @@ public class CmdAddxp extends SwornRPGCommand
 			return;
 		
 		int xptoadd = Integer.parseInt(args[1]);
-		plugin.getServer().getPluginManager().callEvent(new PlayerXpGainEvent(target, xptoadd, ""));
+		plugin.getPluginManager().callEvent(new PlayerXpGainEvent(target, xptoadd, ""));
 		sendpMessage(plugin.getMessage("addxp_give"), xptoadd, target.getName());
 		sendMessageTarget(plugin.getMessage("addxp_given"), target, xptoadd);
 	}

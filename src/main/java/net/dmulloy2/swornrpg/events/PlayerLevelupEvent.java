@@ -34,11 +34,13 @@ public class PlayerLevelupEvent extends PlayerEvent implements Cancellable
 		return newLevel;
 	}
 
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers() 
+	{
 		return handlers;
 	}
 	
-	public static HandlerList getHandlerList() {
+	public static HandlerList getHandlerList() 
+	{
 		return handlers;
 	}
 	

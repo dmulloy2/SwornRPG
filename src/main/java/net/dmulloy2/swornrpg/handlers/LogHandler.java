@@ -12,7 +12,6 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
 public class LogHandler
 {
 	private SwornRPG plugin;
-	
 	public LogHandler(SwornRPG plugin) 
 	{
 		this.plugin = plugin;

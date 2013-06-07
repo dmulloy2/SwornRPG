@@ -56,8 +56,6 @@ import com.earth2me.essentials.User;
 public class PlayerListener implements Listener
 {
 	private SwornRPG plugin;
-	private List<String> pages = new ArrayList<String>();
-	
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
@@ -210,6 +208,8 @@ public class PlayerListener implements Listener
 				/**If not found, create a book with their death coords**/
 				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 				BookMeta meta = (BookMeta)book.getItemMeta();
+				
+				final List<String> pages = new ArrayList<String>();
 				pages.add(FormatUtil.format(plugin.getMessage("book_format"), player.getName(), x, y, z));
 				meta.setTitle(ChatColor.RED + "DeathCoords");
 				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
@@ -349,13 +349,13 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (player.getVehicle() != null && data.isRiding())
+		if (player.getVehicle() != null || data.isRiding())
 		{
 			/**If a player is riding another player, leave the vehicle**/
 			player.leaveVehicle();
 			data.setRiding(false);
 		}
-		if (player.getPassenger() != null && data.isVehicle())
+		if (player.getPassenger() != null || data.isVehicle())
 		{
 			/**If a player is being ridden, eject the passenger**/
 			player.eject();
@@ -382,6 +382,9 @@ public class PlayerListener implements Listener
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 		
+		if (plugin.isDisabledWorld(player))
+			return;
+		
 		plugin.getAbilitiesManager().activateSpick(player, false, action);
 	}
 	
@@ -391,6 +394,9 @@ public class PlayerListener implements Listener
 	{
 		Action action = event.getAction();
 		Player player = event.getPlayer();
+		if (plugin.isDisabledWorld(player))
+			return;
+		
 		String inhand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
 		String[] array = inhand.split(" ");
 			
@@ -446,12 +452,15 @@ public class PlayerListener implements Listener
 				String mobname = "fish";
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain, mobname);
 				PlayerXpGainEvent xpgainevent = new PlayerXpGainEvent(event.getPlayer(), plugin.fishinggain, message);
-				plugin.getServer().getPluginManager().callEvent(xpgainevent);
+				plugin.getPluginManager().callEvent(xpgainevent);
 			}
 		}
 			
 		/**Fish Drops**/
 		Player player = event.getPlayer();
+		if (plugin.isDisabledWorld(player))
+			return;
+		
 		GameMode gm = player.getGameMode();
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		Location loc = player.getLocation();

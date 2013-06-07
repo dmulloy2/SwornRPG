@@ -7,7 +7,6 @@ package net.dmulloy2.swornrpg.permissions;
 public class Permission
 {
 	final String node;
-	
 	public Permission(String node)
 	{
 		this.node = node;  

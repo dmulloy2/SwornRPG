@@ -1,7 +1,8 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import org.bukkit.Bukkit;
+import net.dmulloy2.swornrpg.util.Util;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -30,7 +31,7 @@ public class CmdDeny extends SwornRPGCommand
 		}
 		if (plugin.proposal.containsKey(sender.getName()))
 		{
-			Player target = Bukkit.getServer().getPlayer((String)plugin.proposal.get(sender.getName()));
+			Player target = Util.matchPlayer(plugin.proposal.get(sender.getName()));
 			if (target != null)
 			{
 				String targetp = target.getName();

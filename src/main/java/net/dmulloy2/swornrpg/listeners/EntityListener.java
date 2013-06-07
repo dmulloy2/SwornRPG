@@ -25,8 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 /**
- * @author orange451
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public class EntityListener implements Listener 
@@ -50,6 +49,9 @@ public class EntityListener implements Listener
 			
 			Entity att = event.getDamager();
 			Entity defender = event.getEntity();
+			
+			if (plugin.isDisabledWorld(att))
+				return;
 	
 			if (att instanceof Arrow)
 			{
@@ -206,7 +208,6 @@ public class EntityListener implements Listener
 					player.setHealth(player.getHealth() + 1);
 				}
 			}
-			// Hunting Drops Coming Soon... Maybe O.o
 		}
 	}
 	
@@ -226,6 +227,9 @@ public class EntityListener implements Listener
 			return;
 		
 		if (!(event.getDamager() instanceof Player))
+			return;
+		
+		if (plugin.isDisabledWorld(event.getEntity()))
 			return;
 		
 		if (event.getEntity() instanceof LivingEntity)

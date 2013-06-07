@@ -45,6 +45,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -76,6 +77,8 @@ public class SwornRPG extends JavaPlugin
 	/**Getters**/
 	private @Getter PlayerDataCache playerDataCache;
 	private @Getter Economy economy;
+	private @Getter PluginManager pluginManager;
+	
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	private @Getter ResourceHandler resourceHandler;
@@ -115,31 +118,29 @@ public class SwornRPG extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
-		
-		/**Register Listener events**/
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new PlayerListener(this), this);
-		pm.registerEvents(new EntityListener(this), this);
-		pm.registerEvents(new BlockListener(this), this);
-		pm.registerEvents(new ExperienceListener(this), this);
-		
+
 		/**Register Handlers**/
 		commandHandler = new CommandHandler(this);
 		permissionHandler = new PermissionHandler(this);
 		logHandler = new LogHandler(this);
 		playerDataCache = new PlayerDataCache(this);
 		playerHealthBar = new PlayerHealthBar(this);
-		abilitiesManager = new AbilitiesManager();
+		abilitiesManager = new AbilitiesManager(this);
+		
+		pluginManager = getServer().getPluginManager();
 		
 		/**Resource Handler / Messages**/
 		saveResource("messages.properties", true);
 		resourceHandler = new ResourceHandler(this, getClassLoader());
 		
-		/**Initialize the Abilities Manager**/
-		abilitiesManager.initialize(this);
-		
 		/**Version Checker**/
 		currentVersion = Double.valueOf(getDescription().getVersion().replaceFirst("\\.", ""));
+		
+		/**Register Listener events**/
+		pluginManager.registerEvents(new PlayerListener(this), this);
+		pluginManager.registerEvents(new EntityListener(this), this);
+		pluginManager.registerEvents(new BlockListener(this), this);
+		pluginManager.registerEvents(new ExperienceListener(this), this);
 		
 		/**Check for Data Folder**/
 		if (!getDataFolder().exists())
@@ -162,10 +163,10 @@ public class SwornRPG extends JavaPlugin
 		updateFishDrops();
 		
 		/**Check for TagAPI**/
-		if (pm.isPluginEnabled("TagAPI"))
+		if (pluginManager.isPluginEnabled("TagAPI"))
 		{
 			/**If found, enable Tags**/
-			pm.registerEvents(new TagListener(this), this);
+			pluginManager.registerEvents(new TagListener(this), this);
 			outConsole(getMessage("log_tag_found"));
 			for (Player player : getServer().getOnlinePlayers()) 
 			{
@@ -261,8 +262,8 @@ public class SwornRPG extends JavaPlugin
 		/**Initializes the Util class**/
 		Util.Initialize(this);
 	
-		/**Check for vault**/
-		checkVault(pm);
+		/**Setup Vault**/
+		setupVault();
 
 		/**Schedule player data cache saving**/
 		if (savecache)
@@ -280,10 +281,10 @@ public class SwornRPG extends JavaPlugin
 			new SuperPickCooldownThread().runTaskTimer(this, 0, 20);
 		
 		/**Ammo cooldown**/
-		if (pm.isPluginEnabled("PVPGunPlus"))
+		if (pluginManager.isPluginEnabled("PVPGunPlus"))
 		{
 			outConsole(getMessage("log_gun_found"));
-			pm.registerEvents(new PVPGunPlusListener(this), this);
+			pluginManager.registerEvents(new PVPGunPlusListener(this), this);
 			if (ammoenabled)
 				new AmmoCooldownThread().runTaskTimer(this, 0, 20);
 		}
@@ -495,9 +496,9 @@ public class SwornRPG extends JavaPlugin
     }
     
     /**Vault Check**/
-	private void checkVault(PluginManager pm) 
+	private void setupVault() 
 	{
-		if (pm.isPluginEnabled("Vault"))
+		if (pluginManager.isPluginEnabled("Vault"))
 		{
 			setupEconomy();
 			outConsole(getMessage("log_vault_found"));
@@ -728,7 +729,8 @@ public class SwornRPG extends JavaPlugin
 					int id = world.getBlockTypeIdAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz);
 					if (id == 52)
 					{
-						player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));
+						if (!isDisabledWorld(player)) 
+							player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));
 						return true;
 					}
 				}
@@ -740,58 +742,43 @@ public class SwornRPG extends JavaPlugin
 	/**WarZone/SafeZone Check**/
 	public boolean checkFactions(Player player, boolean safeZoneCheck)
 	{
-		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("Factions"))
+		if (pluginManager.isPluginEnabled("Factions"))
 		{
-			Plugin pl = pm.getPlugin("Factions");
+			Plugin pl = pluginManager.getPlugin("Factions");
 			String version = pl.getDescription().getVersion();
 			if (version.startsWith("1.6."))
 			{
 				Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-				if (safeZoneCheck == true)
-				{
-					if (otherFaction.isWarZone() || otherFaction.isSafeZone())
-						return true;
-				}
-				else
-				{
-					if (otherFaction.isWarZone())
-						return true;
-				}
+				return (safeZoneCheck ? (otherFaction.isWarZone() || otherFaction.isSafeZone()) : otherFaction.isWarZone());
 			}
 		}
-		if (pm.isPluginEnabled("SwornNations"))
+		if (pluginManager.isPluginEnabled("SwornNations"))
 		{
 			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-			if (safeZoneCheck == true)
-			{
-				if (otherFaction.isWarZone() || otherFaction.isSafeZone())
-					return true;
-			}
-			else
-			{
-				if (otherFaction.isWarZone())
-					return true;
-			}
+			return (safeZoneCheck ? (otherFaction.isWarZone() || otherFaction.isSafeZone()) : otherFaction.isWarZone());
 		}
 		return false;
 	}
 	
-	/**DisabledWorld Check**/
+	/**DisabledWorld Checks**/
 	public boolean isDisabledWorld(Player player)
 	{
-		if (!(disabledWorlds.isEmpty()))
-		{
-			for (String string : disabledWorlds)
-			{
-				World world = getServer().getWorld(string);
-				if (world != null && player.getLocation().getWorld().equals(world))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
+		return isDisabledWorld(player.getWorld());
+	}
+	
+	public boolean isDisabledWorld(Entity entity)
+	{
+		return isDisabledWorld(entity.getWorld());
+	}
+	
+	public boolean isDisabledWorld(Block block)
+	{
+		return isDisabledWorld(block.getWorld());
+	}
+	
+	public boolean isDisabledWorld(World world)
+	{
+		return disabledWorlds.contains(world.getName());
 	}
 	
 	/**Timers and Runnables**/
@@ -907,8 +894,7 @@ public class SwornRPG extends JavaPlugin
 				if ((xp - xpneeded) >= 0)
 				{
 					/**If so, call levelup event**/
-					PluginManager pm = getServer().getPluginManager();
-					pm.callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
+					pluginManager.callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
 				}
 			}
 		}

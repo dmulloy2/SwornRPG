@@ -20,22 +20,26 @@ public class CmdAChat extends SwornRPGCommand
 		this.aliases.add("achat");
 		this.requiredArgs.add("message");
 		this.permission = PermissionType.CMD_ACHAT.permission;
+		
+		this.mustBePlayer = false;
 	}
 	
 	@Override
 	public void perform()
 	{
-		int amt = args.length;
-		String str = "";
-		for (int i = 0; i < amt; i++)
+		StringBuilder message = new StringBuilder();
+		for (int i=0; i<args.length; i++)
 		{
-			str = str + args[i] + " ";
+			message.append(args[i] + " ");
 		}
+		
 		String sname;
 		if (sender instanceof Player)
 			sname = sender.getName();
 		else
 			sname = "Console";
-		plugin.getServer().broadcast((FormatUtil.format(plugin.getMessage("achat"), sname, str)), "srpg.adminchat");
+		
+		String node = PermissionType.CMD_ACHAT.permission.getNode();
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("achat"), sname, message.toString()), node);
 	}
 }
