@@ -39,7 +39,7 @@ public class CmdAChat extends SwornRPGCommand
 		else
 			sname = "Console";
 		
-		String node = PermissionType.CMD_ACHAT.permission.getNode();
+		String node = plugin.getPermissionHandler().getPermissionString(permission);
 		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("achat"), sname, message.toString()), node);
 	}
 }
