@@ -37,6 +37,13 @@ public class AbilitiesManager
 			return;
 		}
 		
+		/**Disabled World Check**/
+		if (plugin.isDisabledWorld(player))
+		{
+			if (command) sendpMessage(player, plugin.getMessage("disabled_world"));
+			return;
+		}
+		
 		/**GameMode check**/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
@@ -148,6 +155,13 @@ public class AbilitiesManager
 		if (plugin.spenabled == false)
 		{
 			if (command) sendpMessage(player, plugin.getMessage("command_disabled"));
+			return;
+		}
+		
+		/**Disabled World Check**/
+		if (plugin.isDisabledWorld(player))
+		{
+			if (command) sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
 		
@@ -278,6 +292,13 @@ public class AbilitiesManager
 		if (!pm.isPluginEnabled("PVPGunPlus"))
 		{
 			sendpMessage(player, plugin.getMessage("plugin_not_found"), "PVPGunPlus");
+			return;
+		}
+		
+		/**Disabled World Check**/
+		if (plugin.isDisabledWorld(player))
+		{
+			sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
 		

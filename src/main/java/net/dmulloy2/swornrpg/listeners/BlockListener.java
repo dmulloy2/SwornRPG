@@ -200,8 +200,7 @@ public class BlockListener implements Listener
 
 			if (material != null)
 			{
-				if (material == mat)
-					return true;
+				return (material == mat);
 			}
 		}
 		
@@ -214,8 +213,7 @@ public class BlockListener implements Listener
 
 			if (material != null)
 			{
-				if (material == mat)
-					return true;
+				return (material == mat);
 			}
 		}
 		

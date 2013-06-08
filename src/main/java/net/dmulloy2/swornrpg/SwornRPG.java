@@ -522,7 +522,7 @@ public class SwornRPG extends JavaPlugin
 	}
 
     /**Update checker**/
-    public double updateCheck(double currentVersion) throws Exception 
+    public double updateCheck(double currentVersion)
     {
         String pluginUrlString = "http://dev.bukkit.org/server-mods/swornrpg/files.rss";
         try
@@ -551,19 +551,7 @@ public class SwornRPG extends JavaPlugin
     
     public boolean updateNeeded()
     {
-    	try 
-    	{
-			newVersion = updateCheck(currentVersion);
-			if (newVersion > currentVersion) 
-			{
-				return true;
-			}
-    	} 
-    	catch (Exception e) 
-    	{
-    		if (debug) outConsole(Level.SEVERE, getMessage("log_update_error"), e.getMessage());
-    	}
-    	return false;
+    	return (updateCheck(currentVersion) > currentVersion);
     }
     
     /**Get messages**/

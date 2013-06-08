@@ -158,9 +158,9 @@ public class PlayerListener implements Listener
 			return;
 		
 		/**Coordinates**/
-		double x = (int) Math.floor(player.getLocation().getX());
-		double y = (int) Math.floor(player.getLocation().getY());
-		double z = (int) Math.floor(player.getLocation().getZ());
+		int x = (int) Math.floor(player.getLocation().getX());
+		int y = (int) Math.floor(player.getLocation().getY());
+		int z = (int) Math.floor(player.getLocation().getZ());
 		
 		/**Player death book toggle check**/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
@@ -348,7 +348,13 @@ public class PlayerListener implements Listener
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
 		Player player = event.getPlayer();
+		if (player == null)
+			return;
+		
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		if (data == null)
+			return;
+		
 		if (player.getVehicle() != null || data.isRiding())
 		{
 			/**If a player is riding another player, leave the vehicle**/
@@ -382,9 +388,6 @@ public class PlayerListener implements Listener
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 		
-		if (plugin.isDisabledWorld(player))
-			return;
-		
 		plugin.getAbilitiesManager().activateSpick(player, false, action);
 	}
 	
@@ -394,8 +397,6 @@ public class PlayerListener implements Listener
 	{
 		Action action = event.getAction();
 		Player player = event.getPlayer();
-		if (plugin.isDisabledWorld(player))
-			return;
 		
 		String inhand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
 		String[] array = inhand.split(" ");
