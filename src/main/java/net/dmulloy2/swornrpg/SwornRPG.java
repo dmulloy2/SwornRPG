@@ -19,8 +19,6 @@ package net.dmulloy2.swornrpg;
 
 /**Java Imports**/
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +44,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -58,7 +54,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.kitteh.tag.TagAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -75,23 +70,20 @@ import com.massivecraft.factions.Faction;
 public class SwornRPG extends JavaPlugin
 {
 	/**Getters**/
-	private @Getter PlayerDataCache playerDataCache;
 	private @Getter Economy economy;
 	private @Getter PluginManager pluginManager;
 	
+	private @Getter PlayerDataCache playerDataCache;
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter LogHandler logHandler;
+	
 	private @Getter PlayerHealthBar playerHealthBar;
 	private @Getter AbilitiesManager abilitiesManager;
-
-	/**Private objects**/
-    private FileConfiguration tagsConfig = null;
-    private File tagsConfigFile = null;
+	private @Getter TagManager tagManager;
 
 	/**Hash maps**/
-    private HashMap<String, String> tagChanges = new HashMap<String, String>();
     public HashMap<String, String> proposal = new HashMap<String, String>();
 	public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
     public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
@@ -124,8 +116,10 @@ public class SwornRPG extends JavaPlugin
 		permissionHandler = new PermissionHandler(this);
 		logHandler = new LogHandler(this);
 		playerDataCache = new PlayerDataCache(this);
+		
 		playerHealthBar = new PlayerHealthBar(this);
 		abilitiesManager = new AbilitiesManager(this);
+		tagManager = new TagManager(this);
 		
 		pluginManager = getServer().getPluginManager();
 		
@@ -162,34 +156,8 @@ public class SwornRPG extends JavaPlugin
 		updateBlockDrops();
 		updateFishDrops();
 		
-		/**Check for TagAPI**/
-		if (pluginManager.isPluginEnabled("TagAPI"))
-		{
-			/**If found, enable Tags**/
-			pluginManager.registerEvents(new TagListener(this), this);
-			outConsole(getMessage("log_tag_found"));
-			for (Player player : getServer().getOnlinePlayers()) 
-			{
-				String oldName = player.getName();
-				String newName = getDefinedName(oldName);
-				if (!newName.equals(oldName)) 
-				{
-					try 
-					{
-						addTagChange(oldName, newName);
-					} 
-					catch (TooBigException e) 
-					{
-						outConsole(Level.SEVERE, getMessage("log_tag_error"), e.getMessage());
-					}
-					TagAPI.refreshPlayer(player);
-				}
-			}
-		}
-		else
-		{
-			outConsole(getMessage("log_tag_notfound"));
-		}
+		/**Initialize Tags**/
+		tagManager.load();
 		
 		/**Define Some Messages**/
 		prefix = FormatUtil.format(getMessage("prefix") + " ");
@@ -253,14 +221,14 @@ public class SwornRPG extends JavaPlugin
 			{
 				playerHealthBar.updateHealth(player);
 			}
-			catch (NoSuchMethodException | IllegalStateException e)
+			catch (Exception e)
 			{
 				if (debug) outConsole(Level.SEVERE, getMessage("log_health_error"), e.getMessage());
 			}
 		}
 
 		/**Initializes the Util class**/
-		Util.Initialize(this);
+		Util.initialize(this);
 	
 		/**Setup Vault**/
 		setupVault();
@@ -411,89 +379,6 @@ public class SwornRPG extends JavaPlugin
 		ammocooldown = getConfig().getInt("unlimitedammo.cooldownmultiplier");
 		ammomultiplier = getConfig().getInt("unlimitedammo.levelmultiplier");
 	}
-	
-	/**Tags Stuff**/
-    public void addTagChange(String oldName, String newName)
-    {
-        tagChanges.put(oldName, newName);
-        gettagsConfig().set("tags." + oldName, newName);
-        savetagsConfig();
-        Player player = getServer().getPlayerExact(oldName);
-        if (player != null) 
-        {
-            TagAPI.refreshPlayer(player);
-        }
-    }
-    
-    public void removeTagChange(String oldName) 
-    {
-        tagChanges.remove(oldName);
-        gettagsConfig().set("tags." + oldName, null);
-        savetagsConfig();
-        Player player = getServer().getPlayerExact(oldName);
-        if (player != null) 
-        {
-            TagAPI.refreshPlayer(player);
-        }
-    }
-    
-    public boolean hasChanged(String name) 
-    {
-        return tagChanges.containsKey(name);
-    }
-    
-    public String getName(String name) 
-    {
-        return tagChanges.get(name);
-    }
-    
-    public String getDefinedName(String oldName)
-    {
-        String newName = gettagsConfig().getString("tags." + oldName);
-        return newName == null ? oldName : newName;
-    }
-    
-    /**Tags Configuration**/
-    public void reloadtagsConfig() 
-    {
-        if (tagsConfigFile == null) 
-        {
-        	tagsConfigFile = new File(getDataFolder(), "tags.yml");
-        }
-        tagsConfig = YamlConfiguration.loadConfiguration(tagsConfigFile);
-     
-        InputStream defConfigStream = getResource("tags.yml");
-        if (defConfigStream != null) 
-        {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            tagsConfig.setDefaults(defConfig);
-        }
-    }
-    
-    public FileConfiguration gettagsConfig() 
-    {
-        if (tagsConfig == null) 
-        {
-            reloadtagsConfig();
-        }
-        return tagsConfig;
-    }
-    
-    public void savetagsConfig() 
-    {
-        if (tagsConfig == null || tagsConfigFile == null) 
-        {
-        	return;
-        }
-        try 
-        {
-        	gettagsConfig().save(tagsConfigFile);
-        } 
-        catch (IOException ex) 
-        {
-        	outConsole(Level.SEVERE, getMessage("log_tag_save"), tagsConfigFile);
-        }
-    }
     
     /**Vault Check**/
 	private void setupVault() 
@@ -572,7 +457,7 @@ public class SwornRPG extends JavaPlugin
 	public void reload()
 	{
 		reloadConfig();
-		reloadtagsConfig();
+		tagManager.reloadtagsConfig();
 		loadConfig();
 		updateBlockDrops();
 		updateFishDrops();

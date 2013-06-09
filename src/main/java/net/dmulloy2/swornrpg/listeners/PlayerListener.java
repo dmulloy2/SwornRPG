@@ -241,7 +241,7 @@ public class PlayerListener implements Listener
 		{
 			plugin.getPlayerHealthBar().updateHealth(player);
 		}
-		catch (NoSuchMethodException | IllegalStateException e)
+		catch (Exception e)
 		{
 			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
 		}
@@ -270,12 +270,12 @@ public class PlayerListener implements Listener
 		if (pm.isPluginEnabled("TagAPI"))
 		{
 			String name = player.getName();
-			String newName = plugin.getDefinedName(name);
+			String newName = plugin.getTagManager().getDefinedName(name);
 			if (newName != name) 
 			{
 				try 
 				{
-					plugin.addTagChange(name, newName);
+					plugin.getTagManager().addTagChange(name, newName);
 				} 
 				catch (TooBigException e) 
 				{
@@ -430,7 +430,7 @@ public class PlayerListener implements Listener
 		{
 			plugin.getPlayerHealthBar().updateHealth(player);
 		}
-		catch (NoSuchMethodException | IllegalStateException e)
+		catch (Exception e)
 		{
 			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
 		}

@@ -1,5 +1,7 @@
 package net.dmulloy2.swornrpg.listeners;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -135,25 +137,14 @@ public class ExperienceListener implements Listener
 			
 			/**XP gain calculation**/
 			int killxp;
-			if (
-					mobname.equals("wither")
-					||mobname.equals("ender dragon")
-				)
-				killxp = plugin.mobkillsxp*3;
-			else if (
-						mobname.equals("creeper")
-						||mobname.equals("enderman")
-						||mobname.equals("iron golem")
-						||mobname.equals("skeleton")
-						||mobname.equals("blaze")
-						||mobname.contains("zombie")
-						||mobname.contains("spider")
-						||mobname.equals("ghast")
-						||mobname.equals("magma cube")
-						||mobname.equals("witch")
-						||mobname.equals("slime")
-					)
-				killxp = plugin.mobkillsxp*2;
+			List<String> tier3 = new ArrayList<String>(Arrays.asList(new String[]{"wither", "ender dragon"}));
+			List<String> tier2 = new ArrayList<String>(Arrays.asList(new String[]{"creeper", "enderman", "iron golem",
+					"skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime"}));
+			
+			if (tier3.contains(mobname))
+				killxp = plugin.mobkillsxp * 3;
+			else if (tier2.contains(mobname))
+				killxp = plugin.mobkillsxp * 2;
 			else
 				killxp = plugin.mobkillsxp;
 			
@@ -163,6 +154,7 @@ public class ExperienceListener implements Listener
 				article = "an";
 			else
 				article = "a";
+			
 			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article,  mobname));
 			
 			/**Call Event**/
@@ -327,7 +319,7 @@ public class ExperienceListener implements Listener
 			}
 			if (message == true)
 			{
-				player.sendMessage(FormatUtil.format(plugin.getMessage("insta_growth")));
+				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("insta_growth")));
 			}
 		}
 	}
@@ -484,10 +476,12 @@ public class ExperienceListener implements Listener
 		int oldammo = (plugin.ammobaseduration + (data.getLevel()*plugin.ammomultiplier));
 		
 		/**Prepare data for the next level**/
-		if (data.getLevel() < 250) // set the level cap at 250, seems fair enough
-			data.setLevel(data.getLevel() + 1);
+		if (data.getLevel() < 250)
+		{
+			data.setLevel(data.getLevel() + 1); // set the level cap at 250, seems fair enough
+			data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
+		}
 		
-		data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
 		data.setPlayerxp(0);
 		
 		/**New Skill Data**/

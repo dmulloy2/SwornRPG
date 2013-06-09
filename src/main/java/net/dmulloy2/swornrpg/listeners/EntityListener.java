@@ -71,6 +71,8 @@ public class EntityListener implements Listener
 			{
 				Player p = (Player)att;
 				String gun = p.getItemInHand().getType().toString().toLowerCase();
+				
+				/**Confusion**/
 				if (gun == null || gun.contains("air"))
 				{
 					int rand = Util.random(20);
@@ -83,6 +85,8 @@ public class EntityListener implements Listener
 						}
 					}
 				}
+				
+				/**Axe Blowback**/
 				if (gun.contains("_axe")) 
 				{
 					if (plugin.axekb == true)
@@ -90,7 +94,7 @@ public class EntityListener implements Listener
 						int randomBlowBack = Util.random(9);
 						if (randomBlowBack == 0) 
 						{
-							double distance = Util.point_distance(att.getLocation(), defender.getLocation());
+							double distance = Util.pointDistance(att.getLocation(), defender.getLocation());
 							double mult = 0.75D;
 							if (distance < 10.0D)
 								mult = 0.25D;
@@ -118,47 +122,55 @@ public class EntityListener implements Listener
 				}
 			}
 		}
-		catch (Exception localException)
+		catch (Exception e)
 		{
-			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_damage"), localException.getMessage());
+			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_damage"), e.getMessage());
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamage2(EntityDamageEvent event)
 	{
-		/**Mob Health (Damage)**/
+		if (event.isCancelled())
+			return;
+		
+		if (event.getDamage() == 0)
+			return;
+		
 		Entity entity = event.getEntity();
-		if (entity instanceof Player)
-		{
-			try 
+		if (entity == null)
+			return;
+		
+		try
+		{	
+			/**Mob Health (Damage)**/
+			if (entity instanceof Player)
 			{
 				plugin.getPlayerHealthBar().updateHealth((Player)entity);
 			}
-			catch (NoSuchMethodException | IllegalStateException e)
+			
+			if (entity instanceof LivingEntity)
 			{
-				plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
+				plugin.updateHealthTag(entity);
+			}
+			
+			/**Graceful Roll**/
+			if (event.getCause() == DamageCause.FALL)
+			{
+				if (!(event.getEntity() instanceof Player))
+					return;
+				
+				int rand = Util.random(50);
+				if (rand == 0)
+				{
+					event.setDamage(0);
+					((Player) event.getEntity()).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("graceful_roll")));
+				}
 			}
 		}
-		else if (entity instanceof LivingEntity)
+		catch (Exception e)
 		{
-			plugin.updateHealthTag(entity);
-		}
-		
-		if (event.getCause() == DamageCause.FALL)
-		{
-			if (event.getDamage() == 0)
-				return;
-			
-			if (!(event.getEntity() instanceof Player))
-				return;
-			
-			int rand = Util.random(50);
-			if (rand == 0)
-			{
-				event.setDamage(0);
-				((Player) event.getEntity()).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("graceful_roll")));
-			}
+			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_damage"), e.getMessage());
 		}
 	}
 	
@@ -173,7 +185,7 @@ public class EntityListener implements Listener
 			{
 				plugin.getPlayerHealthBar().updateHealth((Player)entity);
 			}
-			catch (NoSuchMethodException | IllegalStateException e)
+			catch (Exception e)
 			{
 				plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
 			}

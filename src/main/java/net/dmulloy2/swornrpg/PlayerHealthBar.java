@@ -27,7 +27,7 @@ public class PlayerHealthBar
 	
 	private HashMap<String, Scoreboard> boards = new HashMap<String, Scoreboard>();
 
-	public void register(Player player) throws NoSuchMethodException, IllegalStateException
+	public void register(Player player) throws Exception
 	{
 		ScoreboardManager manager = plugin.getServer().getScoreboardManager();
 
@@ -85,7 +85,7 @@ public class PlayerHealthBar
 		}
 	}
 	
-	public void updateHealth(Player player) throws NoSuchMethodException, IllegalStateException
+	public void updateHealth(Player player) throws Exception
 	{
 		if (plugin.playerhealth == false)
 		{

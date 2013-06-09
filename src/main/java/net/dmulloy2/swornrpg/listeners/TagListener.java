@@ -19,12 +19,14 @@ public class TagListener implements Listener
     }
 
     @EventHandler
-    public void onPlayerReceiveNametag(final PlayerReceiveNameTagEvent event) 
+    public void onPlayerReceiveNametag(PlayerReceiveNameTagEvent event) 
     {
-        final String name = event.getNamedPlayer().getName();
-        if (this.plugin.hasChanged(name)) 
+        String name = event.getNamedPlayer().getName();
+        if (plugin.getTagManager().hasChanged(name)) 
         {
-            event.setTag(ChatColor.translateAlternateColorCodes('&', this.plugin.getName(name)));
+        	String tag = plugin.getTagManager().getName(name);
+        	tag = ChatColor.translateAlternateColorCodes('&', tag);
+            event.setTag(tag);
         }
     }
 }
