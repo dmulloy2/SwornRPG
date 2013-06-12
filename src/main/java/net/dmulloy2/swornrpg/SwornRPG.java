@@ -409,7 +409,7 @@ public class SwornRPG extends JavaPlugin
     /**Update checker**/
     public double updateCheck(double currentVersion)
     {
-        String pluginUrlString = "http://dev.bukkit.org/server-mods/swornrpg/files.rss";
+        String pluginUrlString = "http://dev.bukkit.org/bukkit-mods/swornrpg/files.rss";
         try
         {
             URL url = new URL(pluginUrlString);
