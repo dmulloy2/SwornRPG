@@ -4,7 +4,6 @@ import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
@@ -13,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,7 +20,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
