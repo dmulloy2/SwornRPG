@@ -45,7 +45,7 @@ public class CmdTag extends SwornRPGCommand
 			
 			if (args[1].length() > 2)
 			{
-				sendpMessage(plugin.getMessage("invalidargs") + getUsageTemplate(false));
+				sendpMessage(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
 				return;
 			}
 			
@@ -59,7 +59,7 @@ public class CmdTag extends SwornRPGCommand
 		{
 			if (args[0].length() > 2)
 			{
-				sendpMessage(plugin.getMessage("invalidargs") + getUsageTemplate(false));
+				sendpMessage(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
 				return;
 			}
 			

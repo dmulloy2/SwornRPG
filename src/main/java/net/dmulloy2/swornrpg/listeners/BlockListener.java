@@ -79,9 +79,8 @@ public class BlockListener implements Listener
 			if (blockType.equals(Material.IRON_DOOR_BLOCK))
 			{
 				/**Config and GameMode check**/
-				if ((plugin.irondoorprotect == true) && (gm != (GameMode.CREATIVE)))
+				if (plugin.irondoorprotect && gm != GameMode.CREATIVE)
 				{
-					/**Protect the iron door!**/
 					event.setCancelled(true);
 					player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("iron_door_protect")));
 					if (plugin.debug) plugin.outConsole(plugin.getMessage("log_irondoor_protect"), player.getName());
@@ -160,11 +159,9 @@ public class BlockListener implements Listener
 		MaterialData blockData = blockState.getData();
 		
 		int itemId = blockState.getTypeId();
-		Material blockMat = Material.getMaterial(itemId);
-		if (blockMat == null)
-			return;
+		ItemStack itemStack = new ItemStack(itemId, 1);
 
-		if (isBlackListed(blockMat))
+		if (isBlackListed(itemId))
 			return;
 		
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -175,14 +172,12 @@ public class BlockListener implements Listener
 		int rand = Util.random(300/level);
 		if (rand == 0)
 		{	
-			ItemStack itemStack = new ItemStack(blockMat, 1);
-				
 			if (blockData != null)
 			{
 				itemStack.setData(blockData);
 			}
 				
-			InventoryWorkaround.addItems(player.getInventory(), itemStack);
+			player.getInventory().addItem(itemStack);
 			
 			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
@@ -218,5 +213,14 @@ public class BlockListener implements Listener
 		}
 		
 		return false;
+	}
+	
+	public boolean isBlackListed(int itemId)
+	{
+		Material mat = null;
+		try { mat = Material.getMaterial(itemId); }
+		catch (Exception e) { return false; }
+		
+		return (isBlackListed(mat));
 	}
 }
