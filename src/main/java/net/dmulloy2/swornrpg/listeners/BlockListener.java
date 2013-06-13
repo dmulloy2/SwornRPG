@@ -173,6 +173,7 @@ public class BlockListener implements Listener
 		{	
 			if (blockData != null)
 			{
+				blockData.setData(blockState.getData().getData());
 				itemStack.setData(blockData);
 			}
 				
