@@ -1,149 +1,204 @@
-##########################################################################################################
-#                                                                                                        #
-#                                       SwornRPG Configuration File                                      #
-#                                           Created by dmulloy2                                          #
-#  Detailed explanation here: http://dev.bukkit.org/server-mods/swornrpg/pages/sworn-rpg-configuration/  #
-#                                                                                                        #
-##########################################################################################################
+#######################################################################################
+#+-----------------------------------------------------------------------------------+#
+#|                                                                                   |#
+#|                                SwornRPG Configuration                             |#
+#|                                     By: dmulloy2                                  |#
+#|                                                                                   |#
+ #+----------------------------------------------------------------------------------+#
+ ######################################################################################
 
+# This is the main configuration file for SwornRPG
+# It follows standard YAML procedure
+# If there is an error on startup, make sure the config matches up with this:
+# https://github.com/dmulloy2/SwornRPG/blob/master/src/main/resources/config.yml
+# Input: boolean - true/false, String - "text", integer - number
+
+#############################################
+#+-----------------------------------------+#
+#|          Global Configuration           |#
+#+-----------------------------------------+#
+#############################################
+
+# Extra output to console (boolean)
 debug: false
-# Enable/disable extra logging to console
 
+# Automatic checking for updates (boolean)
 updatechecker: true
-# Enable/disable checking for updates
 
+# Iron Door protection (boolean)
 irondoorprotect: true
-# Enable/disable the protection of iron doors
 
-randomdrops: true
-# Enable/disable the random chance that a random drop will drop from a block
-
+# Axe Knockback (boolean)
 axekb: true
-# Enable/disable the random chance that players can get knocked back by axes
 
+# Arrow Fire (boolean)
 arrowfire: true
-# Enable/disable the random chance that players can catch fire when shot by arrows
 
+# Death Coordinate Messages (boolean)
 deathbook: true
-# Will a player receive a book/message with their death coordinates?
-# If essentials is found, the plugin will send a mail message. If not, it will give a book
 
+# Marriage (boolean)
 marriage: true
-# Enable/disable marriage
 
+# MobSpawner Camping Radius (integer)
 campingradius: 16
-# If a player is within x radius of a mob spawner, cancel xp gain
 
+# Worlds SwornRPG is disabled in (world)
+disabled-worlds:
+- disabled_world
+
+#############################################
+#+-----------------------------------------+#
+#|                 Salvaging               |#
+#+-----------------------------------------+#
+#############################################
+
+# Salvaging Enabled (boolean)
 salvaging: true
-# Enable/disable salvaging
 
-redeem-enabled: true
-# Enable/disable block redemption
-
-salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 5; 311, Diamond, 8; 312, Diamond, 7; 313, Diamond, 4; 314, Gold, 5; 315, Gold, 8; 316, Gold, 7; 317, Gold, 4; 267, Iron, 2; 256, Iron, 1; 257, Iron, 3; 258, Iron, 3; 292, Iron, 2; 276, Diamond, 2; 277, Diamond, 1; 278, Diamond, 3; 279, Diamond, 3; 293, Diamond, 2; 283, Gold, 2; 284, Gold, 1; 285, Gold, 3; 286, Gold, 3; 294, Gold, 2"
 # Items that can be salvaged, formatted: "id, Material, how many items it returns; ...; lastid, Lastmaterial, lastitems"
+salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 5; 311, Diamond, 8; 312, Diamond, 7; 313, Diamond, 4; 314, Gold, 5; 315, Gold, 8; 316, Gold, 7; 317, Gold, 4; 267, Iron, 2; 256, Iron, 1; 257, Iron, 3; 258, Iron, 3; 292, Iron, 2; 276, Diamond, 2; 277, Diamond, 1; 278, Diamond, 3; 279, Diamond, 3; 293, Diamond, 2; 283, Gold, 2; 284, Gold, 1; 285, Gold, 3; 286, Gold, 3; 294, Gold, 2"
 
+#############################################
+#+-----------------------------------------+#
+#|              AutoSave Task              |#
+#+-----------------------------------------+#
+#############################################
+
+# Interval in minutes (integer)
 autosave:
   enabled: true
   interval: 15
-# AutoSave task. Interval in minutes.
   
+#############################################
+#+-----------------------------------------+#
+#|                Abilities                |#
+#+-----------------------------------------+#
+#############################################
+  
+# Duration (in seconds) = baseduration + (levelmultiplier x level)
+# Cooldown (in seconds) = duration x cooldownmultiplier
+# Inputs: enabled - boolean, rest - integer
+
+# Frenzy Mode
 frenzy:
   enabled: true
-  # Is frenzy mode enabled?
   baseduration: 5
-  # Frenzy base duration (Formula = frenzy base duraton + (level multiplier x level))
   levelmultiplier: 1
   cooldownmultiplier: 10
-  # Frenzy cooldown multiplier (Formula = duration x cooldown multiplier)
   
+# SuperPickaxe
 superpickaxe:
   enabled: true
-  # Is super pickaxe ability enabled?
   baseduration: 10
-  # Super pick base duration (Formula = base duraton + (level multiplier x level))
   levelmultiplier: 2
   cooldownmultiplier: 2
-  # Super pick cooldown multiplier (Formula = duraton x cooldown multiplier)
- 
+
+# Unlimited Ammo
 unlimitedammo:
   enabled: true
-  # Is unlimited ammo ability enabled?
   baseduration: 10
-  # Unlimited ammo base duration (Formula = base duraton + (level multiplier x level))
   levelmultiplier: 2
   cooldownmultiplier: 2
-  # Unlimited ammo cooldown multiplier (Formula = duraton x cooldown multiplier)
+
+#############################################
+#+-----------------------------------------+#
+#|                Leveling                 |#
+#+-----------------------------------------+#
+#############################################
+
+# How much xp a player gains when doing a particular task
+# Inputs: enabled - boolean, xpgain/loss - integer
 
 levelingmethods:
-# How can players level up?
+  # Minecraft XP Gain
   mcxpgain:
     enabled: true
     xpgain: 15
-    # How much xp a player gains when they level up using MC xp
+  # PVP
   playerkills:
     enabled: true
     xpgain: 25
-    # Xp gained when a player kills
     xploss: 10
-    # Xp lost when a player dies
+  # PVE
   mobkills:
     enabled: true
     xpgain: 5
-    # Xp gain when a player kills a mob
+  # Minute of online time
   onlinetime:
     enabled: true
     xpgain: 1
-    # Xp gained per minute of online time
+  # Taming
   taming:
     enabled: true
     xpgain: 5
-    # Xp gain when a player tames a mob
+  # Fishing
   fishing:
     enabled: true
     xpgain: 5
-    # Xp gain when a player catches a fish
+  # Farming
   herbalism:
     enabled: true
     xpgain: 1
-    # Xp gain when a player farms (per crop)
+  # Enchanting
   enchanting:
     enabled: true
     xpgain: 5
-    # Xp gain multiplier (Formula = (enchanting cost / 2) + multiplier)
+
+#############################################
+#+-----------------------------------------+#
+#|                Rewards                  |#
+#+-----------------------------------------+#
+#############################################
+
+# Rewards for leveling up
+# Inputs: enabled - boolean, rest - integer
+# ItemID is any valid Minecraft ItemID
 
 levelingrewards:
-# What do players receive for leveling up?
   money:
     enabled: true
     amountperlevel: 250
   items:
     enabled: true
     itemid: 264
-    # Item id of the item you wish to reward (Defaults to diamond)
     amountperlevel: 1
-    
+ 
+#############################################
+#+-----------------------------------------+#
+#|              Health Tags                |#
+#+-----------------------------------------+#
+#############################################
+   
+# Player and Mob health displays
+# Inputs: enabled - boolean
+
 healthtags:
-# Mob health tags
   enabled: true
   
 playerhealth:
-# Player health tags
   enabled: true
-  
-disabled-worlds:
-# Worlds SwornRPG is disabled in
-- disabled_world
 
 confusion:
 # Confusion when a player punches another player in the face
   enabled: true
   duration: 3
   # Duration in seconds
+ 
+#############################################
+#+-----------------------------------------+#
+#|               Block Drops               |#
+#+-----------------------------------------+#
+#############################################
     
+# Enabled (boolean)
+randomdrops: true 
+
+# Items Dropped
+# Format: 
+#  [blockId]:
+#    - "rewardId:chance out of 100"
 block-drops:
-# Configure rare drops here
-# Format: - "itemid:chance"
   0:
     - "2258:10000"
     - "2267:10000"
@@ -196,10 +251,18 @@ block-drops:
     - "352:10"
     - "87:50"
 
-fish-drops:
-# Items dropped when fishing
-# Format: - "itemid:chance"
-# Done by player level (Cap is at level 10 for fish drops)
+#############################################
+#+-----------------------------------------+#
+#|               Fish Drops                |#
+#+-----------------------------------------+#
+#############################################
+
+# Done based on level (up to 10)
+# Items Dropped
+# Format: 
+#  [level]:
+#    - "rewardId:chance out of 100"
+block-drops:
   0:
     - "301:10"
     - "268:5"
@@ -222,8 +285,18 @@ fish-drops:
     - "272:15"
     - "274:15"
     
+#############################################
+#+-----------------------------------------+#
+#|           Block Redemption              |#
+#+-----------------------------------------+#
+#############################################
+    
+# Block Redemption Enabled (boolean)
+redeem-enabled: true
+
+# Blacklisted Materials for Building Redeem
+# Format: - [material/itemId]
 redeem-blacklist:
-# Blacklisted Materials for Building redeem
 - beacon
 - diamond_block
 - iron_block

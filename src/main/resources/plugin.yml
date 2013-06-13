@@ -7,17 +7,14 @@ softdepend: [TagAPI, Essentials, Factions, Vault, PVPGunPlus]
 commands:
   a:
     description: Admin only chat
-    permission: srpg.adminchat
     usage: /<command> <message>
     aliases: [achat]
   ride:
     description: Get on someones head
-    permission: srpg.ride
     usage: /<command> <player>
     aliases: [mount]
   unride:
     description: Get off someone's head
-    permission: srpg.ride
     usage: /<command>
     aliases: [dismount]
   hat:
@@ -29,7 +26,6 @@ commands:
     aliases: [headgear]
   asay:
     description: Alternate admin say command
-    permission: srpg.asay
     usage: /<command> <message>
     aliases: [adm]
   srpg:
@@ -43,28 +39,23 @@ commands:
     usage: /<command>
   hc:
     description: High Council Chat
-    permission: srpg.council
     usage: /<command> <message>
     aliases: [council]
   eject:
     description: Kick someone off your head
-    permission: srpg.ride
     usage: /<command>
   match:
     description: Match online and offline players
-    permission: srpg.match
     usage: /<command> <player>
     aliases: [matchplayer]
   tag:
     description: Change the tag above your head
-    permission: srpg.tag
     usage: |
       /<command> <tag>
       /<command> <player> <tag>
     aliases: [settag]
   tagr:
     description: Removes/resets a player's tag
-    permission: srpg.tagr
     usage: |
       /<command>
       /<command> <tag>
@@ -76,7 +67,6 @@ commands:
       /<command> <player>
   levelr:
     description: Resets a player's level
-    permission: srpg.levelr
     usage: |
       /<command>
       /<command> <player>

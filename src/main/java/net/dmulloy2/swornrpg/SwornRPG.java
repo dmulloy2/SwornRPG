@@ -136,13 +136,14 @@ public class SwornRPG extends JavaPlugin
 		pluginManager.registerEvents(new BlockListener(this), this);
 		pluginManager.registerEvents(new ExperienceListener(this), this);
 		
-		/**Check for Data Folder**/
-		if (!getDataFolder().exists())
-			getDataFolder().mkdir();
+		/**Check for PlayerData folder**/
+		File playersFile = new File(getDataFolder(), "players");
+		if (!playersFile.exists())
+			playersFile.mkdir();
 
 		/**Check for Config**/
-        File file = new File(getDataFolder(), "config.yml");
-        if (!file.exists())
+        File conf = new File(getDataFolder(), "config.yml");
+        if (!conf.exists())
         {
         	outConsole(getMessage("log_configuration"));
         	saveDefaultConfig();
@@ -198,23 +199,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdSitdown (this));
 		commandHandler.registerCommand(new CmdUnlimitedAmmo (this));
 		commandHandler.registerCommand(new CmdAbilities (this));
-		
-		/**Set permission messages**/
-		getCommand("ride").setPermissionMessage(noperm);
-		getCommand("unride").setPermissionMessage(noperm);
-		getCommand("asay").setPermissionMessage(noperm);
-		getCommand("a").setPermissionMessage(noperm);
-		getCommand("hat").setPermissionMessage(noperm);
-		getCommand("hc").setPermissionMessage(noperm);
-		getCommand("unride").setPermissionMessage(noperm);
-		getCommand("eject").setPermissionMessage(noperm);
-		getCommand("match").setPermissionMessage(noperm);
-		getCommand("tag").setPermissionMessage(noperm);
-		getCommand("tagr").setPermissionMessage(noperm);
-		getCommand("levelr").setPermissionMessage(noperm);
-		getCommand("itemname").setPermissionMessage(noperm);
-		getCommand("addxp").setPermissionMessage(noperm);
-		
+
 		for (Player player : getServer().getOnlinePlayers())
 		{
 			try 
