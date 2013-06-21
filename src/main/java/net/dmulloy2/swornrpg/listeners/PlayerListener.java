@@ -113,9 +113,10 @@ public class PlayerListener implements Listener
 					String plural = "";
 					if (amt > 1.0D)
 						plural = "s";
-					String salvagem = item.getType().toString().toLowerCase().replaceAll("_", " ");
-					pl.sendMessage(FormatUtil.format(plugin.getMessage("salvage_success"), article, salvagem, amt, (blockType.toLowerCase() + materialExtension + plural)));
-					plugin.outConsole(plugin.getMessage("log_salvage"), pl.getName(), item.getType().toString().toLowerCase().replaceAll("_", " "), amt, blockType.toLowerCase(), materialExtension, plural);
+					
+					String itemName = FormatUtil.getFriendlyName(item.getType());
+					pl.sendMessage(FormatUtil.format(plugin.getMessage("salvage_success"), article, itemName, amt, (blockType.toLowerCase() + materialExtension + plural)));
+					plugin.outConsole(plugin.getMessage("log_salvage"), pl.getName(), itemName, amt, blockType.toLowerCase(), materialExtension, plural);
 					Inventory inv = pl.getInventory();
 					inv.removeItem(new ItemStack[] { item });
 					Material give= null;
@@ -131,8 +132,8 @@ public class PlayerListener implements Listener
 				}
 				else
 				{
-					String itemname = item.getType().toString().toLowerCase().replaceAll("_", " ");
-					pl.sendMessage(FormatUtil.format(plugin.getMessage("not_salvagable"), itemname, blockType.toLowerCase()));
+					String itemName = FormatUtil.getFriendlyName(item.getType());
+					pl.sendMessage(FormatUtil.format(plugin.getMessage("not_salvagable"), itemName, blockType.toLowerCase()));
 				}
 			}
 		}

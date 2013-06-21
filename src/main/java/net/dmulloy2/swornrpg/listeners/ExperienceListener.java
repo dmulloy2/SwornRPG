@@ -118,7 +118,7 @@ public class ExperienceListener implements Listener
 		if (kill instanceof Player)
 		{
 			Player killer = event.getEntity().getKiller();
-			String mobname = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
+			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
 			
 			/**Warzone and Safezone check**/
 			if (plugin.checkFactions(killer, true))
@@ -148,7 +148,7 @@ public class ExperienceListener implements Listener
 			else
 				article = "a";
 			
-			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article,  mobname));
+			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname));
 			
 			/**Give the player some xp**/
 			plugin.getExperienceManager().onXPGain(killer, killxp, message);
@@ -356,12 +356,14 @@ public class ExperienceListener implements Listener
 			if (player != null)
 			{
 				/**XP Gain**/
-				String mobname = event.getEntity().getType().toString().toLowerCase().replaceAll("_", " ");
+				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
+				
 				String article;
 				if (mobname.startsWith("o"))
 					article = "an";
 				else
 					article = "a";
+				
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.taminggain, article, mobname);
 				plugin.getExperienceManager().onXPGain(player, plugin.taminggain, message);
 				

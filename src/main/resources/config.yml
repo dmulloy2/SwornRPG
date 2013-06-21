@@ -179,11 +179,19 @@ healthtags:
 playerhealth:
   enabled: true
 
+#############################################
+#+-----------------------------------------+#
+#|              Health Tags                |#
+#+-----------------------------------------+#
+#############################################
+
+# Confusion - when a player punches another player in the face
+# Enabled - boolean.
+# Duration (integer) in seconds.
+
 confusion:
-# Confusion when a player punches another player in the face
   enabled: true
   duration: 3
-  # Duration in seconds
  
 #############################################
 #+-----------------------------------------+#

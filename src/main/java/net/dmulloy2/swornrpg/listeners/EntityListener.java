@@ -75,13 +75,16 @@ public class EntityListener implements Listener
 				/**Confusion**/
 				if (gun == null || gun.contains("air"))
 				{
-					int rand = Util.random(20);
-					if (rand == 0)
+					if (plugin.confusion)
 					{
-						if (defender instanceof Player)
+						int rand = Util.random(20);
+						if (rand == 0)
 						{
-							Player d = (Player)defender;
-							d.addPotionEffect(PotionEffectType.CONFUSION.createEffect(60, 1));
+							if (defender instanceof Player)
+							{
+								Player d = (Player)defender;
+								d.addPotionEffect(PotionEffectType.CONFUSION.createEffect(plugin.confusionduration, 1));
+							}
 						}
 					}
 				}
@@ -112,11 +115,11 @@ public class EntityListener implements Listener
 								v2.setY(1.0D);
 							defender.setVelocity(v2.multiply(0.8D));
 							
-							String inhand = gun.replaceAll("_", " ");
+							String inHand = FormatUtil.getFriendlyName(p.getItemInHand().getType());
 							if (defender instanceof Player)
-								((Player)defender).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("axe_blowbackee"), ((Player)att).getName(), inhand));
+								((Player)defender).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("axe_blowbackee"), ((Player)att).getName(), inHand));
 							if (att instanceof Player)
-								((Player)att).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("axe_blowbacker"), ((Player)defender).getName(), inhand));
+								p.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("axe_blowbacker"), ((Player)defender).getName(), inHand));
 						}
 					}
 				}

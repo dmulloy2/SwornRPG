@@ -1,5 +1,7 @@
 package net.dmulloy2.swornrpg;
 
+import net.dmulloy2.swornrpg.util.FormatUtil;
+
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -29,6 +31,6 @@ public class BlockDrop
 	
 	public String toString()
 	{
-		return "[" + item.getType().toString().toLowerCase().replaceAll("_", " ") + ", " + chance + "]";
+		return "[" + FormatUtil.getFriendlyName(item.getType()) + ", " + chance + "]";
 	}
 }

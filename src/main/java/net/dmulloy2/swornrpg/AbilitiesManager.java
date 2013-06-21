@@ -82,7 +82,7 @@ public class AbilitiesManager
 		{
 			if (!frenzyWaiting.containsKey(player.getName()))
 			{
-				String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 				frenzyWaiting.put(player.getName(), System.currentTimeMillis());
 				new FrenzyRemoveThread(player).runTaskLater(plugin, 60);
@@ -239,6 +239,7 @@ public class AbilitiesManager
 		{
 			if (!spickWaiting.containsKey(player.getName()))
 			{
+				inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inhand);
 				spickWaiting.put(player.getName(), System.currentTimeMillis());
 				new SpickRemoveThread(player).runTaskLater(plugin, 60);
@@ -416,7 +417,7 @@ public class AbilitiesManager
 					frenzyWaiting.remove(player.getName());
 					if (player.isOnline())
 					{
-						String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+						String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
 					}
 				}
@@ -445,7 +446,7 @@ public class AbilitiesManager
 					spickWaiting.remove(player.getName());
 					if (player.isOnline())
 					{
-						String inHand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+						String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
 					}
 				}

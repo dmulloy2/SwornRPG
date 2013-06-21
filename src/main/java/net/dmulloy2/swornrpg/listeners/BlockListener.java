@@ -179,8 +179,8 @@ public class BlockListener implements Listener
 				
 			player.getInventory().addItem(itemStack);
 			
-			String item = itemStack.getType().toString().toLowerCase().replaceAll("_", " ");
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), item));
+			String itemName = FormatUtil.getFriendlyName(itemStack.getType());
+			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
 		}
 	}
 	
