@@ -213,9 +213,6 @@ public class SwornRPG extends JavaPlugin
 				if (debug) outConsole(Level.SEVERE, getMessage("log_health_error"), e.getMessage());
 			}
 		}
-
-		/**Initializes the Util class**/
-		Util.initialize(this);
 	
 		/**Setup Vault**/
 		setupVault();
@@ -264,7 +261,7 @@ public class SwornRPG extends JavaPlugin
 		long start = System.currentTimeMillis();
 		
 		playerDataCache.save();
-		playerHealthBar.clear();
+		clearMemory();
 
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
@@ -272,6 +269,16 @@ public class SwornRPG extends JavaPlugin
 		long finish = System.currentTimeMillis();
 		
 		outConsole(getMessage("log_disabled"), getDescription().getFullName(), finish - start);
+	}
+	
+	public void clearMemory()
+	{
+		playerHealthBar.clear();
+		tagManager.clearMemory();
+		proposal.clear();
+		salvageRef.clear();
+		blockDropsMap.clear();
+		fishDropsMap.clear();
 	}
 	    
 	/**Console logging**/

@@ -3,29 +3,20 @@ package net.dmulloy2.swornrpg.util;
 import java.util.List;
 import java.util.Random;
 
-import net.dmulloy2.swornrpg.SwornRPG;
-
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 /**
- * @author orange451
- * @editor dmulloy2
+ * @author dmulloy2
  */
 
 public class Util 
 {
-	public static Server server;
-	public static void initialize(SwornRPG plugin)
-	{
-		Util.server = plugin.getServer();
-	}
-	
 	public static Player matchPlayer(String pl)
 	{
-		List<Player> players = server.matchPlayer(pl);
+		List<Player> players = Bukkit.matchPlayer(pl);
 		
 		if (players.size() >= 1)
 			return players.get(0);
@@ -38,7 +29,7 @@ public class Util
 		if (matchPlayer(pl) != null)
 			return matchPlayer(pl);
 		
-		for (OfflinePlayer o : server.getOfflinePlayers())
+		for (OfflinePlayer o : Bukkit.getOfflinePlayers())
 		{
 			if (o.getName().equalsIgnoreCase(pl))
 				return o;
@@ -49,7 +40,7 @@ public class Util
 	
 	public static boolean isBanned(OfflinePlayer p)
 	{
-		for (OfflinePlayer banned : server.getBannedPlayers()) 
+		for (OfflinePlayer banned : Bukkit.getBannedPlayers()) 
 		{
 			if (p.getName().equalsIgnoreCase(banned.getName()))
 				return true;

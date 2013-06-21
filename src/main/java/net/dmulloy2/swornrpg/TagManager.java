@@ -144,4 +144,9 @@ public class TagManager
         	plugin.outConsole(Level.SEVERE, plugin.getMessage("log_tag_save"), tagsConfigFile);
         }
     }
+    
+    public void clearMemory()
+    {
+    	tagChanges.clear();
+    }
 }
