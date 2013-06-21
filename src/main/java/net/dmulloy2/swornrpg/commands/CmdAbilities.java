@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
 /**
@@ -68,10 +69,16 @@ public class CmdAbilities extends SwornRPGCommand
 		
 		if (plugin.frenzyenabled)
 		{
+			StringBuilder line = new StringBuilder();
+			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy_cooldown"), 
+					(plugin.frenzyd + (level*plugin.frenzym))));
+			
 			if (data.isFcooldown())
-				sendMessage(plugin.getMessage("ability_frenzy_cooldown"), (plugin.frenzyd + (level*plugin.frenzym)), data.getFrenzycd());
-			else
-				sendMessage(plugin.getMessage("ability_frenzy"), (plugin.frenzyd + (level*plugin.frenzym)));
+			{
+				line.append(FormatUtil.format(" &c(Cooldown: {0}", data.getFrenzycd()));
+			}
+			
+			sendMessage(line.toString());
 		}
 		
 		if (plugin.spenabled)

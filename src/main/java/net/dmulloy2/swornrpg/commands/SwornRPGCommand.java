@@ -149,7 +149,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	public final String getUsageTemplate(final boolean displayHelp)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("&c/");
+		ret.append("&b/");
 				
 		if (plugin.getCommandHandler().usesCommandPrefix() && usesPrefix)
 			ret.append(plugin.getCommandHandler().getCommandPrefix() + " ");
@@ -158,11 +158,11 @@ public abstract class SwornRPGCommand implements CommandExecutor
 
 		for (String s : optionalArgs)
 		{
-			ret.append(String.format(" &6[" + s + "]"));
+			ret.append(String.format(" &3[" + s + "]"));
 		}
 		
 		for (String s : requiredArgs)
-			ret.append(String.format(" &4<" + s + ">"));
+			ret.append(String.format(" &3<" + s + ">"));
 		
 		if (displayHelp)
 			ret.append(" &e" + description);
