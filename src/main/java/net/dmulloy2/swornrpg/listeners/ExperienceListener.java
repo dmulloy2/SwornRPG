@@ -143,7 +143,7 @@ public class ExperienceListener implements Listener
 			
 			/**Message**/
 			String article = "";
-			if (mobname.startsWith("a")||mobname.startsWith("e")||mobname.startsWith("i")||mobname.startsWith("o")||mobname.startsWith("u"))
+			if (mobname.startsWith("A")||mobname.startsWith("E")||mobname.startsWith("I")||mobname.startsWith("O")||mobname.startsWith("U"))
 				article = "an";
 			else
 				article = "a";
@@ -359,7 +359,7 @@ public class ExperienceListener implements Listener
 				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
 				
 				String article;
-				if (mobname.startsWith("o"))
+				if (mobname.startsWith("O"))
 					article = "an";
 				else
 					article = "a";

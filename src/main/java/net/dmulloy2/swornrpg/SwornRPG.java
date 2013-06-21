@@ -36,7 +36,6 @@ import net.dmulloy2.swornrpg.handlers.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.*;
-import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.milkbowl.vault.economy.Economy;
 
 /**Bukkit imports**/
@@ -762,7 +761,7 @@ public class SwornRPG extends JavaPlugin
 				if ((xp - xpneeded) >= 0)
 				{
 					/**If so, call levelup event**/
-					pluginManager.callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
+					experienceManager.onLevelup(player, oldlevel, newlevel);
 				}
 			}
 		}

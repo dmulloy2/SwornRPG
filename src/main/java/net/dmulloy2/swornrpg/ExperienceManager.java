@@ -51,7 +51,7 @@ public class ExperienceManager
 		if ((currentXp - xpneeded) >= 0)
 		{
 			/**If so, level up**/
-			onLevelup(player, newlevel, oldlevel);
+			onLevelup(player, oldlevel, newlevel);
 		}
 	}
 	
