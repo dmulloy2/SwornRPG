@@ -82,6 +82,7 @@ public class SwornRPG extends JavaPlugin
 	private @Getter PlayerHealthBar playerHealthBar;
 	private @Getter AbilitiesManager abilitiesManager;
 	private @Getter TagManager tagManager;
+	private @Getter ExperienceManager experienceManager;
 
 	/**Hash maps**/
     public HashMap<String, String> proposal = new HashMap<String, String>();
@@ -120,6 +121,7 @@ public class SwornRPG extends JavaPlugin
 		playerHealthBar = new PlayerHealthBar(this);
 		abilitiesManager = new AbilitiesManager(this);
 		tagManager = new TagManager(this);
+		experienceManager = new ExperienceManager(this);
 		
 		pluginManager = getServer().getPluginManager();
 		

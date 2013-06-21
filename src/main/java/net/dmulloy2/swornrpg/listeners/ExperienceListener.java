@@ -6,12 +6,8 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
-import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
-import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.Util;
-import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.CropState;
 import org.bukkit.GameMode;
@@ -36,11 +32,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.NetherWarts;
-import org.bukkit.plugin.PluginManager;
 
 /**
  * @author dmulloy2
@@ -83,18 +77,17 @@ public class ExperienceListener implements Listener
 				return;
 			
 			String message = "";
-			PluginManager pm = plugin.getPluginManager();
-			
+
 			/**Killer Xp Gain**/
 			int killxp = plugin.killergain;
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
-			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
+			plugin.getExperienceManager().onXPGain(killer, killxp, message);
 			
 			/**Killed Xp Loss**/
 			int killedxp = -(plugin.killedloss);
 			int msgxp = Math.abs(killedxp);
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
-			pm.callEvent(new PlayerXpGainEvent (killed, killedxp, message));
+			plugin.getExperienceManager().onXPGain(killed, killedxp, message);
 			
 			/**Debug Message**/
 			if (plugin.debug) 
@@ -157,9 +150,8 @@ public class ExperienceListener implements Listener
 			
 			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article,  mobname));
 			
-			/**Call Event**/
-			PluginManager pm = plugin.getPluginManager();
-			pm.callEvent(new PlayerXpGainEvent (killer, killxp, message));
+			/**Give the player some xp**/
+			plugin.getExperienceManager().onXPGain(killer, killxp, message);
 			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
 		}
 	}
@@ -193,9 +185,8 @@ public class ExperienceListener implements Listener
 		int xpgained = plugin.xplevelgain;
 		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
 		
-		/**Call Event**/
-		PluginManager pm = plugin.getPluginManager();
-		pm.callEvent(new PlayerXpGainEvent (player, xpgained, message));
+		/**Give the player some XP**/
+		plugin.getExperienceManager().onXPGain(player, xpgained, message);
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_mcxpgain"), player.getName(), xpgained);
 	}
 	
@@ -233,8 +224,7 @@ public class ExperienceListener implements Listener
 			{
 				int xp = plugin.herbalismgain * 10;
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), xp);
-				PlayerXpGainEvent xpgain = new PlayerXpGainEvent(player, xp, message);
-				plugin.getPluginManager().callEvent(xpgain);
+				plugin.getExperienceManager().onXPGain(player, xp, message);
 				data.setHerbalism(0);
 			}
 			else
@@ -373,8 +363,7 @@ public class ExperienceListener implements Listener
 				else
 					article = "a";
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.taminggain, article, mobname);
-				PlayerXpGainEvent xpgainevent = new PlayerXpGainEvent(player, plugin.taminggain, message);
-				plugin.getPluginManager().callEvent(xpgainevent);
+				plugin.getExperienceManager().onXPGain(player, plugin.taminggain, message);
 				
 				/**Wolf/Ocelot's Pal**/
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -430,6 +419,9 @@ public class ExperienceListener implements Listener
 		if (player == null)
 			return;
 		
+		if (plugin.enchanting == false)
+			return;
+
 		int cost = event.getExpLevelCost();
 		if (cost < 15)
 			return;
@@ -438,151 +430,10 @@ public class ExperienceListener implements Listener
 		int level = data.getLevel();
 		if (level == 0) level = 1;
 		if (level > 30) level = 30;
-		
-		if (plugin.enchanting == true)
-		{
-			int xp = (cost/2) + plugin.enchantbase;
-			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
-		
-			PlayerXpGainEvent xpgain = new PlayerXpGainEvent(player, xp, message);
-			plugin.getPluginManager().callEvent(xpgain);
-		}
-	}
-	
-	/**Rewards items and money on player levelup**/
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerLevelup(PlayerLevelupEvent event)
-	{
-		/**Cancellation check**/
-		if (event.isCancelled())
-			return;
-		
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
-		/**Disabled World Check**/
-		if (plugin.isDisabledWorld(player))
-		{
-			event.setCancelled(true);
-			return;
-		}
-		
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		
-		/**Prior Skill Data**/
-		int oldfrenzy = (plugin.frenzyd + (data.getLevel()*plugin.frenzym));
-		int oldspick = (plugin.spbaseduration + (data.getLevel()*plugin.superpickm));
-		int oldammo = (plugin.ammobaseduration + (data.getLevel()*plugin.ammomultiplier));
-		
-		/**Prepare data for the next level**/
-		if (data.getLevel() < 250)
-		{
-			data.setLevel(data.getLevel() + 1); // set the level cap at 250, seems fair enough
-			data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
-		}
-		
-		data.setPlayerxp(0);
-		
-		/**New Skill Data**/
-		int newfrenzy = (plugin.frenzyd + (data.getLevel()*plugin.frenzym));
-		int newspick = (plugin.spbaseduration + (data.getLevel()*plugin.superpickm));
-		int newammo = (plugin.ammobaseduration + (data.getLevel()*plugin.ammomultiplier));
-		
-		/**Send messages**/
-		int level = data.getLevel();
-		if (level == 250)
-		{
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("level_cap")));
-		}
-		else
-		{
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
-		}
-		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_levelup"), player.getName(), level);
-		
-		/**Award money if enabled**/
-		if (plugin.money == true)
-		{
-			/**Vault Check**/
-			PluginManager pm = plugin.getServer().getPluginManager();
-			if (pm.isPluginEnabled("Vault"))
-			{
-				Economy economy = plugin.getEconomy();
-				if (economy != null)
-				{
-					int money = level*plugin.basemoney;
-					economy.depositPlayer(player.getName(), money);
-					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
-				}
-			}
-		}
-		
-		/**Award items if enabled**/
-		if (plugin.items == true)
-		{
-			int rewardamt = level*plugin.itemperlevel;
-			ItemStack item = new ItemStack(plugin.itemreward, rewardamt);
-			String friendlyitem = item.getType().toString().toLowerCase().replaceAll("_", " ");
-			InventoryWorkaround.addItems(player.getInventory(), item);
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, friendlyitem));
-		}
-		
-		/**Tell Players if Skill(s) went up**/
-		double frenzy = newfrenzy - oldfrenzy;
-		double spick = newspick - oldspick;
-		double ammo = newammo - oldammo;
-		
-		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_skills")));
-		if (frenzy > 0)
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_frenzy"), String.valueOf(frenzy)));
-		if (spick > 0)
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_spick"), String.valueOf(spick)));
-		if (ammo > 0)
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_ammo"), String.valueOf(ammo)));
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerXpGain(PlayerXpGainEvent event)
-	{	
-		/**Cancellation check**/
-		if (event.isCancelled())
-			return;
-		
-		/**Cancel event if in a disabled world**/
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
-		/**Disabled World Check**/
-		if (plugin.isDisabledWorld(player))
-		{
-			event.setCancelled(true);
-			return;
-		}
-		
-		/**Send The Message**/
-		String message = event.getMessage();
-		if (message != "")
-			player.sendMessage(message);
 
-		/**Add the xp gained to their overall xp**/
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		int xpgained = event.getXpGained();
-		data.setPlayerxp(data.getPlayerxp() + xpgained);
-		data.setTotalxp(data.getTotalxp() + xpgained);
+		int xp = (cost/2) + plugin.enchantbase;
+		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
 		
-		/**Levelup check**/
-		int xp = data.getPlayerxp();
-		int xpneeded = data.getXpneeded();
-		int newlevel = (xp/xpneeded);
-		int oldlevel = data.getLevel();
-		
-		if ((xp - xpneeded) >= 0)
-		{
-			/**If so, call levelup event**/
-			PluginManager pm = plugin.getPluginManager();
-			pm.callEvent(new PlayerLevelupEvent (player, newlevel, oldlevel));
-		}
+		plugin.getExperienceManager().onXPGain(player, xp, message);
 	}
 }

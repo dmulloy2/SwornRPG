@@ -3,6 +3,9 @@ package net.dmulloy2.swornrpg;
 import java.util.HashMap;
 
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.events.FrenzyActivateEvent;
+import net.dmulloy2.swornrpg.events.SuperPickaxeActivateEvent;
+import net.dmulloy2.swornrpg.events.UnlimitedAmmoActivateEvent;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.GameMode;
@@ -116,35 +119,49 @@ public class AbilitiesManager
 			}
 		}
 		
-		/**Activate Frenzy!**/
-		sendpMessage(player, plugin.getMessage("frenzy_enter"));
-		data.setFrenzy(true);
-		int strength = 0;
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
+		
 		/**Duration = frenzy base duraton + (frenzy multiplier x level)**/
 		final int duration = Integer.valueOf(Math.round(20*(plugin.frenzyd + (level*plugin.frenzym))));
+		
+		FrenzyActivateEvent event = new FrenzyActivateEvent(player, duration, command);
+		plugin.getPluginManager().callEvent(event);
+		
+		if (event.isCancelled())
+			return;
+		
+		sendpMessage(player, plugin.getMessage("frenzy_enter"));
+		data.setFrenzy(true);
+		int strength = 0;
+		
 		player.addPotionEffect(PotionEffectType.SPEED.createEffect(duration, strength));
 		player.addPotionEffect(PotionEffectType.INCREASE_DAMAGE.createEffect(duration, strength));
 		player.addPotionEffect(PotionEffectType.REGENERATION.createEffect(duration, strength));
 		player.addPotionEffect(PotionEffectType.JUMP.createEffect(duration, strength));
 		player.addPotionEffect(PotionEffectType.FIRE_RESISTANCE.createEffect(duration, strength));
 		player.addPotionEffect(PotionEffectType.DAMAGE_RESISTANCE.createEffect(duration, strength));
+		
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_frenzy_activate"), player.getName(), duration);
+		
 		class FrenzyThread extends BukkitRunnable
 		{
 			@Override
 			public void run()
 			{
 				sendpMessage(player, plugin.getMessage("frenzy_wearoff"));
+				data.setFrenzy(false);
+				
 				int cooldown = (duration*plugin.frenzycd);
 				data.setFrenzycd(cooldown);
 				data.setFcooldown(true);
-				data.setFrenzy(false);
+				
+				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_frenzy_cooldown"), player.getName(), cooldown);
 			}
 		}
+		
 		new FrenzyThread().runTaskLater(plugin, duration);
 	}
 	
@@ -257,17 +274,27 @@ public class AbilitiesManager
 				return;
 			}
 		}
-
-		/**Activate Super Pickaxe!**/
-		sendpMessage(player, plugin.getMessage("superpick_activated"));
+		
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
+		
 		final int duration = Integer.valueOf(Math.round(20*(plugin.spbaseduration + (level*plugin.superpickm))));
-		int strength = 1;
+		
+		SuperPickaxeActivateEvent event = new SuperPickaxeActivateEvent(player, duration, command);
+		plugin.getPluginManager().callEvent(event);
+		
+		if (event.isCancelled())
+			return;
+
+		sendpMessage(player, plugin.getMessage("superpick_activated"));
 		data.setSpick(true);
+		
+		int strength = 1;
 		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(duration, strength));
+		
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_superpick_activate"), player.getName(), duration);
+		
 		class SuperPickThread extends BukkitRunnable
 		{
 			@Override
@@ -275,12 +302,15 @@ public class AbilitiesManager
 			{
 				sendpMessage(player, plugin.getMessage("superpick_wearoff"));
 				data.setSpick(false);
-				data.setScooldown(true);
+				
 				int cooldown = (duration*plugin.superpickcd);
+				data.setScooldown(true);
 				data.setSuperpickcd(cooldown);
+				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_superpick_cooldown"), player.getName(), cooldown);
 			}
 		}
+		
 		new SuperPickThread().runTaskLater(plugin, duration);
 	}
 	
@@ -317,27 +347,39 @@ public class AbilitiesManager
 			return;
 		}
 		
-		/**Activate Unlimited Ammo!**/
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
+		
 		final int duration = Integer.valueOf(Math.round(20*(plugin.ammobaseduration + (level*plugin.ammomultiplier))));
-		data.setUnlimtdammo(true);
+		
+		UnlimitedAmmoActivateEvent event = new UnlimitedAmmoActivateEvent(player, duration);
+		plugin.getPluginManager().callEvent(event);
+		
+		if (event.isCancelled())
+			return;
+		
 		sendpMessage(player, plugin.getMessage("ammo_now_unlimited"));
+		data.setUnlimtdammo(true);
+		
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_ammo_activate"), player.getName(), duration);
+		
 		class UnlimitedAmmoThread extends BukkitRunnable
 		{
 			@Override
 			public void run()
 			{
-				data.setUnlimtdammo(false);
 				sendpMessage(player, plugin.getMessage("ammo_nolonger_unlimited"));
-				data.setAmmocooling(true);
+				data.setUnlimtdammo(false);
+				
 				int cooldown = (duration*plugin.ammocooldown);
+				data.setAmmocooling(true);
 				data.setAmmocd(cooldown);
+				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_ammo_cooldown"), player.getName(), cooldown);
 			}
 		}
+		
 		new UnlimitedAmmoThread().runTaskLater(plugin, duration);
 	}
 	
