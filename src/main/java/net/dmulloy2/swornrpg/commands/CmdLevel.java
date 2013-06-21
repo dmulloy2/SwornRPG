@@ -87,7 +87,7 @@ public class CmdLevel extends SwornRPGCommand
 		StringBuilder bar = new StringBuilder();
 		for (int i=0; i<bars; i++)
 		{
-			bar.append("&a=");
+			bar.append("&b=");
 		}
 		
 		int left = scale - bars;
