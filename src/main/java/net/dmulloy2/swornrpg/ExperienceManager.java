@@ -113,6 +113,7 @@ public class ExperienceManager
 				{
 					int money = level*plugin.basemoney;
 					economy.depositPlayer(player.getName(), money);
+					
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
 				}
 			}
@@ -123,9 +124,10 @@ public class ExperienceManager
 		{
 			int rewardamt = level*plugin.itemperlevel;
 			ItemStack item = new ItemStack(plugin.itemreward, rewardamt);
-			String friendlyitem = item.getType().toString().toLowerCase().replaceAll("_", " ");
 			InventoryWorkaround.addItems(player.getInventory(), item);
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, friendlyitem));
+			
+			String itemName = FormatUtil.getFriendlyName(item.getType());
+			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, itemName));
 		}
 		
 		/**Tell Players if Skill(s) went up**/

@@ -163,7 +163,10 @@ public class EntityListener implements Listener
 				if (!(event.getEntity() instanceof Player))
 					return;
 				
-				int rand = Util.random(50);
+				if (!plugin.gracefulroll)
+					return;
+				
+				int rand = Util.random(plugin.gracefulrollodds);
 				if (rand == 0)
 				{
 					event.setDamage(0);

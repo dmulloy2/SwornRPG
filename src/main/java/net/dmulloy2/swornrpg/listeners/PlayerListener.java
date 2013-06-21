@@ -389,6 +389,22 @@ public class PlayerListener implements Listener
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 		
+		if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)
+			return;
+		
+		String inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
+		String[] array = inhand.split(" ");
+			
+		if (array.length < 2)
+			return;
+			
+		/**If it is not a diamond or iron tool, return**/
+		if (!array[0].equalsIgnoreCase("diamond") && !array[0].equalsIgnoreCase("iron"))
+			return;
+		
+		if (!array[1].equalsIgnoreCase("pickaxe") && !array[1].equalsIgnoreCase("spade"))
+			return;
+		
 		plugin.getAbilitiesManager().activateSpick(player, false, action);
 	}
 	
@@ -399,25 +415,22 @@ public class PlayerListener implements Listener
 		Action action = event.getAction();
 		Player player = event.getPlayer();
 		
-		String inhand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
+		if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)
+			return;
+		
+		String inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 		String[] array = inhand.split(" ");
 			
 		if (array.length < 2)
-		{
 			return;
-		}
 			
 		/**If it is not a diamond or iron tool, return**/
-		if (!array[0].equals("diamond") && !array[0].equals("iron"))
-		{
+		if (!array[0].equalsIgnoreCase("diamond") && !array[0].equalsIgnoreCase("iron"))
 			return;
-		}
 			
 		/**If it is not a shovel or pickaxe, return**/
-		if (!array[1].equals("sword"))
-		{
+		if (!array[1].equalsIgnoreCase("sword"))
 			return;
-		}
 		
 		plugin.getAbilitiesManager().activateFrenzy(player, false, action);
 	}
@@ -482,7 +495,7 @@ public class PlayerListener implements Listener
 						if (r == 0) 
 						{
 							drop(loc, fishDrop.getItem().getTypeId(), fishDrop.getItem().getData().getData());
-							String name = fishDrop.getItem().toString().toLowerCase().replaceAll("_", " ");
+							String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
 							player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_drop"), name));
 						}
 					}
@@ -521,6 +534,9 @@ public class PlayerListener implements Listener
 		if (player == null)
 			return;
 		
+		if (!plugin.speedboost)
+			return;
+		
 		if (plugin.isDisabledWorld(player))
 			return;
 		
@@ -536,10 +552,10 @@ public class PlayerListener implements Listener
 		
 		if (player.isSprinting())
 		{
-			int rand = Util.random(20);
+			int rand = Util.random(plugin.speedboostodds);
 			if (rand == 0)
 			{			
-				player.addPotionEffect(PotionEffectType.SPEED.createEffect(40, 1));
+				player.addPotionEffect(PotionEffectType.SPEED.createEffect(plugin.speedboostduration, 1));
 				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("speed_boost")));
 			}
 		}

@@ -181,7 +181,7 @@ playerhealth:
 
 #############################################
 #+-----------------------------------------+#
-#|              Health Tags                |#
+#|            Miscellaneous                |#
 #+-----------------------------------------+#
 #############################################
 
@@ -192,6 +192,24 @@ playerhealth:
 confusion:
   enabled: true
   duration: 3
+  
+# Speed Boost - random chance of a player speeding up
+# Enabled - boolean.
+# Odds (integer) chance (1 out of odds)
+# Duration (integer) in seconds.
+
+speedboost:
+  enabled: true
+  odds: 20
+  duration: 2
+  
+# Graceful Roll - random chance of a player not taking fall damage
+# Enabled - boolean.
+# Odds (integer) chance (1 out of odds)
+
+gracefulroll:
+  enabled: true
+  odds: 
  
 #############################################
 #+-----------------------------------------+#

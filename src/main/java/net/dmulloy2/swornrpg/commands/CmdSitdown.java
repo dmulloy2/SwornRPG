@@ -6,6 +6,7 @@ import org.bukkit.util.Vector;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 
 public class CmdSitdown extends SwornRPGCommand
 {
@@ -29,7 +30,7 @@ public class CmdSitdown extends SwornRPGCommand
 		}
 		else
 		{
-			String seat = block.getType().toString().toLowerCase().replaceAll("_", " ");
+			String seat = FormatUtil.getFriendlyName(block.getType());
 			if (seat.contains("step")||seat.contains("stair"))
 			{
 				data.setSitting(true);	

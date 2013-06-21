@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -42,9 +43,11 @@ public class CmdItemName extends SwornRPGCommand
 	    		name = name.append(ChatColor.translateAlternateColorCodes('&', args[i]) + " ");
 		    }
 	    	name.deleteCharAt(name.lastIndexOf(" "));
+	    	
 	    	meta.setDisplayName(name.toString());
 	    	hand.setItemMeta(meta);
-	    	String inhand = hand.getType().toString().toLowerCase().replaceAll("_", " ");
+	    	
+	    	String inhand = FormatUtil.getFriendlyName(hand.getType());
 	    	sendpMessage(plugin.getMessage("item_name"), inhand, name);
 	    }
 	}

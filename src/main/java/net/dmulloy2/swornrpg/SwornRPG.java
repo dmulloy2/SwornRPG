@@ -94,12 +94,13 @@ public class SwornRPG extends JavaPlugin
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
-	marriage, taming, confusion, fishing, herbalism, savecache, enchanting, blockredemption;
+	marriage, taming, confusion, fishing, herbalism, savecache, enchanting, blockredemption,
+	speedboost, gracefulroll;
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
 	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain,
-	saveinterval, enchantbase;
+	saveinterval, enchantbase, speedboostduration, speedboostodds, gracefulrollodds;
 	
 	private double newVersion, currentVersion;
     public String salvage, tagformat;
@@ -365,6 +366,13 @@ public class SwornRPG extends JavaPlugin
 		ammobaseduration = getConfig().getInt("unlimitedammo.baseduration");
 		ammocooldown = getConfig().getInt("unlimitedammo.cooldownmultiplier");
 		ammomultiplier = getConfig().getInt("unlimitedammo.levelmultiplier");
+		
+		/**Miscellaneous**/
+		speedboost = getConfig().getBoolean("speedboost.enabled");
+		speedboostodds = getConfig().getInt("speedboost.odds");
+		speedboostduration = getConfig().getInt("speedboost.duration");
+		gracefulroll = getConfig().getBoolean("gracefulroll.enabled");
+		gracefulrollodds = getConfig().getInt("gracefulroll.odds");
 	}
     
     /**Vault Check**/
