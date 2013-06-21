@@ -70,12 +70,12 @@ public class CmdAbilities extends SwornRPGCommand
 		if (plugin.frenzyenabled)
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy_cooldown"), 
+			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), 
 					(plugin.frenzyd + (level*plugin.frenzym))));
 			
 			if (data.isFcooldown())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0}", data.getFrenzycd()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzycd()));
 			}
 			
 			sendMessage(line.toString());
@@ -83,18 +83,30 @@ public class CmdAbilities extends SwornRPGCommand
 		
 		if (plugin.spenabled)
 		{
+			StringBuilder line = new StringBuilder();
+			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), 
+					(plugin.spbaseduration + (level*plugin.superpickm))));
+			
 			if (data.isScooldown())
-				sendMessage(plugin.getMessage("ability_spick_cooldown"), (plugin.spbaseduration + (level*plugin.superpickm)), data.getSuperpickcd());
-			else
-				sendMessage(plugin.getMessage("ability_spick"), (plugin.spbaseduration + (level*plugin.superpickm)));
+			{
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperpickcd()));
+			}
+			
+			sendMessage(line.toString());
 		}
 		
-		if (plugin.ammoenabled && plugin.getServer().getPluginManager().isPluginEnabled("PVPGunPlus"))
+		if (plugin.ammoenabled && plugin.getPluginManager().isPluginEnabled("PVPGunPlus"))
 		{
+			StringBuilder line = new StringBuilder();
+			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), 
+					(plugin.ammobaseduration + (level*plugin.ammomultiplier))));
+			
 			if (data.isAmmocooling())
-				sendMessage(plugin.getMessage("ability_ammo_cooldown"), (plugin.ammobaseduration + (level*plugin.ammomultiplier)), data.getAmmocd());
-			else
-				sendMessage(plugin.getMessage("ability_ammo"), (plugin.ammobaseduration + (level*plugin.ammomultiplier)));
+			{
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperpickcd()));
+			}
+			
+			sendMessage(line.toString());
 		}
 		
 		sendMessage(plugin.getMessage("ability_level"));
