@@ -288,7 +288,7 @@ block-drops:
 # Format: 
 #  [level]:
 #    - "rewardId:chance out of 100"
-block-drops:
+fish-drops:
   0:
     - "301:10"
     - "268:5"
