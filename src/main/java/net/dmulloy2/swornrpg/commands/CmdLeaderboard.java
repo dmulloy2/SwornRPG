@@ -86,6 +86,6 @@ public class CmdLeaderboard extends SwornRPGCommand
 		for (String s : lines)
 			sendMessage(s);
 		
-		sendpMessage(plugin.getMessage("leaderboard_check"));
+		sendMessage(plugin.getMessage("leaderboard_check"));
 	}
 }
