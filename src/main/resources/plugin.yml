@@ -139,9 +139,9 @@ permissions:
       srpg.asay: true
       srpg.council: true
       srpg.tag: true
-      srpg.tagr: true
-      srpg.othertag: true
-      srpg.levelr: true
+      srpg.tag.remove: true
+      srpg.tag.others: true
+      srpg.level.reset: true
       srpg.iname: true
       srpg.addxp: true
       srpg.update: true
@@ -181,13 +181,13 @@ permissions:
   srpg.tag:
     description: Allows a player to set their own tag
     default: false
-  srpg.removetag:
+  srpg.tag.remove:
     description: Allows access to /tagr
     default: false
-  srpg.othertag:
+  srpg.tag.others:
     description: Allows a player to set another player's tag
     default: false
-  srpg.levelr:
+  srpg.level.reset:
     description: Allows access to /levelr
     default: false
   srpg.iname:

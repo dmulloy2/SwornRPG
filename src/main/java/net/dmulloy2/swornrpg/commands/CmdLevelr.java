@@ -19,8 +19,9 @@ public class CmdLevelr extends SwornRPGCommand
 		super(plugin);
 		this.name = "levelr";
 		this.description = "Reset a player's level";
+		this.aliases.add("levelreset");
 		this.optionalArgs.add("player");
-		this.permission = PermissionType.CMD_LEVELR.permission;
+		this.permission = PermissionType.CMD_LEVEL_RESET.permission;
 		this.mustBePlayer = false;
 	}
 	

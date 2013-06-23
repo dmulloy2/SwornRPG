@@ -17,9 +17,9 @@ public class CmdTagr extends SwornRPGCommand
 		super(plugin);
 		this.name = "tagr";
 		this.description = "Reset a player's tag";
-		this.aliases.add("resettag");
+		this.aliases.add("tagreset");
 		this.optionalArgs.add("player");
-		this.permission = PermissionType.CMD_TAGR.permission;
+		this.permission = PermissionType.CMD_TAG_RESET.permission;
 		this.mustBePlayer = true;
 	}
 	

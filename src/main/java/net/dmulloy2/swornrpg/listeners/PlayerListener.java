@@ -6,13 +6,13 @@ import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.util.TimeUtil;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
-import net.dmulloy2.swornrpg.util.TooBigException;
-import net.dmulloy2.swornrpg.util.Util;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.InventoryWorkaround;
+import net.dmulloy2.swornrpg.util.TimeUtil;
+import net.dmulloy2.swornrpg.util.TooBigException;
+import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -40,7 +40,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.material.MaterialData;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -159,28 +158,22 @@ public class PlayerListener implements Listener
 			return;
 		
 		/**Coordinates**/
-		int x = (int) Math.floor(player.getLocation().getX());
-		int y = (int) Math.floor(player.getLocation().getY());
-		int z = (int) Math.floor(player.getLocation().getZ());
+		Location loc = player.getLocation();
+		int x = loc.getBlockX();
+		int y = loc.getBlockY();
+		int z = loc.getBlockZ();
 		
-		/**Player death book toggle check**/
+		/**Player death coords toggle check**/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (!(data.isDeathbookdisabled()))
+		if (!data.isDeathbookdisabled())
 		{
-			/**Check for essentials**/
-			PluginManager pm = plugin.getServer().getPluginManager();
-			
 			/**If essentials is found, send the message via mail**/
-			if (pm.isPluginEnabled("Essentials"))
-			{		
+			IEssentials ess = Util.getEssentials();
+			if (ess != null)
+			{
+				User user = Util.getEssentialsUser(player);
+				
 				Entity killer = event.getEntity().getKiller();
-				
-				/**Initialize Essentials Hook**/
-				IEssentials ess = null;
-				Plugin essPlugin = pm.getPlugin("Essentials"); //No need for null check, we already established that it was enabled
-				ess = (IEssentials) essPlugin;
-				User user = ess.getUser(player); //If essentials is functioning, the player should have a user instance
-				
 				if (killer instanceof Player)
 				{
 					Player killerp = event.getEntity().getKiller();
@@ -207,15 +200,18 @@ public class PlayerListener implements Listener
 			else
 			{
 				/**If not found, create a book with their death coords**/
-				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
 				BookMeta meta = (BookMeta)book.getItemMeta();
+				
+				meta.setTitle(ChatColor.RED + "DeathCoords");
+				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
 				
 				final List<String> pages = new ArrayList<String>();
 				pages.add(FormatUtil.format(plugin.getMessage("book_format"), player.getName(), x, y, z));
-				meta.setTitle(ChatColor.RED + "DeathCoords");
-				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
 				meta.setPages(pages);
+				
 				book.setItemMeta(meta);
+				
 				class BookGiveTask extends BukkitRunnable
 				{
 					@Override
@@ -225,7 +221,9 @@ public class PlayerListener implements Listener
 						pages.clear();
 					}	
 				}
+				
 				new BookGiveTask().runTaskLater(plugin, 20);
+				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "given", "book");
 			}
 		}

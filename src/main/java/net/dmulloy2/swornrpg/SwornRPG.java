@@ -21,14 +21,19 @@ package net.dmulloy2.swornrpg;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.logging.Level;
+
 import javax.xml.parsers.DocumentBuilderFactory;
-import lombok.Getter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**Plugin imports**/
 import net.dmulloy2.swornrpg.commands.*;
@@ -36,7 +41,13 @@ import net.dmulloy2.swornrpg.handlers.*;
 import net.dmulloy2.swornrpg.listeners.*;
 import net.dmulloy2.swornrpg.util.*;
 import net.dmulloy2.swornrpg.data.*;
+
+/**Other Plugin Imports**/
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.Faction;
 import net.milkbowl.vault.economy.Economy;
+import lombok.Getter;
 
 /**Bukkit imports**/
 import org.bukkit.ChatColor;
@@ -53,14 +64,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
 
 /**
  * @author dmulloy2
@@ -83,38 +86,43 @@ public class SwornRPG extends JavaPlugin
 	private @Getter TagManager tagManager;
 	private @Getter ExperienceManager experienceManager;
 
-	/**Hash maps**/
+	/**Proposal Map**/
     public HashMap<String, String> proposal = new HashMap<String, String>();
-	public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
-    public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
-    public Map<Integer, List<BlockDrop>> fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
     
-    /**Configuration/Update Checking**/
+    /**Configuration**/
 	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
 	marriage, taming, confusion, fishing, herbalism, savecache, enchanting, blockredemption,
 	speedboost, gracefulroll;
+	
 	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
 	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain,
 	saveinterval, enchantbase, speedboostduration, speedboostodds, gracefulrollodds;
 	
-	private double newVersion, currentVersion;
-    public String salvage, tagformat;
+	public String salvage, tagformat;
     public List<String> disabledWorlds, redeemBlacklist;
+    
+    public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
+    public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
+    public Map<Integer, List<BlockDrop>> fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
 	
-	public String prefix, noperm;
+    /**Update Checking**/
+	private double newVersion, currentVersion;
+    
+	/**Global Prefix**/
+	public String prefix;
 
 	@Override
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
 
-		/**Register Handlers**/
+		/**Register Handlers  /Managers**/
 		commandHandler = new CommandHandler(this);
-		permissionHandler = new PermissionHandler(this);
+		permissionHandler = new PermissionHandler();
 		logHandler = new LogHandler(this);
 		playerDataCache = new PlayerDataCache(this);
 		
@@ -129,10 +137,10 @@ public class SwornRPG extends JavaPlugin
 		saveResource("messages.properties", true);
 		resourceHandler = new ResourceHandler(this, getClassLoader());
 		
-		/**Version Checker**/
+		/**Update Checker**/
 		currentVersion = Double.valueOf(getDescription().getVersion().replaceFirst("\\.", ""));
 		
-		/**Register Listener events**/
+		/**Register Listeners**/
 		pluginManager.registerEvents(new PlayerListener(this), this);
 		pluginManager.registerEvents(new EntityListener(this), this);
 		pluginManager.registerEvents(new BlockListener(this), this);
@@ -141,7 +149,9 @@ public class SwornRPG extends JavaPlugin
 		/**Check for PlayerData folder**/
 		File playersFile = new File(getDataFolder(), "players");
 		if (!playersFile.exists())
+		{
 			playersFile.mkdir();
+		}
 
 		/**Check for Config**/
         File conf = new File(getDataFolder(), "config.yml");
@@ -162,9 +172,8 @@ public class SwornRPG extends JavaPlugin
 		/**Initialize Tags**/
 		tagManager.load();
 		
-		/**Define Some Messages**/
+		/**Define Prefix**/
 		prefix = FormatUtil.format(getMessage("prefix") + " ");
-		noperm = FormatUtil.format(getMessage("noperm"));
 		
 		/**Register Prefixed Commands**/
 		commandHandler.setCommandPrefix("srpg");
@@ -202,6 +211,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdUnlimitedAmmo (this));
 		commandHandler.registerCommand(new CmdAbilities (this));
 
+		/**Update Health if Reload**/
 		for (Player player : getServer().getOnlinePlayers())
 		{
 			try 
@@ -252,6 +262,7 @@ public class SwornRPG extends JavaPlugin
 			new OnlineGainThread().runTaskTimer(this, 0, 1200);
 
 		long finish = System.currentTimeMillis();
+		
 		outConsole(getMessage("log_enabled"), getDescription().getFullName(), finish - start);
 	}
 	
@@ -260,9 +271,13 @@ public class SwornRPG extends JavaPlugin
 	{
 		long start = System.currentTimeMillis();
 		
+		/**Save Data**/
 		playerDataCache.save();
+		
+		/**Clear Memory**/
 		clearMemory();
 
+		/**Cancel tasks / services**/
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
 		
@@ -271,6 +286,7 @@ public class SwornRPG extends JavaPlugin
 		outConsole(getMessage("log_disabled"), getDescription().getFullName(), finish - start);
 	}
 	
+	/**Clear Memory**/
 	public void clearMemory()
 	{
 		playerHealthBar.clear();
@@ -395,7 +411,7 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 	
-    /**Set up vault economy**/
+    /**Set up the Economy**/
     private boolean setupEconomy() 
 	{
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
@@ -407,10 +423,10 @@ public class SwornRPG extends JavaPlugin
 		return economy != null;
 	}
 
-    /**Update checker**/
+    /**Update Checker**/
     public double updateCheck(double currentVersion)
     {
-        String pluginUrlString = "http://dev.bukkit.org/bukkit-mods/swornrpg/files.rss";
+        String pluginUrlString = "http://dev.bukkit.org/bukkit-plugins/swornrpg/files.rss";
         try
         {
             URL url = new URL(pluginUrlString);
@@ -454,7 +470,7 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 	
-	/**Reload**/
+	/**Reload the Configuration**/
 	public void reload()
 	{
 		reloadConfig();
@@ -468,6 +484,8 @@ public class SwornRPG extends JavaPlugin
 	@SuppressWarnings("unchecked")
 	public void updateBlockDrops() 
 	{
+		blockDropsMap.clear();
+		
 		Map<String, ?> map = getConfig().getConfigurationSection("block-drops").getValues(true);
 		
 		for (Entry<String, ?> entry : map.entrySet()) 
@@ -501,6 +519,8 @@ public class SwornRPG extends JavaPlugin
 	@SuppressWarnings("unchecked")
 	public void updateFishDrops() 
 	{
+		fishDropsMap.clear();
+		
 		Map<String, ?> map = getConfig().getConfigurationSection("fish-drops").getValues(true);
 		
 		for (Entry<String, ?> entry : map.entrySet()) 
@@ -540,23 +560,36 @@ public class SwornRPG extends JavaPlugin
 				if (healthtags == true)
 				{
 					LivingEntity lentity = (LivingEntity)entity;
+					
+					List<EntityType> blockedTypes = new ArrayList<EntityType>(Arrays.asList(new EntityType[]{EntityType.VILLAGER, 
+							EntityType.ENDER_DRAGON, EntityType.WITHER/*, EntityType.HORSE*/}));
+					
+					if (blockedTypes.contains(entity.getType()))
+					{
+						if (!lentity.getCustomName().isEmpty())
+						{
+							if (lentity.getCustomName().contains("\u2764"))
+							{
+								lentity.setCustomNameVisible(false);
+								lentity.setCustomName("");
+							}
+							else
+							{
+								lentity.setCustomNameVisible(true);
+							}
+						}
+						
+						return;
+					}
+					
 					final int health = Math.round(lentity.getHealth() / 2);
 					final int maxhealth = Math.round(lentity.getMaxHealth() / 2);
 					final int hearts = Math.round((health * 10) / maxhealth);
 					
 					if (health == maxhealth)
-						lentity.setCustomNameVisible(false);
-					else
-						lentity.setCustomNameVisible(true);
-					
-					EntityType[] blockedTypes = new EntityType[]{EntityType.VILLAGER, EntityType.ENDER_DRAGON, EntityType.WITHER};
-					for (EntityType blockedType : blockedTypes)
 					{
-						if (entity.getType() == blockedType)
-						{
-							lentity.setCustomNameVisible(false);
-							lentity.setCustomName("");
-						}
+						lentity.setCustomNameVisible(false);
+						return;
 					}
 					
 					StringBuilder tag = new StringBuilder();
@@ -578,6 +611,7 @@ public class SwornRPG extends JavaPlugin
 					else //health null? (default to yellow, white hearts are ugly)
 						color = ChatColor.YELLOW;
 					    
+					lentity.setCustomNameVisible(true);
 					lentity.setCustomName(color + displayName);
 				}
 			}

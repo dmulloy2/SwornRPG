@@ -53,6 +53,7 @@ public class CmdRide extends SwornRPGCommand
 				
 		Location targetLocation = target.getLocation();
 		player.teleport(targetLocation);	
+		
 		class PassengerTask extends BukkitRunnable
 		{
 			@Override
@@ -66,6 +67,7 @@ public class CmdRide extends SwornRPGCommand
 				sendpMessage(plugin.getMessage("now_riding"), target.getName());
 			}	
 		}
+		
 		new PassengerTask().runTaskLater(plugin, 20);
 	}
 }

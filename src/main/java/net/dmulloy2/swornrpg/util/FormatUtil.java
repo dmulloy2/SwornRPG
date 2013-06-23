@@ -22,16 +22,17 @@ public class FormatUtil
 	
 	public static String getFriendlyName(Material mat)
 	{
-		String ret = mat.toString();
-		ret = ret.toLowerCase();
-		ret = ret.replaceAll("_", " ");
-		return (WordUtils.capitalize(ret));
+		return getFriendlyName(mat.toString());
 	}
 	
 	public static String getFriendlyName(EntityType entityType)
 	{
-		String ret = entityType.toString();
-		ret = ret.toLowerCase();
+		return getFriendlyName(entityType.toString());
+	}
+	
+	public static String getFriendlyName(String string)
+	{
+		String ret = string.toLowerCase();
 		ret = ret.replaceAll("_", " ");
 		return (WordUtils.capitalize(ret));
 	}

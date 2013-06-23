@@ -7,6 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 
 /**
  * @author dmulloy2
@@ -73,5 +77,27 @@ public class Util
 		int ydist = y1 - y2;
 		int zdist = z1 - z2;
 		return Math.sqrt(xdist * xdist + ydist * ydist + zdist * zdist); 
+	}
+	
+	public static IEssentials getEssentials()
+	{
+		if (Bukkit.getPluginManager().isPluginEnabled("Essentials"))
+		{
+			Plugin essPlugin = Bukkit.getPluginManager().getPlugin("Essentials");
+			return (IEssentials)essPlugin;
+		}
+		
+		return null;
+	}
+	
+	public static User getEssentialsUser(Player player)
+	{
+		IEssentials ess = getEssentials();
+		if (ess != null)
+		{
+			return ess.getUser(player.getName());
+		}
+		
+		return null;
 	}
 }

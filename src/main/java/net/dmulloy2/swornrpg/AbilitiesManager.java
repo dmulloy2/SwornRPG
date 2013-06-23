@@ -188,29 +188,7 @@ public class AbilitiesManager
 			if (command) sendpMessage(player, plugin.getMessage("creative_ability"));
 			return;
 		}
-		
-		/**Check to make sure it is an iron or diamond pickaxe**/
-		String inhand = player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ");
-		String[] array = inhand.split(" ");
-			
-		if (array.length < 2)
-		{
-			if (command) sendpMessage(player, plugin.getMessage("superpick_invalid_item"));
-			return;
-		}
-			
-		if (!array[0].equals("diamond") && !array[0].equals("iron"))
-		{
-			if (command) sendpMessage(player, plugin.getMessage("superpick_invalid_item"));
-			return;
-		}
-			
-		if (!array[1].equals("spade") && !array[1].equals("pickaxe"))
-		{
-			if (command) sendpMessage(player, plugin.getMessage("superpick_invalid_item"));
-			return;
-		}
-		
+
 		/**If the player is using SuperPick, return**/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSpick())
@@ -239,7 +217,7 @@ public class AbilitiesManager
 		{
 			if (!spickWaiting.containsKey(player.getName()))
 			{
-				inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
+				String inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inhand);
 				spickWaiting.put(player.getName(), System.currentTimeMillis());
 				new SpickRemoveThread(player).runTaskLater(plugin, 60);

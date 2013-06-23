@@ -1,6 +1,5 @@
 package net.dmulloy2.swornrpg.handlers;
 
-import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.permissions.Permission;
 
 import org.bukkit.command.CommandSender;
@@ -12,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class PermissionHandler 
 {
-	public PermissionHandler(SwornRPG plugin)
+	public PermissionHandler()
 	{
 	}
 	
