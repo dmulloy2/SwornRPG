@@ -69,7 +69,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		
 		if (requiredArgs.size() > args.length) 
 		{
-			err(plugin.prefix + plugin.getMessage("invalidargs") + " &c(" + getUsageTemplate(false) + "&c)");
+			err(plugin.getMessage("invalidargs") + " &c(" + getUsageTemplate(false) + "&c)");
 			return;
 		}
 		
@@ -99,7 +99,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	
 	protected final void err(String msg, Object... args)
 	{
-		sendMessage(FormatUtil.format(msg, args));
+		sendMessage(getMessage("error") + FormatUtil.format(" " + msg, args));
 	}
 	
 	protected PlayerData getPlayerData(OfflinePlayer target) 
@@ -179,7 +179,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		catch (NumberFormatException ex) 
 		{
 			if (msg)
-				err(plugin.prefix + plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
+				err(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
 			return -1;
 		}
 	}
@@ -193,7 +193,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		catch (NumberFormatException ex) 
 		{
 			if (msg)
-				err(plugin.prefix + plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
+				err(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
 			return -1;
 		}
 	}

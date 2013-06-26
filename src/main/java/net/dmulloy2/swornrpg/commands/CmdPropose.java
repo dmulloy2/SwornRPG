@@ -27,40 +27,37 @@ public class CmdPropose extends SwornRPGCommand
 	{
 		if (plugin.marriage == false)
 		{
-			sendpMessage(plugin.getMessage("command_disabled"));
+			err(plugin.getMessage("command_disabled"));
 			return;
 		}
+		
 		PlayerData data = getPlayerData(player);
 		Player target = Util.matchPlayer(args[0]);
-		if (target != null)
+		if (target == null)
 		{
-			String targetp = target.getName();
-			PlayerData data1 = getPlayerData(target);
-			if (args.length == 1)
-			{
-				if (data.getSpouse() != null)
-				{
-					sendpMessage(plugin.getMessage("polygamy"));
-				}
-				else if (targetp.equals(sender.getName()))
-				{
-					sendpMessage(plugin.getMessage("cannot_marry_self"));
-				}
-				else if (data1.getSpouse() != null)
-				{
-					sendpMessage(plugin.getMessage("target_is_married"), targetp);
-				}
-				else
-				{
-					plugin.proposal.put(targetp, sender.getName());
-					sendpMessage(plugin.getMessage("you_have_proposed"), targetp);
-					sendMessageTarget(plugin.getMessage("send_marriage_request"), target, sender.getName());
-				}
-			}
+			err(plugin.getMessage("noplayer"));
+			return;
+		}
+		
+		String targetp = target.getName();
+		PlayerData data1 = getPlayerData(target);
+		if (data.getSpouse() != null)
+		{
+			err(plugin.getMessage("polygamy"));
+		}
+		else if (targetp.equals(sender.getName()))
+		{
+			err(plugin.getMessage("cannot_marry_self"));
+		}
+		else if (data1.getSpouse() != null)
+		{
+			err(plugin.getMessage("target_is_married"), targetp);
 		}
 		else
 		{
-			sendpMessage(plugin.getMessage("noplayer"));
+			plugin.proposal.put(targetp, sender.getName());
+			sendpMessage(plugin.getMessage("you_have_proposed"), targetp);
+			sendMessageTarget(plugin.getMessage("send_marriage_request"), target, sender.getName());
 		}
 	}
 }

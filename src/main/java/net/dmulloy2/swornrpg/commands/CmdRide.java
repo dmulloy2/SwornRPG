@@ -32,7 +32,7 @@ public class CmdRide extends SwornRPGCommand
 		final Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 		{
-			sendpMessage(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("noplayer"));
 			return;
 		}
 		
@@ -58,16 +58,20 @@ public class CmdRide extends SwornRPGCommand
 		{
 			@Override
 			public void run()
-			{	
+			{		
+				if (! target.setPassenger(player))
+				{
+					err(plugin.getMessage("ride_error"));
+					return;
+				}
+
 				data.setRiding(true);
 				targetData.setVehicle(true);
-					
-				target.setPassenger(player);
 					
 				sendpMessage(plugin.getMessage("now_riding"), target.getName());
 			}	
 		}
 		
-		new PassengerTask().runTaskLater(plugin, 20);
+		new PassengerTask().runTaskLater(plugin, 40L);
 	}
 }

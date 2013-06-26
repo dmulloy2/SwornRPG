@@ -27,32 +27,31 @@ public class CmdMarry extends SwornRPGCommand
 	{
 		if (plugin.marriage == false)
 		{
-			sendpMessage(plugin.getMessage("command_disabled"));
+			err(plugin.getMessage("command_disabled"));
 			return;
 		}
-		if (plugin.proposal.containsKey(sender.getName()))
+		
+		if (! plugin.proposal.containsKey(player.getName()))
 		{
-			Player target = Util.matchPlayer(plugin.proposal.get(sender.getName()));
-			if (target != null)
-			{
-				String targetp = target.getName();
-				String senderp = sender.getName();
-				final PlayerData data = plugin.getPlayerDataCache().getData(senderp);
-				final PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
-				data.setSpouse(targetp);
-				data1.setSpouse(senderp);
-				sendMessageAll(plugin.getMessage("marry"), senderp, targetp);
-				plugin.proposal.remove(senderp);
-				plugin.proposal.remove(targetp);
-			}
-			else
-			{
-				sendpMessage(plugin.getMessage("noplayer"));
-			}
+			err(plugin.getMessage("no_proposal"));
+			return;
 		}
-		else
+		
+		Player target = Util.matchPlayer(plugin.proposal.get(sender.getName()));
+		if (target == null)
 		{
-			sendpMessage(plugin.getMessage("no_proposal"));
+			err(plugin.getMessage("no_player"));
+			return;
 		}
+		
+		PlayerData data = getPlayerData(player);
+		data.setSpouse(target.getName());
+		
+		PlayerData data1 = getPlayerData(target);
+		data1.setSpouse(player.getName());
+
+		sendMessageAll(plugin.getMessage("marry"), player.getName(), target.getName());
+		plugin.proposal.remove(player.getName());
+		plugin.proposal.remove(target.getName());
 	}
 }

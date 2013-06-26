@@ -28,9 +28,10 @@ public class CmdSpouse extends SwornRPGCommand
 	{
 		if (plugin.marriage == false)
 		{
-			sendpMessage(plugin.getMessage("command_disabled"));
+			err(plugin.getMessage("command_disabled"));
 			return;
 		}
+		
 		OfflinePlayer target = null;
 		if (args.length == 1)
 		{
@@ -40,7 +41,7 @@ public class CmdSpouse extends SwornRPGCommand
 				target = Util.matchOfflinePlayer(args[0]);
 				if (target == null)
 				{
-					sendpMessage(plugin.getMessage("noplayer"));
+					err(plugin.getMessage("noplayer"));
 					return;
 				}
 			}
@@ -53,14 +54,14 @@ public class CmdSpouse extends SwornRPGCommand
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("console_spouse"));
+				err(plugin.getMessage("console_spouse"));
 				return;
 			}
 		}
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{
-			sendpMessage(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("noplayer"));
 			return;
 		}
 		String targetp = target.getName();

@@ -36,9 +36,9 @@ public class CmdStaffList extends SwornRPGCommand
 			{
 				line = new StringBuilder();
 				if (player.isOp())
-					line.append(FormatUtil.format("&c" + player.getName()));
+					line.append(FormatUtil.format("&b" + player.getName()));
 				else
-					line.append(FormatUtil.format("&6" + player.getName()));
+					line.append(FormatUtil.format("&e" + player.getName()));
 				lines.add(line.toString());
 			}
 		}

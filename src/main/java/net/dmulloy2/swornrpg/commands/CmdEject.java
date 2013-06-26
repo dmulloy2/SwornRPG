@@ -22,22 +22,21 @@ public class CmdEject extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (player.getPassenger() != null)
+		if (player.getPassenger() == null)
 		{
-			Entity target = player.getPassenger();
-			if (target instanceof Player)
-			{
-				Player targetp = (Player)player.getPassenger();
-				PlayerData data = getPlayerData(targetp);
-				data.setRiding(false);
-			}
-			player.eject();
-			PlayerData data = getPlayerData(player);
-			data.setVehicle(false);
+			err(plugin.getMessage("no_player"));
+			return;
 		}
-		else
+
+		Entity target = player.getPassenger();
+		if (target instanceof Player)
 		{
-			sendpMessage(plugin.getMessage("no_passenger"));
+			Player targetp = (Player)player.getPassenger();
+			PlayerData data = getPlayerData(targetp);
+			data.setRiding(false);
 		}
+		player.eject();
+		PlayerData data = getPlayerData(player);
+		data.setVehicle(false);
 	}
 }

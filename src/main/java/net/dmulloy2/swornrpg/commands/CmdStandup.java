@@ -25,20 +25,19 @@ public class CmdStandup extends SwornRPGCommand
 	public void perform()
 	{
 		PlayerData data = getPlayerData(player);
-		if (data.isSitting())
+		if (! data.isSitting())
 		{
-			Entity vehicle = player.getVehicle();
-			if (vehicle instanceof Arrow)
-			{
-				player.leaveVehicle();
-				vehicle.remove();
-				player.teleport(vehicle.getLocation().add(0, 1, 0));
-				data.setSitting(false);
-			}
+			err(plugin.getMessage("not_sitting"));
+			return;
 		}
-		else
+		
+		Entity vehicle = player.getVehicle();
+		if (vehicle instanceof Arrow)
 		{
-			sendpMessage(plugin.getMessage("not_sitting"));
+			player.leaveVehicle();
+			vehicle.remove();
+			player.teleport(vehicle.getLocation().add(0, 1, 0));
+			data.setSitting(false);
 		}
 	}
 }

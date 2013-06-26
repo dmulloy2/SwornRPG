@@ -28,24 +28,24 @@ public class CmdUnride extends SwornRPGCommand
 		PlayerData data = getPlayerData(player);
 		if (data.isSitting())
 		{
-			sendpMessage(plugin.getMessage("unride_sitting"));
+			err(plugin.getMessage("unride_sitting"));
 			return;
 		}
-		if (player.getVehicle() != null)
+		
+		if (player.getVehicle() == null)
 		{
-			Entity target = player.getVehicle();
-			if (target instanceof Player)
-			{
-				Player targetp = (Player)player.getVehicle();
-				PlayerData data1 = getPlayerData(targetp);
-				data1.setVehicle(false);
-			}
-			player.leaveVehicle();
-			data.setRiding(false);
+			err(plugin.getMessage("not_riding"));
+			return;
 		}
-		else
+
+		Entity target = player.getVehicle();
+		if (target instanceof Player)
 		{
-			sendpMessage(plugin.getMessage("not_riding"));
+			Player targetp = (Player)player.getVehicle();
+			PlayerData data1 = getPlayerData(targetp);
+			data1.setVehicle(false);
 		}
+		player.leaveVehicle();
+		data.setRiding(false);
 	}
 }

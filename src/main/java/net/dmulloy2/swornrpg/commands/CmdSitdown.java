@@ -27,22 +27,22 @@ public class CmdSitdown extends SwornRPGCommand
 		if (block == null)
 		{
 			sendpMessage(plugin.getMessage("no_block"));
+			return;
+		}
+
+		String seat = FormatUtil.getFriendlyName(block.getType());
+		if (seat.contains("Step")||seat.contains("Stair"))
+		{
+			Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
+			it.setPassenger(player);
+			data.setSitting(true);	
+			
+			sendpMessage(plugin.getMessage("now_sitting"), seat);
+			sendpMessage(plugin.getMessage("standup_command"));
 		}
 		else
 		{
-			String seat = FormatUtil.getFriendlyName(block.getType());
-			if (seat.contains("step")||seat.contains("stair"))
-			{
-				data.setSitting(true);	
-				Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
-				it.setPassenger(player);
-				sendpMessage(plugin.getMessage("now_sitting"), seat);
-				sendpMessage(plugin.getMessage("standup_command"));
-			}
-			else
-			{
-				sendpMessage(plugin.getMessage("no_chair"));
-			}
+			sendpMessage(plugin.getMessage("no_chair"));
 		}
 	}
 }

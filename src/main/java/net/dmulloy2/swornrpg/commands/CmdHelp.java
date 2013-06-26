@@ -35,7 +35,7 @@ public class CmdHelp extends SwornRPGCommand
 		
 		if (page < 0 || page >= helpPages.size())
 		{
-			sendpMessage(plugin.getMessage("invalid_help_page"), args[0]);
+			err(plugin.getMessage("invalid_help_page"), args[0]);
 			return;
 		}
 		for (String string : helpPages.get(page))

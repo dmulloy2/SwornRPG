@@ -28,7 +28,7 @@ public class CmdTagr extends SwornRPGCommand
 	{
 		if (!plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
-			sendpMessage(plugin.getMessage("no_tagapi"));
+			err(plugin.getMessage("no_tagapi"));
 			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_tagapi_null"));
 			return;
 		}
@@ -43,7 +43,7 @@ public class CmdTagr extends SwornRPGCommand
 		{
 			if (args[0].length() > 16) 
 			{
-				sendpMessage(plugin.getMessage("username_too_large"));
+				err(plugin.getMessage("username_too_large"));
 				return;
 			}
 			Player target = Util.matchPlayer(args[0]);

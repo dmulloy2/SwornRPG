@@ -113,7 +113,7 @@ public class SwornRPG extends JavaPlugin
 	private double newVersion, currentVersion;
     
 	/**Global Prefix**/
-	public String prefix;
+	public String prefix = FormatUtil.format("&6[SwornRPG] ");
 
 	@Override
 	public void onEnable()

@@ -92,12 +92,12 @@ public class CmdHat extends SwornRPGCommand
 				}
 				else
 				{
-					sendpMessage(plugin.getMessage("hat_failure"));
+					err(plugin.getMessage("hat_failure"));
 				}
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("hand_empty"));
+				err(plugin.getMessage("hand_empty"));
 			}
 		}
 	}

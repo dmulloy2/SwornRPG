@@ -34,7 +34,7 @@ public class CmdLevel extends SwornRPGCommand
 				target = Util.matchOfflinePlayer(args[0]);
 				if (target == null)
 				{
-					sendpMessage(plugin.getMessage("noplayer"));
+					err(plugin.getMessage("noplayer"));
 					return;
 				}
 			}
@@ -47,14 +47,14 @@ public class CmdLevel extends SwornRPGCommand
 			}
 			else
 			{
-				sendpMessage(plugin.getMessage("console_level"));
+				err(plugin.getMessage("console_level"));
 				return;
 			}
 		}
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{
-			sendpMessage(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("noplayer"));
 			return;
 		}
 		

@@ -30,7 +30,7 @@ public class CmdTag extends SwornRPGCommand
 	{
 		if (!plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
-			sendpMessage(plugin.getMessage("plugin_not_found"), "TagAPI"); 
+			err(plugin.getMessage("plugin_not_found"), "TagAPI"); 
 			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_tagapi_null"));
 			return;
 		}
@@ -45,7 +45,7 @@ public class CmdTag extends SwornRPGCommand
 			
 			if (args[1].length() > 2)
 			{
-				sendpMessage(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
+				err(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
 				return;
 			}
 			
@@ -59,7 +59,7 @@ public class CmdTag extends SwornRPGCommand
 		{
 			if (args[0].length() > 2)
 			{
-				sendpMessage(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
+				err(plugin.getMessage("invalidargs") + " (" + getUsageTemplate(false) + ")");
 				return;
 			}
 			
