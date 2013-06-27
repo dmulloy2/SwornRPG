@@ -113,7 +113,7 @@ public class SwornRPG extends JavaPlugin
 	private double newVersion, currentVersion;
     
 	/**Global Prefix**/
-	public String prefix = FormatUtil.format("&6[SwornRPG] ");
+	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
 
 	@Override
 	public void onEnable()
@@ -171,10 +171,7 @@ public class SwornRPG extends JavaPlugin
 		
 		/**Initialize Tags**/
 		tagManager.load();
-		
-		/**Define Prefix**/
-		prefix = FormatUtil.format(getMessage("prefix") + " ");
-		
+
 		/**Register Prefixed Commands**/
 		commandHandler.setCommandPrefix("srpg");
 		commandHandler.registerPrefixedCommand(new CmdHelp (this));
@@ -555,7 +552,10 @@ public class SwornRPG extends JavaPlugin
 	{
 		try
 		{
-			if (entity instanceof LivingEntity && !(entity instanceof Player))
+			if (entity instanceof Player)
+				return;
+			
+			if (entity instanceof LivingEntity)
 			{
 				if (healthtags == true)
 				{
@@ -582,9 +582,9 @@ public class SwornRPG extends JavaPlugin
 						return;
 					}
 					
-					final int health = Math.round(lentity.getHealth() / 2);
-					final int maxhealth = Math.round(lentity.getMaxHealth() / 2);
-					final int hearts = Math.round((health * 10) / maxhealth);
+					int health = Math.round(lentity.getHealth() / 2);
+					int maxhealth = Math.round(lentity.getMaxHealth() / 2);
+					int hearts = Math.round((health * 10) / maxhealth);
 					
 					if (health == maxhealth)
 					{

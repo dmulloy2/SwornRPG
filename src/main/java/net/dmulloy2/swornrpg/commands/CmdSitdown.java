@@ -31,7 +31,7 @@ public class CmdSitdown extends SwornRPGCommand
 		}
 
 		String seat = FormatUtil.getFriendlyName(block.getType());
-		if (seat.contains("Step")||seat.contains("Stair"))
+		if (seat.contains("Step") || seat.contains("Stair"))
 		{
 			Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
 			it.setPassenger(player);
@@ -42,7 +42,7 @@ public class CmdSitdown extends SwornRPGCommand
 		}
 		else
 		{
-			sendpMessage(plugin.getMessage("no_chair"));
+			err(plugin.getMessage("no_chair"));
 		}
 	}
 }
