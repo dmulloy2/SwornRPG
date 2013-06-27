@@ -54,14 +54,14 @@ public class CmdSpouse extends SwornRPGCommand
 			}
 			else
 			{
-				err(plugin.getMessage("console_spouse"));
+				err(plugin.getMessage("noplayer"));
 				return;
 			}
 		}
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{
-			err(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("noplayer"), target.getName());
 			return;
 		}
 		String targetp = target.getName();

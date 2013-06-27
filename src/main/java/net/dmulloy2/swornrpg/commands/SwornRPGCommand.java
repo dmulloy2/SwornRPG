@@ -99,7 +99,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	
 	protected final void err(String msg, Object... args)
 	{
-		sendMessage(getMessage("error") + FormatUtil.format(" " + msg, args));
+		sendMessage(getMessage("error") + FormatUtil.format(msg, args));
 	}
 	
 	protected PlayerData getPlayerData(OfflinePlayer target) 

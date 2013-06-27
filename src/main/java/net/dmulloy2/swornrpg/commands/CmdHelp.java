@@ -23,7 +23,14 @@ public class CmdHelp extends SwornRPGCommand
 		int page = 0;
 		if (args.length > 0)
 		{
-			page = Integer.parseInt(args[0]);
+			try
+			{
+				page = Integer.parseInt(args[0]);
+			}
+			catch (NumberFormatException e)
+			{
+				err(getMessage("invalid_help_page"), args[0]);
+			}
 		}
 		
 		if (page == 0)

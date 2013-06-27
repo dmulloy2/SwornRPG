@@ -30,7 +30,10 @@ public class CmdAddxp extends SwornRPGCommand
 	{
 		Player target = Util.matchPlayer(args[0]);
 		if (target == null)
+		{
+			err(plugin.getMessage("noplayer"));
 			return;
+		}
 		
 		int giveXP = argAsInt(1, true);
 		plugin.getExperienceManager().onXPGain(target, giveXP, "");
