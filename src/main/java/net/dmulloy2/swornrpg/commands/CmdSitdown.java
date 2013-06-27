@@ -16,6 +16,7 @@ public class CmdSitdown extends SwornRPGCommand
 		this.name = "sitdown";
 		this.aliases.add("sit");
 		this.description = "Sit in a chair";
+		
 		this.mustBePlayer = true;
 	}
 	
@@ -26,23 +27,30 @@ public class CmdSitdown extends SwornRPGCommand
 		Block block = player.getTargetBlock(null, 10);
 		if (block == null)
 		{
-			sendpMessage(plugin.getMessage("no_block"));
+			err(getMessage("no_block"));
 			return;
 		}
 
 		String seat = FormatUtil.getFriendlyName(block.getType());
-		if (seat.contains("Step") || seat.contains("Stair"))
+		if (! seat.contains("Step") && ! seat.contains("Stair"))
 		{
-			Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
-			it.setPassenger(player);
-			data.setSitting(true);	
+			err(getMessage("no_chair"));
+			return;
+		}
+		
+		Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
 			
-			sendpMessage(plugin.getMessage("now_sitting"), seat);
-			sendpMessage(plugin.getMessage("standup_command"));
-		}
-		else
+		if (! it.setPassenger(player))
 		{
-			err(plugin.getMessage("no_chair"));
+			it.remove();
+			
+			err(getMessage("sit_error"));
+			return;
 		}
+		
+		data.setSitting(true);	
+			
+		sendpMessage(getMessage("now_sitting"), seat);
+		sendpMessage(getMessage("standup_command"));
 	}
 }

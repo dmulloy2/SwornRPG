@@ -18,6 +18,7 @@ public class CmdStandup extends SwornRPGCommand
 		this.name = "standup";
 		this.aliases.add("stand");
 		this.description = "Get out of your chair";
+		
 		this.mustBePlayer = true;
 	}
 	
@@ -27,7 +28,7 @@ public class CmdStandup extends SwornRPGCommand
 		PlayerData data = getPlayerData(player);
 		if (! data.isSitting())
 		{
-			err(plugin.getMessage("not_sitting"));
+			err(getMessage("not_sitting"));
 			return;
 		}
 		
