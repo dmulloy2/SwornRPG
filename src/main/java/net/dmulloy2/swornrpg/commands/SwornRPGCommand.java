@@ -197,7 +197,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 			return -1;
 		}
 	}
-	
+
 	protected final void invalidArgs()
 	{
 		err(plugin.getMessage("invalidargs") + " " + getUsageTemplate(false));

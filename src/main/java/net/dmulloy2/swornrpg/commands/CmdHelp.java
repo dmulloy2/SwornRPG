@@ -18,19 +18,16 @@ public class CmdHelp extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (helpPages == null) updateHelp();
+		if (helpPages == null) 
+			updateHelp();
 		
 		int page = 0;
 		if (args.length > 0)
 		{
-			try
-			{
-				page = Integer.parseInt(args[0]);
-			}
-			catch (NumberFormatException e)
-			{
-				err(getMessage("invalid_help_page"), args[0]);
-			}
+			page = argAsInt(0, true);
+			
+			if (page == -1)
+				return;
 		}
 		
 		if (page == 0)
