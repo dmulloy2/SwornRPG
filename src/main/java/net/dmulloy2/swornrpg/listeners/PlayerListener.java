@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
-import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.TimeUtil;
@@ -20,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -460,12 +460,10 @@ public class PlayerListener implements Listener
 		if (plugin.fishing == true)
 		{
 			/**XP Gain**/
-			if (event.getCaught().getType().toString().equalsIgnoreCase("dropped_item"))
+			if (event.getCaught().getType() == EntityType.DROPPED_ITEM)
 			{
-				String mobname = "fish";
-				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain, mobname);
-				PlayerXpGainEvent xpgainevent = new PlayerXpGainEvent(event.getPlayer(), plugin.fishinggain, message);
-				plugin.getPluginManager().callEvent(xpgainevent);
+				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain);
+				plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.fishinggain, message);
 			}
 		}
 			
@@ -480,7 +478,8 @@ public class PlayerListener implements Listener
 		int level = data.getLevel();
 		if (level <= 10)
 			level = 10;
-		for (int i=0; i<data.getLevel(); i++)
+		
+		for (int i=0; i<level; i++)
 		{
 			if (plugin.fishDropsMap.containsKey(i))
 			{
