@@ -54,8 +54,8 @@ import com.earth2me.essentials.User;
 
 public class PlayerListener implements Listener
 {
-	private SwornRPG plugin;
-	public PlayerListener(SwornRPG plugin)
+	private final SwornRPG plugin;
+	public PlayerListener(final SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -354,13 +354,14 @@ public class PlayerListener implements Listener
 		if (data == null)
 			return;
 		
-		if (player.getVehicle() != null || data.isRiding())
+		if (player.getVehicle() != null && data.isRiding())
 		{
 			/**If a player is riding another player, leave the vehicle**/
 			player.leaveVehicle();
 			data.setRiding(false);
 		}
-		if (player.getPassenger() != null || data.isVehicle())
+		
+		if (player.getPassenger() != null && data.isVehicle())
 		{
 			/**If a player is being ridden, eject the passenger**/
 			player.eject();
