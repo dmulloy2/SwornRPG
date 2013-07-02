@@ -221,7 +221,10 @@ public class EntityListener implements Listener
 				int rand = Util.random(75/level);
 				if (rand == 0)
 				{
-					player.setHealth(player.getHealth() + 1);
+					if (player.getHealth() < 20.0D)
+					{
+						player.setHealth(player.getHealth() + 1.0D);
+					}
 				}
 			}
 		}
