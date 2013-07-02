@@ -257,7 +257,7 @@ public class EntityListener implements Listener
 			int rand = Util.random(100);
 			if (rand == 0)
 			{
-				entity.setHealth(0);
+				entity.setHealth(0.0D);
 				((Player)event.getDamager()).sendMessage(FormatUtil.format(plugin.getMessage("insta_kill")));
 			}
 		}
