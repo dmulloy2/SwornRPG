@@ -36,4 +36,15 @@ public class FormatUtil
 		ret = ret.replaceAll("_", " ");
 		return (WordUtils.capitalize(ret));
 	}
+	
+	public static String getArticle(String string)
+	{
+		string = string.toLowerCase();
+		if (string.startsWith("a") || string.startsWith("e") || string.startsWith("i") || string.startsWith("o") || string.startsWith("u"))
+		{
+			return "an";
+		}
+		
+		return "a";
+	}
 }

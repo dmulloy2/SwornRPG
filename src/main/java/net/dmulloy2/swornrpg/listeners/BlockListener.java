@@ -27,8 +27,8 @@ import org.bukkit.material.MaterialData;
 	
 public class BlockListener implements Listener 
 {
-	public SwornRPG plugin;
-	public BlockListener(SwornRPG plugin)
+	private final SwornRPG plugin;
+	public BlockListener(final SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -55,7 +55,7 @@ public class BlockListener implements Listener
 		return i;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) 
 	{
 		if (event.isCancelled())

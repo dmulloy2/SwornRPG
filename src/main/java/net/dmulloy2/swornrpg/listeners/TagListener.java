@@ -1,10 +1,11 @@
 package net.dmulloy2.swornrpg.listeners;
 
-import org.bukkit.ChatColor;
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
-import net.dmulloy2.swornrpg.SwornRPG;
 
 /**
  * @author dmulloy2
@@ -12,8 +13,8 @@ import net.dmulloy2.swornrpg.SwornRPG;
 
 public class TagListener implements Listener 
 {
-    public SwornRPG plugin;
-    public TagListener(SwornRPG plugin) 
+   	private final SwornRPG plugin;
+    public TagListener(final SwornRPG plugin) 
     {
         this.plugin = plugin;
     }
@@ -24,8 +25,7 @@ public class TagListener implements Listener
         String name = event.getNamedPlayer().getName();
         if (plugin.getTagManager().hasChanged(name)) 
         {
-        	String tag = plugin.getTagManager().getName(name);
-        	tag = ChatColor.translateAlternateColorCodes('&', tag);
+        	String tag = FormatUtil.format(plugin.getTagManager().getName(name));
             event.setTag(tag);
         }
     }

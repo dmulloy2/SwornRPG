@@ -42,8 +42,8 @@ import org.bukkit.material.NetherWarts;
 
 public class ExperienceListener implements Listener 
 {
-	private SwornRPG plugin;
-	public ExperienceListener(SwornRPG plugin) 
+	private final SwornRPG plugin;
+	public ExperienceListener(final SwornRPG plugin) 
 	{
 		this.plugin = plugin;
 	}
@@ -134,20 +134,21 @@ public class ExperienceListener implements Listener
 			List<String> tier2 = new ArrayList<String>(Arrays.asList(new String[]{"creeper", "enderman", "iron golem",
 					"skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime"}));
 			
-			if (tier3.contains(mobname))
+			if (tier3.contains(mobname.toLowerCase()))
+			{
 				killxp = plugin.mobkillsxp * 3;
-			else if (tier2.contains(mobname))
+			}
+			else if (tier2.contains(mobname.toLowerCase()))
+			{
 				killxp = plugin.mobkillsxp * 2;
+			}
 			else
+			{
 				killxp = plugin.mobkillsxp;
+			}
 			
 			/**Message**/
-			String article = "";
-			if (mobname.startsWith("A")||mobname.startsWith("E")||mobname.startsWith("I")||mobname.startsWith("O")||mobname.startsWith("U"))
-				article = "an";
-			else
-				article = "a";
-			
+			String article = FormatUtil.getArticle(mobname);
 			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname));
 			
 			/**Give the player some xp**/
@@ -357,12 +358,7 @@ public class ExperienceListener implements Listener
 			{
 				/**XP Gain**/
 				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
-				
-				String article;
-				if (mobname.startsWith("O"))
-					article = "an";
-				else
-					article = "a";
+				String article = FormatUtil.getArticle(mobname);
 				
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.taminggain, article, mobname);
 				plugin.getExperienceManager().onXPGain(player, plugin.taminggain, message);

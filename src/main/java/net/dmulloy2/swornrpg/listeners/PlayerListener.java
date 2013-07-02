@@ -455,27 +455,31 @@ public class PlayerListener implements Listener
 		if (event.isCancelled())
 			return;
 		
-		if (event.getCaught() == null)
+		Player player = event.getPlayer();
+		if (player == null)
 			return;
 		
-		if (plugin.fishing == true)
-		{
-			/**XP Gain**/
-			if (event.getCaught().getType() == EntityType.DROPPED_ITEM)
-			{
-				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain);
-				plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.fishinggain, message);
-			}
-		}
-			
-		/**Fish Drops**/
-		Player player = event.getPlayer();
 		if (plugin.isDisabledWorld(player))
 			return;
 		
+		Entity caught = event.getCaught();
+		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
+			return;
+
+		if (plugin.fishing == true)
+		{
+			/**XP Gain**/
+			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain);
+			plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.fishinggain, message);
+		}
+			
+		/**Fish Drops**/
 		GameMode gm = player.getGameMode();
+		if (gm != GameMode.SURVIVAL)
+			return;
+		
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		Location loc = player.getLocation();
+		
 		int level = data.getLevel();
 		if (level <= 10)
 			level = 10;
@@ -484,18 +488,18 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.fishDropsMap.containsKey(i))
 			{
-				if (gm == GameMode.SURVIVAL) 
-				{ 
-					for (BlockDrop fishDrop : plugin.fishDropsMap.get(i))
+				for (BlockDrop fishDrop : plugin.fishDropsMap.get(i))
+				{
+					int r = Util.random(fishDrop.getChance());
+					
+					if (r == 0) 
 					{
-						int r = Util.random(fishDrop.getChance());
+						Location loc = caught.getLocation();
+						drop(loc, fishDrop.getItem().getTypeId(), fishDrop.getItem().getData().getData());
 						
-						if (r == 0) 
-						{
-							drop(loc, fishDrop.getItem().getTypeId(), fishDrop.getItem().getData().getData());
-							String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
-							player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_drop"), name));
-						}
+						String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
+						String article = FormatUtil.getArticle(name);
+						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
 					}
 				}	
 			}
