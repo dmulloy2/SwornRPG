@@ -15,8 +15,8 @@
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
     <repository>
-      <id>drtshock-repo</id>
-      <url>http://ci.drtshock.com/plugin/repository/everything</url>
+      <id>shadowvolt-repo</id>
+      <url>http://ci.shadowvolt.com/plugin/repository/everything</url>
     </repository>
     <repository>
       <id>kitteh-repo</id>
@@ -102,11 +102,9 @@
       <systemPath>${basedir}/lib/Factions.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>com.orange451</groupId>
-      <artifactId>pvpgunplus</artifactId>
-      <version>0.1</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/lib/PVPGunPlus.jar</systemPath>
+      <groupId>net.dmulloy2</groupId>
+      <artifactId>swornguns</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>org.kitteh</groupId>

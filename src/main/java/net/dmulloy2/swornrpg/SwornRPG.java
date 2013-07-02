@@ -240,10 +240,10 @@ public class SwornRPG extends JavaPlugin
 			new SuperPickCooldownThread().runTaskTimer(this, 0, 20);
 		
 		/**Ammo cooldown**/
-		if (pluginManager.isPluginEnabled("PVPGunPlus"))
+		if (pluginManager.isPluginEnabled("SwornGuns"))
 		{
 			outConsole(getMessage("log_gun_found"));
-			pluginManager.registerEvents(new PVPGunPlusListener(this), this);
+			pluginManager.registerEvents(new SwornGunsListener(this), this);
 			if (ammoenabled)
 				new AmmoCooldownThread().runTaskTimer(this, 0, 20);
 		}

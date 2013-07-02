@@ -298,9 +298,9 @@ public class AbilitiesManager
 	{
 		/**PVPGunPlus Enable Check**/
 		PluginManager pm = plugin.getServer().getPluginManager();
-		if (!pm.isPluginEnabled("PVPGunPlus"))
+		if (!pm.isPluginEnabled("SwornGuns"))
 		{
-			sendpMessage(player, plugin.getMessage("plugin_not_found"), "PVPGunPlus");
+			sendpMessage(player, plugin.getMessage("plugin_not_found"), "SwornGuns");
 			return;
 		}
 		

@@ -1,26 +1,25 @@
 package net.dmulloy2.swornrpg.listeners;
 
+import net.dmulloy2.swornguns.events.SwornGunsFireEvent;
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.data.PlayerData;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.orange451.pvpgunplus.events.PVPGunPlusFireGunEvent;
-
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
-
-public class PVPGunPlusListener implements Listener
+public class SwornGunsListener implements Listener
 {
-	private SwornRPG plugin;
-	public PVPGunPlusListener(SwornRPG plugin)
+	private final SwornRPG plugin;
+	public SwornGunsListener(final SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
 	
 	/**Unlimited Ammo!**/
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerShoot(PVPGunPlusFireGunEvent event)
+	public void onPlayerShoot(SwornGunsFireEvent event)
 	{
 		Player player = event.getShooterAsPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
