@@ -67,13 +67,13 @@ public class PlayerHealthBar
 		    board.registerNewTeam("health9").setDisplayName(green + h + h + h + h + h + h + h + h + h);
 		    board.registerNewTeam("health10").setDisplayName(green + h + h + h + h + h + h + h + h + h + h);
 
-			final int health = Math.round(player.getHealth() / 2);
+			final int health = (int) Math.round(player.getHealth() / 2);
 			Team oldteam = board.getPlayerTeam(player);
 			if (oldteam != null)
 				oldteam.removePlayer(player);
 			board.getTeam("health"+Integer.toString(health)).addPlayer(player);
 			Score score = objective.getScore(player);
-			score.setScore(player.getHealth());
+			score.setScore((int) player.getHealth());
 			objective.setDisplayName(board.getPlayerTeam(player).getDisplayName());
 			
 			boards.put(player.getName(), board);
@@ -113,9 +113,9 @@ public class PlayerHealthBar
 		Scoreboard board = boards.get(player.getName());
 		Objective objective = board.getObjective(DisplaySlot.BELOW_NAME);
 		Score score = objective.getScore(player);
-		score.setScore(player.getHealth());
+		score.setScore((int) player.getHealth());
 		
-		final int health = Math.round(player.getHealth() / 2);
+		final int health = (int) Math.round(player.getHealth() / 2);
 		
 		Team oldteam = board.getPlayerTeam(player);
 		if (oldteam != null)

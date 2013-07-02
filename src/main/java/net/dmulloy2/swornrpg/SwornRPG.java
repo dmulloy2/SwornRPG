@@ -582,9 +582,9 @@ public class SwornRPG extends JavaPlugin
 						return;
 					}
 					
-					int health = Math.round(lentity.getHealth() / 2);
-					int maxhealth = Math.round(lentity.getMaxHealth() / 2);
-					int hearts = Math.round((health * 10) / maxhealth);
+					int health = (int) Math.round(lentity.getHealth() / 2);
+					int maxhealth = (int)Math.round(lentity.getMaxHealth() / 2);
+					int hearts = (int) Math.round((health * 10) / maxhealth);
 					
 					if (health == maxhealth)
 					{

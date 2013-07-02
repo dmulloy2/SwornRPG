@@ -30,10 +30,8 @@ import org.bukkit.util.Vector;
 
 public class EntityListener implements Listener 
 {
-
-	public SwornRPG plugin;
-	
-	public EntityListener(SwornRPG plugin)
+	private final SwornRPG plugin;	
+	public EntityListener(final SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -212,7 +210,7 @@ public class EntityListener implements Listener
 			if (player == null)
 				return;
 			
-			int health = player.getHealth();
+			int health = (int) player.getHealth();
 			if (health < 20)
 			{
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
