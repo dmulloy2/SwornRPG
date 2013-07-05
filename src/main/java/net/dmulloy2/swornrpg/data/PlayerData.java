@@ -39,15 +39,10 @@ public class PlayerData implements ConfigurationSerializable
 	private int level;
 	private int totalxp;
 	private int herbalism;
-	
-	private long timeOfLastUpdate;
-	private long onlineTime;
-	private long lastOnline;
+
 	private long frenzycd;
 	private long superpickcd;
 	private long ammocd;
-	
-	private transient long lastUpdateTimeSpent;
 	
 	@Setter(AccessLevel.NONE) private Map<String, Object> data = new HashMap<String, Object>();
 
@@ -157,12 +152,5 @@ public class PlayerData implements ConfigurationSerializable
 		}
 		
 		return data;
-	}
-
-	public void updateSpentTime() 
-	{
-		long now = System.currentTimeMillis();
-		onlineTime = onlineTime + (now - ((lastUpdateTimeSpent > lastOnline) ? lastUpdateTimeSpent : lastOnline));
-		lastUpdateTimeSpent = now;
 	}
 }
