@@ -40,6 +40,7 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamage(EntityDamageByEntityEvent event)
 	{
+		// TODO: Rewrite all of this mess XD
 		try 
 		{
 			if (event.getDamage() <= 0) 
@@ -125,57 +126,44 @@ public class EntityListener implements Listener
 		}
 		catch (Exception e)
 		{
-			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_damage"), e.getMessage());
+			plugin.debug(plugin.getMessage("log_error_damage"), e.getMessage());
 		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamage2(EntityDamageEvent event)
 	{
-		if (event.isCancelled())
-			return;
-		
-		if (event.getDamage() == 0)
+		if (event.isCancelled() || event.getDamage() <= 0)
 			return;
 		
 		Entity entity = event.getEntity();
 		if (entity == null)
 			return;
-		
-		try
-		{	
-			/**Mob Health (Damage)**/
-			if (entity instanceof Player)
-			{
-				plugin.getPlayerHealthBar().updateHealth((Player)entity);
-			}
+
+		/**Mob Health (Damage)**/
+		if (entity instanceof Player)
+		{
+			Player player = (Player)entity;
 			
-			if (entity instanceof LivingEntity)
-			{
-				plugin.updateHealthTag(entity);
-			}
-			
-			/**Graceful Roll**/
+			/** Graceful Roll **/
 			if (event.getCause() == DamageCause.FALL)
 			{
-				if (!(event.getEntity() instanceof Player))
-					return;
-				
 				if (!plugin.gracefulroll)
 					return;
-				
+					
 				int rand = Util.random(plugin.gracefulrollodds);
 				if (rand == 0)
 				{
 					event.setDamage(0);
-					((Player) event.getEntity()).sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("graceful_roll")));
+					player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("graceful_roll")));
 				}
 			}
+			
+			try { plugin.getPlayerHealthBar().updateHealth(player); }
+			catch (Exception e) { plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage()); }
 		}
-		catch (Exception e)
-		{
-			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_error_damage"), e.getMessage());
-		}
+
+		plugin.updateHealthTag(entity);
 	}
 	
 	/**Mob Health (Regain)**/
@@ -185,33 +173,25 @@ public class EntityListener implements Listener
 		Entity entity = event.getEntity();
 		if (entity instanceof Player)
 		{
-			try 
-			{
-				plugin.getPlayerHealthBar().updateHealth((Player)entity);
-			}
-			catch (Exception e)
-			{
-				plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
-			}
+			try { plugin.getPlayerHealthBar().updateHealth((Player)entity); }
+			catch (Exception e) { plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage()); }
+			
+			return;
 		}
-		else if (entity instanceof LivingEntity)
-		{
-			plugin.updateHealthTag(entity);
-		}
+
+		plugin.updateHealthTag(entity);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		/**Succor**/
-		if (event.getEntity().getKiller() instanceof Player)
+		Entity killer = event.getEntity().getKiller();
+		if (killer instanceof Player)
 		{
-			Player player = (Player)event.getEntity().getKiller();
-			if (player == null)
-				return;
-			
-			int health = (int) player.getHealth();
-			if (health < 20)
+			Player player = (Player)killer;
+			double health = player.getHealth();
+			if (health + 1.0D <= 20.0D)
 			{
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
 				int level = data.getLevel();
@@ -221,10 +201,8 @@ public class EntityListener implements Listener
 				int rand = Util.random(75/level);
 				if (rand == 0)
 				{
-					if (player.getHealth() < 20.0D)
-					{
-						player.setHealth(player.getHealth() + 1.0D);
-					}
+					// TODO: Make sure this stops stacking
+					player.setHealth(player.getHealth() + 1.0D);
 				}
 			}
 		}
@@ -234,34 +212,37 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
-		Entity entity = event.getEntity();
-		plugin.updateHealthTag(entity);
+		plugin.updateHealthTag(event.getEntity());
 	}
 	
 	/**Insta-Kill**/
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getEntity() instanceof Player)
+		Entity damaged = event.getEntity();
+		if (plugin.isDisabledWorld(damaged))
 			return;
 		
-		if (!(event.getDamager() instanceof Player))
-			return;
-		
-		if (plugin.isDisabledWorld(event.getEntity()))
-			return;
-		
-		if (event.getEntity() instanceof LivingEntity)
+		if (!(damaged instanceof Player))
 		{
-			LivingEntity entity = (LivingEntity)event.getEntity();
-			if (((Player)event.getDamager()).getGameMode() == GameMode.CREATIVE)
-				return;
-		
-			int rand = Util.random(100);
-			if (rand == 0)
+			Entity damager = event.getDamager();
+			if (damager instanceof Player)
 			{
-				entity.setHealth(0.0D);
-				((Player)event.getDamager()).sendMessage(FormatUtil.format(plugin.getMessage("insta_kill")));
+				Player player = (Player)damager;
+				if (player.getGameMode() == GameMode.CREATIVE)
+					return;
+				
+				if (damaged instanceof LivingEntity)
+				{
+					LivingEntity lentity = (LivingEntity)damaged;
+					
+					if (Util.random(100) == 0)
+					{
+						lentity.setHealth(0.0D);
+						
+						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("insta_kill")));
+					}
+				}
 			}
 		}
 	}

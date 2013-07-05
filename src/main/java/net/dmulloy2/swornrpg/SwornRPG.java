@@ -305,6 +305,11 @@ public class SwornRPG extends JavaPlugin
 		logHandler.log(level, string, objects);
 	}
 	
+	public void debug(String string, Object... objects)
+	{
+		if (debug) outConsole("[Debug] " + string, objects);
+	}
+	
 	/**Loads the configuration**/
 	private void loadConfig() 
 	{

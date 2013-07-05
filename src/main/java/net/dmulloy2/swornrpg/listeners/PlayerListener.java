@@ -20,7 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +38,6 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -184,7 +182,7 @@ public class PlayerListener implements Listener
 					user.addMail(mail);
 					
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
+					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 				else
 				{
@@ -194,7 +192,7 @@ public class PlayerListener implements Listener
 					user.addMail(mail);
 					
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
+					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 			}
 			else
@@ -224,7 +222,7 @@ public class PlayerListener implements Listener
 				
 				new BookGiveTask().runTaskLater(plugin, 20);
 				
-				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_death_coords"), player.getName(), "given", "book");
+				plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "given", "book");
 			}
 		}
     }
@@ -236,20 +234,14 @@ public class PlayerListener implements Listener
 		String playerp = player.getName();
 		
 		/**Player Health (Join)**/
-		try 
-		{
-			plugin.getPlayerHealthBar().updateHealth(player);
-		}
-		catch (Exception e)
-		{
-			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
-		}
+		try { plugin.getPlayerHealthBar().updateHealth(player); }
+		catch (Exception e) { plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage()); }
 		
 		/**Try to get the player's data from the cache otherwise create a new data entry**/
 		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
 		if (data == null)
 		{
-			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_new_data"), player.getName());
+			plugin.debug(plugin.getMessage("log_new_data"), player.getName());
 			plugin.getPlayerDataCache().newData(playerp);
 			
 			/**Basic data that a player needs**/
@@ -439,14 +431,8 @@ public class PlayerListener implements Listener
 	{
 		/**Player Health (Respawn)**/
 		Player player = event.getPlayer();
-		try 
-		{
-			plugin.getPlayerHealthBar().updateHealth(player);
-		}
-		catch (Exception e)
-		{
-			plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage());
-		}
+		try { plugin.getPlayerHealthBar().updateHealth(player); }
+		catch (Exception e) { plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage()); }
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -490,12 +476,9 @@ public class PlayerListener implements Listener
 			{
 				for (BlockDrop fishDrop : plugin.fishDropsMap.get(i))
 				{
-					int r = Util.random(fishDrop.getChance());
-					
-					if (r == 0) 
+					if (Util.random(fishDrop.getChance()) == 0)
 					{
-						Location loc = caught.getLocation();
-						drop(loc, fishDrop.getItem().getTypeId(), fishDrop.getItem().getData().getData());
+						caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getItem());
 						
 						String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
 						String article = FormatUtil.getArticle(name);
@@ -504,28 +487,6 @@ public class PlayerListener implements Listener
 				}	
 			}
 		}
-	}
-	
-	public Item drop(Location loc, int id)
-	{
-		return drop(loc, id, (byte)0);
-	}
-
-	public Item drop(Location loc, int id, byte type)
-	{
-		Item i;
-		if (type > 0)
-		{
-			MaterialData data = new MaterialData(id);
-			data.setData(type);
-			ItemStack itm = data.toItemStack(1);
-			i = loc.getWorld().dropItem(loc, itm);
-		} 
-		else
-		{
-			i = loc.getWorld().dropItem(loc, new ItemStack(id, 1));
-		}
-		return i;
 	}
 	
 	/**Dexterity : Burst**/
@@ -554,8 +515,7 @@ public class PlayerListener implements Listener
 		
 		if (player.isSprinting())
 		{
-			int rand = Util.random(plugin.speedboostodds);
-			if (rand == 0)
+			if (Util.random(plugin.speedboostodds) == 0)
 			{			
 				player.addPotionEffect(PotionEffectType.SPEED.createEffect(plugin.speedboostduration, 1));
 				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("speed_boost")));

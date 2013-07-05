@@ -89,13 +89,9 @@ public class ExperienceListener implements Listener
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
 			plugin.getExperienceManager().onXPGain(killed, killedxp, message);
 			
-			/**Debug Message**/
-			if (plugin.debug) 
-			{
-				plugin.outConsole(plugin.getMessage("log_pvp_killed"), killedp, msgxp, killerp);
-				plugin.outConsole(plugin.getMessage("log_pvp_killer"), killerp, killxp, killedp);
-			} 
-			
+			/**Debug Messages**/
+			plugin.debug(plugin.getMessage("log_pvp_killed"), killedp, msgxp, killerp);
+			plugin.debug(plugin.getMessage("log_pvp_killer"), killerp, killxp, killedp);
 		}
 	}
 	
@@ -153,7 +149,7 @@ public class ExperienceListener implements Listener
 			
 			/**Give the player some xp**/
 			plugin.getExperienceManager().onXPGain(killer, killxp, message);
-			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
+			plugin.debug(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
 		}
 	}
 	
@@ -188,7 +184,7 @@ public class ExperienceListener implements Listener
 		
 		/**Give the player some XP**/
 		plugin.getExperienceManager().onXPGain(player, xpgained, message);
-		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_mcxpgain"), player.getName(), xpgained);
+		plugin.debug(plugin.getMessage("log_mcxpgain"), player.getName(), xpgained);
 	}
 	
 	/**Herbalism : Breaking**/
