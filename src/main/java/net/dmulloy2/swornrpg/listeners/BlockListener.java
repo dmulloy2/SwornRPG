@@ -35,11 +35,14 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreakMonitor(BlockBreakEvent event)
 	{
-		if (! plugin.randomdrops)
+		if (! plugin.randomdrops || event.isCancelled())
 			return;
 		
 		Player player = event.getPlayer();
 		if (player == null)
+			return;
+		
+		if (plugin.checkFactions(player, true))
 			return;
 		
 		if (player.getGameMode() == GameMode.CREATIVE)
