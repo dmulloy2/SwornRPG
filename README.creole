@@ -1,18 +1,19 @@
 {{http://i.troll.ws/6e8ca906.jpg}}
+== SwornRPG
 **Sick of the immense lag that mcMMO causes? Sick of the exploits and general nonchalant nature of the mcMMO-Dev team? You've come to the right place!
 
 **Introducing SwornRPG, the fully featured (and much less laggy and exploitable) alternative to mcMMO! SwornRPG is based upon a very simplistic leveling system, where daily tasks, like farming, fighting players and mobs, enchanting, taming, and being on the server, contribute experience to one single experience pool. As with any good leveling system, SwornRPG awards players with diamonds and cash (both configurable) every time they amass enough xp to level up! Players also receive increased ability times and greater chances for many of SwornRPG's extra features! Players can check their xp and level using /level and check the leaderboard with /srpg top. This plugin also has many, many other features that would not fit on this page!
 
-**Thanks for over 3,500 downloads!!!**
+**Thanks for over 4,750 downloads!!!**
 ----
 
 == Check SwornRPG out on Bukkit Dev!
 http://dev.bukkit.org/server-mods/swornrpg
 ----
 
-== <<color maroon>>Development Builds<</color>>
+== Development Builds
 ** Development Builds can be found at our Continuous Integration server. These builds are not approved by the BukkitDev staff and are to be used at your own risk **
-** http://jenkins.minesworn.com/job/SwornRPG/ **
+** http://ci.minesworn.com/job/SwornRPG **
 ----
 
 == Commands
@@ -38,12 +39,12 @@ http://dev.bukkit.org/server-mods/swornrpg
 |Marriage|See [[marriage|here]]||
 ----
 
-==Salvaging
+== Salvaging
 This plugin allows for the salvaging of used armor. Salvaging the used armor gives the player SOME of the ingots back, but it is designed to be inefficient. For example: If you salvage a full set of unused diamond armor, you will only get 20 diamonds back (using the config defaults). If the armor is used, the plugin calculates how many ingots the player should receive based on what you defined in the configuration.
 {{http://i.troll.ws/94107e8e.png}}
 ----
 
-==Other Features
+== Other Features
 *Protects Iron doors from being directly broken
 *Certain blocks have a random chance of dropping random materials (Completely configurable)
 *Arrows have a random chance of setting the player on fire
@@ -58,7 +59,7 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 *Players have a random chance of not taking fall damage
 ----
 
-==Permissions
+== Permissions
 |**Permission**|**Description**|**Inheritance**|
 |srpg.*|Allows access to all SwornRPG features!|All|
 |srpg.moderator|Allows access to features meant for moderators|Guard|
@@ -66,12 +67,12 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 *Individual nodes can be found [[https://github.com/dmulloy2/SwornRPG/blob/master/plugin.yml|here]]
 ----
 
-==Configuration
+== Configuration
 *A detailed configuration guide can be found [[sworn-rpg-configuration|here]]
 *The default configuration can be found [[https://github.com/dmulloy2/SwornRPG/blob/master/config.yml|here]]
 ----
 
-==Soft Dependencies
+== Soft Dependencies
 *These plugins add certain functionality to SwornRPG:
 |**Name**|**Additions**|**Download Link**|
 |PVPGunPlus|Unlimited Ammo ability|[[http://dev.bukkit.org/server-mods/pvpgun/|Here]]
@@ -81,7 +82,7 @@ This plugin allows for the salvaging of used armor. Salvaging the used armor giv
 *SwornRPG also performs Factions Safe- and War-Zone checks
 ----
 
-==Check out SwornRPG in action!
+== Check out SwornRPG in action!
 {{http://i.troll.ws/472d7ad1.gif}}
 {{http://minesworn.com/images/Minestatussworn.gif}}
 ----
