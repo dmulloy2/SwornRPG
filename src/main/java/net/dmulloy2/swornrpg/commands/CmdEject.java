@@ -24,7 +24,7 @@ public class CmdEject extends SwornRPGCommand
 	{
 		if (player.getPassenger() == null)
 		{
-			err(plugin.getMessage("no_player"));
+			err(plugin.getMessage("noplayer"));
 			return;
 		}
 

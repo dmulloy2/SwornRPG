@@ -33,7 +33,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -334,7 +333,8 @@ public class PlayerListener implements Listener
 		plugin.getPlayerHealthBar().unregister(player);
 	}
 	
-	/**Checks to make sure that if a player is riding another player, teleportation is not disabled**/
+	/**
+	 * This was causing some pretty nasty stacks... Not too sure as to why
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
@@ -348,18 +348,16 @@ public class PlayerListener implements Listener
 		
 		if (player.getVehicle() != null && data.isRiding())
 		{
-			/**If a player is riding another player, leave the vehicle**/
 			player.leaveVehicle();
 			data.setRiding(false);
 		}
 		
 		if (player.getPassenger() != null && data.isVehicle())
 		{
-			/**If a player is being ridden, eject the passenger**/
 			player.eject();
 			data.setVehicle(false);
 		}
-	}
+	}*/
 		
 	/**Cancel pickup event if a player is on another player's head**/
 	@EventHandler(priority = EventPriority.MONITOR)

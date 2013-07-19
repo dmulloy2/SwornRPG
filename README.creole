@@ -31,7 +31,7 @@ http://dev.bukkit.org/server-mods/swornrpg
 |/levelr|Reset a player's level|srpg.levelr|
 |/frenzy|Level based strength ability||
 |/mine|Super pickaxe based on level||
-|/ammo|Unlimited ammo based on level (Requires PVPGunPlus)||
+|/ammo|Unlimited ammo based on level (Requires SwornGuns)||
 |/level|Check your level||
 |/match|Match a string with a player||
 |/staff|List online staff with permission srpg.staff||
