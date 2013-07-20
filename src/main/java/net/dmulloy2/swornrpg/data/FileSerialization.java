@@ -53,11 +53,24 @@ public class FileSerialization
 		}
 		catch (Exception ex) 
 		{
-			System.err.println("[SwornRPG] Exception ocurred while attempting to load file: " + file.getName());
-			if (file.renameTo(new File(file.getParent(), file.getName() + "_bad"))) 
+			// The file is most likely corrupt
+			System.err.println("[SwornRPG] Could not load file: " + file.getName());
+			System.out.println("[SwornRPG] Attempting to rename file!");
+			
+			// Attempt to rename it to <filename>.dat_bad
+			File newFile = new File(file.getParentFile(), file.getName() + "_bad");
+			if (file.renameTo(newFile))
 			{
-				System.err.println("[SwornRPG] Renamed bad file to: "+file.getName()+"_bad");
+				System.out.println("[SwornRPG] Renamed bad file to: " + newFile.getName());
 			}
+			else
+			{
+				System.err.println("[SwornRPG] Could not rename bad file!");
+			}
+			
+			// Delete the file regardless of whether or not it could be renamed.
+			// Every instance i have seen this, the file was just a bunch of null characters.
+			file.delete();
 			
 			return null;
 		}
