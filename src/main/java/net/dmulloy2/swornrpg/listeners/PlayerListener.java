@@ -474,6 +474,9 @@ public class PlayerListener implements Listener
 			{
 				for (BlockDrop fishDrop : plugin.fishDropsMap.get(i))
 				{
+					if (fishDrop.getItem() == null)
+						continue;
+					
 					if (Util.random(fishDrop.getChance()) == 0)
 					{
 						caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getItem());

@@ -566,8 +566,8 @@ public class SwornRPG extends JavaPlugin
 				{
 					LivingEntity lentity = (LivingEntity)entity;
 					
-					List<EntityType> blockedTypes = new ArrayList<EntityType>(Arrays.asList(new EntityType[]{EntityType.VILLAGER, 
-							EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE}));
+					List<EntityType> blockedTypes = Arrays.asList(new EntityType[]{EntityType.VILLAGER, 
+							EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE});
 					
 					if (blockedTypes.contains(entity.getType()))
 					{
