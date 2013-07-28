@@ -30,9 +30,10 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -46,7 +47,6 @@ import com.earth2me.essentials.User;
 
 /**
  * @author dmulloy2
- * @contributor Dimpl
  */
 
 public class PlayerListener implements Listener
@@ -306,35 +306,24 @@ public class PlayerListener implements Listener
 	public void onPlayerDisconnect(Player player) 
 	{
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (data.isRiding())
+		if (data.isFrenzyEnabled())
 		{
-			data.setRiding(false);
+			data.setFrenzyEnabled(false);
 		}
-		if (data.isVehicle())
+		
+		if (data.isSuperPickaxeEnabled())
 		{
-			data.setVehicle(false);
+			data.setSuperPickaxeEnabled(false);
 		}
-		if (data.isSitting())
+		
+		if (data.isUnlimitedAmmoEnabled())
 		{
-			data.setSitting(false);
-			Entity vehicle = player.getVehicle();
-			if (vehicle != null)
-				vehicle.remove();
-		}
-		if (data.isSpick())
-		{
-			data.setSpick(false);
-		}
-		if (data.isUnlimtdammo())
-		{
-			data.setUnlimtdammo(false);
+			data.setUnlimitedAmmoEnabled(false);
 		}
 		
 		plugin.getPlayerHealthBar().unregister(player);
 	}
 	
-	/**
-	 * This was causing some pretty nasty stacks... Not too sure as to why
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
@@ -342,35 +331,20 @@ public class PlayerListener implements Listener
 		if (player == null)
 			return;
 		
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (data == null)
+		if (event.getCause() != TeleportCause.COMMAND)
 			return;
-		
-		if (player.getVehicle() != null && data.isRiding())
+
+		if (player.getVehicle() != null)
 		{
 			player.leaveVehicle();
-			data.setRiding(false);
 		}
 		
-		if (player.getPassenger() != null && data.isVehicle())
+		if (player.getPassenger() != null)
 		{
 			player.eject();
-			data.setVehicle(false);
-		}
-	}*/
-		
-	/**Cancel pickup event if a player is on another player's head**/
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerPickupItem(PlayerPickupItemEvent event)
-	{
-		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if ((data.isRiding()) && (player.getVehicle() != null))
-		{	
-			event.setCancelled(true);
 		}
 	}
-		
+
 	/**Super Pickaxes**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSuperPickActivate(PlayerInteractEvent event)
@@ -449,13 +423,13 @@ public class PlayerListener implements Listener
 		Entity caught = event.getCaught();
 		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
 			return;
+		
+		if (! plugin.fishing)
+			return;
 
-		if (plugin.fishing == true)
-		{
-			/**XP Gain**/
-			String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain);
-			plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.fishinggain, message);
-		}
+		/**XP Gain**/
+		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain);
+		plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.fishinggain, message);
 			
 		/**Fish Drops**/
 		GameMode gm = player.getGameMode();
@@ -468,7 +442,8 @@ public class PlayerListener implements Listener
 		if (level <= 10)
 			level = 10;
 		
-		for (int i=0; i<level; i++)
+		List<BlockDrop> drops = new ArrayList<BlockDrop>();
+		for (int i = 0; i < level; i++)
 		{
 			if (plugin.fishDropsMap.containsKey(i))
 			{
@@ -479,13 +454,23 @@ public class PlayerListener implements Listener
 					
 					if (Util.random(fishDrop.getChance()) == 0)
 					{
-						caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getItem());
-						
-						String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
-						String article = FormatUtil.getArticle(name);
-						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
+						drops.add(fishDrop);
 					}
 				}	
+			}
+		}
+		
+		if (! drops.isEmpty())
+		{
+			int rand = Util.random(drops.size());
+			BlockDrop fishDrop = drops.get(rand);
+			if (fishDrop != null)
+			{
+				caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getItem());
+				
+				String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
+				String article = FormatUtil.getArticle(name);
+				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
 			}
 		}
 	}

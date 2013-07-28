@@ -73,9 +73,9 @@ public class CmdAbilities extends SwornRPGCommand
 			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), 
 					(plugin.frenzyd + (level*plugin.frenzym))));
 			
-			if (data.isFcooldown())
+			if (data.isFrenzyCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzycd()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzyCooldownTime()));
 			}
 			
 			sendMessage(line.toString());
@@ -87,23 +87,23 @@ public class CmdAbilities extends SwornRPGCommand
 			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), 
 					(plugin.spbaseduration + (level*plugin.superpickm))));
 			
-			if (data.isScooldown())
+			if (data.isSuperPickaxeCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperpickcd()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperPickaxeCooldownTime()));
 			}
 			
 			sendMessage(line.toString());
 		}
 		
-		if (plugin.ammoenabled && plugin.getPluginManager().isPluginEnabled("PVPGunPlus"))
+		if (plugin.ammoenabled && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
 		{
 			StringBuilder line = new StringBuilder();
 			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), 
 					(plugin.ammobaseduration + (level*plugin.ammomultiplier))));
 			
-			if (data.isAmmocooling())
+			if (data.isUnlimitedAmmoCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperpickcd()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getUnlimitedAmmoCooldownTime()));
 			}
 			
 			sendMessage(line.toString());

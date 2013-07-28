@@ -1,7 +1,6 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -25,20 +24,22 @@ public class CmdStandup extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		PlayerData data = getPlayerData(player);
-		if (! data.isSitting())
+		Entity vehicle = player.getVehicle();
+		if (vehicle == null)
 		{
 			err(getMessage("not_sitting"));
 			return;
 		}
 		
-		Entity vehicle = player.getVehicle();
 		if (vehicle instanceof Arrow)
 		{
 			player.leaveVehicle();
 			vehicle.remove();
-			player.teleport(vehicle.getLocation().add(0, 1, 0));
-			data.setSitting(false);
+			player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
+		}
+		else
+		{
+			err(getMessage("not_sitting"));
 		}
 	}
 }

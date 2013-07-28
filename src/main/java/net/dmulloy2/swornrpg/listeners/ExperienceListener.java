@@ -214,7 +214,7 @@ public class ExperienceListener implements Listener
 			return;
 			
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		int concurrentHerbalism = data.getHerbalism();
+		int concurrentHerbalism = data.getConcurrentHerbalism();
 		if (herbalismNeeded(blockState))
 		{
 			if (concurrentHerbalism >= 10)
@@ -222,11 +222,11 @@ public class ExperienceListener implements Listener
 				int xp = plugin.herbalismgain * 10;
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), xp);
 				plugin.getExperienceManager().onXPGain(player, xp, message);
-				data.setHerbalism(0);
+				data.setConcurrentHerbalism(0);
 			}
 			else
 			{
-				data.setHerbalism(data.getHerbalism() + 1);
+				data.setConcurrentHerbalism(data.getConcurrentHerbalism() + 1);
 			}
 		}
 	}

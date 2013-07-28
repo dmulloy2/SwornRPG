@@ -23,7 +23,7 @@ public class SwornGunsListener implements Listener
 	{
 		Player player = event.getShooterAsPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (data.isUnlimtdammo())
+		if (data.isUnlimitedAmmoEnabled())
 		{
 			event.setAmountAmmoNeeded(0);
 		}

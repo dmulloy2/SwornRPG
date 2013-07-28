@@ -1,11 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.permissions.PermissionType;
-
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -25,27 +21,14 @@ public class CmdUnride extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		PlayerData data = getPlayerData(player);
-		if (data.isSitting())
-		{
-			err(plugin.getMessage("unride_sitting"));
-			return;
-		}
-		
 		if (player.getVehicle() == null)
 		{
 			err(plugin.getMessage("not_riding"));
 			return;
 		}
-
-		Entity target = player.getVehicle();
-		if (target instanceof Player)
-		{
-			Player targetp = (Player)player.getVehicle();
-			PlayerData data1 = getPlayerData(targetp);
-			data1.setVehicle(false);
-		}
+		
+		sendMessage(getMessage("unride_successful"));
+		
 		player.leaveVehicle();
-		data.setRiding(false);
 	}
 }

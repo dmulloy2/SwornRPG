@@ -1,9 +1,10 @@
 package net.dmulloy2.swornrpg.commands;
 
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 
 /**
  * @author dmulloy2
@@ -16,27 +17,35 @@ public class CmdEject extends SwornRPGCommand
 		super(plugin);
 		this.name = "eject";
 		this.description = "Remove a player from your head";
+		
 		this.mustBePlayer = true;
 	}
 	
 	@Override
 	public void perform()
 	{
-		if (player.getPassenger() == null)
+		Entity passenger = player.getPassenger();
+		if (passenger == null)
 		{
-			err(plugin.getMessage("noplayer"));
+			err(getMessage("no_passenger"));
 			return;
 		}
-
-		Entity target = player.getPassenger();
-		if (target instanceof Player)
+		
+		String name = "";
+		if (passenger instanceof Player)
 		{
-			Player targetp = (Player)player.getPassenger();
-			PlayerData data = getPlayerData(targetp);
-			data.setRiding(false);
+			name = ((Player)passenger).getName();
 		}
+		else
+		{
+			String type = FormatUtil.getFriendlyName(passenger.getType());
+			String article = FormatUtil.getArticle(type);
+			
+			name = article + " " + type;
+		}
+		
+		sendMessage(getMessage("eject_successful"), name);
+		
 		player.eject();
-		PlayerData data = getPlayerData(player);
-		data.setVehicle(false);
 	}
 }

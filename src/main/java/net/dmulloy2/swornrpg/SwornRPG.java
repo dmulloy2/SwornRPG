@@ -712,12 +712,12 @@ public class SwornRPG extends JavaPlugin
 			for (Player player : getServer().getOnlinePlayers())
 			{
 				final PlayerData data = playerDataCache.getData(player.getName());
-				if (data.isFcooldown())
+				if (data.isFrenzyCooldownEnabled())
 				{
-					data.setFrenzycd(data.getFrenzycd() - 1);
-					if (data.getFrenzycd() <= 0)
+					data.setFrenzyCooldownTime(data.getFrenzyCooldownTime() - 1);
+					if (data.getFrenzyCooldownTime() <= 0)
 					{
-						data.setFcooldown(false);
+						data.setFrenzyCooldownEnabled(false);
 						player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Frenzy"));
 					}
 				}
@@ -733,13 +733,13 @@ public class SwornRPG extends JavaPlugin
 			for (Player player : getServer().getOnlinePlayers())
 			{
 				final PlayerData data = playerDataCache.getData(player.getName());
-				if (data.isScooldown())
+				if (data.isSuperPickaxeCooldownEnabled())
 				{
-					data.setSuperpickcd(data.getSuperpickcd() - 1);
-					if (data.getSuperpickcd() <= 0)
+					data.setSuperPickaxeCooldownTime(data.getSuperPickaxeCooldownTime() - 1);
+					if (data.getSuperPickaxeCooldownTime() <= 0)
 					{
-						data.setScooldown(false);
-						player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Super pickaxe"));
+						data.setSuperPickaxeCooldownEnabled(false);
+						player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Super Pickaxe"));
 					}
 				}
 			}
@@ -754,13 +754,13 @@ public class SwornRPG extends JavaPlugin
 			for (Player player : getServer().getOnlinePlayers())
 			{
 				final PlayerData data = playerDataCache.getData(player.getName());
-				if (data.isAmmocooling())
+				if (data.isUnlimitedAmmoCooldownEnabled())
 				{
-					data.setAmmocd(data.getAmmocd() - 1);
-					if (data.getAmmocd() <= 0)
+					data.setUnlimitedAmmoCooldownTime(data.getUnlimitedAmmoCooldownTime() - 1);
+					if (data.getUnlimitedAmmoCooldownTime() <= 0)
 					{
-						data.setAmmocooling(false);
-						player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Unlimited ammo"));
+						data.setUnlimitedAmmoCooldownEnabled(false);
+						player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Unlimited Ammo"));
 					}
 				}
 			}

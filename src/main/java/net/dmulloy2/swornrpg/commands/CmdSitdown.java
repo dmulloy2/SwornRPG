@@ -1,12 +1,11 @@
 package net.dmulloy2.swornrpg.commands;
 
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.util.Vector;
-
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
-import net.dmulloy2.swornrpg.util.FormatUtil;
 
 public class CmdSitdown extends SwornRPGCommand
 {
@@ -23,7 +22,6 @@ public class CmdSitdown extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		PlayerData data = getPlayerData(player);
 		Block block = player.getTargetBlock(null, 10);
 		if (block == null)
 		{
@@ -47,9 +45,7 @@ public class CmdSitdown extends SwornRPGCommand
 			err(getMessage("sit_error"));
 			return;
 		}
-		
-		data.setSitting(true);	
-			
+
 		sendpMessage(getMessage("now_sitting"), seat);
 		sendpMessage(getMessage("standup_command"));
 	}

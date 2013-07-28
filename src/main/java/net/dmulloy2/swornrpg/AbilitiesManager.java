@@ -56,7 +56,7 @@ public class AbilitiesManager
 		
 		/**Check for Frenzy In Progress**/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
-		if (data.isFrenzy())
+		if (data.isFrenzyEnabled())
 		{
 			if (command) sendpMessage(player, plugin.getMessage("ability_in_progress"), "Frenzy Mode");
 			return;
@@ -97,9 +97,9 @@ public class AbilitiesManager
 			if (frenzyWaiting.containsKey(player.getName()))
 			{
 				/**Cooldown Check**/
-				if (data.isFcooldown())
+				if (data.isFrenzyCooldownEnabled())
 				{
-					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzycd()));
+					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzyCooldownTime()));
 					frenzyWaiting.remove(player.getName());
 					return;
 				}
@@ -112,9 +112,9 @@ public class AbilitiesManager
 		}
 		else
 		{
-			if (data.isFcooldown())
+			if (data.isFrenzyCooldownEnabled())
 			{
-				sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzycd()));
+				sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzyCooldownTime()));
 				return;
 			}
 		}
@@ -133,7 +133,7 @@ public class AbilitiesManager
 			return;
 		
 		sendpMessage(player, plugin.getMessage("frenzy_enter"));
-		data.setFrenzy(true);
+		data.setFrenzyEnabled(true);
 		int strength = 0;
 		
 		player.addPotionEffect(PotionEffectType.SPEED.createEffect(duration, strength));
@@ -151,11 +151,11 @@ public class AbilitiesManager
 			public void run()
 			{
 				sendpMessage(player, plugin.getMessage("frenzy_wearoff"));
-				data.setFrenzy(false);
+				data.setFrenzyEnabled(false);
 				
 				int cooldown = (duration*plugin.frenzycd);
-				data.setFrenzycd(cooldown);
-				data.setFcooldown(true);
+				data.setFrenzyCooldownTime(cooldown);
+				data.setFrenzyCooldownEnabled(true);
 				
 				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_frenzy_cooldown"), player.getName(), cooldown);
@@ -191,7 +191,7 @@ public class AbilitiesManager
 
 		/**If the player is using SuperPick, return**/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
-		if (data.isSpick())
+		if (data.isSuperPickaxeEnabled())
 		{
 			if (command) sendpMessage(player, plugin.getMessage("ability_in_progress"), "Super Pickaxe");
 			return;
@@ -232,12 +232,13 @@ public class AbilitiesManager
 			if (spickWaiting.containsKey(player.getName()))
 			{
 				/**Cooldown Check**/
-				if (data.isScooldown())
+				if (data.isSuperPickaxeCooldownEnabled())
 				{
-					sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperpickcd()));
+					sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperPickaxeCooldownTime()));
 					spickWaiting.remove(player.getName());
 					return;
 				}
+				
 				spickWaiting.remove(player.getName());
 			}
 			else
@@ -247,9 +248,9 @@ public class AbilitiesManager
 		}
 		else
 		{
-			if (data.isScooldown())
+			if (data.isSuperPickaxeCooldownEnabled())
 			{
-				sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperpickcd()));
+				sendpMessage(player, plugin.getMessage("superpick_cooldown"), (data.getSuperPickaxeCooldownTime()));
 				return;
 			}
 		}
@@ -267,7 +268,7 @@ public class AbilitiesManager
 			return;
 
 		sendpMessage(player, plugin.getMessage("superpick_activated"));
-		data.setSpick(true);
+		data.setSuperPickaxeEnabled(true);
 		
 		int strength = 1;
 		player.addPotionEffect(PotionEffectType.FAST_DIGGING.createEffect(duration, strength));
@@ -280,11 +281,11 @@ public class AbilitiesManager
 			public void run()
 			{
 				sendpMessage(player, plugin.getMessage("superpick_wearoff"));
-				data.setSpick(false);
+				data.setSuperPickaxeEnabled(false);
 				
 				int cooldown = (duration*plugin.superpickcd);
-				data.setScooldown(true);
-				data.setSuperpickcd(cooldown);
+				data.setSuperPickaxeCooldownEnabled(true);
+				data.setSuperPickaxeCooldownTime(cooldown);
 				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_superpick_cooldown"), player.getName(), cooldown);
 			}
@@ -313,16 +314,16 @@ public class AbilitiesManager
 		
 		/**Check to see if they are already using Unlimited Ammo**/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
-		if (data.isUnlimtdammo())
+		if (data.isUnlimitedAmmoEnabled())
 		{
 			sendpMessage(player, plugin.getMessage("ability_in_progress"), "Unlimited Ammo");
 			return;
 		}
 		
 		/**Cooldown Check**/
-		if (data.isAmmocooling())
+		if (data.isUnlimitedAmmoCooldownEnabled())
 		{
-			sendpMessage(player, plugin.getMessage("ammo_cooldown"), data.getAmmocd());
+			sendpMessage(player, plugin.getMessage("ammo_cooldown"), data.getSuperPickaxeCooldownTime());
 			return;
 		}
 		
@@ -339,7 +340,7 @@ public class AbilitiesManager
 			return;
 		
 		sendpMessage(player, plugin.getMessage("ammo_now_unlimited"));
-		data.setUnlimtdammo(true);
+		data.setUnlimitedAmmoEnabled(true);
 		
 		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_ammo_activate"), player.getName(), duration);
 		
@@ -349,11 +350,11 @@ public class AbilitiesManager
 			public void run()
 			{
 				sendpMessage(player, plugin.getMessage("ammo_nolonger_unlimited"));
-				data.setUnlimtdammo(false);
+				data.setUnlimitedAmmoCooldownEnabled(false);
 				
 				int cooldown = (duration*plugin.ammocooldown);
-				data.setAmmocooling(true);
-				data.setAmmocd(cooldown);
+				data.setUnlimitedAmmoCooldownEnabled(true);
+				data.setUnlimitedAmmoCooldownTime(cooldown);
 				
 				if (plugin.debug) plugin.outConsole(plugin.getMessage("log_ammo_cooldown"), player.getName(), cooldown);
 			}

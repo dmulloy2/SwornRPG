@@ -23,26 +23,26 @@ public class PlayerData implements ConfigurationSerializable
 	private String spouse;
 	
 	private boolean deathbookdisabled;
-	private boolean riding;
-	private boolean vehicle;
-	private boolean sitting;
-	private boolean scooldown;
-	private boolean fcooldown;
-	private boolean spick;
-	private boolean unlimtdammo;
-	private boolean ammocooling;
-	private boolean frenzy;
-	
+
 	private int playerxp;
 	private int oldlevel;
 	private int xpneeded;
 	private int level;
 	private int totalxp;
-	private int herbalism;
 
-	private long frenzycd;
-	private long superpickcd;
-	private long ammocd;
+	private transient int concurrentHerbalism;
+	
+	private transient boolean frenzyEnabled;
+	private transient boolean superPickaxeEnabled;
+	private transient boolean unlimitedAmmoEnabled;
+	
+	private int frenzyCooldownTime;
+	private int superPickaxeCooldownTime;
+	private int unlimitedAmmoCooldownTime;
+	
+	private boolean frenzyCooldownEnabled;
+	private boolean superPickaxeCooldownEnabled;
+	private boolean unlimitedAmmoCooldownEnabled;
 	
 	@Setter(AccessLevel.NONE) private Map<String, Object> data = new HashMap<String, Object>();
 
