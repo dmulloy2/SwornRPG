@@ -100,23 +100,14 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (event.isCancelled())
+		if (event.isCancelled() || ! plugin.blockredemption)
 			return;
-			
-		if (plugin.blockredemption == false)
-			return;
-			
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
-			
+
 		Block block = event.getBlock();
-		if (block == null)
-			return;
-		
 		if (plugin.isDisabledWorld(block))
 			return;
 
+		Player player = event.getPlayer();
 		GameMode gm = player.getGameMode();
 		if (gm == GameMode.CREATIVE)
 			return;
@@ -124,12 +115,12 @@ public class BlockListener implements Listener
 		BlockState blockState =  block.getState();
 		MaterialData blockData = blockState.getData();
 		
-		int itemId = blockState.getTypeId();
-		ItemStack itemStack = new ItemStack(itemId, 1);
-
-		if (isBlackListed(itemId))
+		Material material = blockState.getType();
+		if (isBlacklistedMaterial(material))
 			return;
 		
+		ItemStack itemStack = new ItemStack(material);
+
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int level = data.getLevel();
 		if (level == 0) level = 1;
@@ -151,43 +142,38 @@ public class BlockListener implements Listener
 		}
 	}
 	
-	/**Blacklist Check**/
-	public boolean isBlackListed(Material mat)
+	public boolean isBlacklistedMaterial(Material mat)
 	{
 		for (String string : plugin.redeemBlacklist)
 		{
-			Material material = null;
-			try { material = Material.getMaterial(string.toUpperCase()); }
-			catch (Exception e) { material = Material.getMaterial(Integer.parseInt(string)); }
-
-			if (material != null)
+			int id = Integer.parseInt(string);
+			if (id != -1)
 			{
-				return (material == mat);
+				if (mat.getId() == id)
+					return true;
+			}
+			else
+			{
+				Material material = Material.valueOf(string);
+				if (material != null)
+				{
+					if (material.equals(mat))
+						return true;
+				}			
 			}
 		}
 		
 		String[] defaultBlackList = new String[]{"FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM"};
-		for (String s : defaultBlackList)
+		for (String string : defaultBlackList)
 		{
-			Material material = null;
-			try { material = Material.getMaterial(s.toUpperCase()); }
-			catch (Exception e) { material = Material.getMaterial(Integer.parseInt(s)); }
-
+			Material material = Material.valueOf(string);
 			if (material != null)
 			{
-				return (material == mat);
+				if (material.equals(mat))
+					return true;
 			}
 		}
 		
 		return false;
-	}
-	
-	public boolean isBlackListed(int itemId)
-	{
-		Material mat = null;
-		try { mat = Material.getMaterial(itemId); }
-		catch (Exception e) { return false; }
-		
-		return (isBlackListed(mat));
 	}
 }
