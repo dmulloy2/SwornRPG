@@ -1,102 +1,79 @@
 package net.dmulloy2.swornrpg.commands;
 
 import java.util.ArrayList;
-import net.dmulloy2.swornrpg.SwornRPG;
+import java.util.List;
 
-public class CmdHelp extends SwornRPGCommand
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+
+/**
+ * @author dmulloy2
+ */
+
+public class CmdHelp extends PaginatedCommand 
 {
 	public CmdHelp(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "help";
-		this.aliases.add("h");
-		this.description = "Display SwornRPG help";
 		this.optionalArgs.add("page");
+		this.description = "Shows " + plugin.getName() + " help";
+		this.linesPerPage = 6;
+		
 		this.usesPrefix = true;
-	}	
+	}
+
+	@Override
+	public int getListSize() 
+	{
+		return buildHelpMenu().size();
+	}
+
+	@Override
+	public String getHeader(int index) 
+	{
+		return FormatUtil.format(plugin.getMessage("help_header"), index, getPageCount());
+	}
+
+	@Override
+	public List<String> getLines(int startIndex, int endIndex) 
+	{
+		List<String> lines = new ArrayList<String>();
+		for (int i = startIndex; i < endIndex && i < getListSize(); i++) 
+		{
+			lines.add(buildHelpMenu().get(i));
+		}
+		
+		return lines;
+	}
+
 	
 	@Override
-	public void perform()
+	public String getLine(int index) 
 	{
-		if (helpPages == null) 
-			updateHelp();
-		
-		int page = 0;
-		if (args.length > 0)
-		{
-			page = argAsInt(0, true);
-			
-			if (page == -1)
-				return;
-		}
-		
-		if (page == 0)
-			page = 1;
-		
-		sendMessage(plugin.getMessage("help_header"), page, helpPages.size());
-		
-		page -= 1;
-		
-		if (page < 0 || page >= helpPages.size())
-		{
-			err(plugin.getMessage("invalid_help_page"), args[0]);
-			return;
-		}
-		for (String string : helpPages.get(page))
-			sendMessage(string);
+		return null;
 	}
 	
-	/**Build the help pages**/
-	public ArrayList<ArrayList<String>> helpPages;
-	
-	public void updateHelp()
+	private final List<String> buildHelpMenu()
 	{
-		helpPages = new ArrayList<ArrayList<String>>();
-		ArrayList<String> pageLines;
-
-		pageLines = new ArrayList<String>();
-		pageLines.add(new CmdHelp(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdReload(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdVersion(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdLeaderboard(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdAChat(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdAddxp(plugin).getUsageTemplate(true));
-		helpPages.add(pageLines);
+		List<String> ret = new ArrayList<String>();
 		
-		pageLines = new ArrayList<String>();
-		pageLines.add(new CmdASay(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdCoordsToggle(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdDeny(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdDivorce(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdEject(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdFrenzy(plugin).getUsageTemplate(true));
-		helpPages.add(pageLines);
+		for (SwornRPGCommand cmd : plugin.getCommandHandler().getRegisteredPrefixedCommands())
+		{
+			if (plugin.getPermissionHandler().hasPermission(sender, cmd.permission))
+			{
+				ret.add(cmd.getUsageTemplate(true));
+			}
+		}
 		
-		pageLines = new ArrayList<String>();
-		pageLines.add(new CmdHighCouncil(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdItemName(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdLevel(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdLevelr(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdMarry(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdMatch(plugin).getUsageTemplate(true));
-		helpPages.add(pageLines);
-	
-		pageLines = new ArrayList<String>();
-		pageLines.add(new CmdMine(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdPropose(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdRide(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdSitdown(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdSpouse(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdStaffList(plugin).getUsageTemplate(true));	
-		helpPages.add(pageLines);
+		for (SwornRPGCommand cmd : plugin.getCommandHandler().getRegisteredCommands())
+		{
+			if (plugin.getPermissionHandler().hasPermission(sender, cmd.permission))
+			{
+				ret.add(cmd.getUsageTemplate(true));
+			}
+		}
 		
-		pageLines = new ArrayList<String>();
-		pageLines.add(new CmdStandup(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdTag(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdTagr(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdUnride(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdUnlimitedAmmo(plugin).getUsageTemplate(true));
-		pageLines.add(new CmdAbilities(plugin).getUsageTemplate(true));
-		helpPages.add(pageLines);
+		return ret;
 	}
 }
