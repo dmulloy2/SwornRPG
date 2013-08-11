@@ -17,17 +17,18 @@ import org.bukkit.scoreboard.Team;
  * @author dmulloy2
  */
 
+// TODO: Rewrite this
 public class PlayerHealthBar 
 {
-	public SwornRPG plugin;
-	public PlayerHealthBar(SwornRPG plugin)
+	private final SwornRPG plugin;
+	public PlayerHealthBar(final SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
 	
 	private HashMap<String, Scoreboard> boards = new HashMap<String, Scoreboard>();
 
-	public void register(Player player) throws Exception
+	public void register(Player player)
 	{
 		ScoreboardManager manager = plugin.getServer().getScoreboardManager();
 
@@ -85,9 +86,9 @@ public class PlayerHealthBar
 		}
 	}
 	
-	public void updateHealth(Player player) throws Exception
+	public void updateHealth(Player player)
 	{
-		if (plugin.playerhealth == false)
+		if (! plugin.isPlayerhealth())
 		{
 			Scoreboard board = player.getScoreboard();
 			if (board == null) return;

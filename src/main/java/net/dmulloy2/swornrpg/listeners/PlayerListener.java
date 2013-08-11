@@ -1,12 +1,14 @@
 package net.dmulloy2.swornrpg.listeners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.BlockDrop;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.permissions.PermissionType;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryWorkaround;
 import net.dmulloy2.swornrpg.util.TimeUtil;
@@ -34,13 +36,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
@@ -49,36 +51,38 @@ import com.earth2me.essentials.User;
  * @author dmulloy2
  */
 
+// TODO: Redo annotations for this.
 public class PlayerListener implements Listener
 {
+	private HashMap<String, ItemStack> bookMap;
 	private final SwornRPG plugin;
 	public PlayerListener(final SwornRPG plugin)
 	{
 		this.plugin = plugin;
+		this.bookMap = new HashMap<String, ItemStack>();
 	}
-	
-	/**Salvaging**/
-	@EventHandler(priority = EventPriority.MONITOR)
+
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if (plugin.salvaging == false)
+		if (! plugin.isSalvaging() || event.isCancelled())
 			return;
 		
-		if (!event.hasBlock())
+		if (! event.hasBlock())
+			return;
+		
+		if (event.getAction() != Action.LEFT_CLICK_AIR)
 			return;
 	
 		Block block = event.getClickedBlock();
 		if (block == null)
 			return;
-		
-		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
-			return;
-	
+
 		Player pl = event.getPlayer();
-		if (!(pl.getGameMode() == (GameMode.SURVIVAL)))
+		if (pl.getGameMode() != GameMode.SURVIVAL)
 			return;
-	
-		String blockType = null;
+
+		String blockType = "";
 		if (block.getType().equals(Material.IRON_BLOCK))
 			blockType = "Iron";
 		if (block.getType().equals(Material.GOLD_BLOCK))
@@ -86,17 +90,20 @@ public class PlayerListener implements Listener
 		if (block.getType().equals(Material.DIAMOND_BLOCK))
 			blockType = "Diamond";
 	
-		if (blockType != null)
+		if (blockType != "")
 		{
-			if ((block.getRelative(-1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(1, 0, 0).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, -1).getType() == (Material.FURNACE)) || (block.getRelative(0, 0, 1).getType() == (Material.FURNACE)))
+			if ((block.getRelative(-1, 0, 0).getType() == Material.FURNACE)
+					|| (block.getRelative(1, 0, 0).getType() == Material.FURNACE)
+					|| (block.getRelative(0, 0, -1).getType() == Material.FURNACE) 
+					|| (block.getRelative(0, 0, 1).getType() == Material.FURNACE))
 			{
 				ItemStack item = pl.getItemInHand();
 				Integer itemId = item.getTypeId();
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amt = 0.0D;
 				
-				if (plugin.salvageRef.get(blockType).containsKey(itemId))
-					amt = Math.round(plugin.salvageRef.get(blockType).get(itemId) * mult);
+				if (plugin.getSalvageRef().get(blockType).containsKey(itemId))
+					amt = Math.round(plugin.getSalvageRef().get(blockType).get(itemId) * mult);
 	
 				if (amt > 0.0D)
 				{
@@ -111,60 +118,55 @@ public class PlayerListener implements Listener
 						plural = "s";
 					
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					pl.sendMessage(FormatUtil.format(plugin.getMessage("salvage_success"), article, itemName, amt, (blockType.toLowerCase() + materialExtension + plural)));
-					plugin.outConsole(plugin.getMessage("log_salvage"), pl.getName(), itemName, amt, blockType.toLowerCase(), materialExtension, plural);
-					Inventory inv = pl.getInventory();
-					inv.removeItem(new ItemStack[] { item });
-					Material give= null;
+					pl.sendMessage(FormatUtil.format(plugin.getMessage("salvage_success"),
+							article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
+					
+					plugin.outConsole(plugin.getMessage("log_salvage"),
+							pl.getName(), itemName, amt, blockType.toLowerCase(), materialExtension, plural);
+					
+					PlayerInventory inv = pl.getInventory();
+					inv.removeItem(item);
+					
+					Material give = null;
 					if (blockType == "Iron")
 						give = Material.IRON_INGOT;
 					if (blockType == "Gold")
 						give = Material.GOLD_INGOT;
 					if (blockType == "Diamond")
 						give = Material.DIAMOND;
-					ItemStack salvaged = new ItemStack(give.getId(), (int)amt);
+					
+					ItemStack salvaged = new ItemStack(give, (int)amt);
 					InventoryWorkaround.addItems(inv, salvaged);
 					event.setCancelled(true);
 				}
 				else
 				{
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					pl.sendMessage(FormatUtil.format(plugin.getMessage("not_salvagable"), itemName, blockType.toLowerCase()));
+					pl.sendMessage(FormatUtil.format(plugin.getMessage("not_salvagable"), 
+							itemName, blockType.toLowerCase()));
 				}
 			}
 		}
 	}
-	
-    /**
-     * Books or Mail messages with death coordinates
-     * Creds to Milkywayz for helping with the books :)
-     */
+
 	@EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event)
 	{
-		/**Checks to make sure death books are enabled in the config**/
-		if (plugin.deathbook == false)
+		if (! plugin.isDeathbook())
 			return;
 		
-		final Player player = event.getEntity();
-		if (player == null)
-			return;
-		
-		/**Warzone check**/
+		Player player = event.getEntity();
 		if (plugin.checkFactions(player, true))
 			return;
-		
-		/**Coordinates**/
+
 		Location loc = player.getLocation();
 		int x = loc.getBlockX();
 		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
-		
-		/**Player death coords toggle check**/
+
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (!data.isDeathbookdisabled())
+		if (! data.isDeathbookdisabled())
 		{
-			/**If essentials is found, send the message via mail**/
 			IEssentials ess = Util.getEssentials();
 			if (ess != null)
 			{
@@ -196,66 +198,54 @@ public class PlayerListener implements Listener
 			}
 			else
 			{
-				/**If not found, create a book with their death coords**/
-				final ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
+				ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 				BookMeta meta = (BookMeta)book.getItemMeta();
 				
 				meta.setTitle(ChatColor.RED + "DeathCoords");
 				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
 				
-				final List<String> pages = new ArrayList<String>();
+				List<String> pages = new ArrayList<String>();
 				pages.add(FormatUtil.format(plugin.getMessage("book_format"), player.getName(), x, y, z));
 				meta.setPages(pages);
 				
 				book.setItemMeta(meta);
 				
-				class BookGiveTask extends BukkitRunnable
+				if (! bookMap.containsKey(player.getName()))
 				{
-					@Override
-					public void run()
-					{
-						player.getInventory().addItem(book);
-						pages.clear();
-					}	
+					bookMap.put(player.getName(), book);
+					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "given", "book");
 				}
-				
-				new BookGiveTask().runTaskLater(plugin, 20);
-				
-				plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "given", "book");
 			}
 		}
     }
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerRespawn(PlayerRespawnEvent event)
+	{
+		Player player = event.getPlayer();
+		if (bookMap.containsKey(player.getName()))
+		{
+			InventoryWorkaround.addItems(player.getInventory(), bookMap.get(player.getName()));
+			bookMap.remove(player.getName());
+		}
+		
+		plugin.getPlayerHealthBar().updateHealth(player);
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event) 
 	{	
 		Player player = event.getPlayer();
-		String playerp = player.getName();
-		
-		/**Player Health (Join)**/
-		try { plugin.getPlayerHealthBar().updateHealth(player); }
-		catch (Exception e) { plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage()); }
-		
-		/**Try to get the player's data from the cache otherwise create a new data entry**/
-		PlayerData data = plugin.getPlayerDataCache().getData(playerp);
+		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (data == null)
 		{
 			plugin.debug(plugin.getMessage("log_new_data"), player.getName());
-			plugin.getPlayerDataCache().newData(playerp);
 			
-			/**Basic data that a player needs**/
-			data = plugin.getPlayerDataCache().getData(playerp);
+			data = plugin.getPlayerDataCache().newData(player.getName());
 			data.setXpneeded(100 + (data.getPlayerxp()/4));
 			data.setLevel(0);
 		}
-		
-		/**Converter to the new leveling system**/
-		if (data.getXpneeded() <= 99)
-		{
-			data.setXpneeded(100 + (data.getPlayerxp()/4));
-		}
-	
-		/**Makes sure Tag changes are permanent**/
+
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (pm.isPluginEnabled("TagAPI"))
 		{
@@ -273,11 +263,10 @@ public class PlayerListener implements Listener
 				}
 			}
 		}
-		
-		/**Update Notification**/
-		if (plugin.update == true)
+
+		if (plugin.isUpdate() && plugin.updateNeeded())
 		{
-			if (player.hasPermission("srpg.update") && (plugin.updateNeeded()))
+			if (plugin.getPermissionHandler().hasPermission(player, PermissionType.UPDATE_NOTIFY.permission))
 			{
 				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("update_message")));
 				player.sendMessage(FormatUtil.format("&6[SwornRPG]&e " + plugin.getMessage("update_url")));
@@ -288,21 +277,18 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent event) 
 	{
-		/**Treat as player disconnect**/
 		onPlayerDisconnect(event.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerKick(PlayerKickEvent event) 
 	{
-		if (!event.isCancelled()) 
+		if (! event.isCancelled()) 
 		{
-			/**Treat as player disconnect**/
 			onPlayerDisconnect(event.getPlayer());
 		}
 	}
 
-	/**Basic data needing to be false when a player leaves the game**/
 	public void onPlayerDisconnect(Player player) 
 	{
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
@@ -327,13 +313,10 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerTeleport(PlayerTeleportEvent event)
 	{
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
 		if (event.getCause() != TeleportCause.COMMAND)
 			return;
 
+		Player player = event.getPlayer();
 		if (player.getVehicle() != null)
 		{
 			player.leaveVehicle();
@@ -345,7 +328,6 @@ public class PlayerListener implements Listener
 		}
 	}
 
-	/**Super Pickaxes**/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSuperPickActivate(PlayerInteractEvent event)
 	{
@@ -360,8 +342,7 @@ public class PlayerListener implements Listener
 			
 		if (array.length < 2)
 			return;
-			
-		/**If it is not a diamond or iron tool, return**/
+
 		if (!array[0].equalsIgnoreCase("diamond") && !array[0].equalsIgnoreCase("iron"))
 			return;
 		
@@ -370,8 +351,7 @@ public class PlayerListener implements Listener
 		
 		plugin.getAbilitiesManager().activateSpick(player, false, action);
 	}
-	
-	/**Frenzy!**/
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onFrenzyActicate(PlayerInteractEvent event)
 	{
@@ -386,12 +366,10 @@ public class PlayerListener implements Listener
 			
 		if (array.length < 2)
 			return;
-			
-		/**If it is not a diamond or iron tool, return**/
+
 		if (!array[0].equalsIgnoreCase("diamond") && !array[0].equalsIgnoreCase("iron"))
 			return;
-			
-		/**If it is not a shovel or pickaxe, return**/
+
 		if (!array[1].equalsIgnoreCase("sword"))
 			return;
 		
@@ -399,39 +377,22 @@ public class PlayerListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerRespawn(PlayerRespawnEvent event)
-	{
-		/**Player Health (Respawn)**/
-		Player player = event.getPlayer();
-		try { plugin.getPlayerHealthBar().updateHealth(player); }
-		catch (Exception e) { plugin.outConsole(Level.SEVERE, plugin.getMessage("log_health_error"), e.getMessage()); }
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerFish(PlayerFishEvent event)
 	{
-		if (event.isCancelled())
+		if (! plugin.isFishing() || event.isCancelled())
 			return;
 		
 		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
 		if (plugin.isDisabledWorld(player))
 			return;
 		
 		Entity caught = event.getCaught();
 		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
 			return;
-		
-		if (! plugin.fishing)
-			return;
 
-		/**XP Gain**/
-		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.fishinggain);
-		plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.fishinggain, message);
-			
-		/**Fish Drops**/
+		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.getFishinggain());
+		plugin.getExperienceManager().onXPGain(event.getPlayer(), plugin.getFishinggain(), message);
+
 		GameMode gm = player.getGameMode();
 		if (gm != GameMode.SURVIVAL)
 			return;
@@ -445,9 +406,9 @@ public class PlayerListener implements Listener
 		List<BlockDrop> drops = new ArrayList<BlockDrop>();
 		for (int i = 0; i < level; i++)
 		{
-			if (plugin.fishDropsMap.containsKey(i))
+			if (plugin.getFishDropsMap().containsKey(i))
 			{
-				for (BlockDrop fishDrop : plugin.fishDropsMap.get(i))
+				for (BlockDrop fishDrop : plugin.getFishDropsMap().get(i))
 				{
 					if (fishDrop.getItem() == null)
 						continue;
@@ -474,18 +435,14 @@ public class PlayerListener implements Listener
 			}
 		}
 	}
-	
-	/**Dexterity : Burst**/
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
 	{
+		if (! plugin.isSpeedboost() || event.isCancelled())
+			return;
+		
 		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
-		if (!plugin.speedboost)
-			return;
-		
 		if (plugin.isDisabledWorld(player))
 			return;
 		
@@ -501,10 +458,25 @@ public class PlayerListener implements Listener
 		
 		if (player.isSprinting())
 		{
-			if (Util.random(plugin.speedboostodds) == 0)
+			if (Util.random(plugin.getSpeedboostodds()) == 0)
 			{			
-				player.addPotionEffect(PotionEffectType.SPEED.createEffect(plugin.speedboostduration, 1));
+				player.addPotionEffect(PotionEffectType.SPEED.createEffect(plugin.getSpeedboostduration(), 1));
 				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("speed_boost")));
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
+	{
+		Player player = event.getPlayer();
+		if (player.isInsideVehicle())
+		{
+			Entity vehicle = player.getVehicle();
+			EntityType type = vehicle.getType();
+			if (type == EntityType.ARROW || type == EntityType.PLAYER)
+			{
+				event.setCancelled(true);
 			}
 		}
 	}

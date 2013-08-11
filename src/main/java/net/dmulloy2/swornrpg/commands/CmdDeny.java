@@ -24,19 +24,19 @@ public class CmdDeny extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (plugin.marriage == false)
+		if (! plugin.isMarriage())
 		{
 			err(plugin.getMessage("command_disabled"));
 			return;
 		}
 		
-		if (! plugin.proposal.containsKey(player.getName()))
+		if (! plugin.getProposal().containsKey(player.getName()))
 		{
 			err(plugin.getMessage("no_proposal"));
 			return;
 		}
 		
-		Player target = Util.matchPlayer(plugin.proposal.get(sender.getName()));
+		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
 		if (target == null)
 		{
 			err(plugin.getMessage("no_player"));
@@ -45,8 +45,8 @@ public class CmdDeny extends SwornRPGCommand
 
 		String targetp = target.getName();
 		String senderp = sender.getName();
-		plugin.proposal.remove(senderp);
-		plugin.proposal.remove(targetp);
+		plugin.getProposal().remove(senderp);
+		plugin.getProposal().remove(targetp);
 		sendpMessage(plugin.getMessage("deny_sender"), targetp);
 		sendMessageTarget(plugin.getMessage("deny_rejcted"), target, senderp);
 	}

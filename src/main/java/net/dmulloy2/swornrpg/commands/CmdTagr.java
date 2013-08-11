@@ -29,7 +29,7 @@ public class CmdTagr extends SwornRPGCommand
 		if (!plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
 			err(plugin.getMessage("no_tagapi"));
-			if (plugin.debug) plugin.outConsole(plugin.getMessage("log_tagapi_null"));
+			plugin.debug(plugin.getMessage("log_tagapi_null"));
 			return;
 		}
 		

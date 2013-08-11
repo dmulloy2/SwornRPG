@@ -54,7 +54,7 @@ public class EntityListener implements Listener
 	
 			if (att instanceof Arrow)
 			{
-				if (plugin.arrowfire == true)
+				if (plugin.isArrowfire())
 				{
 					if (Util.random(10) == 0) 
 					{
@@ -74,7 +74,7 @@ public class EntityListener implements Listener
 				/**Confusion**/
 				if (gun == null || gun.contains("air"))
 				{
-					if (plugin.confusion)
+					if (plugin.isConfusion())
 					{
 						int rand = Util.random(20);
 						if (rand == 0)
@@ -82,7 +82,7 @@ public class EntityListener implements Listener
 							if (defender instanceof Player)
 							{
 								Player d = (Player)defender;
-								d.addPotionEffect(PotionEffectType.CONFUSION.createEffect(plugin.confusionduration, 1));
+								d.addPotionEffect(PotionEffectType.CONFUSION.createEffect(plugin.getConfusionduration(), 1));
 							}
 						}
 					}
@@ -91,7 +91,7 @@ public class EntityListener implements Listener
 				/**Axe Blowback**/
 				if (gun.contains("_axe")) 
 				{
-					if (plugin.axekb == true)
+					if (plugin.isAxekb())
 					{
 						int randomBlowBack = Util.random(9);
 						if (randomBlowBack == 0) 
@@ -148,10 +148,10 @@ public class EntityListener implements Listener
 			/** Graceful Roll **/
 			if (event.getCause() == DamageCause.FALL)
 			{
-				if (!plugin.gracefulroll)
+				if (! plugin.isGracefulroll())
 					return;
 					
-				int rand = Util.random(plugin.gracefulrollodds);
+				int rand = Util.random(plugin.getGracefulrollodds());
 				if (rand == 0)
 				{
 					event.setDamage(0);

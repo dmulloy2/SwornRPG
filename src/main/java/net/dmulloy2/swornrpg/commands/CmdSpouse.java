@@ -26,7 +26,7 @@ public class CmdSpouse extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (plugin.marriage == false)
+		if (! plugin.isMarriage())
 		{
 			err(plugin.getMessage("command_disabled"));
 			return;

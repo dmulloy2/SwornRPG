@@ -20,7 +20,9 @@ public enum PermissionType
 	CMD_INAME("iname"),
 	CMD_MATCH("match"),
 	CMD_ADDXP("addxp"), 
-	CMD_RELOAD("reload");
+	CMD_RELOAD("reload"),
+	
+	UPDATE_NOTIFY("update");
 	
 	public final Permission permission;
 	

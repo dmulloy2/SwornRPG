@@ -17,7 +17,6 @@
 */
 package net.dmulloy2.swornrpg;
 
-/**Java Imports**/
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,26 +29,53 @@ import java.util.MissingResourceException;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-/**Plugin imports**/
-import net.dmulloy2.swornrpg.commands.*;
-import net.dmulloy2.swornrpg.handlers.*;
-import net.dmulloy2.swornrpg.listeners.*;
-import net.dmulloy2.swornrpg.util.*;
-import net.dmulloy2.swornrpg.data.*;
-
-/**Other Plugin Imports**/
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
-import net.milkbowl.vault.economy.Economy;
 import lombok.Getter;
+import net.dmulloy2.swornrpg.commands.CmdAChat;
+import net.dmulloy2.swornrpg.commands.CmdASay;
+import net.dmulloy2.swornrpg.commands.CmdAbilities;
+import net.dmulloy2.swornrpg.commands.CmdAddxp;
+import net.dmulloy2.swornrpg.commands.CmdCoordsToggle;
+import net.dmulloy2.swornrpg.commands.CmdDeny;
+import net.dmulloy2.swornrpg.commands.CmdDivorce;
+import net.dmulloy2.swornrpg.commands.CmdEject;
+import net.dmulloy2.swornrpg.commands.CmdFrenzy;
+import net.dmulloy2.swornrpg.commands.CmdHat;
+import net.dmulloy2.swornrpg.commands.CmdHelp;
+import net.dmulloy2.swornrpg.commands.CmdHighCouncil;
+import net.dmulloy2.swornrpg.commands.CmdItemName;
+import net.dmulloy2.swornrpg.commands.CmdLeaderboard;
+import net.dmulloy2.swornrpg.commands.CmdLevel;
+import net.dmulloy2.swornrpg.commands.CmdLevelr;
+import net.dmulloy2.swornrpg.commands.CmdMarry;
+import net.dmulloy2.swornrpg.commands.CmdMatch;
+import net.dmulloy2.swornrpg.commands.CmdMine;
+import net.dmulloy2.swornrpg.commands.CmdPropose;
+import net.dmulloy2.swornrpg.commands.CmdReload;
+import net.dmulloy2.swornrpg.commands.CmdRide;
+import net.dmulloy2.swornrpg.commands.CmdSitdown;
+import net.dmulloy2.swornrpg.commands.CmdSpouse;
+import net.dmulloy2.swornrpg.commands.CmdStaffList;
+import net.dmulloy2.swornrpg.commands.CmdStandup;
+import net.dmulloy2.swornrpg.commands.CmdTag;
+import net.dmulloy2.swornrpg.commands.CmdTagr;
+import net.dmulloy2.swornrpg.commands.CmdUnlimitedAmmo;
+import net.dmulloy2.swornrpg.commands.CmdUnride;
+import net.dmulloy2.swornrpg.commands.CmdVersion;
+import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.data.PlayerDataCache;
+import net.dmulloy2.swornrpg.handlers.CommandHandler;
+import net.dmulloy2.swornrpg.handlers.LogHandler;
+import net.dmulloy2.swornrpg.handlers.PermissionHandler;
+import net.dmulloy2.swornrpg.handlers.ResourceHandler;
+import net.dmulloy2.swornrpg.listeners.BlockListener;
+import net.dmulloy2.swornrpg.listeners.EntityListener;
+import net.dmulloy2.swornrpg.listeners.ExperienceListener;
+import net.dmulloy2.swornrpg.listeners.PlayerListener;
+import net.dmulloy2.swornrpg.listeners.SwornGunsListener;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.milkbowl.vault.economy.Economy;
 
-/**Bukkit imports**/
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -64,6 +90,14 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.Faction;
 
 /**
  * @author dmulloy2
@@ -87,27 +121,27 @@ public class SwornRPG extends JavaPlugin
 	private @Getter ExperienceManager experienceManager;
 
 	/**Proposal Map**/
-    public HashMap<String, String> proposal = new HashMap<String, String>();
+	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
     
     /**Configuration**/
-	public boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
+	private @Getter boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
 	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
 	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
 	marriage, taming, confusion, fishing, herbalism, savecache, enchanting, blockredemption,
 	speedboost, gracefulroll;
 	
-	public int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
+	private @Getter int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
 	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
 	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
 	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain,
 	saveinterval, enchantbase, speedboostduration, speedboostodds, gracefulrollodds;
 	
-	public String salvage, tagformat;
-    public List<String> disabledWorlds, redeemBlacklist;
+	private @Getter String salvage;
+    private @Getter List<String> disabledWorlds, redeemBlacklist;
     
-    public HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
-    public Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
-    public Map<Integer, List<BlockDrop>> fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
+    private @Getter HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
+    private @Getter Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
+    private @Getter Map<Integer, List<BlockDrop>> fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
 	
     /**Update Checking**/
 	private double newVersion, currentVersion;
@@ -323,7 +357,6 @@ public class SwornRPG extends JavaPlugin
 		debug = getConfig().getBoolean("debug");
 		campingrad = getConfig().getInt("campingradius");
 		healthtags = getConfig().getBoolean("healthtags.enabled");
-		tagformat = getConfig().getString("healthtags.format");
 		disabledWorlds = getConfig().getStringList("disabled-worlds");
 		playerhealth = getConfig().getBoolean("playerhealth.enabled");
 		marriage = getConfig().getBoolean("marriage");

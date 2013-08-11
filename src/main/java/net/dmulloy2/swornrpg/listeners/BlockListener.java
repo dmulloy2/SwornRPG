@@ -35,7 +35,7 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreakMonitor(BlockBreakEvent event)
 	{
-		if (! plugin.randomdrops || event.isCancelled())
+		if (! plugin.isRandomdrops() || event.isCancelled())
 			return;
 		
 		Player player = event.getPlayer();
@@ -51,9 +51,9 @@ public class BlockListener implements Listener
 		Block block = event.getBlock();
 		int typeId = block.getTypeId();
 		
-		if (plugin.blockDropsMap.containsKey(typeId))
+		if (plugin.getBlockDropsMap().containsKey(typeId))
 		{
-			for (BlockDrop blockDrop : plugin.blockDropsMap.get(typeId))
+			for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(typeId))
 			{
 				if (Util.random(blockDrop.getChance()) == 0)
 				{
@@ -61,9 +61,9 @@ public class BlockListener implements Listener
 				}
 			}
 				
-			if (plugin.blockDropsMap.containsKey(0))
+			if (plugin.getBlockDropsMap().containsKey(0))
 			{
-				for (BlockDrop blockDrop : plugin.blockDropsMap.get(0)) 
+				for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(0)) 
 				{
 					if (Util.random(blockDrop.getChance()) == 0)
 					{
@@ -78,7 +78,7 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakHighest(BlockBreakEvent event)
 	{
-		if (! plugin.irondoorprotect)
+		if (! plugin.isIrondoorprotect())
 			return;
 		
 		Player player = event.getPlayer();
@@ -100,7 +100,7 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (event.isCancelled() || ! plugin.blockredemption)
+		if (event.isCancelled() || ! plugin.isBlockredemption())
 			return;
 
 		Block block = event.getBlock();
@@ -144,7 +144,7 @@ public class BlockListener implements Listener
 	
 	public boolean isBlacklistedMaterial(Material mat)
 	{
-		for (String string : plugin.redeemBlacklist)
+		for (String string : plugin.getRedeemBlacklist())
 		{
 			int id = Integer.parseInt(string);
 			if (id != -1)

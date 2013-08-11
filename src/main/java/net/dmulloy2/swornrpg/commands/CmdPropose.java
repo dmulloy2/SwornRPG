@@ -25,7 +25,7 @@ public class CmdPropose extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (plugin.marriage == false)
+		if (! plugin.isMarriage())
 		{
 			err(plugin.getMessage("command_disabled"));
 			return;
@@ -55,7 +55,7 @@ public class CmdPropose extends SwornRPGCommand
 		}
 		else
 		{
-			plugin.proposal.put(targetp, sender.getName());
+			plugin.getProposal().put(targetp, sender.getName());
 			sendpMessage(plugin.getMessage("you_have_proposed"), targetp);
 			sendMessageTarget(plugin.getMessage("send_marriage_request"), target, sender.getName());
 		}

@@ -71,9 +71,9 @@ public class ExperienceManager
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		
 		/**Prior Skill Data**/
-		int oldfrenzy = (plugin.frenzyd + (data.getLevel()*plugin.frenzym));
-		int oldspick = (plugin.spbaseduration + (data.getLevel()*plugin.superpickm));
-		int oldammo = (plugin.ammobaseduration + (data.getLevel()*plugin.ammomultiplier));
+		int oldfrenzy = (plugin.getFrenzyd() + (data.getLevel()*plugin.getFrenzym()));
+		int oldspick = (plugin.getSpbaseduration() + (data.getLevel()*plugin.getSuperpickm()));
+		int oldammo = (plugin.getAmmobaseduration() + (data.getLevel()*plugin.getAmmomultiplier()));
 		
 		/**Prepare data for the next level**/
 		if (data.getLevel() < 250)
@@ -85,9 +85,9 @@ public class ExperienceManager
 		data.setPlayerxp(0);
 		
 		/**New Skill Data**/
-		int newfrenzy = (plugin.frenzyd + (data.getLevel()*plugin.frenzym));
-		int newspick = (plugin.spbaseduration + (data.getLevel()*plugin.superpickm));
-		int newammo = (plugin.ammobaseduration + (data.getLevel()*plugin.ammomultiplier));
+		int newfrenzy = (plugin.getFrenzyd() + (data.getLevel()*plugin.getFrenzym()));
+		int newspick = (plugin.getSpbaseduration() + (data.getLevel()*plugin.getSuperpickm()));
+		int newammo = (plugin.getAmmobaseduration() + (data.getLevel()*plugin.getAmmomultiplier()));
 		
 		/**Send messages**/
 		int level = data.getLevel();
@@ -99,10 +99,11 @@ public class ExperienceManager
 		{
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
 		}
-		if (plugin.debug) plugin.outConsole(plugin.getMessage("log_levelup"), player.getName(), level);
+
+		plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
 		
 		/**Award money if enabled**/
-		if (plugin.money == true)
+		if (! plugin.isMoney())
 		{
 			/**Vault Check**/
 			PluginManager pm = plugin.getServer().getPluginManager();
@@ -111,7 +112,7 @@ public class ExperienceManager
 				Economy economy = plugin.getEconomy();
 				if (economy != null)
 				{
-					int money = level*plugin.basemoney;
+					int money = level*plugin.getBasemoney();
 					economy.depositPlayer(player.getName(), money);
 					
 					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
@@ -120,10 +121,10 @@ public class ExperienceManager
 		}
 		
 		/**Award items if enabled**/
-		if (plugin.items == true)
+		if (! plugin.isItems())
 		{
-			int rewardamt = level*plugin.itemperlevel;
-			ItemStack item = new ItemStack(plugin.itemreward, rewardamt);
+			int rewardamt = level*plugin.getItemperlevel();
+			ItemStack item = new ItemStack(plugin.getItemreward(), rewardamt);
 			InventoryWorkaround.addItems(player.getInventory(), item);
 			
 			String itemName = FormatUtil.getFriendlyName(item.getType());

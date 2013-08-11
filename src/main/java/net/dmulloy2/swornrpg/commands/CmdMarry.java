@@ -25,19 +25,19 @@ public class CmdMarry extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (plugin.marriage == false)
+		if (! plugin.isMarriage())
 		{
 			err(plugin.getMessage("command_disabled"));
 			return;
 		}
 		
-		if (! plugin.proposal.containsKey(player.getName()))
+		if (! plugin.getProposal().containsKey(player.getName()))
 		{
 			err(plugin.getMessage("no_proposal"));
 			return;
 		}
 		
-		Player target = Util.matchPlayer(plugin.proposal.get(sender.getName()));
+		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
 		if (target == null)
 		{
 			err(plugin.getMessage("no_player"));
@@ -51,7 +51,7 @@ public class CmdMarry extends SwornRPGCommand
 		data1.setSpouse(player.getName());
 
 		sendMessageAll(plugin.getMessage("marry"), player.getName(), target.getName());
-		plugin.proposal.remove(player.getName());
-		plugin.proposal.remove(target.getName());
+		plugin.getProposal().remove(player.getName());
+		plugin.getProposal().remove(target.getName());
 	}
 }
