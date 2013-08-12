@@ -147,15 +147,17 @@ public class BlockListener implements Listener
 		for (String string : plugin.getRedeemBlacklist())
 		{
 			Material material = null;
-			
-			try 
+			if (Util.isValidMaterial(string))
 			{
-				int id = Integer.parseInt(string);
-				material = Material.getMaterial(id);
+				material = Material.getMaterial(string.toUpperCase());
 			}
-			catch (NumberFormatException ex)
+			else
 			{
-				material = Material.valueOf(string);
+				int id = Util.parseInt(string);
+				if (id != -1)
+				{
+					material = Material.getMaterial(id);
+				}
 			}
 			
 			if (material != null)
@@ -168,9 +170,9 @@ public class BlockListener implements Listener
 		String[] defaultBlackList = new String[]{"FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM"};
 		for (String string : defaultBlackList)
 		{
-			Material material = Material.valueOf(string);
-			if (material != null)
+			if (Util.isValidMaterial(string))
 			{
+				Material material = Material.valueOf(string);
 				if (material.equals(mat))
 					return true;
 			}

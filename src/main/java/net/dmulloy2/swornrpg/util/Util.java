@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -99,5 +100,29 @@ public class Util
 		}
 		
 		return null;
+	}
+	
+	public static boolean isValidMaterial(String string)
+	{
+		string = string.toLowerCase();
+		for (Material mat : Material.values())
+		{
+			if (mat.toString().equalsIgnoreCase(string))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public static int parseInt(String string)
+	{
+		try
+		{
+			return Integer.parseInt(string);
+		}
+		catch (NumberFormatException e)
+		{
+			return -1;
+		}
 	}
 }
