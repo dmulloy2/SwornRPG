@@ -1,6 +1,5 @@
 package net.dmulloy2.swornrpg.permissions;
 
-import net.dmulloy2.swornrpg.permissions.Permission;
 
 /**
  * @author dmulloy2

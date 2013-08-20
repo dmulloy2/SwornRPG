@@ -24,6 +24,7 @@ public class PlayerXpGainEvent extends PlayerEvent implements Cancellable
 		this.message = message;
 	}
 
+	@Override
 	public HandlerList getHandlers() 
 	{
 		return handlers;

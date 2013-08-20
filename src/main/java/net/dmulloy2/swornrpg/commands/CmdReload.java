@@ -16,6 +16,7 @@ public class CmdReload extends SwornRPGCommand
 		this.usesPrefix = true;
 	}
 	
+	@Override
 	public void perform()
 	{
 		sendpMessage("&aReloading Configuration...");

@@ -1,12 +1,12 @@
 package net.dmulloy2.swornrpg.commands;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
+
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2

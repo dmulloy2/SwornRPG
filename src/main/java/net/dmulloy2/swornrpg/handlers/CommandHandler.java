@@ -78,6 +78,7 @@ public class CommandHandler implements CommandExecutor
 		return commandPrefix != null;
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
 	{
 		List<String> argsList = new ArrayList<String>();

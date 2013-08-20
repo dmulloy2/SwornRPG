@@ -3,16 +3,16 @@ package net.dmulloy2.swornrpg.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.permissions.Permission;
+import net.dmulloy2.swornrpg.util.FormatUtil;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.Permission;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.data.PlayerData;
 
 /**
  * @author dmulloy2
@@ -48,6 +48,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	
 	public abstract void perform();
 	
+	@Override
 	public final boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
 		execute(sender, args);

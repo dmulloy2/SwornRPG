@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import lombok.Getter;
-
 import net.dmulloy2.swornrpg.listeners.TagListener;
 import net.dmulloy2.swornrpg.util.TooBigException;
 import net.dmulloy2.swornrpg.util.Util;

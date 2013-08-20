@@ -51,7 +51,6 @@ import com.earth2me.essentials.User;
  * @author dmulloy2
  */
 
-// TODO: Redo annotations for this.
 public class PlayerListener implements Listener
 {
 	private HashMap<String, ItemStack> bookMap;
@@ -67,11 +66,8 @@ public class PlayerListener implements Listener
 	{
 		if (! plugin.isSalvaging() || event.isCancelled())
 			return;
-		
-		if (! event.hasBlock())
-			return;
-		
-		if (event.getAction() != Action.LEFT_CLICK_AIR)
+
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
 	
 		Block block = event.getClickedBlock();
@@ -83,11 +79,11 @@ public class PlayerListener implements Listener
 			return;
 
 		String blockType = "";
-		if (block.getType().equals(Material.IRON_BLOCK))
+		if (block.getType() == Material.IRON_BLOCK)
 			blockType = "Iron";
-		if (block.getType().equals(Material.GOLD_BLOCK))
+		if (block.getType() == Material.GOLD_BLOCK)
 			blockType = "Gold";
-		if (block.getType().equals(Material.DIAMOND_BLOCK))
+		if (block.getType() == Material.DIAMOND_BLOCK)
 			blockType = "Diamond";
 	
 		if (blockType != "")

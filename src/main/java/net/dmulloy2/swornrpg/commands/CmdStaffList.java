@@ -3,10 +3,10 @@ package net.dmulloy2.swornrpg.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2

@@ -1,10 +1,10 @@
 package net.dmulloy2.swornrpg.commands;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2

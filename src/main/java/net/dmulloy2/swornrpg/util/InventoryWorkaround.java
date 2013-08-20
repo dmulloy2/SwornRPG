@@ -19,6 +19,7 @@ package net.dmulloy2.swornrpg.util;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

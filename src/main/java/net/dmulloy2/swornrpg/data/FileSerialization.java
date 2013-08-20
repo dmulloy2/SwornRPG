@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.data;
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

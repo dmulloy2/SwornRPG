@@ -20,6 +20,7 @@ public class AbilityActivateEvent extends PlayerEvent implements Cancellable
 		super(player);
 	}
 
+	@Override
 	public HandlerList getHandlers() 
 	{
 		return handlers;

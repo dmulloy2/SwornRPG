@@ -7,10 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.bukkit.OfflinePlayer;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.util.Util;
+
+import org.bukkit.OfflinePlayer;
 
 /**
  * @author dmulloy2

@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
  * @author dmulloy2

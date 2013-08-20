@@ -452,7 +452,7 @@ public class SwornRPG extends JavaPlugin
 		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
 		if (economyProvider != null) 
 		{
-			economy = ((Economy)economyProvider.getProvider());
+			economy = (economyProvider.getProvider());
 		}
  
 		return economy != null;
@@ -622,7 +622,7 @@ public class SwornRPG extends JavaPlugin
 					
 					int health = (int) Math.round(lentity.getHealth() / 2);
 					int maxhealth = (int)Math.round(lentity.getMaxHealth() / 2);
-					int hearts = (int) Math.round((health * 10) / maxhealth);
+					int hearts = Math.round((health * 10) / maxhealth);
 					
 					if (health == maxhealth)
 					{

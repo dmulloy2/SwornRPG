@@ -34,6 +34,7 @@ public class PlayerLevelupEvent extends PlayerEvent implements Cancellable
 		return newLevel;
 	}
 
+	@Override
 	public HandlerList getHandlers() 
 	{
 		return handlers;

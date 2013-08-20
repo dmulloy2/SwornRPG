@@ -20,6 +20,7 @@ public class CmdCoordsToggle extends SwornRPGCommand
 		this.mustBePlayer = true;
 	}
 	
+	@Override
 	public void perform()
 	{
 		final PlayerData data = getPlayerData(player);

@@ -29,6 +29,7 @@ public class BlockDrop
 		return chance;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "[" + FormatUtil.getFriendlyName(item.getType()) + ", " + chance + "]";
