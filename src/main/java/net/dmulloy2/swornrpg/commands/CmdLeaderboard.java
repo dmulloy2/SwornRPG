@@ -21,49 +21,152 @@ import org.bukkit.OfflinePlayer;
 
 public class CmdLeaderboard extends SwornRPGCommand
 {
-	public CmdLeaderboard (SwornRPG plugin)
+	protected boolean updating;
+	protected long lastUpdateTime;
+	protected List<String> leaderboard;
+
+	public CmdLeaderboard(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "lb";
-		this.description = "Display level leaderboard";
 		this.aliases.add("top");
+		this.description = "Display experience leaderboard";
+
 		this.usesPrefix = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
-		sendpMessage(plugin.getMessage("leaderboard_wait"));
-		Map<String, PlayerData> data = plugin.getPlayerDataCache().getAllPlayerData();
-		HashMap<String, Integer> xpmap = new HashMap<String, Integer>();
-		for (Entry<String, PlayerData> entrySet : data.entrySet())
+		if (leaderboard == null)
 		{
-			String player = entrySet.getKey();
-			PlayerData data1 = entrySet.getValue();
-			int xp = data1.getTotalxp();
-			xpmap.put(player, xp);
+			this.leaderboard = new ArrayList<String>();
 		}
-		
-		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(xpmap.entrySet());
-		Collections.sort(
-		sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+
+		if (System.currentTimeMillis() - lastUpdateTime > 18000L)
 		{
-			@Override
-			public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
-			{
-				return -entry1.getValue().compareTo(entry2.getValue());
-			}
-		});
-		
-		List<String>lines = new ArrayList<String>();
+			sendpMessage(getMessage("leaderboard_wait"));
+
+			new BuildLeaderboardThread();
+		}
+
+		new DisplayLeaderboardThread();
+	}
+
+	public void displayLeaderboard()
+	{
+		int index = 1;
+
+		if (args.length > 0)
+		{
+			int indexFromArg = argAsInt(0, false);
+			if (indexFromArg > 1)
+				index = indexFromArg;
+		}
+
+		int pageCount = getPageCount();
+
+		if (index > pageCount)
+		{
+			err(getMessage("error-no-page-with-index"), args[0]);
+			return;
+		}
+
+		for (String s : getPage(index))
+			sendMessage(s);
+	}
+
+	private int linesPerPage = 10;
+
+	public int getPageCount()
+	{
+		return (getListSize() + linesPerPage - 1) / linesPerPage;
+	}
+
+	public int getListSize()
+	{
+		return leaderboard.size();
+	}
+
+	public List<String> getPage(int index)
+	{
+		List<String> lines = new ArrayList<String>();
+
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format(plugin.getMessage("leaderboard_header")));
+		line.append(getHeader(index));
 		lines.add(line.toString());
-		
-		int pos = 1;
-		for (Map.Entry<String, Integer> entry : sortedEntries)
+
+		lines.addAll(getLines((index - 1) * linesPerPage, index * linesPerPage));
+
+		if (index != getPageCount())
 		{
-			if (pos <= 10)
+			line = new StringBuilder();
+			line.append(FormatUtil.format(getMessage("leaderboard_nextpage"), index + 1));
+			lines.add(line.toString());
+		}
+
+		return lines;
+	}
+	
+	public String getHeader(int index)
+	{
+		return FormatUtil.format(getMessage("leaderboard_header"), index, getPageCount());
+	}
+
+	public List<String> getLines(int startIndex, int endIndex)
+	{
+		List<String> lines = new ArrayList<String>();
+		for (int i = startIndex; i < endIndex && i < getListSize(); i++)
+		{
+			lines.add(leaderboard.get(i));
+		}
+
+		return lines;
+	}
+
+	public class BuildLeaderboardThread extends Thread
+	{
+		private Thread thread;
+		public BuildLeaderboardThread()
+		{
+			this.thread = new Thread(this);
+			this.thread.start();
+		}
+
+		@Override
+		public void run()
+		{
+			updating = true;
+			
+			plugin.outConsole("Updating leaderboard...");
+			
+			long start = System.currentTimeMillis();
+			
+			Map<String, PlayerData> data = plugin.getPlayerDataCache().getAllPlayerData();
+			HashMap<String, Integer> xpmap = new HashMap<String, Integer>();
+			for (Entry<String, PlayerData> entrySet : data.entrySet())
+			{
+				String player = entrySet.getKey();
+				PlayerData data1 = entrySet.getValue();
+				int xp = data1.getTotalxp();
+				xpmap.put(player, xp);
+			}
+
+			final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(xpmap.entrySet());
+			Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+			{
+				@Override
+				public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
+				{
+					return -entry1.getValue().compareTo(entry2.getValue());
+				}
+			});
+
+			List<String> lines = new ArrayList<String>();
+			StringBuilder line = new StringBuilder();
+
+			int pos = 1;
+			for (Map.Entry<String, Integer> entry : sortedEntries)
 			{
 				String string = entry.getKey();
 				OfflinePlayer player = Util.matchOfflinePlayer(string);
@@ -74,158 +177,50 @@ public class CmdLeaderboard extends SwornRPGCommand
 					{
 						int level = data2.getLevel();
 						int xp = data2.getTotalxp();
-					
+
 						line = new StringBuilder();
-						line.append(FormatUtil.format(plugin.getMessage("leaderboard_format"), pos, player.getName(), level, xp));
+						line.append(FormatUtil.format(getMessage("leaderboard_format"), pos, player.getName(), level, xp));
 						lines.add(line.toString());
 						pos++;
 					}
 				}
 			}
+
+			leaderboard = lines;
+			
+			lastUpdateTime = System.currentTimeMillis();
+			
+			updating = false;
+			
+			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
 		}
-		
-		for (String s : lines)
-			sendMessage(s);
-		
-		sendMessage(plugin.getMessage("leaderboard_check"));
+	}
+
+	public class DisplayLeaderboardThread extends Thread
+	{
+		private Thread thread;
+		public DisplayLeaderboardThread()
+		{
+			this.thread = new Thread(this);
+			this.thread.start();
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				while (updating)
+				{
+					sleep(500L);
+				}
+
+				displayLeaderboard();
+			}
+			catch (Exception e)
+			{
+				err("Could not update leaderboard: {0}", e);
+			}
+		}
 	}
 }
-
-/*public class CmdLeaderboard extends PaginatedCommand
-{
-	private long lastUpdate;
-	private boolean hasBeenUpdated;
-	private List<String> leaderboard;
-	public CmdLeaderboard(SwornRPG plugin)
-	{
-		super(plugin);
-		this.name = "lb";
-		this.aliases.add("top");
-		this.optionalArgs.add("page");
-		this.description = "Displays level leaderboard";
-		this.linesPerPage = 10;
-		this.usesPrefix = true;
-		
-		this.lastUpdate = System.currentTimeMillis();
-		this.leaderboard = new ArrayList<String>();
-	}
-
-	@Override
-	public int getListSize() 
-	{
-		return leaderboard.size();
-	}
-
-	@Override
-	public String getHeader(int index) 
-	{
-		return FormatUtil.format(plugin.getMessage("leaderboard_header"), index, getPageCount());
-	}
-	
-	@Override
-	public void perform() 
-	{
-		if ((System.currentTimeMillis() - lastUpdate) >= 18000L || ! hasBeenUpdated)
-		{
-			sendpMessage(getMessage("leaderboard_wait"));
-			buildLeaderboard();
-		}
-		
-		int index = 1;
-		if (this.args.length > pageArgIndex) 
-		{
-			try 
-			{
-				index = Integer.parseInt(args[pageArgIndex]);
-				if (index < 1 || index > getPageCount())
-					throw new IndexOutOfBoundsException();
-			}
-			catch (NumberFormatException ex)
-			{
-				err(plugin.getMessage("error-invalid-page"), args[0]);
-				return;
-			}
-			catch (IndexOutOfBoundsException ex) 
-			{
-				err(plugin.getMessage("error-no-page-with-index"), args[0]);
-				return;
-			}
-		}
-		
-		List<String> page = getPage(index);
-		page.add(FormatUtil.format(plugin.getMessage("leaderboard_check")));
-		
-		for (String s : page)
-			sendMessage(s);
-	}
-	
-	public void buildLeaderboard()
-	{
-		leaderboard.clear();
-		
-		Map<String, PlayerData> data = plugin.getPlayerDataCache().getAllPlayerData();
-		HashMap<String, Integer> xpmap = new HashMap<String, Integer>();
-		for (Entry<String, PlayerData> entrySet : data.entrySet())
-		{
-			String player = entrySet.getKey();
-			PlayerData data1 = entrySet.getValue();
-			int xp = data1.getTotalxp();
-			if (xp > 0)
-				xpmap.put(player, xp);
-		}
-		
-		final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(xpmap.entrySet());
-		Collections.sort(
-				sortedEntries, new Comparator<Map.Entry<String, Integer>>()
-				{
-					@Override
-					public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
-					{
-						return -entry1.getValue().compareTo(entry2.getValue());
-					}
-				});
-
-		int pos = 1;
-		for (Map.Entry<String, Integer> entry : sortedEntries)
-		{
-			String string = entry.getKey();
-			OfflinePlayer player = Util.matchOfflinePlayer(string);
-			if (player != null)
-			{
-				PlayerData data2 = getPlayerData(player);
-				if (data2 != null)
-				{
-					int level = data2.getLevel();
-					int xp = data2.getTotalxp();
-							
-					StringBuilder line = new StringBuilder();
-					line.append(FormatUtil.format(plugin.getMessage("leaderboard_format"), pos, player.getName(), level, xp));
-					leaderboard.add(line.toString());
-					pos++;
-				}
-			}
-		}
-		
-		this.hasBeenUpdated = true;
-		this.lastUpdate = System.currentTimeMillis();
-	}
-	
-	@Override
-	public List<String> getLines(int startIndex, int endIndex) 
-	{
-		List<String> lines = new ArrayList<String>();
-		for (int i = startIndex; i < endIndex && i < getListSize(); i++) 
-		{
-			lines.add(leaderboard.get(i));
-		}
-		
-		return lines;
-	}
-
-	@Override
-	public String getLine(int index)
-	{
-		// Not needed since we override perform
-		return null;
-	}
-}*/
