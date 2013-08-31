@@ -129,7 +129,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		private Thread thread;
 		public BuildLeaderboardThread()
 		{
-			this.thread = new Thread(this);
+			this.thread = new Thread(this, "SwornRPG-BuildLeaderboard");
 			this.thread.start();
 		}
 
@@ -152,8 +152,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 				xpmap.put(player, xp);
 			}
 
-			final List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<Map.Entry<String, Integer>>(xpmap.entrySet());
-			Collections.sort(sortedEntries, new Comparator<Map.Entry<String, Integer>>()
+			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(xpmap.entrySet());
+			Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
 			{
 				@Override
 				public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
@@ -166,7 +166,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			StringBuilder line = new StringBuilder();
 
 			int pos = 1;
-			for (Map.Entry<String, Integer> entry : sortedEntries)
+			for (Entry<String, Integer> entry : sortedEntries)
 			{
 				String string = entry.getKey();
 				OfflinePlayer player = Util.matchOfflinePlayer(string);
@@ -201,7 +201,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		private Thread thread;
 		public DisplayLeaderboardThread()
 		{
-			this.thread = new Thread(this);
+			this.thread = new Thread(this, "SwornRPG-DisplayLeaderboard");
 			this.thread.start();
 		}
 
