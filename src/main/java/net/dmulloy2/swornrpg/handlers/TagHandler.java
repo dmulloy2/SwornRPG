@@ -10,6 +10,7 @@ import net.dmulloy2.swornrpg.listeners.TagListener;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Handles tags and related features
@@ -67,24 +68,35 @@ public class TagHandler
     	File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
     	if (tagsFile.exists())
     	{
-    		YamlConfiguration fc = YamlConfiguration.loadConfiguration(tagsFile);
-
-    		Map<String, Object> values = fc.getValues(true);
-    		
-    		for (Entry<String, Object> entry : values.entrySet())
+    		new BukkitRunnable()
     		{
-    			PlayerData data = plugin.getPlayerDataCache().getData(entry.getKey());
-    			if (data != null)
+    			@Override
+    			public void run()
     			{
-    				if (entry.getValue() instanceof String)
-    				{
-    					String tag = (String)entry.getValue();
-    					data.setTag(tag);
-    				}
-    			}
-    		}
+    				long start = System.currentTimeMillis();
+    			
+    				plugin.outConsole("Running Tag conversion task...");
+
+    				File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
+    				
+    				YamlConfiguration fc = YamlConfiguration.loadConfiguration(tagsFile);
+
+    				Map<String, Object> map = fc.getValues(true);
     		
-    		tagsFile.delete();
+    				for (Entry<String, Object> entry : map.entrySet())
+    				{
+    					PlayerData data = plugin.getPlayerDataCache().getData(entry.getKey());
+    					if (data != null)
+    					{
+    						data.setTag((String)entry.getValue());
+    					}
+    				}
+    				
+    				tagsFile.delete();
+    				
+    				plugin.outConsole("Tag conversion task complete! [{0}ms]", System.currentTimeMillis() - start);
+    			}
+    		}.runTaskLater(plugin, 20L);
     	}
     }
 }

@@ -78,7 +78,7 @@ public class CmdTag extends SwornRPGCommand
 	
 	public boolean isValidTag(String tag)
 	{
-		if (tag.length() < 2)
+		if (tag.length() == 2)
 		{
 			return tag.contains("&");
 		}
