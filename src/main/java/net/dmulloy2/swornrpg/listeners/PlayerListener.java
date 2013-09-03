@@ -9,6 +9,7 @@ import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -42,7 +43,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
-import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 
 /**
  * @author dmulloy2
@@ -131,7 +131,7 @@ public class PlayerListener implements Listener
 						give = Material.DIAMOND;
 
 					ItemStack salvaged = new ItemStack(give, (int) amt);
-					InventoryWorkaround.addItems(inv, salvaged);
+					InventoryUtil.addItems(inv, salvaged);
 					event.setCancelled(true);
 				}
 				else
@@ -222,7 +222,7 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 		if (bookMap.containsKey(player.getName()))
 		{
-			InventoryWorkaround.addItems(player.getInventory(), bookMap.get(player.getName()));
+			InventoryUtil.addItems(player.getInventory(), bookMap.get(player.getName()));
 			bookMap.remove(player.getName());
 		}
 
