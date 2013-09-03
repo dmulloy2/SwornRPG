@@ -1,11 +1,10 @@
-package net.dmulloy2.swornrpg.permissions;
-
+package net.dmulloy2.swornrpg.types;
 
 /**
  * @author dmulloy2
  */
 
-public enum PermissionType 
+public enum Permission
 {
 	CMD_ACHAT("adminchat"),
 	CMD_HAT("hat"),
@@ -23,10 +22,14 @@ public enum PermissionType
 	
 	UPDATE_NOTIFY("update");
 	
-	public final Permission permission;
-	
-	PermissionType(final String node) 
+	private String node;
+	Permission(String node)
 	{
-		permission = new Permission(node);
+		this.node = node;
+	}
+	
+	public String getNode()
+	{
+		return node;
 	}
 }

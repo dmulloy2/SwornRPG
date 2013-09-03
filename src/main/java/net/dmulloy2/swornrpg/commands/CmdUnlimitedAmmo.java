@@ -21,6 +21,6 @@ public class CmdUnlimitedAmmo extends SwornRPGCommand
 	@Override
 	public void perform() 
 	{
-		plugin.getAbilitiesManager().activateAmmo(player);
+		plugin.getAbilityHandler().activateAmmo(player);
 	}
 }

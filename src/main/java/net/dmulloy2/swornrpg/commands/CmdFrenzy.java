@@ -8,7 +8,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 
 public class CmdFrenzy extends SwornRPGCommand
 {
-	public CmdFrenzy (SwornRPG plugin)
+	public CmdFrenzy(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "frenzy";
@@ -19,6 +19,6 @@ public class CmdFrenzy extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		plugin.getAbilitiesManager().activateFrenzy(player, true);
+		plugin.getAbilityHandler().activateFrenzy(player, true);
 	}
 }

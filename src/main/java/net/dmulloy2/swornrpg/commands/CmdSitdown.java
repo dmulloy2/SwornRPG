@@ -7,9 +7,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.util.Vector;
 
+/**
+ * @author dmulloy2
+ */
+
 public class CmdSitdown extends SwornRPGCommand
 {
-	public CmdSitdown (SwornRPG plugin)
+	public CmdSitdown(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "sitdown";

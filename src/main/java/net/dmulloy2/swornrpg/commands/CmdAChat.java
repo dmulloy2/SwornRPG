@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.entity.Player;
@@ -12,14 +12,14 @@ import org.bukkit.entity.Player;
 
 public class CmdAChat extends SwornRPGCommand
 {
-	public CmdAChat (SwornRPG plugin)
+	public CmdAChat(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "a";
 		this.description = "Talk in admin-only chat";
 		this.aliases.add("achat");
 		this.requiredArgs.add("message");
-		this.permission = PermissionType.CMD_ACHAT.permission;
+		this.permission = Permission.CMD_ACHAT;
 		
 		this.mustBePlayer = false;
 	}

@@ -51,6 +51,7 @@ public class CmdLevel extends SwornRPGCommand
 				return;
 			}
 		}
+		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{
@@ -85,13 +86,13 @@ public class CmdLevel extends SwornRPGCommand
 		int scale = 20;
 		int bars = Math.round(scale - ((xptonext * scale) / data.getXpneeded()));
 		StringBuilder bar = new StringBuilder();
-		for (int i=0; i<bars; i++)
+		for (int i = 0; i < bars; i++)
 		{
 			bar.append("&b=");
 		}
 		
 		int left = scale - bars;
-		for (int ii=0; ii<left; ii++)
+		for (int ii = 0; ii < left; ii++)
 		{
 			bar.append("&e=");
 		}

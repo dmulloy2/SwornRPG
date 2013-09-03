@@ -1,4 +1,4 @@
-package net.dmulloy2.swornrpg;
+package net.dmulloy2.swornrpg.types;
 
 import net.dmulloy2.swornrpg.util.FormatUtil;
 

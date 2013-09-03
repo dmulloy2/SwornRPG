@@ -169,6 +169,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 			for (Entry<String, Integer> entry : sortedEntries)
 			{
 				String string = entry.getKey();
+				if (string.length() >= 16) continue;
+				
 				OfflinePlayer player = Util.matchOfflinePlayer(string);
 				if (player != null)
 				{

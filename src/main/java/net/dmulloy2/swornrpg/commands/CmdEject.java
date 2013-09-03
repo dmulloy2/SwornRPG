@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class CmdEject extends SwornRPGCommand
 {
-	public CmdEject (SwornRPG plugin)
+	public CmdEject(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "eject";

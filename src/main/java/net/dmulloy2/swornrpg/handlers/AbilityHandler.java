@@ -1,7 +1,8 @@
-package net.dmulloy2.swornrpg;
+package net.dmulloy2.swornrpg.handlers;
 
 import java.util.HashMap;
 
+import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.FrenzyActivateEvent;
 import net.dmulloy2.swornrpg.events.SuperPickaxeActivateEvent;
@@ -16,19 +17,24 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
+ * Handles the activation of abilities
+ * 
  * @author dmulloy2
  */
 
-public class AbilitiesManager
+public class AbilityHandler
 {
-	public SwornRPG plugin;
-	public AbilitiesManager(SwornRPG plugin)
+	private HashMap<String, Long> frenzyWaiting;
+	private HashMap<String, Long> spickWaiting;
+	
+	private SwornRPG plugin;
+	public AbilityHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
+		
+		this.frenzyWaiting = new HashMap<String, Long>();
+		this.spickWaiting = new HashMap<String, Long>();
 	}
-	
-	public HashMap<String, Long> frenzyWaiting = new HashMap<String, Long>();
-	public HashMap<String, Long> spickWaiting = new HashMap<String, Long>();
 	
 	/**Frenzy Mode!**/
 	public void activateFrenzy(final Player player, boolean command, Action... actions)
@@ -78,20 +84,20 @@ public class AbilitiesManager
 		}
 		
 		/**The player did not left click**/
-		if (activate == false)
+		if (! activate)
 		{
-			if (!frenzyWaiting.containsKey(player.getName()))
+			if (! frenzyWaiting.containsKey(player.getName()))
 			{
 				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 				frenzyWaiting.put(player.getName(), System.currentTimeMillis());
-				new FrenzyRemoveThread(player).runTaskLater(plugin, 60);
+				new FrenzyRemoveTask(player).runTaskLater(plugin, 60);
 			}
 			return;
 		}
 		
 		/**The player is activating using an item**/
-		if (command == false)
+		if (! command)
 		{
 			/**Check if the player is on the waiting list**/
 			if (frenzyWaiting.containsKey(player.getName()))
@@ -145,8 +151,7 @@ public class AbilitiesManager
 		
 		plugin.debug(plugin.getMessage("log_frenzy_activate"), player.getName(), duration);
 		
-		// TODO: These aren't actually threads :p
-		class FrenzyThread extends BukkitRunnable
+		new BukkitRunnable()
 		{
 			@Override
 			public void run()
@@ -161,9 +166,7 @@ public class AbilitiesManager
 				
 				plugin.debug(plugin.getMessage("log_frenzy_cooldown"), player.getName(), cooldown);
 			}
-		}
-		
-		new FrenzyThread().runTaskLater(plugin, duration);
+		}.runTaskLater(plugin, duration);
 	}
 	
 	/**Super Pickaxe!**/
@@ -216,18 +219,19 @@ public class AbilitiesManager
 		/**The player did not left click**/
 		if (activate == false)
 		{
-			if (!spickWaiting.containsKey(player.getName()))
+			if (! spickWaiting.containsKey(player.getName()))
 			{
 				String inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inhand);
 				spickWaiting.put(player.getName(), System.currentTimeMillis());
-				new SpickRemoveThread(player).runTaskLater(plugin, 60);
+				new SuperPickaxeRemoveTask(player).runTaskLater(plugin, 60);
 			}
+			
 			return;
 		}
 		
 		/**The player is activating using an item**/
-		if (command == false)
+		if (! command)
 		{
 			/**Check if the player is on the waiting list**/
 			if (spickWaiting.containsKey(player.getName()))
@@ -276,7 +280,7 @@ public class AbilitiesManager
 		
 		plugin.debug(plugin.getMessage("log_superpick_activate"), player.getName(), duration);
 		
-		class SuperPickThread extends BukkitRunnable
+		new BukkitRunnable()
 		{
 			@Override
 			public void run()
@@ -290,17 +294,15 @@ public class AbilitiesManager
 				
 				plugin.debug(plugin.getMessage("log_superpick_cooldown"), player.getName(), cooldown);
 			}
-		}
-		
-		new SuperPickThread().runTaskLater(plugin, duration);
+		}.runTaskLater(plugin, duration);
 	}
 	
 	/**Unlimited Ammo**/
 	public void activateAmmo(final Player player)
 	{
-		/**PVPGunPlus Enable Check**/
+		/** SwornGuns Enable Check **/
 		PluginManager pm = plugin.getServer().getPluginManager();
-		if (!pm.isPluginEnabled("SwornGuns"))
+		if (! pm.isPluginEnabled("SwornGuns"))
 		{
 			sendpMessage(player, plugin.getMessage("plugin_not_found"), "SwornGuns");
 			return;
@@ -345,7 +347,7 @@ public class AbilitiesManager
 		
 		plugin.debug(plugin.getMessage("log_ammo_activate"), player.getName(), duration);
 		
-		class UnlimitedAmmoThread extends BukkitRunnable
+		new BukkitRunnable()
 		{
 			@Override
 			public void run()
@@ -359,9 +361,7 @@ public class AbilitiesManager
 				
 				plugin.debug(plugin.getMessage("log_ammo_cooldown"), player.getName(), cooldown);
 			}
-		}
-		
-		new UnlimitedAmmoThread().runTaskLater(plugin, duration);
+		}.runTaskLater(plugin, duration);
 	}
 	
 	/**Send non prefixed message**/
@@ -376,11 +376,11 @@ public class AbilitiesManager
 		player.sendMessage(plugin.prefix + FormatUtil.format(msg, args));
 	}
 	
-	/**If the player has been on the frenzy waiting list for more than 3 seconds, remove them from the list**/
-	public class FrenzyRemoveThread extends BukkitRunnable
+	/** If the player has been on the frenzy waiting list for more than 3 seconds, remove them from the list **/
+	public class FrenzyRemoveTask extends BukkitRunnable
 	{
 		public Player player;
-		public FrenzyRemoveThread(Player player)
+		public FrenzyRemoveTask(Player player)
 		{
 			this.player = player;
 		}
@@ -405,11 +405,11 @@ public class AbilitiesManager
 		}
 	}
 	
-	/**If the player has been on the spick waiting list for more than 3 seconds, remove them from the list**/
-	public class SpickRemoveThread extends BukkitRunnable
+	/** If the player has been on the spick waiting list for more than 3 seconds, remove them **/
+	public class SuperPickaxeRemoveTask extends BukkitRunnable
 	{
-		public Player player;
-		public SpickRemoveThread(Player player)
+		private Player player;
+		public SuperPickaxeRemoveTask(Player player)
 		{
 			this.player = player;
 		}

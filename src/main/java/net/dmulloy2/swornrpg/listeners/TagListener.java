@@ -1,8 +1,10 @@
 package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.kitteh.tag.PlayerReceiveNameTagEvent;
@@ -14,7 +16,7 @@ import org.kitteh.tag.PlayerReceiveNameTagEvent;
 public class TagListener implements Listener 
 {
    	private final SwornRPG plugin;
-    public TagListener(final SwornRPG plugin) 
+    public TagListener(SwornRPG plugin) 
     {
         this.plugin = plugin;
     }
@@ -22,11 +24,12 @@ public class TagListener implements Listener
     @EventHandler
     public void onPlayerReceiveNametag(PlayerReceiveNameTagEvent event) 
     {
-        String name = event.getNamedPlayer().getName();
-        if (plugin.getTagManager().hasChanged(name)) 
-        {
-        	String tag = FormatUtil.format(plugin.getTagManager().getName(name));
-            event.setTag(tag);
-        }
+    	Player player = event.getNamedPlayer();
+    	if (plugin.getTagHandler().hasChangedTag(player))
+    	{
+    		PlayerData data = plugin.getPlayerDataCache().getData(player);
+    		
+    		event.setTag(FormatUtil.format(data.getTag()));
+    	}
     }
 }

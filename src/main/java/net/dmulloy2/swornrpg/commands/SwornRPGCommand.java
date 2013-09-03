@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
-import net.dmulloy2.swornrpg.permissions.Permission;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.OfflinePlayer;
@@ -158,9 +158,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		ret.append(name);
 
 		for (String s : optionalArgs)
-		{
 			ret.append(String.format(" &3[" + s + "]"));
-		}
 		
 		for (String s : requiredArgs)
 			ret.append(String.format(" &3<" + s + ">"));

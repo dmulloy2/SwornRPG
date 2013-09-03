@@ -21,9 +21,6 @@ public class Util
 {
 	public static Player matchPlayer(String pl)
 	{
-		if (pl.length() > 16)
-			return null;
-		
 		List<Player> players = Bukkit.matchPlayer(pl);
 		
 		if (players.size() >= 1)

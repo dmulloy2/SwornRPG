@@ -16,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class FileResourceLoader extends ClassLoader 
 {
 	private final transient File dataFolder;
-	
 	public FileResourceLoader(final ClassLoader classLoader, final JavaPlugin plugin) 
 	{
 		super(classLoader);
@@ -38,6 +37,7 @@ public class FileResourceLoader extends ClassLoader
 				// Nothing...
 			}
 		}
+		
 		return super.getResource(string);
 	}
 	
@@ -56,6 +56,7 @@ public class FileResourceLoader extends ClassLoader
 				// Do nothing...
 			}
 		}
+		
 		return super.getResourceAsStream(string);
 	}
 }

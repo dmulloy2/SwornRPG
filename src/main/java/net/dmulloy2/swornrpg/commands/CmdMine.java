@@ -8,7 +8,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 
 public class CmdMine extends SwornRPGCommand
 {
-	public CmdMine (SwornRPG plugin)
+	public CmdMine(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "mine";
@@ -20,6 +20,6 @@ public class CmdMine extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		plugin.getAbilitiesManager().activateSpick(player, true);
+		plugin.getAbilityHandler().activateSpick(player, true);
 	}
 }

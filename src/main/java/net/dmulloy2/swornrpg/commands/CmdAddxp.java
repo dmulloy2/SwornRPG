@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class CmdAddxp extends SwornRPGCommand
 {
-	public CmdAddxp (SwornRPG plugin)
+	public CmdAddxp(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "addxp";
@@ -20,7 +20,7 @@ public class CmdAddxp extends SwornRPGCommand
 		this.requiredArgs.add("player");
 		this.requiredArgs.add("xp");
 		this.description = "Manually give xp to a player";
-		this.permission = PermissionType.CMD_ADDXP.permission;
+		this.permission = Permission.CMD_ADDXP;
 		
 		this.mustBePlayer = true;
 	}
@@ -36,7 +36,10 @@ public class CmdAddxp extends SwornRPGCommand
 		}
 		
 		int giveXP = argAsInt(1, true);
-		plugin.getExperienceManager().onXPGain(target, giveXP, "");
+		if (giveXP == -1)
+			return;
+		
+		plugin.getExperienceHandler().onXPGain(target, giveXP, "");
 
 		if (target.getName().equals(player.getName()))
 		{

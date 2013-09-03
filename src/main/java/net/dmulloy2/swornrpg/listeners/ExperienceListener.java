@@ -39,96 +39,96 @@ import org.bukkit.material.NetherWarts;
  * @author dmulloy2
  */
 
-public class ExperienceListener implements Listener 
+public class ExperienceListener implements Listener
 {
 	private final SwornRPG plugin;
-	public ExperienceListener(final SwornRPG plugin) 
+	public ExperienceListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
-		
-	/**Rewards XP in PvP situations**/
+
+	/** Rewards XP in PvP situations **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
-		/**Checks for player kills to be enabled in the config**/
+		/** Checks for player kills to be enabled in the config **/
 		if (! plugin.isPlayerkills())
 			return;
-		
+
 		Player killed = event.getEntity().getPlayer();
 		Player killer = event.getEntity().getKiller();
-		
-		/**Checks to see if it was PvP**/
+
+		/** Checks to see if it was PvP **/
 		if (killer instanceof Player)
 		{
-			/**Warzone Checks**/
+			/** Warzone Checks **/
 			if (plugin.checkFactions(killer, false))
 				return;
-			
+
 			if (plugin.checkFactions(killed, false))
 				return;
-			
+
 			String killerp = killer.getName();
 			String killedp = killed.getName();
-			
-			/**Suicide Check**/
+
+			/** Suicide Check **/
 			if (killedp == killerp)
 				return;
-			
+
 			String message = "";
 
-			/**Killer Xp Gain**/
+			/** Killer Xp Gain **/
 			int killxp = plugin.getKillergain();
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
-			plugin.getExperienceManager().onXPGain(killer, killxp, message);
-			
-			/**Killed Xp Loss**/
+			plugin.getExperienceHandler().onXPGain(killer, killxp, message);
+
+			/** Killed Xp Loss **/
 			int killedxp = -(plugin.getKilledloss());
 			int msgxp = Math.abs(killedxp);
 			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
-			plugin.getExperienceManager().onXPGain(killed, killedxp, message);
-			
-			/**Debug Messages**/
+			plugin.getExperienceHandler().onXPGain(killed, killedxp, message);
+
+			/** Debug Messages **/
 			plugin.debug(plugin.getMessage("log_pvp_killed"), killedp, msgxp, killerp);
 			plugin.debug(plugin.getMessage("log_pvp_killer"), killerp, killxp, killedp);
 		}
 	}
-	
-	/**Rewards XP in PvE situations**/
+
+	/** Rewards XP in PvE situations **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		/**Checks for mob kills to be enabled in the config**/
+		/** Checks for mob kills to be enabled in the config **/
 		if (! plugin.isMobkills())
 			return;
-		
+
 		Entity kill = event.getEntity().getKiller();
 		Entity killed = event.getEntity();
-		
-		/**Checks to make sure it wasn't pvp**/
+
+		/** Checks to make sure it wasn't pvp **/
 		if (killed instanceof Player)
 			return;
-		
-		/**Checks to make sure the killer is a player**/
+
+		/** Checks to make sure the killer is a player **/
 		if (kill instanceof Player)
 		{
 			Player killer = event.getEntity().getKiller();
 			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
-			
-			/**Warzone and Safezone check**/
+
+			/** Warzone and Safezone check **/
 			if (plugin.checkFactions(killer, true))
 				return;
-			
-			/**Camping Check**/
+
+			/** Camping Check **/
 			if (plugin.checkCamper(killer))
 				return;
-			
-			/**XP gain calculation**/
+
+			/** XP gain calculation **/
 			int killxp;
-			List<String> tier3 = Arrays.asList(new String[]{"wither", "ender dragon"});
-			List<String> tier2 = Arrays.asList(new String[]{"creeper", "enderman", "iron golem",
-					"skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime"});
-			
+			List<String> tier3 = Arrays.asList(new String[] { "wither", "ender dragon" });
+			List<String> tier2 = Arrays.asList(new String[] { "creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider",
+					"ghast", "magma cube", "witch", "slime" });
+
 			if (tier3.contains(mobname.toLowerCase()))
 			{
 				killxp = plugin.getMobkillsxp() * 3;
@@ -141,86 +141,73 @@ public class ExperienceListener implements Listener
 			{
 				killxp = plugin.getMobkillsxp();
 			}
-			
-			/**Message**/
+
+			/** Message **/
 			String article = FormatUtil.getArticle(mobname);
 			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname));
-			
-			/**Give the player some xp**/
-			plugin.getExperienceManager().onXPGain(killer, killxp, message);
+
+			/** Give the player some xp **/
+			plugin.getExperienceHandler().onXPGain(killer, killxp, message);
 			plugin.debug(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
 		}
 	}
-	
-	/**Rewards XP on Minecraft xp levelup**/
+
+	/** Rewards XP on Minecraft xp levelup **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 	{
-		/**Checks to make sure xp level xp gain is enabled in the config**/
+		/** Checks to make sure xp level xp gain is enabled in the config **/
 		if (! plugin.isXplevel())
 			return;
-		
-		Player player = event.getPlayer();
-		if (player == null)
-			return;
 
-		/**Warzone Check**/
+		/** Warzone Check **/
+		Player player = event.getPlayer();
 		if (plugin.checkFactions(player, true))
 			return;
-		
-		/**Camping Check**/
+
+		/** Camping Check **/
 		if (plugin.checkCamper(player))
 			return;
-		
-		/**Define Stuff**/
+
+		/** Define Stuff **/
 		int oldlevel = event.getOldLevel();
 		int newlevel = event.getNewLevel();
 		if (newlevel - oldlevel != 1)
 			return;
-		
+
 		int xpgained = plugin.getXplevelgain();
 		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
-		
-		/**Give the player some XP**/
-		plugin.getExperienceManager().onXPGain(player, xpgained, message);
+
+		/** Give the player some XP **/
+		plugin.getExperienceHandler().onXPGain(player, xpgained, message);
 		plugin.debug(plugin.getMessage("log_mcxpgain"), player.getName(), xpgained);
 	}
-	
-	/**Herbalism : Breaking**/
+
+	/** Herbalism : Breaking **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onHerbalismBreak(BlockBreakEvent event)
 	{
-		if (event.isCancelled())
+		if (! plugin.isHerbalism() || event.isCancelled())
 			return;
-			
-		if (! plugin.isHerbalism())
-			return;
-			
+
 		Player player = event.getPlayer();
-		if (player == null)
+		if (plugin.isDisabledWorld(player))
 			return;
-			
-		Block block = event.getBlock();
-		if (block == null)
+		
+		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
-			
-		BlockState blockState = block.getState();
-		if (blockState == null)
-			return;
-			
-		GameMode gm = player.getGameMode();
-		if (gm != GameMode.SURVIVAL)
-			return;
-			
+		
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int concurrentHerbalism = data.getConcurrentHerbalism();
+
+		BlockState blockState = event.getBlock().getState();
 		if (herbalismNeeded(blockState))
 		{
 			if (concurrentHerbalism >= 10)
 			{
 				int xp = plugin.getHerbalismgain() * 10;
 				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), xp);
-				plugin.getExperienceManager().onXPGain(player, xp, message);
+				plugin.getExperienceHandler().onXPGain(player, xp, message);
 				data.setConcurrentHerbalism(0);
 			}
 			else
@@ -229,41 +216,31 @@ public class ExperienceListener implements Listener
 			}
 		}
 	}
-	
-	/**Herbalism : Instant Growth**/
+
+	/** Herbalism : Instant Growth **/
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHerbalismPlace(BlockPlaceEvent event)
 	{
-		if (event.isCancelled())
+		if (! plugin.isHerbalism() || event.isCancelled())
 			return;
-			
-		if (! plugin.isHerbalism())
-			return;
-			
+
 		Player player = event.getPlayer();
-		if (player == null)
-			return;
-		
 		if (plugin.isDisabledWorld(player))
 			return;
-			
+		
+		if (player.getGameMode() == GameMode.CREATIVE)
+			return;
+
 		Block block = event.getBlock();
-		if (block == null)
-			return;
-			
 		BlockState blockState = block.getState();
-		if (blockState == null)
-			return;
-			
-		GameMode gm = player.getGameMode();
-		if (gm != GameMode.SURVIVAL)
-			return;
-	
-		/**Insta-Growth**/
+
+		/** Insta-Growth **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int level = data.getLevel();
-		if (level == 0) level = 1;
-		if (level > 150) level = 150;
+		if (level == 0)
+			level = 1;
+		if (level > 150)
+			level = 150;
 		int rand = Util.random(200 - level);
 		if (rand == 0)
 		{
@@ -275,11 +252,7 @@ public class ExperienceListener implements Listener
 				block.setData(blockState.getData().getData());
 				message = true;
 			}
-			else if (
-					mat == Material.CARROT
-					||mat == Material.CROPS
-					||mat == Material.POTATO
-					)
+			else if (mat == Material.CARROT || mat == Material.CROPS || mat == Material.POTATO)
 			{
 				blockState.setRawData(CropState.RIPE.getData());
 				block.setData(blockState.getData().getData());
@@ -309,63 +282,63 @@ public class ExperienceListener implements Listener
 			}
 		}
 	}
-	
-	/**Herbalism Check**/
+
+	/** Herbalism Check **/
 	public boolean herbalismNeeded(BlockState blockState)
 	{
-        switch (blockState.getType())
-        {
-        	case CACTUS:
-        	case MELON_BLOCK:
-        	case PUMPKIN:
-        		return true;
-        		
-            case CARROT:
-            case CROPS:
-            case POTATO:
-                return blockState.getRawData() == CropState.RIPE.getData();
+		switch (blockState.getType())
+		{
+			case CACTUS:
+			case MELON_BLOCK:
+			case PUMPKIN:
+				return true;
 
-        	case NETHER_WARTS:
-        		return ((NetherWarts) blockState.getData()).getState() == NetherWartsState.RIPE;
+			case CARROT:
+			case CROPS:
+			case POTATO:
+				return blockState.getRawData() == CropState.RIPE.getData();
 
-        	case COCOA:
-        		return ((CocoaPlant) blockState.getData()).getSize() == CocoaPlantSize.LARGE;
+			case NETHER_WARTS:
+				return ((NetherWarts) blockState.getData()).getState() == NetherWartsState.RIPE;
 
-        	default:
-        		return false;
-        }
+			case COCOA:
+				return ((CocoaPlant) blockState.getData()).getSize() == CocoaPlantSize.LARGE;
+
+			default:
+				return false;
+		}
 	}
-	
-	/**Taming XP Gain**/
+
+	/** Taming XP Gain **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityTame(EntityTameEvent event)
 	{
-		if (event.isCancelled())
+		if (! plugin.isTaming() || event.isCancelled())
 			return;
-		
-		if (! plugin.isTaming())
-			return;
-		
+
 		if (event.getOwner() instanceof Player)
 		{
-			Player player = (Player)event.getOwner();
+			Player player = (Player) event.getOwner();
 			if (player != null)
 			{
-				/**XP Gain**/
+				/** XP Gain **/
 				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
 				String article = FormatUtil.getArticle(mobname);
-				
-				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.getTaminggain(), article, mobname);
-				plugin.getExperienceManager().onXPGain(player, plugin.getTaminggain(), message);
-				
-				/**Wolf/Ocelot's Pal**/
+
+				String message = FormatUtil
+						.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.getTaminggain(), article, mobname);
+				plugin.getExperienceHandler().onXPGain(player, plugin.getTaminggain(), message);
+
+				/** Wolf/Ocelot's Pal **/
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
 				int level = data.getLevel();
-				if (level <= 0) level = 1;
-				if (level >= 50) level = 50;
-				int rand2 = Util.random(150/level);
+				if (level <= 0)
+					level = 1;
+				if (level >= 50)
+					level = 50;
+				int rand2 = Util.random(150 / level);
 				if (rand2 == 0)
-				{ 
+				{
 					if (event.getEntity() instanceof Wolf)
 					{
 						Wolf wolf = (Wolf) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.WOLF);
@@ -377,13 +350,13 @@ public class ExperienceListener implements Listener
 						ocelot.setOwner(player);
 					}
 				}
-				
-				/**Taming Bomb!**/
-				int rand1 = Util.random(150/level);
+
+				/** Taming Bomb! **/
+				int rand1 = Util.random(150 / level);
 				if (rand1 == 0)
 				{
 					boolean msg = false;
-					List<Entity> entities = player.getNearbyEntities(10,10,10);
+					List<Entity> entities = player.getNearbyEntities(10, 10, 10);
 					if (entities.size() > 0)
 					{
 						for (Entity entity : entities)
@@ -403,30 +376,32 @@ public class ExperienceListener implements Listener
 			}
 		}
 	}
-	
-	/**Enchanting XP**/
+
+	/** Enchanting XP **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerEnchant(EnchantItemEvent event)
 	{
-		Player player = event.getEnchanter();
-		if (player == null)
-			return;
-		
-		if (! plugin.isEnchanting())
+		if (! plugin.isEnchanting() || event.isCancelled())
 			return;
 
 		int cost = event.getExpLevelCost();
 		if (cost < 15)
 			return;
+
+		Player player = event.getEnchanter();
+		if (player == null)
+			return;
 		
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int level = data.getLevel();
-		if (level == 0) level = 1;
-		if (level > 30) level = 30;
+		if (level == 0)
+			level = 1;
+		if (level > 30)
+			level = 30;
 
-		int xp = (cost/2) + plugin.getEnchantbase();
+		int xp = (cost / 2) + plugin.getEnchantbase();
 		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
-		
-		plugin.getExperienceManager().onXPGain(player, xp, message);
+
+		plugin.getExperienceHandler().onXPGain(player, xp, message);
 	}
 }

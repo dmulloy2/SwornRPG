@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.Material;
@@ -14,14 +14,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class CmdItemName extends SwornRPGCommand
 {
-	public CmdItemName (SwornRPG plugin)
+	public CmdItemName(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "iname";
 		this.description = "Set the name of your inhand item";
 		this.aliases.add("itemname");
 		this.requiredArgs.add("name");
-		this.permission = PermissionType.CMD_INAME.permission;
+		this.permission = Permission.CMD_INAME;
 		this.mustBePlayer = true;
 	}
 	

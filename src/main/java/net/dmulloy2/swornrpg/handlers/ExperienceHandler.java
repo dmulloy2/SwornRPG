@@ -1,25 +1,38 @@
-package net.dmulloy2.swornrpg;
+package net.dmulloy2.swornrpg.handlers;
 
+import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
+import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 
-public class ExperienceManager 
+/**
+ * Handles the gaining of xp
+ * 
+ * @author dmulloy2
+ */
+
+public class ExperienceHandler
 {
-	public SwornRPG plugin;
-	public ExperienceManager(SwornRPG plugin)
+	private final SwornRPG plugin;
+	public ExperienceHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	/**When a player gains XP**/
+	/**
+	 * Handles the gaining of XP for {@link Player}s
+	 * 
+	 * @param player - {@link Player} who gained xp
+	 * @param xp - Amount of xp gained
+	 * @param message - Message to be sent to the player
+	 */
 	public void onXPGain(Player player, int xp, String message)
 	{
 		/**Disabled World Check**/
@@ -54,8 +67,13 @@ public class ExperienceManager
 			onLevelup(player, oldlevel, newlevel);
 		}
 	}
-	
-	/**When a player levels up**/
+	/**
+	 * Handles the leveling up of {@link Player}s
+	 * 
+	 * @param player - {@link Player} who leveled up
+	 * @param oldLevel - Old level
+	 * @param newLevel - New level
+	 */
 	public void onLevelup(Player player, int oldLevel, int newLevel)
 	{
 		/**Disabled World Check**/
@@ -103,7 +121,7 @@ public class ExperienceManager
 		plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
 		
 		/**Award money if enabled**/
-		if (! plugin.isMoney())
+		if (plugin.isMoney())
 		{
 			/**Vault Check**/
 			PluginManager pm = plugin.getServer().getPluginManager();
@@ -121,11 +139,11 @@ public class ExperienceManager
 		}
 		
 		/**Award items if enabled**/
-		if (! plugin.isItems())
+		if (plugin.isItems())
 		{
 			int rewardamt = level*plugin.getItemperlevel();
 			ItemStack item = new ItemStack(plugin.getItemreward(), rewardamt);
-			InventoryWorkaround.addItems(player.getInventory(), item);
+			InventoryUtil.addItems(player.getInventory(), item);
 			
 			String itemName = FormatUtil.getFriendlyName(item.getType());
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, itemName));

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class CmdMarry extends SwornRPGCommand
 {
-	public CmdMarry (SwornRPG plugin)
+	public CmdMarry(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "marry";

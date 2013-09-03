@@ -21,6 +21,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 public class PlayerData implements ConfigurationSerializable 
 {
 	private String spouse;
+	private String tag;
 	
 	private boolean deathbookdisabled;
 

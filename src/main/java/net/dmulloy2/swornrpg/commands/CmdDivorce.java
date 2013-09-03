@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class CmdDivorce extends SwornRPGCommand
 {
-	public CmdDivorce (SwornRPG plugin)
+	public CmdDivorce(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "divorce";

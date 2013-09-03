@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public class CmdSpouse extends SwornRPGCommand
 {
-	public CmdSpouse (SwornRPG plugin)
+	public CmdSpouse(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "spouse";
@@ -58,12 +58,14 @@ public class CmdSpouse extends SwornRPGCommand
 				return;
 			}
 		}
+		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{
 			err(plugin.getMessage("noplayer"), target.getName());
 			return;
 		}
+		
 		String targetp = target.getName();
 		String spouse = data.getSpouse();
 		String name;

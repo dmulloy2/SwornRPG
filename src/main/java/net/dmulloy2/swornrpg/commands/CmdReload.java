@@ -1,7 +1,11 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
+
+/**
+ * @author dmulloy2
+ */
 
 public class CmdReload extends SwornRPGCommand
 {
@@ -11,7 +15,7 @@ public class CmdReload extends SwornRPGCommand
 		this.name = "reload";
 		this.aliases.add("rl");
 		this.description = "Reload SwornRPG";
-		this.permission = PermissionType.CMD_RELOAD.permission;
+		this.permission = Permission.CMD_RELOAD;
 		this.mustBePlayer = false;
 		this.usesPrefix = true;
 	}
@@ -20,7 +24,9 @@ public class CmdReload extends SwornRPGCommand
 	public void perform()
 	{
 		sendpMessage("&aReloading Configuration...");
+		
 		plugin.reload();
+		
 		sendpMessage("&aReload Complete!");
 	}
 }

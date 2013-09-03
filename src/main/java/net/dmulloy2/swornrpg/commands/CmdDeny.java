@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class CmdDeny extends SwornRPGCommand
 {
-	public CmdDeny (SwornRPG plugin)
+	public CmdDeny(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "deny";

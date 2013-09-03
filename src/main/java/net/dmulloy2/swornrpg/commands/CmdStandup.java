@@ -11,7 +11,7 @@ import org.bukkit.entity.Entity;
 
 public class CmdStandup extends SwornRPGCommand
 {
-	public CmdStandup (SwornRPG plugin)
+	public CmdStandup(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "standup";
@@ -31,15 +31,16 @@ public class CmdStandup extends SwornRPGCommand
 			return;
 		}
 		
-		if (vehicle instanceof Arrow)
-		{
-			player.leaveVehicle();
-			vehicle.remove();
-			player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
-		}
-		else
+		if (! (vehicle instanceof Arrow))
 		{
 			err(getMessage("not_sitting"));
+			return;
 		}
+		
+		player.leaveVehicle();
+
+		player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
+		
+		vehicle.remove();
 	}
 }

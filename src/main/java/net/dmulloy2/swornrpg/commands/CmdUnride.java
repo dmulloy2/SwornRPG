@@ -1,7 +1,10 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
+
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 
 /**
  * @author dmulloy2
@@ -9,26 +12,36 @@ import net.dmulloy2.swornrpg.permissions.PermissionType;
 
 public class CmdUnride extends SwornRPGCommand
 {
-	public CmdUnride (SwornRPG plugin)
+	public CmdUnride(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "unride";
 		this.description = "Get off of a player's head";
-		this.permission = PermissionType.CMD_RIDE.permission;
+		this.permission = Permission.CMD_RIDE;
 		this.mustBePlayer = true;
 	}
 	
 	@Override
 	public void perform()
 	{
-		if (player.getVehicle() == null)
+		if (! player.isInsideVehicle())
 		{
 			err(plugin.getMessage("not_riding"));
 			return;
 		}
 		
-		sendMessage(getMessage("unride_successful"));
-		
 		player.leaveVehicle();
+
+		Entity vehicle = player.getVehicle();
+		
+		player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
+		
+		
+		if (vehicle instanceof Arrow)
+		{
+			vehicle.remove();
+		}
+		
+		sendMessage(getMessage("unride_successful"));
 	}
 }

@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.entity.Player;
@@ -13,13 +13,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class CmdRide extends SwornRPGCommand
 {
-	public CmdRide (SwornRPG plugin)
+	public CmdRide(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "ride";
 		this.description = "Get on a player's head!";
 		this.requiredArgs.add("player");
-		this.permission = PermissionType.CMD_RIDE.permission;
+		this.permission = Permission.CMD_RIDE;
 		
 		this.mustBePlayer = true;
 	}
@@ -46,7 +46,7 @@ public class CmdRide extends SwornRPGCommand
 			return;
 		}
 		
-		class RideTask extends BukkitRunnable
+		new BukkitRunnable()
 		{
 			@Override
 			public void run()
@@ -55,8 +55,6 @@ public class CmdRide extends SwornRPGCommand
 				
 				sendpMessage(plugin.getMessage("now_riding"), target.getName());
 			}
-		}
-		
-		new RideTask().runTaskLater(plugin, 40L);
+		}.runTaskLater(plugin, 40L);
 	}
 }

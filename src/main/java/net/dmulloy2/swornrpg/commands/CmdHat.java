@@ -18,8 +18,8 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
-import net.dmulloy2.swornrpg.util.InventoryWorkaround;
+import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.util.InventoryUtil;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -27,19 +27,18 @@ import org.bukkit.inventory.PlayerInventory;
 
 /**
  * @author Essentials
- * @editor dmulloy2
  */
 
 public class CmdHat extends SwornRPGCommand
 {
-	public CmdHat (SwornRPG plugin)
+	public CmdHat(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "hat";
 		this.aliases.add("headgear");
 		this.description = "Put the block in your hand on your head!";
 		this.optionalArgs.add("remove");
-		this.permission = PermissionType.CMD_HAT.permission;
+		this.permission = Permission.CMD_HAT;
 		this.mustBePlayer = true;
 	}
 	
@@ -58,7 +57,7 @@ public class CmdHat extends SwornRPGCommand
 			{
 				ItemStack air = new ItemStack(Material.AIR);
 				inv.setHelmet(air);
-				InventoryWorkaround.addItems(player.getInventory(), head);
+				InventoryUtil.addItems(player.getInventory(), head);
 				sendpMessage(plugin.getMessage("hat_removed"));
 			}
 		}
@@ -78,7 +77,7 @@ public class CmdHat extends SwornRPGCommand
 					{
 						hand.setAmount(hand.getAmount() - 1);
 						inv.setHelmet(toHead);
-						InventoryWorkaround.addItems(player.getInventory(), head);
+						InventoryUtil.addItems(player.getInventory(), head);
 						sendpMessage(plugin.getMessage("hat_success"));
 					}
 					else

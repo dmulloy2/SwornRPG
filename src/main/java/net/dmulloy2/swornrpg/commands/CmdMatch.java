@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.OfflinePlayer;
@@ -13,14 +13,14 @@ import org.bukkit.entity.Player;
 
 public class CmdMatch extends SwornRPGCommand
 {
-	public CmdMatch (SwornRPG plugin)
+	public CmdMatch(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "match";
 		this.aliases.add("matchplayer");
 		this.description = "Match a string with the closest player";
 		this.requiredArgs.add("string");
-		this.permission = PermissionType.CMD_MATCH.permission;
+		this.permission = Permission.CMD_MATCH;
 		this.mustBePlayer = false;
 	}
 	

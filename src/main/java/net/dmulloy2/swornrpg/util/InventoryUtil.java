@@ -28,9 +28,9 @@ import org.bukkit.inventory.ItemStack;
  * @author Essentials
  */
 
-public final class InventoryWorkaround
+public class InventoryUtil
 {
-	private InventoryWorkaround()
+	private InventoryUtil()
 	{
 	}
 

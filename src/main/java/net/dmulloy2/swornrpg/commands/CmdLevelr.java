@@ -2,7 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.OfflinePlayer;
@@ -14,14 +14,14 @@ import org.bukkit.entity.Player;
 
 public class CmdLevelr extends SwornRPGCommand
 {
-	public CmdLevelr (SwornRPG plugin)
+	public CmdLevelr(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "levelr";
 		this.description = "Reset a player's level";
 		this.aliases.add("levelreset");
 		this.optionalArgs.add("player");
-		this.permission = PermissionType.CMD_LEVEL_RESET.permission;
+		this.permission = Permission.CMD_LEVEL_RESET;
 		this.mustBePlayer = false;
 	}
 	
@@ -54,6 +54,7 @@ public class CmdLevelr extends SwornRPGCommand
 				return;
 			}
 		}
+		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{

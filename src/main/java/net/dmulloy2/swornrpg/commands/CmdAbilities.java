@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class CmdAbilities extends SwornRPGCommand
 {
-	public CmdAbilities (SwornRPG plugin)
+	public CmdAbilities(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "abilities";
@@ -53,6 +53,7 @@ public class CmdAbilities extends SwornRPGCommand
 				return;
 			}
 		}
+		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{

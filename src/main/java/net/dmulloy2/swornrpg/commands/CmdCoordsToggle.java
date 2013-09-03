@@ -9,7 +9,7 @@ import net.dmulloy2.swornrpg.data.PlayerData;
 
 public class CmdCoordsToggle extends SwornRPGCommand
 {
-	public CmdCoordsToggle (SwornRPG plugin)
+	public CmdCoordsToggle(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "deathcoords";

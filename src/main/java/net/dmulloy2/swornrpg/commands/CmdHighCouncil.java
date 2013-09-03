@@ -1,7 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.permissions.PermissionType;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.entity.Player;
@@ -12,14 +12,14 @@ import org.bukkit.entity.Player;
 
 public class CmdHighCouncil extends SwornRPGCommand
 {
-	public CmdHighCouncil (SwornRPG plugin)
+	public CmdHighCouncil(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "hc";
 		this.description = "Talk in council chat";
 		this.aliases.add("council");
 		this.requiredArgs.add("message");
-		this.permission = PermissionType.CMD_COUNCIL.permission;
+		this.permission = Permission.CMD_COUNCIL;
 		
 		this.mustBePlayer = false;
 	}

@@ -1,6 +1,6 @@
 package net.dmulloy2.swornrpg.handlers;
 
-import net.dmulloy2.swornrpg.permissions.Permission;
+import net.dmulloy2.swornrpg.types.Permission;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
