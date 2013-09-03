@@ -170,12 +170,18 @@ public class SwornRPG extends JavaPlugin
 		
 		pluginManager = getServer().getPluginManager();
 		
-		/**Resource Handler / Messages**/
+		/** Resource Handler / Messages **/
 		saveResource("messages.properties", true);
 		resourceHandler = new ResourceHandler(this, getClassLoader());
 		
-		/**Update Checker**/
-		currentVersion = Double.valueOf(getDescription().getVersion().replaceFirst("\\.", ""));
+		/** Update Checker **/
+		String version = getDescription().getVersion();
+		if (version.contains("SNAPSHOT"))
+		{
+			version = version.split("-")[0];
+		}
+		
+		currentVersion = Double.valueOf(version.replaceFirst("\\.", ""));
 		
 		/**Register Listeners**/
 		pluginManager.registerEvents(new PlayerListener(this), this);
