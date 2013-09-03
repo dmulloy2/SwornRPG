@@ -168,62 +168,69 @@ public class HealthBarHandler
 
 	private void updateEntityHealth(LivingEntity entity)
 	{
-		if (plugin.isHealthtags())
+		try
 		{
-			LivingEntity lentity = (LivingEntity)entity;
-			
-			List<EntityType> blockedTypes = Arrays.asList(new EntityType[] { EntityType.VILLAGER, 
-					EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE });
-			
-			if (blockedTypes.contains(entity.getType()))
+			if (plugin.isHealthtags())
 			{
-				if (! lentity.getCustomName().isEmpty())
+				LivingEntity lentity = (LivingEntity)entity;
+				
+				List<EntityType> blockedTypes = Arrays.asList(new EntityType[] { EntityType.VILLAGER, 
+						EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE });
+				
+				if (blockedTypes.contains(entity.getType()))
 				{
-					if (lentity.getCustomName().contains("\u2764"))
+					if (! lentity.getCustomName().isEmpty())
 					{
-						lentity.setCustomNameVisible(false);
-						lentity.setCustomName("");
+						if (lentity.getCustomName().contains("\u2764"))
+						{
+							lentity.setCustomNameVisible(false);
+							lentity.setCustomName("");
+						}
+						else
+						{
+							lentity.setCustomNameVisible(true);
+						}
 					}
-					else
-					{
-						lentity.setCustomNameVisible(true);
-					}
+					
+					return;
 				}
 				
-				return;
+				int health = (int) Math.round(lentity.getHealth() / 2);
+				int maxhealth = (int) Math.round(lentity.getMaxHealth() / 2);
+				int hearts = Math.round((health * 10) / maxhealth);
+				
+				if (health == maxhealth)
+				{
+					lentity.setCustomNameVisible(false);
+					return;
+				}
+				
+				StringBuilder tag = new StringBuilder();
+				for (int i=0; i<hearts; i++)
+				{
+					tag.append("\u2764");
+				}
+	
+				String displayName = tag.toString();
+				
+				// Determine Colour
+				ChatColor color = null;
+				if (hearts >= 8) //health 8, 9, or full
+					color = ChatColor.GREEN;
+				else if (hearts <= 7 && health > 3) //health 4, 5, 6, or 7
+					color = ChatColor.YELLOW;
+				else if (hearts <= 3) //health 1, 2, or 3
+					color = ChatColor.RED;
+				else //health null? (default to yellow, white hearts are ugly)
+					color = ChatColor.YELLOW;
+				    
+				lentity.setCustomNameVisible(true);
+				lentity.setCustomName(color + displayName);
 			}
-			
-			int health = (int) Math.round(lentity.getHealth() / 2);
-			int maxhealth = (int) Math.round(lentity.getMaxHealth() / 2);
-			int hearts = Math.round((health * 10) / maxhealth);
-			
-			if (health == maxhealth)
-			{
-				lentity.setCustomNameVisible(false);
-				return;
-			}
-			
-			StringBuilder tag = new StringBuilder();
-			for (int i=0; i<hearts; i++)
-			{
-				tag.append("\u2764");
-			}
-
-			String displayName = tag.toString();
-			
-			// Determine Colour
-			ChatColor color = null;
-			if (hearts >= 8) //health 8, 9, or full
-				color = ChatColor.GREEN;
-			else if (hearts <= 7 && health > 3) //health 4, 5, 6, or 7
-				color = ChatColor.YELLOW;
-			else if (hearts <= 3) //health 1, 2, or 3
-				color = ChatColor.RED;
-			else //health null? (default to yellow, white hearts are ugly)
-				color = ChatColor.YELLOW;
-			    
-			lentity.setCustomNameVisible(true);
-			lentity.setCustomName(color + displayName);
+		}
+		catch (Exception e)
+		{
+			plugin.debug(plugin.getMessage("log_health_error"), e.getMessage());
 		}
 	}
 }

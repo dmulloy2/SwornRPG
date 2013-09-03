@@ -43,7 +43,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			this.leaderboard = new ArrayList<String>();
 		}
 
-		if (System.currentTimeMillis() - lastUpdateTime > 18000L)
+		if ((System.currentTimeMillis() - lastUpdateTime) > 18000L)
 		{
 			sendpMessage(getMessage("leaderboard_wait"));
 
