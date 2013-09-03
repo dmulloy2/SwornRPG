@@ -23,13 +23,12 @@ public class TagHandler
 	public TagHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		
-		this.convert();
-		this.load();
 	}
 
 	public void load()
 	{
+		convert();
+		
 		if (plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
 			plugin.outConsole(plugin.getMessage("log_tag_found"));

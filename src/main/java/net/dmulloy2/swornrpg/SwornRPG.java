@@ -156,8 +156,6 @@ public class SwornRPG extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
-		
-		pluginManager = getServer().getPluginManager();
 
 		/** Register Handlers **/
 		commandHandler = new CommandHandler(this);
@@ -169,6 +167,8 @@ public class SwornRPG extends JavaPlugin
 		experienceHandler = new ExperienceHandler(this);
 		healthBarHandler = new HealthBarHandler(this);
 		tagHandler = new TagHandler(this);
+		
+		pluginManager = getServer().getPluginManager();
 		
 		/**Resource Handler / Messages**/
 		saveResource("messages.properties", true);
@@ -242,10 +242,14 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
 		commandHandler.registerCommand(new CmdAbilities(this));
 		
+		/** Handle Health if Reload **/
 		for (Player player : getServer().getOnlinePlayers())
 		{
 			healthBarHandler.updateHealth(player);
 		}
+		
+		/** Load TagHandler **/
+		tagHandler.load();
 
 		/** Vault Integration **/
 		setupVault();
