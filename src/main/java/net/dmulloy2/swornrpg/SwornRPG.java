@@ -156,6 +156,8 @@ public class SwornRPG extends JavaPlugin
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
+		
+		pluginManager = getServer().getPluginManager();
 
 		/** Register Handlers **/
 		commandHandler = new CommandHandler(this);
@@ -167,8 +169,6 @@ public class SwornRPG extends JavaPlugin
 		experienceHandler = new ExperienceHandler(this);
 		healthBarHandler = new HealthBarHandler(this);
 		tagHandler = new TagHandler(this);
-		
-		pluginManager = getServer().getPluginManager();
 		
 		/**Resource Handler / Messages**/
 		saveResource("messages.properties", true);
