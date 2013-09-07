@@ -57,7 +57,7 @@ public class EntityListener implements Listener
 					if (((Arrow) att).getShooter() instanceof Player)
 						((Player) ((Arrow) att).getShooter())
 								.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fire_damage")));
-					if (((Player) defender) instanceof Player)
+					if (defender instanceof Player)
 						((Player) defender).sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fire_damage")));
 				}
 			}
