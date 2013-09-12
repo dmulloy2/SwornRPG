@@ -26,7 +26,9 @@ public class CmdSitdown extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		@SuppressWarnings("deprecation")
 		Block block = player.getTargetBlock(null, 10);
+		
 		if (block == null)
 		{
 			err(getMessage("no_block"));

@@ -92,7 +92,10 @@ public class PlayerListener implements Listener
 					|| (block.getRelative(0, 0, 1).getType() == Material.FURNACE))
 			{
 				ItemStack item = pl.getItemInHand();
-				Integer itemId = item.getTypeId();
+				
+				@SuppressWarnings("deprecation")
+				int itemId = item.getTypeId();
+				
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amt = 0.0D;
 

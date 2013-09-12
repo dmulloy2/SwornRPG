@@ -218,6 +218,7 @@ public class ExperienceListener implements Listener
 	}
 
 	/** Herbalism : Instant Growth **/
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHerbalismPlace(BlockPlaceEvent event)
 	{
@@ -284,6 +285,7 @@ public class ExperienceListener implements Listener
 	}
 
 	/** Herbalism Check **/
+	@SuppressWarnings("deprecation")
 	public boolean herbalismNeeded(BlockState blockState)
 	{
 		switch (blockState.getType())

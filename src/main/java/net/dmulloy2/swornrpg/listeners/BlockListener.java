@@ -46,6 +46,8 @@ public class BlockListener implements Listener
 			return;
 
 		Block block = event.getBlock();
+		
+		@SuppressWarnings("deprecation")
 		int typeId = block.getTypeId();
 
 		if (plugin.getBlockDropsMap().containsKey(typeId))
@@ -91,6 +93,7 @@ public class BlockListener implements Listener
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
@@ -138,6 +141,7 @@ public class BlockListener implements Listener
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean isBlacklistedMaterial(Material mat)
 	{
 		for (String string : plugin.getRedeemBlacklist())

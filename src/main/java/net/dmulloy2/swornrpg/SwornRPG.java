@@ -82,6 +82,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -631,7 +632,7 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Update Block Drops **/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public void updateBlockDrops() 
 	{
 		blockDropsMap.clear();
@@ -665,7 +666,7 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/**Update Fish Drops**/
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	public void updateFishDrops() 
 	{
 		fishDropsMap.clear();
@@ -710,11 +711,12 @@ public class SwornRPG extends JavaPlugin
 			{
 				for (int dz = -RADIUS; dz <= RADIUS; dz++) 
 				{
-					int id = world.getBlockTypeIdAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz);
-					if (id == 52)
+					Material mat = world.getBlockAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz).getType();
+					if (mat == Material.MOB_SPAWNER)
 					{
-						if (!isDisabledWorld(player)) 
+						if (! isDisabledWorld(player)) 
 							player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));
+						
 						return true;
 					}
 				}

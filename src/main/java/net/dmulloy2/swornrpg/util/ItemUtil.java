@@ -93,6 +93,7 @@ public class ItemUtil
 			}
 		}
 		
+		@SuppressWarnings("deprecation")
 		ItemStack ret = new ItemStack(id, amt, dat);
 
 		if (! enchantments.isEmpty())
@@ -115,7 +116,7 @@ public class ItemUtil
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("Type: " + FormatUtil.getFriendlyName(stack.getType()));
-		ret.append(" Data: " + stack.getData().getData());
+		ret.append(" Data: " + stack.getDurability());
 		ret.append(" Amount: " + stack.getAmount());
 		ret.append(" Enchants:");
 		for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())

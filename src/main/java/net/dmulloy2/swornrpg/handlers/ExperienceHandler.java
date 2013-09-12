@@ -142,7 +142,10 @@ public class ExperienceHandler
 		if (plugin.isItems())
 		{
 			int rewardamt = level*plugin.getItemperlevel();
+			
+			@SuppressWarnings("deprecation")
 			ItemStack item = new ItemStack(plugin.getItemreward(), rewardamt);
+			
 			InventoryUtil.addItems(player.getInventory(), item);
 			
 			String itemName = FormatUtil.getFriendlyName(item.getType());
