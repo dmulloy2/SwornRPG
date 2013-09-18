@@ -80,15 +80,15 @@ public class TagHandler
     				File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
     				
     				YamlConfiguration fc = YamlConfiguration.loadConfiguration(tagsFile);
+    				
+    				Map<String, Object> tags = fc.getConfigurationSection("tags").getValues(true);
 
-    				Map<String, Object> map = fc.getValues(true);
-    		
-    				for (Entry<String, Object> entry : map.entrySet())
+    				for (Entry<String, Object> entry : tags.entrySet())
     				{
     					PlayerData data = plugin.getPlayerDataCache().getData(entry.getKey());
     					if (data != null)
     					{
-    						data.setTag((String)entry.getValue());
+    						data.setTag(entry.getValue().toString());
     					}
     				}
     				
