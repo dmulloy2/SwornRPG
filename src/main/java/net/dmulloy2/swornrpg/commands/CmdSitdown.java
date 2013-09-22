@@ -26,6 +26,8 @@ public class CmdSitdown extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		// TODO: There is no valid replacement for this.
+		// A method that ignores transparency would be wonderful...
 		@SuppressWarnings("deprecation")
 		Block block = player.getTargetBlock(null, 10);
 		

@@ -78,6 +78,7 @@ import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.listeners.SwornGunsListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
@@ -143,9 +144,9 @@ public class SwornRPG extends JavaPlugin
 	private @Getter String salvage;
     private @Getter List<String> disabledWorlds, redeemBlacklist;
     
-    private @Getter HashMap<String, HashMap<Integer, Integer>> salvageRef = new HashMap<String, HashMap<Integer, Integer>>();
-    private @Getter Map<Integer, List<BlockDrop>> blockDropsMap = new HashMap<Integer, List<BlockDrop>>();
-    private @Getter Map<Integer, List<BlockDrop>> fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
+    private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
+    private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
+    private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
 	
     /** Update Checking **/
 	private double newVersion, currentVersion;
@@ -488,16 +489,22 @@ public class SwornRPG extends JavaPlugin
 		salvaging = getConfig().getBoolean("salvaging");
 		salvage = getConfig().getString("salvage");
 
-		salvageRef.put("Iron", new HashMap<Integer, Integer>());
-		salvageRef.put("Gold", new HashMap<Integer, Integer>());
-		salvageRef.put("Diamond", new HashMap<Integer, Integer>());
+		salvageRef.put("Iron", new HashMap<Material, Integer>());
+		salvageRef.put("Gold", new HashMap<Material, Integer>());
+		salvageRef.put("Diamond", new HashMap<Material, Integer>());
 		String[] salvageArray = salvage.split("; ");
-		for (String s: salvageArray) 
+		for (String s : salvageArray) 
 		{
 			String[] subset = s.split(", ");
-			salvageRef.get(subset[1]).put(Integer.parseInt(subset[0]), Integer.parseInt(subset[2]));
+			
+			Material mat = getMaterial(subset[0]);
+			
+			if (mat != null)
+			{
+				salvageRef.get(subset[1]).put(mat, Integer.parseInt(subset[2]));
+			}
 		}
-		
+
 		/** Frenzy **/
 		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
 		frenzycd = getConfig().getInt("frenzy.cooldownmultiplier");
@@ -632,7 +639,6 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Update Block Drops **/
-	@SuppressWarnings("all")
 	public void updateBlockDrops() 
 	{
 		blockDropsMap.clear();
@@ -641,32 +647,36 @@ public class SwornRPG extends JavaPlugin
 		
 		for (Entry<String, ?> entry : map.entrySet()) 
 		{
+			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
+			
 			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
 			for (String value : values) 
 			{
 				String[] ss = value.split(":");
-				int type = Integer.valueOf(ss[0]);
+				
+				Material type = getMaterial(ss[0]);
+				
 				short data = 0;
 				int chance = 0;
 				if (ss.length == 3)
 				{
 					data = Short.valueOf(ss[1]);
 					chance = Integer.valueOf(ss[2]);
-				} 
+				}
 				else 
 				{
 					chance = Integer.valueOf(ss[1]);
 				}
+				
 				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 			}
 			
-			blockDropsMap.put(Integer.valueOf(entry.getKey()), blockDrops);
+			blockDropsMap.put(getMaterial(entry.getKey()), blockDrops);
 		}
 	}
 	
 	/**Update Fish Drops**/
-	@SuppressWarnings("all")
 	public void updateFishDrops() 
 	{
 		fishDropsMap.clear();
@@ -675,27 +685,46 @@ public class SwornRPG extends JavaPlugin
 		
 		for (Entry<String, ?> entry : map.entrySet()) 
 		{
+			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
+			
 			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
 			for (String value : values) 
 			{
 				String[] ss = value.split(":");
-				int type = Integer.valueOf(ss[0]);
+				
+				Material type = getMaterial(ss[0]);
+				
 				short data = 0;
 				int chance = 0;
 				if (ss.length == 3)
 				{
 					data = Short.valueOf(ss[1]);
 					chance = Integer.valueOf(ss[2]);
-				} 
+				}
 				else 
 				{
 					chance = Integer.valueOf(ss[1]);
 				}
+				
 				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 			}
 			
-			fishDropsMap.put(Integer.valueOf(entry.getKey()), blockDrops);
+			fishDropsMap.put(getMaterial(entry.getKey()), blockDrops);
+		}
+	}
+	
+	public Material getMaterial(String config)
+	{
+		if (Util.isInteger(config))
+		{
+			int id = Integer.parseInt(config);
+			
+			return net.dmulloy2.swornrpg.types.Material.getMaterial(id).getMaterial();
+		}
+		else
+		{
+			return Material.matchMaterial(config);
 		}
 	}
 

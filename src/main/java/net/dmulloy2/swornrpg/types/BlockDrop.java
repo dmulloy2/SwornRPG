@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class BlockDrop
 {
-	final ItemStack item;
-	final int chance;
+	private final ItemStack item;
+	private final int chance;
 	
 	public BlockDrop(final ItemStack itemStack, final int chance) 
 	{

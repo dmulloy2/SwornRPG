@@ -46,13 +46,12 @@ public class BlockListener implements Listener
 			return;
 
 		Block block = event.getBlock();
-		
-		@SuppressWarnings("deprecation")
-		int typeId = block.getTypeId();
 
-		if (plugin.getBlockDropsMap().containsKey(typeId))
+		Material type = block.getType();
+
+		if (plugin.getBlockDropsMap().containsKey(type))
 		{
-			for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(typeId))
+			for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(type))
 			{
 				if (Util.random(blockDrop.getChance()) == 0)
 				{
@@ -93,7 +92,6 @@ public class BlockListener implements Listener
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
@@ -130,7 +128,6 @@ public class BlockListener implements Listener
 		{
 			if (blockData != null)
 			{
-				blockData.setData(blockState.getData().getData());
 				itemStack.setData(blockData);
 			}
 
@@ -141,24 +138,11 @@ public class BlockListener implements Listener
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean isBlacklistedMaterial(Material mat)
 	{
 		for (String string : plugin.getRedeemBlacklist())
 		{
-			Material material = null;
-			if (Util.isValidMaterial(string))
-			{
-				material = Material.getMaterial(string.toUpperCase());
-			}
-			else
-			{
-				int id = Util.parseInt(string);
-				if (id != -1)
-				{
-					material = Material.getMaterial(id);
-				}
-			}
+			Material material = plugin.getMaterial(string);
 
 			if (material != null)
 			{

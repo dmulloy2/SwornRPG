@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
+import net.dmulloy2.swornrpg.types.Material;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.milkbowl.vault.economy.Economy;
@@ -143,15 +144,14 @@ public class ExperienceHandler
 		{
 			int rewardamt = level*plugin.getItemperlevel();
 			
-			@SuppressWarnings("deprecation")
-			ItemStack item = new ItemStack(plugin.getItemreward(), rewardamt);
-			
+			ItemStack item = new ItemStack(Material.getMaterial(plugin.getItemreward()).getMaterial(), rewardamt);
+
 			InventoryUtil.addItems(player.getInventory(), item);
 			
 			String itemName = FormatUtil.getFriendlyName(item.getType());
 			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, itemName));
 		}
-		
+	
 		/**Tell Players if Skill(s) went up**/
 		double frenzy = newfrenzy - oldfrenzy;
 		double spick = newspick - oldspick;

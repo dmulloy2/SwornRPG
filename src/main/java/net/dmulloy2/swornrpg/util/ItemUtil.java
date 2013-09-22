@@ -6,8 +6,10 @@ import java.util.Map.Entry;
 
 import net.dmulloy2.swornrpg.types.EnchantmentType;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
 
 /**
  * Util that deals with Items
@@ -18,17 +20,19 @@ import org.bukkit.inventory.ItemStack;
 public class ItemUtil
 {
 	/**
-	 * Reads an {@link ItemStack} from configuration
+	 * Reads an ItemStack from configuration
 	 * 
-	 * @param string - String to read
+	 * @param string
+	 *            - String to read
 	 * @return ItemStack from given string
 	 */
 	public static ItemStack readItem(String string)
 	{
-		int id = 0;
+		Material mat = null;
+
 		int amt = 0;
 		short dat = 0;
-		
+
 		Map<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 
 		string = string.replaceAll(" ", "");
@@ -37,22 +41,30 @@ public class ItemUtil
 			String s = string.substring(0, string.indexOf(","));
 			if (s.contains(":"))
 			{
-				id = Integer.parseInt(s.substring(0, s.indexOf(":")));
+				String str = s.substring(0, s.indexOf(":"));
+				if (Util.isInteger(str))
+				{
+					int id = Integer.parseInt(s.substring(0, s.indexOf(":")));
+					
+					mat = net.dmulloy2.swornrpg.types.Material.getMaterial(id).getMaterial();
+				}
 				
 				dat = Short.parseShort(s.substring(s.indexOf(":") + 1, s.indexOf(",")));
 			}
 			else
 			{
-				id = Integer.parseInt(s);
+				int id = Integer.parseInt(s);
+				
+				mat = net.dmulloy2.swornrpg.types.Material.getMaterial(id).getMaterial();
 			}
-			
+
 			s = string.substring(string.indexOf(",") + 1);
 			if (s.contains(","))
 			{
 				amt = Integer.parseInt(s.substring(0, s.indexOf(",")));
-				
+
 				s = s.substring(s.indexOf(",") + 1);
-			
+
 				if (!s.isEmpty())
 				{
 					if (s.contains(","))
@@ -64,7 +76,7 @@ public class ItemUtil
 							{
 								Enchantment enchant = EnchantmentType.toEnchantment(ench.substring(0, ench.indexOf(":")));
 								int level = Integer.parseInt(ench.substring(ench.indexOf(":") + 1));
-								
+
 								if (enchant != null && level > 0)
 								{
 									enchantments.put(enchant, level);
@@ -78,7 +90,7 @@ public class ItemUtil
 						{
 							Enchantment enchant = EnchantmentType.toEnchantment(s.substring(0, s.indexOf(":")));
 							int level = Integer.parseInt(s.substring(s.indexOf(":") + 1));
-							
+
 							if (enchant != null && level > 0)
 							{
 								enchantments.put(enchant, level);
@@ -92,9 +104,8 @@ public class ItemUtil
 				amt = Integer.parseInt(s);
 			}
 		}
-		
-		@SuppressWarnings("deprecation")
-		ItemStack ret = new ItemStack(id, amt, dat);
+
+		ItemStack ret = new ItemStack(mat, amt, dat);
 
 		if (! enchantments.isEmpty())
 		{
@@ -106,10 +117,12 @@ public class ItemUtil
 
 		return ret;
 	}
-
+	
 	/**
 	 * Returns the basic data of an ItemStack in string form
-	 * @param stack - ItemStack to "convert" to a string
+	 * 
+	 * @param stack
+	 *            - ItemStack to "convert" to a string
 	 * @return ItemStack's data in string form
 	 */
 	public static String itemToString(ItemStack stack)
@@ -123,19 +136,39 @@ public class ItemUtil
 		{
 			ret.append(" " + EnchantmentType.toName(enchantment.getKey()) + ": " + enchantment.getValue());
 		}
-		
+
+		return ret.toString();
+	}
+
+	/**
+	 * Returns the data of a potion in string form
+	 * 
+	 * @param potion
+	 *            - Potion to "convert" to a string
+	 * @return Potion's data in string form
+	 */
+	public static String potionToString(Potion potion)
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append("Potion: ");
+		ret.append("Type: " + potion.getType().toString());
+		ret.append(" Level: " + potion.getLevel());
+		ret.append(" Splash: " + potion.isSplash());
+
 		return ret.toString();
 	}
 
 	/**
 	 * Returns an ItemStack's enchantments in string form
-	 * @param stack - ItemStack to get enchantments
+	 * 
+	 * @param stack
+	 *            - ItemStack to get enchantments
 	 * @return ItemStack's enchantments in string form
 	 */
 	public static String getEnchantments(ItemStack stack)
 	{
 		StringBuilder ret = new StringBuilder();
-		if (! stack.getEnchantments().isEmpty())
+		if (!stack.getEnchantments().isEmpty())
 		{
 			ret.append("(");
 			for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())
@@ -145,7 +178,7 @@ public class ItemUtil
 			ret.delete(ret.lastIndexOf(","), ret.lastIndexOf(" "));
 			ret.append(")");
 		}
-		
+
 		return ret.toString();
 	}
 }

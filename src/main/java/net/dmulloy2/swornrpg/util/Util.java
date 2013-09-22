@@ -125,4 +125,9 @@ public class Util
 			return -1;
 		}
 	}
+	
+	public static boolean isInteger(String string)
+	{
+		return parseInt(string) != -1;
+	}
 }

@@ -33,6 +33,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
+import org.bukkit.material.Crops;
 import org.bukkit.material.NetherWarts;
 
 /**
@@ -218,7 +219,6 @@ public class ExperienceListener implements Listener
 	}
 
 	/** Herbalism : Instant Growth **/
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHerbalismPlace(BlockPlaceEvent event)
 	{
@@ -250,13 +250,13 @@ public class ExperienceListener implements Listener
 			if (mat == Material.NETHER_WARTS)
 			{
 				((NetherWarts) blockState.getData()).setState(NetherWartsState.RIPE);
-				block.setData(blockState.getData().getData());
+				blockState.update();
 				message = true;
 			}
 			else if (mat == Material.CARROT || mat == Material.CROPS || mat == Material.POTATO)
 			{
-				blockState.setRawData(CropState.RIPE.getData());
-				block.setData(blockState.getData().getData());
+				((Crops) blockState.getData()).setState(CropState.RIPE);
+				blockState.update();
 				message = true;
 			}
 			else if (mat == Material.SAPLING)
@@ -285,7 +285,6 @@ public class ExperienceListener implements Listener
 	}
 
 	/** Herbalism Check **/
-	@SuppressWarnings("deprecation")
 	public boolean herbalismNeeded(BlockState blockState)
 	{
 		switch (blockState.getType())
@@ -298,7 +297,7 @@ public class ExperienceListener implements Listener
 			case CARROT:
 			case CROPS:
 			case POTATO:
-				return blockState.getRawData() == CropState.RIPE.getData();
+				return ((Crops) blockState.getData()).getState() == CropState.RIPE;
 
 			case NETHER_WARTS:
 				return ((NetherWarts) blockState.getData()).getState() == NetherWartsState.RIPE;
