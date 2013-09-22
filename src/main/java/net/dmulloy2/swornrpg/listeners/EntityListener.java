@@ -247,11 +247,15 @@ public class EntityListener implements Listener
 				{
 					LivingEntity lentity = (LivingEntity) damaged;
 
-					if (Util.random(100) == 0)
+					if (lentity.getMaxHealth() <= 100)
 					{
-						lentity.setHealth(0.0D);
+					
+						if (Util.random(100) == 0)
+						{
+							lentity.setHealth(0.0D);
 
-						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("insta_kill")));
+							player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("insta_kill")));
+						}
 					}
 				}
 			}
