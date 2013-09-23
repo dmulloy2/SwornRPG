@@ -2,7 +2,7 @@ package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornguns.events.SwornGunsFireEvent;
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.types.PlayerData;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.FrenzyActivateEvent;
 import net.dmulloy2.swornrpg.events.SuperPickaxeActivateEvent;
 import net.dmulloy2.swornrpg.events.UnlimitedAmmoActivateEvent;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.GameMode;

@@ -1,9 +1,9 @@
 package net.dmulloy2.swornrpg.handlers;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;

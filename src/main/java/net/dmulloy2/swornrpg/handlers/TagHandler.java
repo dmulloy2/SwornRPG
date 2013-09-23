@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.listeners.TagListener;
+import net.dmulloy2.swornrpg.types.PlayerData;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

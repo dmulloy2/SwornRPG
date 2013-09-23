@@ -1,4 +1,4 @@
-package net.dmulloy2.swornrpg.data;
+package net.dmulloy2.swornrpg.types;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

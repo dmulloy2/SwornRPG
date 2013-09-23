@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 

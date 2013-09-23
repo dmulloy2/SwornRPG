@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.OfflinePlayer;

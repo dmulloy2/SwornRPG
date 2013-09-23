@@ -1,4 +1,4 @@
-package net.dmulloy2.swornrpg.data;
+package net.dmulloy2.swornrpg.io;
 
 import java.io.File;
 import java.util.Collections;
@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.OfflinePlayer;

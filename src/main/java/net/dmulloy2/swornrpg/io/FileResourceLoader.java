@@ -1,4 +1,4 @@
-package net.dmulloy2.swornrpg.data;
+package net.dmulloy2.swornrpg.io;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.data.FileResourceLoader;
+import net.dmulloy2.swornrpg.io.FileResourceLoader;
 
 /**
  * @author dmulloy2

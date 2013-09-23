@@ -61,9 +61,7 @@
         <directory>${basedir}/src/main/resources/</directory>
         <filtering>true</filtering>
         <includes>
-          <include>config.yml</include>
-          <include>plugin.yml</include>
-          <include>tags.yml</include>
+          <include>*.yml</include>
           <include>messages.properties</include>
         </includes>
       </resource>
