@@ -4,9 +4,9 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
-import net.dmulloy2.swornrpg.types.Material;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
+import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
@@ -112,11 +112,11 @@ public class ExperienceHandler
 		int level = data.getLevel();
 		if (level == 250)
 		{
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("level_cap")));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("level_cap")));
 		}
 		else
 		{
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup"), level));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup"), level));
 		}
 
 		plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
@@ -134,7 +134,7 @@ public class ExperienceHandler
 					int money = level*plugin.getBasemoney();
 					economy.depositPlayer(player.getName(), money);
 					
-					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
 				}
 			}
 		}
@@ -144,12 +144,12 @@ public class ExperienceHandler
 		{
 			int rewardamt = level*plugin.getItemperlevel();
 			
-			ItemStack item = new ItemStack(Material.getMaterial(plugin.getItemreward()).getMaterial(), rewardamt);
+			ItemStack item = new ItemStack(MaterialUtil.getMaterial(plugin.getItemreward()), rewardamt);
 
 			InventoryUtil.addItems(player.getInventory(), item);
 			
 			String itemName = FormatUtil.getFriendlyName(item.getType());
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, itemName));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, itemName));
 		}
 	
 		/**Tell Players if Skill(s) went up**/
@@ -157,12 +157,16 @@ public class ExperienceHandler
 		double spick = newspick - oldspick;
 		double ammo = newammo - oldammo;
 		
-		player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_skills")));
+		player.sendMessage(plugin.getPrefix() +
+				FormatUtil.format(plugin.getMessage("levelup_skills")));
 		if (frenzy > 0)
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_frenzy"), String.valueOf(frenzy)));
+			player.sendMessage(plugin.getPrefix() +
+					FormatUtil.format(plugin.getMessage("levelup_frenzy"), String.valueOf(frenzy)));
 		if (spick > 0)
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_spick"), String.valueOf(spick)));
+			player.sendMessage(plugin.getPrefix() + 
+					FormatUtil.format(plugin.getMessage("levelup_spick"), String.valueOf(spick)));
 		if (ammo > 0)
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("levelup_ammo"), String.valueOf(ammo)));
+			player.sendMessage(plugin.getPrefix() + 
+					FormatUtil.format(plugin.getMessage("levelup_ammo"), String.valueOf(ammo)));
 	}
 }

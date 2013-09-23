@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.data.PlayerData;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
@@ -87,7 +88,7 @@ public class BlockListener implements Listener
 		{
 			event.setCancelled(true);
 
-			player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("iron_door_protect")));
+			player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("iron_door_protect")));
 			plugin.debug(plugin.getMessage("log_irondoor_protect"), player.getName());
 		}
 	}
@@ -134,7 +135,7 @@ public class BlockListener implements Listener
 			player.getInventory().addItem(itemStack);
 
 			String itemName = FormatUtil.getFriendlyName(itemStack.getType());
-			player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
 		}
 	}
 
@@ -142,7 +143,7 @@ public class BlockListener implements Listener
 	{
 		for (String string : plugin.getRedeemBlacklist())
 		{
-			Material material = plugin.getMaterial(string);
+			Material material = MaterialUtil.getMaterial(string);
 
 			if (material != null)
 			{
@@ -154,9 +155,9 @@ public class BlockListener implements Listener
 		String[] defaultBlackList = new String[] { "FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM" };
 		for (String string : defaultBlackList)
 		{
-			if (Util.isValidMaterial(string))
+			if (MaterialUtil.isValidMaterial(string))
 			{
-				Material material = Material.valueOf(string);
+				Material material = Material.matchMaterial(string);
 				if (material.equals(mat))
 					return true;
 			}

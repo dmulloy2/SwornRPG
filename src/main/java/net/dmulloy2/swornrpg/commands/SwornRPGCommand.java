@@ -117,19 +117,19 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	//Send prefixed message
 	protected final void sendpMessage(String msg, Object... args) 
 	{
-		sender.sendMessage(plugin.prefix + FormatUtil.format(msg, args));
+		sender.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 	
 	//Send message to the whole server
 	protected final void sendMessageAll(String msg, Object... args) 
 	{
-		plugin.getServer().broadcastMessage(plugin.prefix + FormatUtil.format(msg, args));
+		plugin.getServer().broadcastMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 	
 	//Send prefixed message
 	protected final void sendMessageTarget(String msg, Player target, Object... args) 
 	{
-		target.sendMessage(plugin.prefix + FormatUtil.format(msg, args));
+		target.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 	
 	protected final String getMessage(String msg)

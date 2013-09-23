@@ -9,7 +9,6 @@ import net.dmulloy2.swornrpg.types.EnchantmentType;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 
 /**
  * Util that deals with Items
@@ -136,24 +135,6 @@ public class ItemUtil
 		{
 			ret.append(" " + EnchantmentType.toName(enchantment.getKey()) + ": " + enchantment.getValue());
 		}
-
-		return ret.toString();
-	}
-
-	/**
-	 * Returns the data of a potion in string form
-	 * 
-	 * @param potion
-	 *            - Potion to "convert" to a string
-	 * @return Potion's data in string form
-	 */
-	public static String potionToString(Potion potion)
-	{
-		StringBuilder ret = new StringBuilder();
-		ret.append("Potion: ");
-		ret.append("Type: " + potion.getType().toString());
-		ret.append(" Level: " + potion.getLevel());
-		ret.append(" Splash: " + potion.isSplash());
 
 		return ret.toString();
 	}

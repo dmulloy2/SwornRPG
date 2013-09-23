@@ -78,7 +78,7 @@ import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.listeners.SwornGunsListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
@@ -152,7 +152,7 @@ public class SwornRPG extends JavaPlugin
 	private double newVersion, currentVersion;
     
 	/** Global Prefix Variable **/
-	public String prefix = ChatColor.GOLD + "[SwornRPG] ";
+	private @Getter String prefix = ChatColor.GOLD + "[SwornRPG] ";
 
 	@Override
 	public void onEnable()
@@ -459,7 +459,7 @@ public class SwornRPG extends JavaPlugin
 	
 	public void debug(String string, Object... objects)
 	{
-		if (debug) outConsole("[Debug] " + string, objects);
+		logHandler.debug(string, objects);
 	}
 	
 	/** Load the configuration **/
@@ -497,7 +497,7 @@ public class SwornRPG extends JavaPlugin
 		{
 			String[] subset = s.split(", ");
 			
-			Material mat = getMaterial(subset[0]);
+			Material mat = MaterialUtil.getMaterial(subset[0]);
 			
 			if (mat != null)
 			{
@@ -655,7 +655,7 @@ public class SwornRPG extends JavaPlugin
 			{
 				String[] ss = value.split(":");
 				
-				Material type = getMaterial(ss[0]);
+				Material type = MaterialUtil.getMaterial(ss[0]);
 				
 				short data = 0;
 				int chance = 0;
@@ -672,7 +672,7 @@ public class SwornRPG extends JavaPlugin
 				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 			}
 			
-			blockDropsMap.put(getMaterial(entry.getKey()), blockDrops);
+			blockDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
 		}
 	}
 	
@@ -693,7 +693,7 @@ public class SwornRPG extends JavaPlugin
 			{
 				String[] ss = value.split(":");
 				
-				Material type = getMaterial(ss[0]);
+				Material type = MaterialUtil.getMaterial(ss[0]);
 				
 				short data = 0;
 				int chance = 0;
@@ -710,21 +710,7 @@ public class SwornRPG extends JavaPlugin
 				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 			}
 			
-			fishDropsMap.put(getMaterial(entry.getKey()), blockDrops);
-		}
-	}
-	
-	public Material getMaterial(String config)
-	{
-		if (Util.isInteger(config))
-		{
-			int id = Integer.parseInt(config);
-			
-			return net.dmulloy2.swornrpg.types.Material.getMaterial(id).getMaterial();
-		}
-		else
-		{
-			return Material.matchMaterial(config);
+			fishDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
 		}
 	}
 
@@ -778,7 +764,7 @@ public class SwornRPG extends JavaPlugin
 		return false;
 	}
 	
-	/**DisabledWorld Checks**/
+	/** DisabledWorld Checks **/
 	public boolean isDisabledWorld(Player player)
 	{
 		return isDisabledWorld(player.getWorld());

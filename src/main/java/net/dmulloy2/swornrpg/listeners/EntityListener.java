@@ -6,6 +6,7 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -19,6 +20,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -56,19 +59,19 @@ public class EntityListener implements Listener
 					defender.setFireTicks(128);
 					if (((Arrow) att).getShooter() instanceof Player)
 						((Player) ((Arrow) att).getShooter())
-								.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fire_damage")));
+								.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
 					if (defender instanceof Player)
-						((Player) defender).sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fire_damage")));
+						((Player) defender).sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
 				}
 			}
 		}
 		else if (att instanceof Player)
 		{
 			Player p = (Player) att;
-			String gun = p.getItemInHand().getType().toString().toLowerCase();
-
+			ItemStack inHand = p.getItemInHand();
+			
 			/** Confusion **/
-			if (gun == null || gun.contains("air"))
+			if (inHand == null || inHand.getType() == Material.AIR)
 			{
 				if (plugin.isConfusion())
 				{
@@ -77,15 +80,17 @@ public class EntityListener implements Listener
 					{
 						if (defender instanceof Player)
 						{
-							Player d = (Player) defender;
-							d.addPotionEffect(PotionEffectType.CONFUSION.createEffect(plugin.getConfusionduration(), 1));
+							PotionEffect eff = new PotionEffect(PotionEffectType.CONFUSION, plugin.getConfusionduration(), 1);
+							((Player) defender).addPotionEffect(eff);
 						}
 					}
 				}
 			}
+			
+			String gun = FormatUtil.getFriendlyName(inHand.getType());
 
 			/** Axe Blowback **/
-			if (gun.contains("_axe"))
+			if (gun.toLowerCase().contains("axe"))
 			{
 				if (plugin.isAxekb())
 				{
@@ -112,13 +117,11 @@ public class EntityListener implements Listener
 
 						defender.setVelocity(v2.multiply(0.8D));
 
-						String inHand = FormatUtil.getFriendlyName(p.getItemInHand().getType());
-
 						String defenderName;
 						if (defender instanceof Player)
 						{
-							((Player) defender).sendMessage(plugin.prefix
-									+ FormatUtil.format(plugin.getMessage("axe_blowbackee"), p.getName(), inHand));
+							((Player) defender).sendMessage(plugin.getPrefix()
+									+ FormatUtil.format(plugin.getMessage("axe_blowbackee"), p.getName(), gun));
 
 							defenderName = ((Player) defender).getName();
 						}
@@ -127,7 +130,7 @@ public class EntityListener implements Listener
 							defenderName = FormatUtil.getFriendlyName(defender.getType());
 						}
 
-						p.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("axe_blowbacker"), defenderName, inHand));
+						p.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("axe_blowbacker"), defenderName, gun));
 					}
 				}
 			}
@@ -156,7 +159,7 @@ public class EntityListener implements Listener
 				if (rand == 0)
 				{
 					event.setDamage(0);
-					player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("graceful_roll")));
+					player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("graceful_roll")));
 				}
 			}
 		}
@@ -251,7 +254,7 @@ public class EntityListener implements Listener
 					{
 						lentity.setHealth(0.0D);
 
-						player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("insta_kill")));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("insta_kill")));
 					}
 				}
 			}

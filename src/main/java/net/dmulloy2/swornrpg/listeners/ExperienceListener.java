@@ -80,13 +80,13 @@ public class ExperienceListener implements Listener
 
 			/** Killer Xp Gain **/
 			int killxp = plugin.getKillergain();
-			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
+			message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
 			plugin.getExperienceHandler().onXPGain(killer, killxp, message);
 
 			/** Killed Xp Loss **/
 			int killedxp = -(plugin.getKilledloss());
 			int msgxp = Math.abs(killedxp);
-			message = (plugin.prefix + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
+			message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
 			plugin.getExperienceHandler().onXPGain(killed, killedxp, message);
 
 			/** Debug Messages **/
@@ -145,7 +145,7 @@ public class ExperienceListener implements Listener
 
 			/** Message **/
 			String article = FormatUtil.getArticle(mobname);
-			String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname));
+			String message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname));
 
 			/** Give the player some xp **/
 			plugin.getExperienceHandler().onXPGain(killer, killxp, message);
@@ -177,7 +177,7 @@ public class ExperienceListener implements Listener
 			return;
 
 		int xpgained = plugin.getXplevelgain();
-		String message = (plugin.prefix + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
+		String message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
 
 		/** Give the player some XP **/
 		plugin.getExperienceHandler().onXPGain(player, xpgained, message);
@@ -207,7 +207,7 @@ public class ExperienceListener implements Listener
 			if (concurrentHerbalism >= 10)
 			{
 				int xp = plugin.getHerbalismgain() * 10;
-				String message = FormatUtil.format(plugin.prefix + plugin.getMessage("herbalism_gain"), xp);
+				String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("herbalism_gain"), xp);
 				plugin.getExperienceHandler().onXPGain(player, xp, message);
 				data.setConcurrentHerbalism(0);
 			}
@@ -279,7 +279,7 @@ public class ExperienceListener implements Listener
 			}
 			if (message == true)
 			{
-				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("insta_growth")));
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("insta_growth")));
 			}
 		}
 	}
@@ -327,7 +327,7 @@ public class ExperienceListener implements Listener
 				String article = FormatUtil.getArticle(mobname);
 
 				String message = FormatUtil
-						.format(plugin.prefix + plugin.getMessage("taming_gain"), plugin.getTaminggain(), article, mobname);
+						.format(plugin.getPrefix() + plugin.getMessage("taming_gain"), plugin.getTaminggain(), article, mobname);
 				plugin.getExperienceHandler().onXPGain(player, plugin.getTaminggain(), message);
 
 				/** Wolf/Ocelot's Pal **/
@@ -371,7 +371,7 @@ public class ExperienceListener implements Listener
 					}
 					if (msg == true)
 					{
-						player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("tame_bomb")));
+						player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("tame_bomb")));
 					}
 				}
 			}
@@ -401,7 +401,7 @@ public class ExperienceListener implements Listener
 			level = 30;
 
 		int xp = (cost / 2) + plugin.getEnchantbase();
-		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("enchant_gain"), xp);
+		String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("enchant_gain"), xp);
 
 		plugin.getExperienceHandler().onXPGain(player, xp, message);
 	}

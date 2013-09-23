@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 public class SwornGunsListener implements Listener
 {
 	private final SwornRPG plugin;
-	public SwornGunsListener(final SwornRPG plugin)
+	public SwornGunsListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
 	}

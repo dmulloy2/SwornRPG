@@ -114,7 +114,7 @@ public class PlayerListener implements Listener
 						plural = "s";
 
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					pl.sendMessage(plugin.prefix
+					pl.sendMessage(plugin.getPrefix()
 							+ FormatUtil.format(plugin.getMessage("salvage_success"), article, itemName, amt, blockType.toLowerCase(),
 									materialExtension, plural));
 
@@ -139,7 +139,7 @@ public class PlayerListener implements Listener
 				else
 				{
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					pl.sendMessage(plugin.prefix + 
+					pl.sendMessage(plugin.getPrefix() + 
 							FormatUtil.format(plugin.getMessage("not_salvagable"), itemName, blockType.toLowerCase()));
 				}
 			}
@@ -180,7 +180,7 @@ public class PlayerListener implements Listener
 							killern, x, y, z, world, TimeUtil.getLongDateCurr());
 					user.addMail(mail);
 
-					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 				else
@@ -191,7 +191,7 @@ public class PlayerListener implements Listener
 							x, y, z, world, TimeUtil.getLongDateCurr());
 					user.addMail(mail);
 
-					player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("death_coords_mail")));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 			}
@@ -249,7 +249,7 @@ public class PlayerListener implements Listener
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.UPDATE_NOTIFY))
 			{
-				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("update_message")));
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("update_message")));
 				player.sendMessage(FormatUtil.format("&6[SwornRPG]&e " + plugin.getMessage("update_url")));
 			}
 		}
@@ -369,7 +369,7 @@ public class PlayerListener implements Listener
 		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
 			return;
 
-		String message = FormatUtil.format(plugin.prefix + plugin.getMessage("fishing_gain"), plugin.getFishinggain());
+		String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("fishing_gain"), plugin.getFishinggain());
 		plugin.getExperienceHandler().onXPGain(event.getPlayer(), plugin.getFishinggain(), message);
 
 		GameMode gm = player.getGameMode();
@@ -410,7 +410,7 @@ public class PlayerListener implements Listener
 
 				String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
 				String article = FormatUtil.getArticle(name);
-				player.sendMessage(plugin.prefix + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
 			}
 		}
 	}
@@ -440,7 +440,7 @@ public class PlayerListener implements Listener
 			if (Util.random(plugin.getSpeedboostodds()) == 0)
 			{
 				player.addPotionEffect(PotionEffectType.SPEED.createEffect(plugin.getSpeedboostduration(), 1));
-				player.sendMessage(FormatUtil.format(plugin.prefix + plugin.getMessage("speed_boost")));
+				player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("speed_boost")));
 			}
 		}
 	}
