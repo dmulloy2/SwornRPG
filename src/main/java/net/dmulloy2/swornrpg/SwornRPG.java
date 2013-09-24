@@ -656,6 +656,11 @@ public class SwornRPG extends JavaPlugin
 				String[] ss = value.split(":");
 				
 				Material type = MaterialUtil.getMaterial(ss[0]);
+				if (type == null)
+				{
+					outConsole(Level.WARNING, "Null material {0} found while attempting to load block drops!", ss[0]);
+					continue;
+				}
 				
 				short data = 0;
 				int chance = 0;
@@ -694,6 +699,11 @@ public class SwornRPG extends JavaPlugin
 				String[] ss = value.split(":");
 				
 				Material type = MaterialUtil.getMaterial(ss[0]);
+				if (type == null)
+				{
+					outConsole(Level.WARNING, "Null material {0} found while attempting to load block drops!", ss[0]);
+					continue;
+				}
 				
 				short data = 0;
 				int chance = 0;

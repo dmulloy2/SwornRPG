@@ -46,7 +46,7 @@ public class MaterialUtil
 			return org.bukkit.Material.matchMaterial(string);
 		}
 	}
-	
+
 	/**
 	 * Returns the {@link org.bukkit.Material} from a given integer
 	 * 
@@ -57,7 +57,7 @@ public class MaterialUtil
 	{
 		return net.dmulloy2.swornrpg.types.Material.getMaterial(id).getMaterial();
 	}
-	
+
 	/**
 	 * Returns whether or not a valid material was supplied
 	 * 
