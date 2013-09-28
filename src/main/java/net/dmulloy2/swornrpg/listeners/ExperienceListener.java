@@ -253,7 +253,8 @@ public class ExperienceListener implements Listener
 				blockState.update();
 				message = true;
 			}
-			else if (mat == Material.CARROT || mat == Material.CROPS || mat == Material.POTATO)
+//			else if (mat == Material.CARROT || mat == Material.CROPS || mat == Material.POTATO)
+			else if (mat == Material.CROPS)
 			{
 				((Crops) blockState.getData()).setState(CropState.RIPE);
 				blockState.update();
@@ -294,9 +295,9 @@ public class ExperienceListener implements Listener
 			case PUMPKIN:
 				return true;
 
-			case CARROT:
+//			case CARROT:
 			case CROPS:
-			case POTATO:
+//			case POTATO:
 				return ((Crops) blockState.getData()).getState() == CropState.RIPE;
 
 			case NETHER_WARTS:
