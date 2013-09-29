@@ -7,6 +7,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -74,10 +75,13 @@ public abstract class SwornRPGCommand implements CommandExecutor
 			return;
 		}
 		
-		if (hasPermission())
-			perform();
-		else
+		if (! hasPermission())
+		{
 			err(plugin.getMessage("noperm"));
+			return;
+		}
+		
+		perform();
 	}
 	
 	protected final boolean isPlayer() 
@@ -200,5 +204,37 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	protected final void invalidArgs()
 	{
 		err(plugin.getMessage("invalidargs") + " " + getUsageTemplate(false));
+	}
+	
+	protected final OfflinePlayer getTarget(boolean msg)
+	{
+		OfflinePlayer target = null;
+		if (args.length == 1)
+		{
+			target = Util.matchPlayer(args[0]);
+			if (target == null)
+			{
+				target = Util.matchOfflinePlayer(args[0]);
+				if (target == null)
+				{
+					if (msg) err(plugin.getMessage("noplayer"));
+					return null;
+				}
+			}
+		}
+		else
+		{
+			if (sender instanceof Player)
+			{
+				target = (Player)sender;
+			}
+			else
+			{
+				if (msg) err(plugin.getMessage("console_level"));
+				return null;
+			}
+		}
+		
+		return target;
 	}
 }

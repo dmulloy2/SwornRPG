@@ -31,10 +31,36 @@ import org.bukkit.util.Vector;
 
 public class EntityListener implements Listener
 {
+	private boolean arrowFireEnabled;
+	private boolean axeKnockbackEnabled;
+	private boolean confusionEnabled;
+	private boolean gracefulRollEnabled;
+	private boolean instaKillEnabled;
+	
+	private int arrowFireOdds;
+	private int axeKnockbackOdds;
+	private int confusionDuration;
+	private int confusionStrength;
+	private int gracefulRollOdds;
+	private int instaKillOdds;
+	
 	private final SwornRPG plugin;
 	public EntityListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
+		
+		this.arrowFireEnabled = plugin.getConfig().getBoolean("arrowFire.enabled");
+		this.axeKnockbackEnabled = plugin.getConfig().getBoolean("axeKnockback.enabled");
+		this.confusionEnabled = plugin.getConfig().getBoolean("confusion.enabled");
+		this.gracefulRollEnabled = plugin.getConfig().getBoolean("gracefulRoll.enabled");
+		this.instaKillEnabled = plugin.getConfig().getBoolean("instaKill.enabled");
+		
+		this.arrowFireOdds = plugin.getConfig().getInt("arrowFire.odds");
+		this.axeKnockbackOdds = plugin.getConfig().getInt("axeKnockback.odds");
+		this.confusionDuration = plugin.getConfig().getInt("confusion.duration");
+		this.confusionStrength = plugin.getConfig().getInt("confusion.strength");
+		this.gracefulRollOdds = plugin.getConfig().getInt("gracefulRoll.odds");
+		this.instaKillOdds = plugin.getConfig().getInt("instaKill.odds");
 	}
 
 	/** Axe blowback and Arrow fire **/
@@ -52,9 +78,9 @@ public class EntityListener implements Listener
 
 		if (att instanceof Arrow)
 		{
-			if (plugin.isArrowfire())
+			if (arrowFireEnabled)
 			{
-				if (Util.random(10) == 0)
+				if (Util.random(arrowFireOdds) == 0)
 				{
 					defender.setFireTicks(128);
 					if (((Arrow) att).getShooter() instanceof Player)
@@ -73,15 +99,15 @@ public class EntityListener implements Listener
 			/** Confusion **/
 			if (inHand == null || inHand.getType() == Material.AIR)
 			{
-				if (plugin.isConfusion())
+				if (confusionEnabled)
 				{
 					int rand = Util.random(20);
 					if (rand == 0)
 					{
 						if (defender instanceof Player)
 						{
-							PotionEffect eff = new PotionEffect(PotionEffectType.CONFUSION, plugin.getConfusionduration(), 1);
-							((Player) defender).addPotionEffect(eff);
+							((Player) defender).addPotionEffect(
+									new PotionEffect(PotionEffectType.CONFUSION, confusionDuration, confusionStrength));
 						}
 					}
 				}
@@ -92,10 +118,9 @@ public class EntityListener implements Listener
 			/** Axe Blowback **/
 			if (gun.toLowerCase().contains("axe"))
 			{
-				if (plugin.isAxekb())
+				if (axeKnockbackEnabled)
 				{
-					int randomBlowBack = Util.random(9);
-					if (randomBlowBack == 0)
+					if (Util.random(axeKnockbackOdds) == 0)
 					{
 						double distance = Util.pointDistance(att.getLocation(), defender.getLocation());
 						double mult = 0.75D;
@@ -152,11 +177,10 @@ public class EntityListener implements Listener
 			/** Graceful Roll **/
 			if (event.getCause() == DamageCause.FALL)
 			{
-				if (! plugin.isGracefulroll())
+				if (! gracefulRollEnabled)
 					return;
 
-				int rand = Util.random(plugin.getGracefulrollodds());
-				if (rand == 0)
+				if (Util.random(gracefulRollOdds) == 0)
 				{
 					event.setDamage(0);
 					player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("graceful_roll")));
@@ -203,8 +227,7 @@ public class EntityListener implements Listener
 				if (level == 0)
 					level = 1;
 
-				int rand = Util.random(75 / level);
-				if (rand == 0)
+				if (Util.random(75 / level) == 0)
 				{
 					player.setHealth(player.getHealth() + 1.0D);
 				}
@@ -230,7 +253,7 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.isCancelled() || event.getDamage() <= 0)
+		if (event.isCancelled() || event.getDamage() <= 0 || ! instaKillEnabled)
 			return;
 		
 		Entity damaged = event.getEntity();
@@ -250,7 +273,7 @@ public class EntityListener implements Listener
 				{
 					LivingEntity lentity = (LivingEntity) damaged;
 
-					if (Util.random(100) == 0)
+					if (Util.random(instaKillOdds) == 0)
 					{
 						lentity.setHealth(0.0D);
 

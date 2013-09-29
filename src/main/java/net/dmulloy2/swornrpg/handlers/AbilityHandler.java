@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.Getter;
+
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.events.FrenzyActivateEvent;
 import net.dmulloy2.swornrpg.events.SuperPickaxeActivateEvent;
@@ -26,8 +28,24 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
+@Getter
 public class AbilityHandler
 {
+	private boolean frenzyEnabled;
+	private int frenzyDuration;
+	private int frenzyMultiplier;
+	private int frenzyCooldown;
+	
+	private boolean superPickaxeEnabled;
+	private int superPickaxeDuration;
+	private int superPickaxeMultiplier;
+	private int superPickaxeCooldown;
+	
+	private boolean unlimitedAmmoEnabled;
+	private int unlimitedAmmoDuration;
+	private int unlimitedAmmoMultiplier;
+	private int unlimitedAmmoCooldown;
+	
 	private HashMap<String, Long> frenzyWaiting;
 	private HashMap<String, Long> spickWaiting;
 	
@@ -36,6 +54,21 @@ public class AbilityHandler
 	{
 		this.plugin = plugin;
 		
+		this.frenzyEnabled = plugin.getConfig().getBoolean("frenzy.enabled");
+		this.frenzyDuration = plugin.getConfig().getInt("frenzy.baseDuration");
+		this.frenzyMultiplier = plugin.getConfig().getInt("frenzy.levelMultiplier");
+		this.frenzyCooldown = plugin.getConfig().getInt("frenzy.baseCooldown");
+		
+		this.superPickaxeEnabled = plugin.getConfig().getBoolean("superPickaxe.enabled");
+		this.superPickaxeDuration = plugin.getConfig().getInt("superPickaxe.baseDuration");
+		this.superPickaxeMultiplier = plugin.getConfig().getInt("superPickaxe.levelMultiplier");
+		this.superPickaxeCooldown = plugin.getConfig().getInt("superPickaxe.baseCooldown");
+		
+		this.unlimitedAmmoEnabled = plugin.getConfig().getBoolean("unlimitedAmmo.enabled");
+		this.unlimitedAmmoDuration = plugin.getConfig().getInt("unlimitedAmmo.baseDuration");
+		this.unlimitedAmmoMultiplier = plugin.getConfig().getInt("unlimitedAmmo.levelMultiplier");
+		this.unlimitedAmmoCooldown = plugin.getConfig().getInt("unlimitedAmmo.baseCooldown");
+
 		this.frenzyWaiting = new HashMap<String, Long>();
 		this.spickWaiting = new HashMap<String, Long>();
 	}
@@ -49,8 +82,8 @@ public class AbilityHandler
 	 */
 	public void activateFrenzy(final Player player, boolean command, Action... actions)
 	{
-		/* *Enable Check **/
-		if (! plugin.isFrenzyenabled())
+		/** Enable Check **/
+		if (! frenzyEnabled)
 		{
 			if (command) sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
@@ -139,7 +172,7 @@ public class AbilityHandler
 		if (level == 0)
 			level = 1;
 
-		final int duration = Integer.valueOf(Math.round(20 * (plugin.getFrenzyd() + (level * plugin.getFrenzym()))));
+		final int duration = Integer.valueOf(Math.round(20 * (frenzyDuration + (level * frenzyMultiplier))));
 		
 		FrenzyActivateEvent event = new FrenzyActivateEvent(player, duration, command);
 		plugin.getPluginManager().callEvent(event);
@@ -170,7 +203,7 @@ public class AbilityHandler
 				sendpMessage(player, plugin.getMessage("frenzy_wearoff"));
 				data.setFrenzyEnabled(false);
 				
-				int cooldown = duration * plugin.getFrenzycd();
+				int cooldown = duration * frenzyCooldown;
 				data.setFrenzyCooldownTime(cooldown);
 				data.setFrenzyCooldownEnabled(true);
 				
@@ -190,7 +223,7 @@ public class AbilityHandler
 	public void activateSpick(final Player player, boolean command, Action... actions)
 	{
 		/** Enable Check **/
-		if (! plugin.isSpenabled())
+		if (! superPickaxeEnabled)
 		{
 			if (command) sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
@@ -281,7 +314,7 @@ public class AbilityHandler
 		if (level == 0)
 			level = 1;
 		
-		final int duration = Integer.valueOf(Math.round(20 * (plugin.getSpbaseduration() + (level * plugin.getSuperpickm()))));
+		final int duration = Integer.valueOf(Math.round(20 * (superPickaxeDuration + (level * superPickaxeMultiplier))));
 		
 		SuperPickaxeActivateEvent event = new SuperPickaxeActivateEvent(player, duration, command);
 		plugin.getPluginManager().callEvent(event);
@@ -306,7 +339,7 @@ public class AbilityHandler
 
 				player.removePotionEffect(PotionEffectType.FAST_DIGGING);
 				
-				int cooldown = duration * plugin.getSuperpickcd();
+				int cooldown = duration * superPickaxeCooldown;
 				data.setSuperPickaxeCooldownEnabled(true);
 				data.setSuperPickaxeCooldownTime(cooldown);
 				
@@ -327,6 +360,13 @@ public class AbilityHandler
 		if (! pm.isPluginEnabled("SwornGuns"))
 		{
 			sendpMessage(player, plugin.getMessage("plugin_not_found"), "SwornGuns");
+			return;
+		}
+		
+		/** Enable Check **/
+		if (! unlimitedAmmoEnabled)
+		{
+			sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
 		
@@ -356,7 +396,7 @@ public class AbilityHandler
 		if (level == 0)
 			level = 1;
 		
-		final int duration = Integer.valueOf(Math.round(20 * (plugin.getAmmobaseduration() + (level * plugin.getAmmomultiplier()))));
+		final int duration = Integer.valueOf(Math.round(20 * (unlimitedAmmoDuration + (level * unlimitedAmmoMultiplier))));
 		
 		UnlimitedAmmoActivateEvent event = new UnlimitedAmmoActivateEvent(player, duration);
 		plugin.getPluginManager().callEvent(event);
@@ -377,7 +417,7 @@ public class AbilityHandler
 				sendpMessage(player, plugin.getMessage("ammo_nolonger_unlimited"));
 				data.setUnlimitedAmmoCooldownEnabled(false);
 				
-				int cooldown = duration * plugin.getAmmocooldown();
+				int cooldown = duration * unlimitedAmmoCooldown;
 				data.setUnlimitedAmmoCooldownEnabled(true);
 				data.setUnlimitedAmmoCooldownTime(cooldown);
 				
@@ -458,5 +498,20 @@ public class AbilityHandler
 				}
 			}
 		}
+	}
+	
+	public int getFrenzyDuration(PlayerData data)
+	{
+		return frenzyDuration + (data.getLevel() * frenzyMultiplier);
+	}
+	
+	public int getSuperPickaxeDuration(PlayerData data)
+	{
+		return superPickaxeDuration + (data.getLevel() + superPickaxeMultiplier);
+	}
+	
+	public int getUnlimitedAmmoCooldown(PlayerData data)
+	{
+		return unlimitedAmmoDuration + (data.getLevel() + unlimitedAmmoMultiplier);
 	}
 }

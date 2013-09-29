@@ -34,7 +34,7 @@ public enum EnchantmentType
 	THORNS("thorns"),
 	WATER_WORKER("aqua");
 	
-	public String name;
+	private String name;
 	EnchantmentType(String name)
 	{
 		this.name = name;
@@ -77,5 +77,10 @@ public enum EnchantmentType
 		}		
 		
 		return result.toString();
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 }

@@ -13,7 +13,7 @@ public class BlockDrop
 	private final ItemStack item;
 	private final int chance;
 	
-	public BlockDrop(final ItemStack itemStack, final int chance) 
+	public BlockDrop(ItemStack itemStack, int chance) 
 	{
 		this.item = itemStack;
 		this.chance = chance;

@@ -170,7 +170,7 @@ public class HealthBarHandler
 	{
 		try
 		{
-			if (plugin.isHealthtags())
+			if (plugin.getConfig().getBoolean("mobHealthTags"))
 			{
 				LivingEntity lentity = (LivingEntity)entity;
 				

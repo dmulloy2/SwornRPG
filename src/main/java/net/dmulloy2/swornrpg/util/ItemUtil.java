@@ -41,7 +41,7 @@ public class ItemUtil
 			if (s.contains(":"))
 			{
 				String str = s.substring(0, s.indexOf(":"));
-				if (Util.isInteger(str))
+				if (MaterialUtil.isInteger(str))
 				{
 					int id = Integer.parseInt(s.substring(0, s.indexOf(":")));
 					

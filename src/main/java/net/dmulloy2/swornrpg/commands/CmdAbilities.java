@@ -1,12 +1,11 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.handlers.AbilityHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -18,41 +17,17 @@ public class CmdAbilities extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "abilities";
-		this.description = "Check SwornRPG ability levels";
 		this.aliases.add("skills");
 		this.optionalArgs.add("player");
-		this.mustBePlayer = true;
+		this.description = "Check SwornRPG ability levels";
 	}
 	
 	@Override
 	public void perform()
 	{
-		OfflinePlayer target = null;
-		if (args.length == 1)
-		{
-			target = Util.matchPlayer(args[0]);
-			if (target == null)
-			{
-				target = Util.matchOfflinePlayer(args[0]);
-				if (target == null)
-				{
-					err(plugin.getMessage("noplayer"));
-					return;
-				}
-			}
-		}
-		else
-		{
-			if (sender instanceof Player)
-			{
-				target = (Player)sender;
-			}
-			else
-			{
-				err(plugin.getMessage("console_level"));
-				return;
-			}
-		}
+		OfflinePlayer target = getTarget(true);
+		if (target == null)
+			return;
 		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
@@ -61,18 +36,21 @@ public class CmdAbilities extends SwornRPGCommand
 			return;
 		}
 
-		int level = data.getLevel();
-		
 		if (sender == target)
+		{
 			sendMessage(plugin.getMessage("ability_header_self"));
+		}
 		else
+		{
 			sendMessage(plugin.getMessage("ability_header_others"), target.getName());
+		}
 		
-		if (plugin.isFrenzyenabled())
+		AbilityHandler abilityHandler = plugin.getAbilityHandler();
+		
+		if (abilityHandler.isFrenzyEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), 
-					(plugin.getFrenzyd() + (level*plugin.getFrenzym()))));
+			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), abilityHandler.getFrenzyDuration(data)));
 			
 			if (data.isFrenzyCooldownEnabled())
 			{
@@ -82,11 +60,10 @@ public class CmdAbilities extends SwornRPGCommand
 			sendMessage(line.toString());
 		}
 		
-		if (plugin.isSpenabled())
+		if (plugin.getConfig().getBoolean("superPickaxe.enabled"))
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), 
-					(plugin.getSpbaseduration() + (level*plugin.getSuperpickm()))));
+			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data)));
 			
 			if (data.isSuperPickaxeCooldownEnabled())
 			{
@@ -96,11 +73,10 @@ public class CmdAbilities extends SwornRPGCommand
 			sendMessage(line.toString());
 		}
 		
-		if (plugin.isAmmoenabled() && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
+		if (plugin.getConfig().getBoolean("unlimitedAmmo.enabled") && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), 
-					(plugin.getAmmobaseduration() + (level*plugin.getAmmomultiplier()))));
+			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoCooldown(data)));
 			
 			if (data.isUnlimitedAmmoCooldownEnabled())
 			{

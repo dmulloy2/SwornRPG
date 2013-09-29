@@ -23,28 +23,16 @@
 debug: false
 
 # Automatic checking for updates (boolean)
-updatechecker: true
-
-# Iron Door protection (boolean)
-irondoorprotect: true
-
-# Axe Knockback (boolean)
-axekb: true
-
-# Arrow Fire (boolean)
-arrowfire: true
-
-# Death Coordinate Messages (boolean)
-deathbook: true
+checkForUpdates: true
 
 # Marriage (boolean)
 marriage: true
 
 # MobSpawner Camping Radius (integer)
-campingradius: 16
+campingRadius: 32
 
 # Worlds SwornRPG is disabled in (world)
-disabled-worlds:
+disabledWorlds:
 - disabled_world
 
 #############################################
@@ -66,9 +54,9 @@ salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 
 #############################################
 
 # Interval in minutes (integer)
-autosave:
-  enabled: true
-  interval: 15
+autoSave:
+  enabled: false
+  interval: 120
   
 #############################################
 #+-----------------------------------------+#
@@ -83,23 +71,23 @@ autosave:
 # Frenzy Mode
 frenzy:
   enabled: true
-  baseduration: 5
-  levelmultiplier: 1
-  cooldownmultiplier: 10
+  baseDuration: 5
+  levelMultiplier: 1
+  cooldownMultiplier: 10
   
 # SuperPickaxe
-superpickaxe:
+superPickaxe:
   enabled: true
-  baseduration: 10
-  levelmultiplier: 2
-  cooldownmultiplier: 2
+  baseDuration: 10
+  levelMultiplier: 2
+  cooldownMultiplier: 2
 
 # Unlimited Ammo
-unlimitedammo:
+unlimitedAmmo:
   enabled: true
-  baseduration: 10
-  levelmultiplier: 2
-  cooldownmultiplier: 2
+  baseDuration: 10
+  levelMultiplier: 2
+  cooldownMultiplier: 2
 
 #############################################
 #+-----------------------------------------+#
@@ -110,22 +98,22 @@ unlimitedammo:
 # How much xp a player gains when doing a particular task
 # Inputs: enabled - boolean, xpgain/loss - integer
 
-levelingmethods:
+levelingMethods:
   # Minecraft XP Gain
-  mcxpgain:
+  mcXpGain:
     enabled: true
     xpgain: 15
   # PVP
-  playerkills:
+  playerKills:
     enabled: true
     xpgain: 25
     xploss: 10
   # PVE
-  mobkills:
+  mobKills:
     enabled: true
     xpgain: 5
   # Minute of online time
-  onlinetime:
+  onlineTime:
     enabled: true
     xpgain: 1
   # Taming
@@ -151,18 +139,16 @@ levelingmethods:
 #+-----------------------------------------+#
 #############################################
 
-# Rewards for leveling up
-# Inputs: enabled - boolean, rest - integer
-# ItemID is any valid Minecraft ItemID
+# Levelup Rewards
+# Enabled - boolean
+# Money - integer
+# Items - List<Item>
 
-levelingrewards:
-  money:
-    enabled: true
-    amountperlevel: 250
+levelingRewards:
+  enabled: true
+  money: 250
   items:
-    enabled: true
-    itemid: 264
-    amountperlevel: 1
+    - "264:0, 1"
  
 #############################################
 #+-----------------------------------------+#
@@ -173,11 +159,11 @@ levelingrewards:
 # Player and Mob health displays
 # Inputs: enabled - boolean
 
-healthtags:
+mobHealthTags:
   enabled: true
   
-playerhealth:
-  enabled: true
+playerHealthTags:
+  enabled: false
 
 #############################################
 #+-----------------------------------------+#
@@ -188,28 +174,63 @@ playerhealth:
 # Confusion - when a player punches another player in the face
 # Enabled - boolean.
 # Duration (integer) in seconds.
+# Strength (integer) - potion strength
 
 confusion:
   enabled: true
   duration: 3
+  strength: 1
   
 # Speed Boost - random chance of a player speeding up
 # Enabled - boolean.
 # Odds (integer) chance (1 out of odds)
 # Duration (integer) in seconds.
+# Strength (integer) speed boost strength
 
-speedboost:
+speedBoost:
   enabled: true
   odds: 20
   duration: 2
+  strength: 1
   
 # Graceful Roll - random chance of a player not taking fall damage
 # Enabled - boolean.
 # Odds (integer) chance (1 out of odds)
 
-gracefulroll:
+gracefulRoll:
   enabled: true
   odds: 50
+
+# Insta-Kill - random chance of a player instantly killing a mob
+# Enabled - boolean
+# Odds (integer) chance (1 out of odds)
+
+instaKill:
+  enabled: true
+  odds: 100
+
+# Arrow Fire - random chance of a player catching on fire when hit with arrows
+# Enabled - boolean
+# Odds (integer) chance (1 out of odds)
+
+arrowFire:
+  enabled: true
+  odds: 10
+
+# Axe Knockback - random chance of a player getting knocked back by axes
+# Enabled - boolean
+# Odds (integer) chance (1 out of odds)
+
+axeKnockback:
+  enabled: true
+  odds: 8
+
+# Iron Door protection (boolean)
+ironDoorProtection: true
+
+# Death Coordinate Messages (boolean)
+deathCoordinateMessages: true
+
  
 #############################################
 #+-----------------------------------------+#
@@ -218,25 +239,35 @@ gracefulroll:
 #############################################
     
 # Enabled (boolean)
-randomdrops: true 
+blockDropsEnabled: true 
 
 # Items Dropped
 # Format: 
 #  [blockId]:
 #    - "rewardId:chance out of 100"
-block-drops:
+blockDropItems:
   0:
     - "2258:10000"
-    - "2267:10000"
+    - "2259:10000"
+    - "2260:10000"
+    - "2261:10000"
     - "2262:10000"
     - "2263:10000"
     - "2264:10000"
     - "2265:10000"
+    - "2266:10000"  
+    - "2267:10000"
+    - "46:1000"
+    - "49:1000"
     - "264:1000"
     - "384:5000"
+    - "388:5000"
     - "399:50000"
     - "266:1000"
     - "265:1000"
+    - "406:200"
+    - "154:1000"
+    - "404:1000"  
   82:
     - "341:20"
     - "287:20"
@@ -248,7 +279,8 @@ block-drops:
     - "391:30"
   1:
     - "15:75"
-    - "16:25"
+    - "263:25"
+    - "21:100"
     - "14:200"
   17:
     - "338:20"
@@ -256,19 +288,54 @@ block-drops:
     - "127:100"
   4:
     - "389:20"
+    - "48:20"
+    - "67:50"
     - "145:200"
     - "386:100"
   121:
     - "116:150"
-    - "388:100"
+    - "394:25"
+    - "388:500"
     - "368:25"
+  35:
+    - "30:100"
+    - "287:15"
+  102:
+    - "102:2"
+  20:
+    - "102:10"
+    - "20:2"
+    - "374:100"
+  5:
+    - "280:10"
+    - "65:20"
+    - "85:50"
+    - "53:10"
   87:
     - "385:15"
     - "372:25"
     - "112:10"
-    - "406:10"
+    - "153:50"
+  88:
+    - "378:100"
+    - "372:25"
+    - "331:25"
+    - "397:300"
+  24:
+    - "28:15"
+    - "12:15"
+    - "390:30"
+  12:
+    - "338:15"
+    - "349:15"
+    - "295:30"
+  18:
+    - "106:15"
+    - "111:15"
+    - "127:200"
   3:
     - "392:30"
+    - "391:30"
     - "357:30"
     - "395:100"
     - "330:100"
@@ -276,6 +343,100 @@ block-drops:
     - "289:15"
     - "352:10"
     - "87:50"
+  6:
+    - "352:150"
+    - "18:25"
+    - "32:500"
+    - "280:25"
+  31:
+    - "361:150"
+    - "31:5"
+    - "362:150"
+    - "30:25"
+  32:
+    - "361:150"
+    - "32:5"
+    - "362:150"
+    - "30:25"
+  37:
+    - "18:25"
+    - "371:150"
+    - "39:25"
+  38:
+    - "18:25"
+    - "372:150"
+    - "40:25"
+  39:
+    - "99:10"
+    - "372:150"
+    - "37:25"
+  40:
+    - "100:10"
+    - "372:150"
+    - "38:25"
+  59:
+    - "293:1000"
+    - "295:5"
+    - "392:150"
+    - "297:25"
+  59:
+    - "293:1000"
+    - "295:5"
+    - "392:150"
+    - "297:25"
+  81:
+    - "382:500"
+    - "262:15"
+    - "267:1000"
+    - "373:25"
+  83:
+    - "368:1000"
+    - "353:15"
+    - "362:150"
+    - "18:25"
+  86:
+    - "400:200"
+    - "91:15"
+    - "348:150"
+    - "361:25"
+  91:
+    - "51:1000"
+    - "50:5"
+    - "377:150"
+    - "86:25"
+  106:
+    - "370:500"
+    - "287:10"
+    - "18:50"
+    - "295:25"
+  110:
+    - "384:1000"
+    - "39:3"
+    - "372:25"
+    - "40:3"
+  111:
+    - "106:5"
+    - "349:150"
+    - "361:25"
+  115:
+    - "369:250"
+    - "372:5"
+    - "370:250"
+    - "40:25"
+  127:
+    - "354:1000"
+    - "353:10"
+    - "351:150"
+  141:
+    - "396:1000"
+    - "391:5"
+    - "398:150"
+    - "141:100"
+  142:
+    - "142:100"
+    - "392:5"
+    - "394:50"
+    - "393:25"
 
 #############################################
 #+-----------------------------------------+#
@@ -283,12 +444,15 @@ block-drops:
 #+-----------------------------------------+#
 #############################################
 
+# Enabled (boolean)
+fishDropsEnabled: true
+
 # Done based on level (up to 10)
 # Items Dropped
 # Format: 
 #  [level]:
 #    - "rewardId:chance out of 100"
-fish-drops:
+fishDropItems:
   0:
     - "301:10"
     - "268:5"
@@ -308,8 +472,14 @@ fish-drops:
     - "273:10"
     - "275:5"
   6:
-    - "272:15"
-    - "274:15"
+    - "277:15"
+    - "279:15"
+  7:
+    - "276:10"
+    - "278:10"
+  8:
+    - "57:1"
+    - "42:1"
     
 #############################################
 #+-----------------------------------------+#
@@ -318,12 +488,20 @@ fish-drops:
 #############################################
     
 # Block Redemption Enabled (boolean)
-redeem-enabled: true
+redemptionEnabled: true
 
 # Blacklisted Materials for Building Redeem
-# Format: - [material/itemId]
-redeem-blacklist:
+# Format: - material
+redemptionBlacklist:
+- fire
+- crops
+- potatoes
+- carrots
+- nether_warts
+- pumpkin_stem
+- melon_stem
 - beacon
 - diamond_block
 - iron_block
 - gold_block
+- tnt

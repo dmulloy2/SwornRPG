@@ -99,6 +99,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.earth2me.essentials.IEssentials;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
@@ -111,6 +112,7 @@ public class SwornRPG extends JavaPlugin
 {
 	/** Getters **/
 	private @Getter Economy economy;
+	private @Getter IEssentials essentials;
 	private @Getter PluginManager pluginManager;
 	private @Getter PlayerDataCache playerDataCache;
 	
@@ -125,25 +127,8 @@ public class SwornRPG extends JavaPlugin
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter TagHandler tagHandler;
 
-	/** Proposal Map **/
+	/** Maps **/
 	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
-    
-    /** Configuration **/
-	private @Getter boolean irondoorprotect, randomdrops, axekb, arrowfire, deathbook,
-	frenzyenabled, onlinetime, playerkills, mobkills, xpreward, items, xplevel,
-	money, update, spenabled, debug, salvaging, ammoenabled, healthtags, playerhealth,
-	marriage, taming, confusion, fishing, herbalism, savecache, enchanting, blockredemption,
-	speedboost, gracefulroll;
-	
-	private @Getter int frenzyd, basemoney, itemperlevel, itemreward, xplevelgain,
-	killergain, killedloss, mobkillsxp, spbaseduration, frenzycd, frenzym, 
-	superpickcd, superpickm, ammobaseduration, ammocooldown, ammomultiplier,
-	campingrad, onlinegain, taminggain, confusionduration, fishinggain, herbalismgain,
-	saveinterval, enchantbase, speedboostduration, speedboostodds, gracefulrollodds;
-	
-	private @Getter String salvage;
-    private @Getter List<String> disabledWorlds, redeemBlacklist;
-    
     private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
     private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
     private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
@@ -191,28 +176,40 @@ public class SwornRPG extends JavaPlugin
 		pluginManager.registerEvents(new BlockListener(this), this);
 		pluginManager.registerEvents(new ExperienceListener(this), this);
 		
-		/**Check for PlayerData folder**/
+		/** Check for PlayerData folder **/
 		File playersFile = new File(getDataFolder(), "players");
 		if (! playersFile.exists())
 		{
 			playersFile.mkdir();
 		}
 
-		/**Check for Config**/
+		/** Configuration Stuff **/
         File conf = new File(getDataFolder(), "config.yml");
         if (! conf.exists())
         {
         	outConsole(getMessage("log_configuration"));
         	saveDefaultConfig();
         }
-        
-        /** Load Config **/
+        else
+        {
+        	if (! getConfig().isSet("checkForUpdates"))
+        	{
+        		conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
+        		
+        		outConsole(getMessage("log_old_config"));
+        		
+        		saveDefaultConfig();
+        	}
+        }
+
         reloadConfig();
-		loadConfig();
 		
 		/** Update Block Tables **/
 		updateBlockDrops();
 		updateFishDrops();
+		
+		/** Salvaging **/
+		updateSalvageRef();
 		
 		/** Register Prefixed Commands **/
 		commandHandler.setCommandPrefix("srpg");
@@ -261,11 +258,14 @@ public class SwornRPG extends JavaPlugin
 
 		/** Vault Integration **/
 		setupVault();
+		
+		/** Essentials Integration **/
+		hookIntoEssentials();
 
 		/** Deploy AutoSave Task **/
-		if (savecache)
+		if (getConfig().getBoolean("autoSave.enabled"))
 		{
-			int interval = 20 * 60 * saveinterval;
+			int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
 			
 			new BukkitRunnable()
 			{
@@ -278,7 +278,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		/** Frenzy Mode Cooldown **/
-		if (frenzyenabled)
+		if (getConfig().getBoolean("frenzy.enabled"))
 		{
 			new BukkitRunnable()
 			{
@@ -303,7 +303,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		/**Super Pickaxe Cooldown**/
-		if (spenabled)
+		if (getConfig().getBoolean("superPickaxe.enabled"))
 		{
 			new BukkitRunnable()
 			{
@@ -328,7 +328,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		/** SwornGuns Integration **/
-		if (pluginManager.isPluginEnabled("SwornGuns") && ammoenabled)
+		if (pluginManager.isPluginEnabled("SwornGuns") && getConfig().getBoolean("unlimitedAmmo.enabled"))
 		{
 			outConsole(getMessage("log_gun_found"));
 			pluginManager.registerEvents(new SwornGunsListener(this), this);
@@ -356,7 +356,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		/** Update Checker **/
-		if (update)
+		if (getConfig().getBoolean("checkForUpdates"))
 		{
 			new BukkitRunnable()
 			{
@@ -381,7 +381,7 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		/** Online XP Gain **/
-		if (onlinetime)
+		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 		{
 			new BukkitRunnable()
 			{
@@ -391,7 +391,7 @@ public class SwornRPG extends JavaPlugin
 					for (Player player : getServer().getOnlinePlayers())
 					{
 						PlayerData data = playerDataCache.getData(player);
-						data.setPlayerxp(data.getPlayerxp() + onlinegain);
+						data.setPlayerxp(data.getPlayerxp() + getConfig().getInt("levelingMethods.onlineTime.xpgain"));
 						
 						/**Levelup check**/
 						int xp = data.getPlayerxp();
@@ -460,100 +460,6 @@ public class SwornRPG extends JavaPlugin
 	public void debug(String string, Object... objects)
 	{
 		logHandler.debug(string, objects);
-	}
-	
-	/** Load the configuration **/
-	private void loadConfig() 
-	{
-		/** General Config Options **/
-		irondoorprotect = getConfig().getBoolean("irondoorprotect");
-		randomdrops = getConfig().getBoolean("randomdrops");
-		axekb = getConfig().getBoolean("axekb");
-		arrowfire = getConfig().getBoolean("arrowfire");
-		deathbook = getConfig().getBoolean("deathbook");
-		update = getConfig().getBoolean("updatechecker");
-		debug = getConfig().getBoolean("debug");
-		campingrad = getConfig().getInt("campingradius");
-		healthtags = getConfig().getBoolean("healthtags.enabled");
-		disabledWorlds = getConfig().getStringList("disabled-worlds");
-		playerhealth = getConfig().getBoolean("playerhealth.enabled");
-		marriage = getConfig().getBoolean("marriage");
-		confusion = getConfig().getBoolean("confusion.enabled");
-		confusionduration = getConfig().getInt("confusion.duration");
-		savecache = getConfig().getBoolean("autosave.enabled");
-		saveinterval = getConfig().getInt("autosave.interval");
-		blockredemption = getConfig().getBoolean("redeem-enabled");
-		redeemBlacklist = getConfig().getStringList("redeem-blacklist");
-
-		/** Salvaging **/
-		salvaging = getConfig().getBoolean("salvaging");
-		salvage = getConfig().getString("salvage");
-
-		salvageRef.put("Iron", new HashMap<Material, Integer>());
-		salvageRef.put("Gold", new HashMap<Material, Integer>());
-		salvageRef.put("Diamond", new HashMap<Material, Integer>());
-		String[] salvageArray = salvage.split("; ");
-		for (String s : salvageArray) 
-		{
-			String[] subset = s.split(", ");
-			
-			Material mat = MaterialUtil.getMaterial(subset[0]);
-			
-			if (mat != null)
-			{
-				salvageRef.get(subset[1]).put(mat, Integer.parseInt(subset[2]));
-			}
-		}
-
-		/** Frenzy **/
-		frenzyenabled = getConfig().getBoolean("frenzy.enabled");
-		frenzycd = getConfig().getInt("frenzy.cooldownmultiplier");
-		frenzym = getConfig().getInt("frenzy.levelmultiplier");
-		frenzyd = getConfig().getInt("frenzy.baseduration");
-		
-		/** Leveling **/
-		xplevel = getConfig().getBoolean("levelingmethods.mcxpgain.enabled");
-		xplevelgain = getConfig().getInt("levelingmethods.mcxpgain.xpgain");
-		playerkills = getConfig().getBoolean("levelingmethods.playerkills.enabled");
-		killergain = getConfig().getInt("levelingmethods.playerkills.xpgain");
-		killedloss = getConfig().getInt("levelingmethods.playerkills.xploss");
-		mobkills = getConfig().getBoolean("levelingmethods.mobkills.enabled");
-		mobkillsxp = getConfig().getInt("levelingmethods.mobkills.xpgain");
-		money = getConfig().getBoolean("levelingrewards.money.enabled");
-		basemoney = getConfig().getInt("levelingrewards.money.amountperlevel");
-		items = getConfig().getBoolean("levelingrewards.items.enabled");
-		itemperlevel = getConfig().getInt("levelingrewards.items.amountperlevel");
-		itemreward = getConfig().getInt("levelingrewards.items.itemid");
-		xpreward = getConfig().getBoolean("levelingrewards.minecraft-xp");
-		onlinetime = getConfig().getBoolean("levelingmethods.onlinetime.enabled");
-		onlinegain = getConfig().getInt("levelingmethods.onlinetime.xpgain");
-		taming = getConfig().getBoolean("levelingmethods.taming.enabled");
-		taminggain = getConfig().getInt("levelingmethods.taming.xpgain");
-		fishing = getConfig().getBoolean("levelingmethods.fishing.enabled");
-		fishinggain = getConfig().getInt("levelingmethods.fishing.xpgain");
-		herbalism = getConfig().getBoolean("levelingmethods.herbalism.enabled");
-		herbalismgain = getConfig().getInt("levelingmethods.herbalism.xpgain");
-		enchanting = getConfig().getBoolean("levelingmethods.enchanting.enabled");
-		enchantbase = getConfig().getInt("levelingmethods.enchanting.xpgain");
-		
-		/** SuperPick **/
-		spenabled = getConfig().getBoolean("superpickaxe.enabled");
-		spbaseduration = getConfig().getInt("superpickaxe.baseduration");
-		superpickcd = getConfig().getInt("superpickaxe.cooldownmultiplier");
-		superpickm = getConfig().getInt("superpickaxe.levelmultiplier");
-		
-		/** Unlimited Ammo **/
-		ammoenabled = getConfig().getBoolean("unlimitedammo.enabled");
-		ammobaseduration = getConfig().getInt("unlimitedammo.baseduration");
-		ammocooldown = getConfig().getInt("unlimitedammo.cooldownmultiplier");
-		ammomultiplier = getConfig().getInt("unlimitedammo.levelmultiplier");
-		
-		/** Miscellaneous **/
-		speedboost = getConfig().getBoolean("speedboost.enabled");
-		speedboostodds = getConfig().getInt("speedboost.odds");
-		speedboostduration = getConfig().getInt("speedboost.duration");
-		gracefulroll = getConfig().getBoolean("gracefulroll.enabled");
-		gracefulrollodds = getConfig().getInt("gracefulroll.odds");
 	}
     
     /** Vault Check **/
@@ -633,9 +539,31 @@ public class SwornRPG extends JavaPlugin
 	public void reload()
 	{
 		reloadConfig();
-		loadConfig();
+		updateSalvageRef();
 		updateBlockDrops();
 		updateFishDrops();
+	}
+	
+	/** Update salvage ref tables **/
+	private void updateSalvageRef() 
+	{
+		String salvage = getConfig().getString("salvage");
+
+		salvageRef.put("Iron", new HashMap<Material, Integer>());
+		salvageRef.put("Gold", new HashMap<Material, Integer>());
+		salvageRef.put("Diamond", new HashMap<Material, Integer>());
+		String[] salvageArray = salvage.split("; ");
+		for (String s : salvageArray) 
+		{
+			String[] subset = s.split(", ");
+			
+			Material mat = MaterialUtil.getMaterial(subset[0]);
+			
+			if (mat != null)
+			{
+				salvageRef.get(subset[1]).put(mat, Integer.parseInt(subset[2]));
+			}
+		}
 	}
 	
 	/** Update Block Drops **/
@@ -729,7 +657,7 @@ public class SwornRPG extends JavaPlugin
 	{
 		Location loc = player.getLocation();
 		World world = loc.getWorld();
-		int RADIUS = campingrad;
+		int RADIUS = getConfig().getInt("campingRadius");
 		for (int dx = -RADIUS; dx <= RADIUS; dx++) 
 		{
 			for (int dy = -RADIUS; dy <= RADIUS; dy++) 
@@ -749,6 +677,17 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		return false;
+	}
+	
+	/** Essentials Hooks **/
+	public void hookIntoEssentials()
+	{
+		PluginManager pm = getServer().getPluginManager();
+		if (pm.isPluginEnabled("Essentials"))
+		{
+			Plugin plugin = pm.getPlugin("Essentials");
+			essentials = (IEssentials) plugin;
+		}
 	}
 	
 	/** WarZone / SafeZone Check **/
@@ -792,6 +731,13 @@ public class SwornRPG extends JavaPlugin
 	
 	public boolean isDisabledWorld(World world)
 	{
-		return disabledWorlds.contains(world.getName());
+		for (String s : getConfig().getStringList("disabledWorlds"))
+		{
+			World w = getServer().getWorld(s);
+			if (w.getUID() == world.getUID())
+				return true;
+		}
+		
+		return false;
 	}
 }

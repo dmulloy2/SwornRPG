@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.IEssentials;
@@ -50,12 +51,36 @@ import com.earth2me.essentials.User;
 
 public class PlayerListener implements Listener
 {
+	private boolean salvagingEnabled;
+	private boolean deathCoordinateMessages;
+	private boolean checkForUpdates;
+	private boolean fishingEnabled;
+	private boolean fishDropsEnabled;
+	private boolean speedBoostEnabled;
+	
+	private int fishingGain;
+	private int speedBoostOdds;
+	private int speedBoostDuration;
+	private int speedBoostStrength;
+	
 	private HashMap<String, ItemStack> bookMap;
 
 	private final SwornRPG plugin;
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
+		
+		this.salvagingEnabled = plugin.getConfig().getBoolean("salvaging");
+		this.deathCoordinateMessages = plugin.getConfig().getBoolean("deathCoordinateMessages");
+		this.checkForUpdates = plugin.getConfig().getBoolean("checkForUpdates");
+		this.fishingEnabled = plugin.getConfig().getBoolean("levelingMethods.fishing.enabled");
+		this.fishDropsEnabled = plugin.getConfig().getBoolean("fishDropsEnabled");
+		this.speedBoostEnabled = plugin.getConfig().getBoolean("speedBoost.enabled");
+		
+		this.fishingGain = plugin.getConfig().getInt("levelingMethods.fishing.xpgain");
+		this.speedBoostOdds = plugin.getConfig().getInt("speedBoost.odds");
+		this.speedBoostDuration = plugin.getConfig().getInt("speedBoost.duration");
+		this.speedBoostStrength = plugin.getConfig().getInt("speedBoost.strength");
 
 		this.bookMap = new HashMap<String, ItemStack>();
 	}
@@ -63,18 +88,21 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if (! plugin.isSalvaging() || event.isCancelled())
+		if (! salvagingEnabled || event.isCancelled())
 			return;
 
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
-
-		Block block = event.getClickedBlock();
-		if (block == null)
+		
+		if (! event.hasBlock())
 			return;
 
-		Player pl = event.getPlayer();
-		if (pl.getGameMode() != GameMode.SURVIVAL)
+		Block block = event.getClickedBlock();
+		if (plugin.isDisabledWorld(block))
+			return;
+
+		Player player = event.getPlayer();
+		if (player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
 		String blockType = "";
@@ -85,13 +113,13 @@ public class PlayerListener implements Listener
 		if (block.getType() == Material.DIAMOND_BLOCK)
 			blockType = "Diamond";
 
-		if (blockType != "")
+		if (! blockType.isEmpty())
 		{
 			if ((block.getRelative(-1, 0, 0).getType() == Material.FURNACE) || (block.getRelative(1, 0, 0).getType() == Material.FURNACE)
 					|| (block.getRelative(0, 0, -1).getType() == Material.FURNACE)
 					|| (block.getRelative(0, 0, 1).getType() == Material.FURNACE))
 			{
-				ItemStack item = pl.getItemInHand();
+				ItemStack item = player.getItemInHand();
 
 				Material type = item.getType();
 				
@@ -114,14 +142,14 @@ public class PlayerListener implements Listener
 						plural = "s";
 
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					pl.sendMessage(plugin.getPrefix()
-							+ FormatUtil.format(plugin.getMessage("salvage_success"), article, itemName, amt, blockType.toLowerCase(),
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format(plugin.getMessage("salvage_success"), article, itemName, amt, blockType.toLowerCase(),
 									materialExtension, plural));
 
-					plugin.outConsole(plugin.getMessage("log_salvage"), pl.getName(), itemName, amt, blockType.toLowerCase(),
+					plugin.outConsole(plugin.getMessage("log_salvage"), player.getName(), itemName, amt, blockType.toLowerCase(),
 							materialExtension, plural);
 
-					PlayerInventory inv = pl.getInventory();
+					PlayerInventory inv = player.getInventory();
 					inv.removeItem(item);
 
 					Material give = null;
@@ -139,7 +167,7 @@ public class PlayerListener implements Listener
 				else
 				{
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					pl.sendMessage(plugin.getPrefix() + 
+					player.sendMessage(plugin.getPrefix() + 
 							FormatUtil.format(plugin.getMessage("not_salvagable"), itemName, blockType.toLowerCase()));
 				}
 			}
@@ -149,7 +177,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
-		if (! plugin.isDeathbook())
+		if (! deathCoordinateMessages)
 			return;
 
 		Player player = event.getEntity();
@@ -164,10 +192,10 @@ public class PlayerListener implements Listener
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (! data.isDeathbookdisabled())
 		{
-			IEssentials ess = Util.getEssentials();
+			IEssentials ess = plugin.getEssentials();
 			if (ess != null)
 			{
-				User user = Util.getEssentialsUser(player);
+				User user = ess.getUser(player);
 
 				Entity killer = event.getEntity().getKiller();
 				if (killer instanceof Player)
@@ -245,7 +273,7 @@ public class PlayerListener implements Listener
 			data.setLevel(0);
 		}
 
-		if (plugin.isUpdate() && plugin.updateNeeded())
+		if (checkForUpdates && plugin.updateNeeded())
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.UPDATE_NOTIFY))
 			{
@@ -358,7 +386,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerFish(PlayerFishEvent event)
 	{
-		if (! plugin.isFishing() || event.isCancelled())
+		if (! fishingEnabled || event.isCancelled())
 			return;
 
 		Player player = event.getPlayer();
@@ -368,12 +396,15 @@ public class PlayerListener implements Listener
 		Entity caught = event.getCaught();
 		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
 			return;
-
-		String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("fishing_gain"), plugin.getFishinggain());
-		plugin.getExperienceHandler().onXPGain(event.getPlayer(), plugin.getFishinggain(), message);
-
-		GameMode gm = player.getGameMode();
-		if (gm != GameMode.SURVIVAL)
+		
+		String message = plugin.getPrefix() + 
+				FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
+		plugin.getExperienceHandler().onXPGain(event.getPlayer(), fishingGain, message);
+		
+		if (! fishDropsEnabled)
+			return;
+		
+		if (player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -418,7 +449,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerToggleSprint(PlayerToggleSprintEvent event)
 	{
-		if (! plugin.isSpeedboost() || event.isCancelled())
+		if (! speedBoostEnabled || event.isCancelled())
 			return;
 
 		Player player = event.getPlayer();
@@ -431,20 +462,22 @@ public class PlayerListener implements Listener
 		if (player.isSneaking())
 			return;
 
-		GameMode gm = player.getGameMode();
-		if (gm == GameMode.CREATIVE)
+		if (player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
 		if (player.isSprinting())
 		{
-			if (Util.random(plugin.getSpeedboostodds()) == 0)
+			if (Util.random(speedBoostOdds) == 0)
 			{
-				player.addPotionEffect(PotionEffectType.SPEED.createEffect(plugin.getSpeedboostduration(), 1));
-				player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("speed_boost")));
+				player.addPotionEffect(
+						new PotionEffect(PotionEffectType.SPEED, speedBoostDuration, speedBoostStrength));
+				player.sendMessage(plugin.getPrefix() +
+						FormatUtil.format(plugin.getMessage("speed_boost")));
 			}
 		}
 	}
 
+	// TODO: Make sure this actually works
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
 	{

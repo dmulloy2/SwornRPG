@@ -17,6 +17,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
@@ -42,56 +43,83 @@ import org.bukkit.material.NetherWarts;
 
 public class ExperienceListener implements Listener
 {
+	private boolean playerKillsEnabled;
+	private boolean mobKillsEnabled;
+	private boolean mcXpEnabled;
+	private boolean herbalismEnabled;
+	private boolean tamingEnabled;
+	private boolean enchantingEnabled;
+
+	private int killerXpGain;
+	private int killedXpLoss;
+	private int mobKillsGain;
+	private int mcXpGain;
+	private int herbalismGain;
+	private int tamingGain;
+	private int enchantingGain;
+	
 	private final SwornRPG plugin;
 	public ExperienceListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
+		
+		this.playerKillsEnabled = plugin.getConfig().getBoolean("levelingMethods.playerKills.enabled");
+		this.mobKillsEnabled = plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled");
+		this.mcXpEnabled = plugin.getConfig().getBoolean("levelingMethods.mcXpGain.enabled");
+		this.herbalismEnabled = plugin.getConfig().getBoolean("levelingMethods.herbalism.enabled");
+		this.tamingEnabled = plugin.getConfig().getBoolean("levelingMethods.taming.enabled");
+		this.enchantingEnabled = plugin.getConfig().getBoolean("levelingMethods.enchanting.enabled");
+
+		this.killerXpGain = plugin.getConfig().getInt("levelingMethods.playerKills.xpgain");
+		this.killedXpLoss = plugin.getConfig().getInt("levelingMethods.playerKills.xploss");
+		this.mobKillsGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain");
+		this.mcXpGain = plugin.getConfig().getInt("levelingMethods.mcXpGain.xpgain");
+		this.herbalismGain = plugin.getConfig().getInt("levelingMethods.herbalism.xpgain");
+		this.tamingGain = plugin.getConfig().getInt("levelingMethods.taming.xpgain");
+		this.enchantingGain = plugin.getConfig().getInt("levelingMethods.enchanting.xpgain");
 	}
 
 	/** Rewards XP in PvP situations **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{
-		/** Checks for player kills to be enabled in the config **/
-		if (! plugin.isPlayerkills())
+		/** Configuration Check **/
+		if (! playerKillsEnabled)
 			return;
 
-		Player killed = event.getEntity().getPlayer();
-		Player killer = event.getEntity().getKiller();
-
-		/** Checks to see if it was PvP **/
-		if (killer instanceof Player)
+		Player killed = event.getEntity();
+		Player killer = killed.getKiller();
+		if (killer != null)
 		{
 			/** Warzone Checks **/
-			if (plugin.checkFactions(killer, false))
+			if (plugin.checkFactions(killer, false) || plugin.checkFactions(killed, false))
 				return;
-
-			if (plugin.checkFactions(killed, false))
-				return;
-
-			String killerp = killer.getName();
-			String killedp = killed.getName();
 
 			/** Suicide Check **/
-			if (killedp == killerp)
+			if (killed.getName().equals(killer.getName()))
 				return;
 
-			String message = "";
+			/** Recent Death Check **/
+			PlayerData data = plugin.getPlayerDataCache().getData(killed);
+			if (data.getTimeOfLastDeath() - System.currentTimeMillis() <= 60L)
+				return;
+
+			data.setTimeOfLastDeath(System.currentTimeMillis());
 
 			/** Killer Xp Gain **/
-			int killxp = plugin.getKillergain();
-			message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killxp, killedp));
-			plugin.getExperienceHandler().onXPGain(killer, killxp, message);
+			String message = plugin.getPrefix() + 
+					FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killerXpGain, killed.getName());
+			plugin.getExperienceHandler().onXPGain(killer, killerXpGain, message);
 
 			/** Killed Xp Loss **/
-			int killedxp = -(plugin.getKilledloss());
-			int msgxp = Math.abs(killedxp);
-			message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killerp));
-			plugin.getExperienceHandler().onXPGain(killed, killedxp, message);
+			int msgxp = Math.abs(-killedXpLoss);
+			message = plugin.getPrefix() + 
+					FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killer.getName());
+			plugin.getExperienceHandler().onXPGain(killed, -killedXpLoss, message);
 
 			/** Debug Messages **/
-			plugin.debug(plugin.getMessage("log_pvp_killed"), killedp, msgxp, killerp);
-			plugin.debug(plugin.getMessage("log_pvp_killer"), killerp, killxp, killedp);
+			plugin.debug(plugin.getMessage("log_pvp_killer"), killer.getName(), killerXpGain, killed.getName());
+			plugin.debug(plugin.getMessage("log_pvp_killed"), killed.getName(), msgxp, killer.getName());
 		}
 	}
 
@@ -99,23 +127,18 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		/** Checks for mob kills to be enabled in the config **/
-		if (! plugin.isMobkills())
+		/** Configuration Check **/
+		if (! mobKillsEnabled)
 			return;
 
-		Entity kill = event.getEntity().getKiller();
-		Entity killed = event.getEntity();
-
-		/** Checks to make sure it wasn't pvp **/
-		if (killed instanceof Player)
+		/** This is handled above **/
+		LivingEntity entity = event.getEntity();
+		if (entity instanceof Player)
 			return;
 
-		/** Checks to make sure the killer is a player **/
-		if (kill instanceof Player)
+		Player killer = entity.getKiller();
+		if (killer != null)
 		{
-			Player killer = event.getEntity().getKiller();
-			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
-
 			/** Warzone and Safezone check **/
 			if (plugin.checkFactions(killer, true))
 				return;
@@ -124,31 +147,30 @@ public class ExperienceListener implements Listener
 			if (plugin.checkCamper(killer))
 				return;
 
+			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
+
 			/** XP gain calculation **/
-			int killxp;
 			List<String> tier3 = Arrays.asList(new String[] { "wither", "ender dragon" });
 			List<String> tier2 = Arrays.asList(new String[] { "creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider",
 					"ghast", "magma cube", "witch", "slime" });
-
+			
+			int killxp = mobKillsGain;
 			if (tier3.contains(mobname.toLowerCase()))
 			{
-				killxp = plugin.getMobkillsxp() * 3;
+				killxp *= 3;
 			}
 			else if (tier2.contains(mobname.toLowerCase()))
 			{
-				killxp = plugin.getMobkillsxp() * 2;
-			}
-			else
-			{
-				killxp = plugin.getMobkillsxp();
+				killxp *= 2;
 			}
 
 			/** Message **/
 			String article = FormatUtil.getArticle(mobname);
-			String message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname));
+			String message = plugin.getPrefix() 
+					+ FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname);
 
-			/** Give the player some xp **/
 			plugin.getExperienceHandler().onXPGain(killer, killxp, message);
+
 			plugin.debug(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
 		}
 	}
@@ -157,8 +179,8 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 	{
-		/** Checks to make sure xp level xp gain is enabled in the config **/
-		if (! plugin.isXplevel())
+		/** Configuration Check **/
+		if (! mcXpEnabled)
 			return;
 
 		/** Warzone Check **/
@@ -176,19 +198,18 @@ public class ExperienceListener implements Listener
 		if (newlevel - oldlevel != 1)
 			return;
 
-		int xpgained = plugin.getXplevelgain();
-		String message = (plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mc_xp_gain"), xpgained));
+		String message = plugin.getPrefix() + 
+				FormatUtil.format(plugin.getMessage("mc_xp_gain"), mcXpGain);
+		plugin.getExperienceHandler().onXPGain(player, mcXpGain, message);
 
-		/** Give the player some XP **/
-		plugin.getExperienceHandler().onXPGain(player, xpgained, message);
-		plugin.debug(plugin.getMessage("log_mcxpgain"), player.getName(), xpgained);
+		plugin.debug(plugin.getMessage("log_mcxpgain"), player.getName(), mcXpGain);
 	}
 
 	/** Herbalism : Breaking **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onHerbalismBreak(BlockBreakEvent event)
 	{
-		if (! plugin.isHerbalism() || event.isCancelled())
+		if (! herbalismEnabled || event.isCancelled())
 			return;
 
 		Player player = event.getPlayer();
@@ -206,7 +227,7 @@ public class ExperienceListener implements Listener
 		{
 			if (concurrentHerbalism >= 10)
 			{
-				int xp = plugin.getHerbalismgain() * 10;
+				int xp = herbalismGain * 10;
 				String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("herbalism_gain"), xp);
 				plugin.getExperienceHandler().onXPGain(player, xp, message);
 				data.setConcurrentHerbalism(0);
@@ -222,7 +243,7 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHerbalismPlace(BlockPlaceEvent event)
 	{
-		if (! plugin.isHerbalism() || event.isCancelled())
+		if (! herbalismEnabled || event.isCancelled())
 			return;
 
 		Player player = event.getPlayer();
@@ -315,7 +336,7 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityTame(EntityTameEvent event)
 	{
-		if (! plugin.isTaming() || event.isCancelled())
+		if (! tamingEnabled || event.isCancelled())
 			return;
 
 		if (event.getOwner() instanceof Player)
@@ -327,9 +348,9 @@ public class ExperienceListener implements Listener
 				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
 				String article = FormatUtil.getArticle(mobname);
 
-				String message = FormatUtil
-						.format(plugin.getPrefix() + plugin.getMessage("taming_gain"), plugin.getTaminggain(), article, mobname);
-				plugin.getExperienceHandler().onXPGain(player, plugin.getTaminggain(), message);
+				String message = plugin.getPrefix() + 
+						FormatUtil.format(plugin.getMessage("taming_gain"), tamingGain, article, mobname);
+				plugin.getExperienceHandler().onXPGain(player, tamingGain, message);
 
 				/** Wolf/Ocelot's Pal **/
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -357,7 +378,7 @@ public class ExperienceListener implements Listener
 				int rand1 = Util.random(150 / level);
 				if (rand1 == 0)
 				{
-					boolean msg = false;
+					boolean sendMessage = false;
 					List<Entity> entities = player.getNearbyEntities(10, 10, 10);
 					if (entities.size() > 0)
 					{
@@ -365,15 +386,17 @@ public class ExperienceListener implements Listener
 						{
 							if (entity != null && entity instanceof Tameable)
 							{
-								((Tameable) entity).setOwner(player);
-								msg = true;
+								if (! ((Tameable) entity).isTamed())
+								{
+									((Tameable) entity).setOwner(player);
+									sendMessage = true;
+								}
 							}
 						}
 					}
-					if (msg == true)
-					{
-						player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("tame_bomb")));
-					}
+
+					if (sendMessage) player.sendMessage(plugin.getPrefix() +
+							FormatUtil.format(plugin.getMessage("tame_bomb")));
 				}
 			}
 		}
@@ -383,7 +406,7 @@ public class ExperienceListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerEnchant(EnchantItemEvent event)
 	{
-		if (! plugin.isEnchanting() || event.isCancelled())
+		if (! enchantingEnabled || event.isCancelled())
 			return;
 
 		int cost = event.getExpLevelCost();
@@ -401,9 +424,10 @@ public class ExperienceListener implements Listener
 		if (level > 30)
 			level = 30;
 
-		int xp = (cost / 2) + plugin.getEnchantbase();
-		String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("enchant_gain"), xp);
+		int xp = (cost / 2) + enchantingGain;
 
+		String message = plugin.getPrefix() +
+				FormatUtil.format(plugin.getMessage("enchant_gain"), xp);
 		plugin.getExperienceHandler().onXPGain(player, xp, message);
 	}
 }

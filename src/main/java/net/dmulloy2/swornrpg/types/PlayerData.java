@@ -30,6 +30,8 @@ public class PlayerData implements ConfigurationSerializable
 	private int xpneeded;
 	private int level;
 	private int totalxp;
+	
+	private transient long timeOfLastDeath;
 
 	private transient int concurrentHerbalism;
 	

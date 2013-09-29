@@ -1,5 +1,8 @@
 package net.dmulloy2.swornrpg.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
@@ -26,17 +29,36 @@ import org.bukkit.material.MaterialData;
 
 public class BlockListener implements Listener
 {
+	private boolean blockDropsEnabled;
+	private boolean ironDoorProtection;
+	private boolean redemptionEnabled;
+	
+	private List<Material> redemptionBlacklist;
+	
 	private final SwornRPG plugin;
-	public BlockListener(final SwornRPG plugin)
+	public BlockListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
+		
+		this.blockDropsEnabled = plugin.getConfig().getBoolean("blockDropsEnabled");
+		this.ironDoorProtection = plugin.getConfig().getBoolean("ironDoorProtection");
+		this.redemptionEnabled = plugin.getConfig().getBoolean("redemptionEnabled");
+		
+		this.redemptionBlacklist = new ArrayList<Material>();
+		
+		for (String s : plugin.getConfig().getStringList("redemptionBlacklist"))
+		{
+			Material mat = MaterialUtil.getMaterial(s);
+			if (mat != null)
+				redemptionBlacklist.add(mat);
+		}
 	}
 
 	/** Block Drops **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreakMonitor(BlockBreakEvent event)
 	{
-		if (! plugin.isRandomdrops() || event.isCancelled())
+		if (! blockDropsEnabled || event.isCancelled())
 			return;
 
 		Player player = event.getPlayer();
@@ -47,7 +69,6 @@ public class BlockListener implements Listener
 			return;
 
 		Block block = event.getBlock();
-
 		Material type = block.getType();
 
 		if (plugin.getBlockDropsMap().containsKey(type))
@@ -77,26 +98,32 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakHighest(BlockBreakEvent event)
 	{
-		if (! plugin.isIrondoorprotect() || event.isCancelled())
+		if (! ironDoorProtection || event.isCancelled())
 			return;
 
 		Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		if (event.getBlock().getType() == Material.IRON_DOOR_BLOCK)
+		Block block = event.getBlock();
+		if (plugin.isDisabledWorld(block))
+			return;
+		
+		if (block.getType() == Material.IRON_DOOR_BLOCK)
 		{
 			event.setCancelled(true);
 
-			player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("iron_door_protect")));
-			plugin.debug(plugin.getMessage("log_irondoor_protect"), player.getName());
+			player.sendMessage(plugin.getPrefix() + 
+					FormatUtil.format(plugin.getMessage("iron_door_protect")));
+
+			plugin.debug(plugin.getMessage("log_irondoor_protect"), player.getName(), Util.locationToString(block.getLocation()));
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (event.isCancelled() || !plugin.isBlockredemption())
+		if (event.isCancelled() || ! redemptionEnabled)
 			return;
 
 		Block block = event.getBlock();
@@ -104,15 +131,14 @@ public class BlockListener implements Listener
 			return;
 
 		Player player = event.getPlayer();
-		GameMode gm = player.getGameMode();
-		if (gm == GameMode.CREATIVE)
+		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
 		BlockState blockState = block.getState();
 		MaterialData blockData = blockState.getData();
 
 		Material material = blockState.getType();
-		if (isBlacklistedMaterial(material))
+		if (redemptionBlacklist.contains(material))
 			return;
 
 		ItemStack itemStack = new ItemStack(material);
@@ -139,30 +165,22 @@ public class BlockListener implements Listener
 		}
 	}
 
-	public boolean isBlacklistedMaterial(Material mat)
-	{
-		for (String string : plugin.getRedeemBlacklist())
-		{
-			Material material = MaterialUtil.getMaterial(string);
-
-			if (material != null)
-			{
-				if (material == mat)
-					return true;
-			}
-		}
-
-		String[] defaultBlackList = new String[] { "FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM" };
-		for (String string : defaultBlackList)
-		{
-			if (MaterialUtil.isValidMaterial(string))
-			{
-				Material material = Material.matchMaterial(string);
-				if (material.equals(mat))
-					return true;
-			}
-		}
-
-		return false;
-	}
+//	public boolean isBlacklistedMaterial(Material mat)
+//	{
+//		if (redemptionBlacklist.contains(mat))
+//			return true;
+//
+//		String[] defaultBlackList = new String[] { "FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM" };
+//		for (String string : defaultBlackList)
+//		{
+//			if (MaterialUtil.isValidMaterial(string))
+//			{
+//				Material material = Material.matchMaterial(string);
+//				if (material.equals(mat))
+//					return true;
+//			}
+//		}
+//
+//		return false;
+//	}
 }

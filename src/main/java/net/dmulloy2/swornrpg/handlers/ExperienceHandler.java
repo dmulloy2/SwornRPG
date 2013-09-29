@@ -1,17 +1,18 @@
 package net.dmulloy2.swornrpg.handlers;
 
+import java.util.List;
+
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
 import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
-import net.dmulloy2.swornrpg.util.MaterialUtil;
+import net.dmulloy2.swornrpg.util.ItemUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
 
 /**
  * Handles the gaining of xp
@@ -77,7 +78,7 @@ public class ExperienceHandler
 	 */
 	public void onLevelup(Player player, int oldLevel, int newLevel)
 	{
-		/**Disabled World Check**/
+		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 			return;
 		
@@ -89,26 +90,26 @@ public class ExperienceHandler
 		
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		
-		/**Prior Skill Data**/
-		int oldfrenzy = (plugin.getFrenzyd() + (data.getLevel()*plugin.getFrenzym()));
-		int oldspick = (plugin.getSpbaseduration() + (data.getLevel()*plugin.getSuperpickm()));
-		int oldammo = (plugin.getAmmobaseduration() + (data.getLevel()*plugin.getAmmomultiplier()));
+		/** Prior Skill Data **/
+		int oldFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data);
+		int oldSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data);
+		int oldUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoCooldown(data);
 		
-		/**Prepare data for the next level**/
+		/** Prepare data for the next level **/
 		if (data.getLevel() < 250)
 		{
-			data.setLevel(data.getLevel() + 1); // set the level cap at 250, seems fair enough
+			data.setLevel(data.getLevel() + 1);
 			data.setXpneeded(data.getXpneeded() + (data.getXpneeded()/4));
 		}
 		
 		data.setPlayerxp(0);
 		
-		/**New Skill Data**/
-		int newfrenzy = (plugin.getFrenzyd() + (data.getLevel()*plugin.getFrenzym()));
-		int newspick = (plugin.getSpbaseduration() + (data.getLevel()*plugin.getSuperpickm()));
-		int newammo = (plugin.getAmmobaseduration() + (data.getLevel()*plugin.getAmmomultiplier()));
+		/** New Skill Data **/
+		int newFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data);
+		int newSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data);
+		int newUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoCooldown(data);
 		
-		/**Send messages**/
+		/** Send messages **/
 		int level = data.getLevel();
 		if (level == 250)
 		{
@@ -121,52 +122,54 @@ public class ExperienceHandler
 
 		plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
 		
-		/**Award money if enabled**/
-		if (plugin.isMoney())
+		/** Rewards **/
+		if (plugin.getConfig().getBoolean("levelingRewards.enabled"))
 		{
-			/**Vault Check**/
-			PluginManager pm = plugin.getServer().getPluginManager();
-			if (pm.isPluginEnabled("Vault"))
+			Economy economy = plugin.getEconomy();
+			if (economy != null)
 			{
-				Economy economy = plugin.getEconomy();
-				if (economy != null)
-				{
-					int money = level*plugin.getBasemoney();
-					economy.depositPlayer(player.getName(), money);
+				int money = level * plugin.getConfig().getInt("levelingRewards.money");
+
+				economy.depositPlayer(player.getName(), money);
 					
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
+			}
+			
+			List<String> configItems = plugin.getConfig().getStringList("levelingRewards.items");
+			if (! configItems.isEmpty())
+			{
+				for (String configItem : configItems)
+				{
+					ItemStack item = ItemUtil.readItem(configItem);
+					if (item != null)
+					{
+						item.setAmount(item.getAmount() * level);
+
+						InventoryUtil.addItems(player.getInventory(), item);
+			
+						String itemName = FormatUtil.getFriendlyName(item.getType());
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format(plugin.getMessage("levelup_items"), item.getAmount(), itemName));
+					}
 				}
 			}
 		}
-		
-		/**Award items if enabled**/
-		if (plugin.isItems())
-		{
-			int rewardamt = level*plugin.getItemperlevel();
-			
-			ItemStack item = new ItemStack(MaterialUtil.getMaterial(plugin.getItemreward()), rewardamt);
-
-			InventoryUtil.addItems(player.getInventory(), item);
-			
-			String itemName = FormatUtil.getFriendlyName(item.getType());
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_items"), rewardamt, itemName));
-		}
 	
 		/**Tell Players if Skill(s) went up**/
-		double frenzy = newfrenzy - oldfrenzy;
-		double spick = newspick - oldspick;
-		double ammo = newammo - oldammo;
+		double frenzy = newFrenzy - oldFrenzy;
+		double spick = newSuperPickaxe - oldSuperPickaxe;
+		double ammo = newUnlimitedAmmo - oldUnlimitedAmmo;
 		
 		player.sendMessage(plugin.getPrefix() +
 				FormatUtil.format(plugin.getMessage("levelup_skills")));
 		if (frenzy > 0)
 			player.sendMessage(plugin.getPrefix() +
-					FormatUtil.format(plugin.getMessage("levelup_frenzy"), String.valueOf(frenzy)));
+					FormatUtil.format(plugin.getMessage("levelup_frenzy"), frenzy));
 		if (spick > 0)
 			player.sendMessage(plugin.getPrefix() + 
-					FormatUtil.format(plugin.getMessage("levelup_spick"), String.valueOf(spick)));
+					FormatUtil.format(plugin.getMessage("levelup_spick"), spick));
 		if (ammo > 0)
 			player.sendMessage(plugin.getPrefix() + 
-					FormatUtil.format(plugin.getMessage("levelup_ammo"), String.valueOf(ammo)));
+					FormatUtil.format(plugin.getMessage("levelup_ammo"), ammo));
 	}
 }

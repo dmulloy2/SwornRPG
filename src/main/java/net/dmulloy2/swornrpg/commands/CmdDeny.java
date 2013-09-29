@@ -24,7 +24,7 @@ public class CmdDeny extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		if (! plugin.isMarriage())
+		if (! plugin.getConfig().getBoolean("marriage"))
 		{
 			err(plugin.getMessage("command_disabled"));
 			return;
