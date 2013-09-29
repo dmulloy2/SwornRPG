@@ -126,6 +126,9 @@ public class SwornRPG extends JavaPlugin
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter TagHandler tagHandler;
+	
+	/** Disabled Worlds **/
+	private @Getter List<World> disabledWorlds = new ArrayList<World>();
 
 	/** Maps **/
 	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
@@ -203,6 +206,9 @@ public class SwornRPG extends JavaPlugin
         }
 
         reloadConfig();
+        
+        /** Disabled Worlds **/
+        loadDisabledWorlds();
 		
 		/** Update Block Tables **/
 		updateBlockDrops();
@@ -713,7 +719,17 @@ public class SwornRPG extends JavaPlugin
 		return false;
 	}
 	
-	/** DisabledWorld Checks **/
+	public void loadDisabledWorlds()
+	{
+		for (String string : getConfig().getStringList("disabledWorlds"))
+		{
+			World world = getServer().getWorld(string);
+			if (world != null)
+				disabledWorlds.add(world);
+		}
+	}
+	
+	/** Disabled World Checks **/
 	public boolean isDisabledWorld(Player player)
 	{
 		return isDisabledWorld(player.getWorld());
@@ -731,13 +747,6 @@ public class SwornRPG extends JavaPlugin
 	
 	public boolean isDisabledWorld(World world)
 	{
-		for (String s : getConfig().getStringList("disabledWorlds"))
-		{
-			World w = getServer().getWorld(s);
-			if (w.getUID() == world.getUID())
-				return true;
-		}
-		
-		return false;
+		return disabledWorlds.contains(world);
 	}
 }
