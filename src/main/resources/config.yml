@@ -57,7 +57,7 @@ salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 
 autoSave:
   enabled: false
   interval: 120
-  
+
 #############################################
 #+-----------------------------------------+#
 #|                Abilities                |#
@@ -74,7 +74,7 @@ frenzy:
   baseDuration: 5
   levelMultiplier: 1
   cooldownMultiplier: 10
-  
+
 # SuperPickaxe
 superPickaxe:
   enabled: true
@@ -148,20 +148,20 @@ levelingRewards:
   enabled: true
   money: 250
   items:
-    - "264:0, 1"
+    - "diamond, 1"
  
 #############################################
 #+-----------------------------------------+#
 #|              Health Tags                |#
 #+-----------------------------------------+#
 #############################################
-   
+
 # Player and Mob health displays
 # Inputs: enabled - boolean
 
 mobHealthTags:
   enabled: true
-  
+
 playerHealthTags:
   enabled: false
 
