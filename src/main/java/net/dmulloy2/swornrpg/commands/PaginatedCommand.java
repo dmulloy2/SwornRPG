@@ -34,7 +34,7 @@ public abstract class PaginatedCommand extends SwornRPGCommand
 			}
 			catch (NumberFormatException ex)
 			{
-				err(plugin.getMessage("error-invalid-page"), args[0]);
+				err(plugin.getMessage("error-invalid-number"), args[0]);
 				return;
 			}
 			catch (IndexOutOfBoundsException ex) 

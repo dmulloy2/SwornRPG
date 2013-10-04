@@ -15,8 +15,7 @@ import net.dmulloy2.swornrpg.io.FileResourceLoader;
 public class ResourceHandler
 {
 	private ResourceBundle messages;
-	
-	public SwornRPG plugin;
+
 	public ResourceHandler(SwornRPG plugin, ClassLoader classLoader)
 	{
 		try 
@@ -29,7 +28,7 @@ public class ResourceHandler
 		}
 	}
 	
-	public ResourceBundle getMessages() 
+	public final ResourceBundle getMessages() 
 	{
 		return messages;
 	}

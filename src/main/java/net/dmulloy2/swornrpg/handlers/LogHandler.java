@@ -26,7 +26,7 @@ public class LogHandler
 	{
 		plugin.getLogger().info(FormatUtil.format(msg, objects));
 	}
-	
+
 	public final void debug(String msg, Object... objects)
 	{
 		if (plugin.getConfig().getBoolean("debug", false))

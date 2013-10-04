@@ -152,17 +152,17 @@ levelingRewards:
  
 #############################################
 #+-----------------------------------------+#
-#|              Health Tags                |#
+#|              Health Bars                |#
 #+-----------------------------------------+#
 #############################################
 
-# Player and Mob health displays
+# Player and Mob health bars
 # Inputs: enabled - boolean
 
-mobHealthTags:
+mobHealthBars:
   enabled: true
 
-playerHealthTags:
+playerHealthBars:
   enabled: false
 
 #############################################

@@ -149,7 +149,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 				String player = entrySet.getKey();
 				PlayerData data1 = entrySet.getValue();
 				int xp = data1.getTotalxp();
-				xpmap.put(player, xp);
+				if (xp > 0)
+					xpmap.put(player, xp);
 			}
 
 			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(xpmap.entrySet());

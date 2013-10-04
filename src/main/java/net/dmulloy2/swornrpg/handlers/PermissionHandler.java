@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class PermissionHandler 
+public class PermissionHandler
 {
 	public PermissionHandler()
 	{
 	}
-	
+
 	public boolean hasPermission(CommandSender sender, Permission permission) 
 	{
 		return (permission == null) ? true : hasPermission(sender, getPermissionString(permission));
@@ -27,10 +27,10 @@ public class PermissionHandler
 			Player p = (Player) sender;
 			return (p.hasPermission(permission) || p.isOp());
 		}
-		
+
 		return true;
 	}
-	
+
 	public String getPermissionString(Permission permission) 
 	{
 		return "srpg." + permission.getNode().toLowerCase();

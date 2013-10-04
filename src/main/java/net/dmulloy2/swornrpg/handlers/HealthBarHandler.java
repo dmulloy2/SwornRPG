@@ -46,8 +46,8 @@ public class HealthBarHandler
 	
 	public boolean checkEnabled()
 	{
-		boolean isEnabled = plugin.getConfig().getBoolean("playerhealth");
-		
+		boolean isEnabled = plugin.getConfig().getBoolean("playerHealthBars");
+
 		if (! isEnabled)
 		{
 			Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
@@ -170,49 +170,47 @@ public class HealthBarHandler
 	{
 		try
 		{
-			if (plugin.getConfig().getBoolean("mobHealthTags"))
+			if (plugin.getConfig().getBoolean("mobHealthBars"))
 			{
-				LivingEntity lentity = (LivingEntity)entity;
-				
 				List<EntityType> blockedTypes = Arrays.asList(new EntityType[] { EntityType.VILLAGER, 
 						EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE });
-				
+
 				if (blockedTypes.contains(entity.getType()))
 				{
-					if (! lentity.getCustomName().isEmpty())
+					if (! entity.getCustomName().isEmpty())
 					{
-						if (lentity.getCustomName().contains("\u2764"))
+						if (entity.getCustomName().contains("\u2764"))
 						{
-							lentity.setCustomNameVisible(false);
-							lentity.setCustomName("");
+							entity.setCustomNameVisible(false);
+							entity.setCustomName("");
 						}
 						else
 						{
-							lentity.setCustomNameVisible(true);
+							entity.setCustomNameVisible(true);
 						}
 					}
-					
+
 					return;
 				}
-				
-				int health = (int) Math.round(lentity.getHealth() / 2);
-				int maxhealth = (int) Math.round(lentity.getMaxHealth() / 2);
+
+				int health = (int) Math.round(entity.getHealth() / 2);
+				int maxhealth = (int) Math.round(entity.getMaxHealth() / 2);
 				int hearts = Math.round((health * 10) / maxhealth);
-				
+
 				if (health == maxhealth)
 				{
-					lentity.setCustomNameVisible(false);
+					entity.setCustomNameVisible(false);
 					return;
 				}
-				
+
 				StringBuilder tag = new StringBuilder();
-				for (int i=0; i<hearts; i++)
+				for (int i = 0; i < hearts; i++)
 				{
 					tag.append("\u2764");
 				}
-	
+
 				String displayName = tag.toString();
-				
+
 				// Determine Colour
 				ChatColor color = null;
 				if (hearts >= 8) //health 8, 9, or full
@@ -223,9 +221,9 @@ public class HealthBarHandler
 					color = ChatColor.RED;
 				else //health null? (default to yellow, white hearts are ugly)
 					color = ChatColor.YELLOW;
-				    
-				lentity.setCustomNameVisible(true);
-				lentity.setCustomName(color + displayName);
+
+				entity.setCustomNameVisible(true);
+				entity.setCustomName(color + displayName);
 			}
 		}
 		catch (Exception e)

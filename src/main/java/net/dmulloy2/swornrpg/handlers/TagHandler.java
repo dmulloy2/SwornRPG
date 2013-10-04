@@ -65,7 +65,7 @@ public class TagHandler
 
     public void convert()
     {
-    	File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
+    	final File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
     	if (tagsFile.exists())
     	{
     		new BukkitRunnable()
@@ -74,13 +74,11 @@ public class TagHandler
     			public void run()
     			{
     				long start = System.currentTimeMillis();
-    			
+
     				plugin.outConsole("Running Tag conversion task...");
 
-    				File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
-    				
     				YamlConfiguration fc = YamlConfiguration.loadConfiguration(tagsFile);
-    				
+
     				Map<String, Object> tags = fc.getConfigurationSection("tags").getValues(true);
 
     				for (Entry<String, Object> entry : tags.entrySet())
@@ -91,9 +89,9 @@ public class TagHandler
     						data.setTag(entry.getValue().toString());
     					}
     				}
-    				
+
     				tagsFile.delete();
-    				
+
     				plugin.outConsole("Tag conversion task complete! [{0}ms]", System.currentTimeMillis() - start);
     			}
     		}.runTaskLater(plugin, 20L);

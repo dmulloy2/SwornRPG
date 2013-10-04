@@ -81,7 +81,6 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -99,7 +98,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.Essentials;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
@@ -112,7 +111,7 @@ public class SwornRPG extends JavaPlugin
 {
 	/** Getters **/
 	private @Getter Economy economy;
-	private @Getter IEssentials essentials;
+	private @Getter Essentials essentials;
 	private @Getter PluginManager pluginManager;
 	private @Getter PlayerDataCache playerDataCache;
 	
@@ -140,7 +139,7 @@ public class SwornRPG extends JavaPlugin
 	private double newVersion, currentVersion;
     
 	/** Global Prefix Variable **/
-	private @Getter String prefix = ChatColor.GOLD + "[SwornRPG] ";
+	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] ");
 
 	@Override
 	public void onEnable()
@@ -206,9 +205,6 @@ public class SwornRPG extends JavaPlugin
         }
 
         reloadConfig();
-        
-        /** Disabled Worlds **/
-        loadDisabledWorlds();
 		
 		/** Update Block Tables **/
 		updateBlockDrops();
@@ -258,21 +254,17 @@ public class SwornRPG extends JavaPlugin
 		{
 			healthBarHandler.updateHealth(player);
 		}
-		
-		/** Load TagHandler **/
-		tagHandler.load();
 
-		/** Vault Integration **/
-		setupVault();
-		
-		/** Essentials Integration **/
-		hookIntoEssentials();
+		/** Integration **/
+		tagHandler.load();
+		setupVaultIntegration();
+		setupEssentialsIntegration();
 
 		/** Deploy AutoSave Task **/
 		if (getConfig().getBoolean("autoSave.enabled"))
 		{
 			int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
-			
+	
 			new BukkitRunnable()
 			{
 				@Override
@@ -293,14 +285,17 @@ public class SwornRPG extends JavaPlugin
 				{
 					for (Player player : getServer().getOnlinePlayers())
 					{
-						final PlayerData data = playerDataCache.getData(player.getName());
-						if (data.isFrenzyCooldownEnabled())
+						if (player != null && player.isOnline())
 						{
-							data.setFrenzyCooldownTime(data.getFrenzyCooldownTime() - 1);
-							if (data.getFrenzyCooldownTime() <= 0)
+							PlayerData data = playerDataCache.getData(player.getName());
+							if (data.isFrenzyCooldownEnabled())
 							{
-								data.setFrenzyCooldownEnabled(false);
-								player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Frenzy"));
+								data.setFrenzyCooldownTime(data.getFrenzyCooldownTime() - 1);
+								if (data.getFrenzyCooldownTime() <= 0)
+								{
+									data.setFrenzyCooldownEnabled(false);
+									player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), "Frenzy"));
+								}
 							}
 						}
 					}
@@ -318,14 +313,17 @@ public class SwornRPG extends JavaPlugin
 				{
 					for (Player player : getServer().getOnlinePlayers())
 					{
-						final PlayerData data = playerDataCache.getData(player.getName());
-						if (data.isSuperPickaxeCooldownEnabled())
+						if (player != null && player.isOnline())
 						{
-							data.setSuperPickaxeCooldownTime(data.getSuperPickaxeCooldownTime() - 1);
-							if (data.getSuperPickaxeCooldownTime() <= 0)
+							PlayerData data = playerDataCache.getData(player.getName());
+							if (data.isSuperPickaxeCooldownEnabled())
 							{
-								data.setSuperPickaxeCooldownEnabled(false);
-								player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Super Pickaxe"));
+								data.setSuperPickaxeCooldownTime(data.getSuperPickaxeCooldownTime() - 1);
+								if (data.getSuperPickaxeCooldownTime() <= 0)
+								{
+									data.setSuperPickaxeCooldownEnabled(false);
+									player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), "Super Pickaxe"));
+								}
 							}
 						}
 					}
@@ -346,14 +344,17 @@ public class SwornRPG extends JavaPlugin
 				{
 					for (Player player : getServer().getOnlinePlayers())
 					{
-						final PlayerData data = playerDataCache.getData(player.getName());
-						if (data.isUnlimitedAmmoCooldownEnabled())
+						if (player != null && player.isOnline())
 						{
-							data.setUnlimitedAmmoCooldownTime(data.getUnlimitedAmmoCooldownTime() - 1);
-							if (data.getUnlimitedAmmoCooldownTime() <= 0)
+							PlayerData data = playerDataCache.getData(player.getName());
+							if (data.isUnlimitedAmmoCooldownEnabled())
 							{
-								data.setUnlimitedAmmoCooldownEnabled(false);
-								player.sendMessage(FormatUtil.format(prefix + getMessage("ability_refreshed"), "Unlimited Ammo"));
+								data.setUnlimitedAmmoCooldownTime(data.getUnlimitedAmmoCooldownTime() - 1);
+								if (data.getUnlimitedAmmoCooldownTime() <= 0)
+								{
+									data.setUnlimitedAmmoCooldownEnabled(false);
+									player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), "Unlimited Ammo"));
+								}
 							}
 						}
 					}
@@ -387,6 +388,8 @@ public class SwornRPG extends JavaPlugin
 		}
 		
 		/** Online XP Gain **/
+		final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
+		
 		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 		{
 			new BukkitRunnable()
@@ -397,9 +400,9 @@ public class SwornRPG extends JavaPlugin
 					for (Player player : getServer().getOnlinePlayers())
 					{
 						PlayerData data = playerDataCache.getData(player);
-						data.setPlayerxp(data.getPlayerxp() + getConfig().getInt("levelingMethods.onlineTime.xpgain"));
+						data.setPlayerxp(data.getPlayerxp() + onlineXpGain);
 						
-						/**Levelup check**/
+						/** Levelup check **/
 						int xp = data.getPlayerxp();
 						int xpneeded = data.getXpneeded();
 						int newlevel = (xp/xpneeded);
@@ -407,7 +410,7 @@ public class SwornRPG extends JavaPlugin
 						
 						if ((xp - xpneeded) >= 0)
 						{
-							/**If so, call levelup event**/
+							/** If so, call levelup event **/
 							experienceHandler.onLevelup(player, oldlevel, newlevel);
 						}
 					}
@@ -468,30 +471,41 @@ public class SwornRPG extends JavaPlugin
 		logHandler.debug(string, objects);
 	}
     
-    /** Vault Check **/
-	private void setupVault() 
+    /**
+     * Setup Vault Integration
+     */
+	private void setupVaultIntegration() 
 	{
 		if (pluginManager.isPluginEnabled("Vault"))
 		{
-			setupEconomy();
-			outConsole(getMessage("log_vault_found"));
-		} 
-		else 
+			RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+			if (economyProvider != null) 
+			{
+				economy = economyProvider.getProvider();
+			}
+		}
+		
+		if (economy != null)
 		{
-			outConsole(getMessage("log_vault_notfound"));
+			outConsole(getMessage("log_vault_success"), economy.getName());
+		}
+		else
+		{
+			outConsole(getMessage("log_vault_failure"));
 		}
 	}
 	
-    /** Set up the Economy **/
-    private boolean setupEconomy() 
+	/**
+	 * Setup Essentials Integration
+	 */
+	public void setupEssentialsIntegration()
 	{
-		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-		if (economyProvider != null) 
+		PluginManager pm = getServer().getPluginManager();
+		if (pm.isPluginEnabled("Essentials"))
 		{
-			economy = (economyProvider.getProvider());
+			Plugin plugin = pm.getPlugin("Essentials");
+			essentials = (Essentials) plugin;
 		}
- 
-		return economy != null;
 	}
 
     /** Update Checker **/
@@ -620,13 +634,13 @@ public class SwornRPG extends JavaPlugin
 	{
 		fishDropsMap.clear();
 		
-		Map<String, ?> map = getConfig().getConfigurationSection("fish-drops").getValues(true);
+		Map<String, Object> map = getConfig().getConfigurationSection("fish-drops").getValues(true);
 		
-		for (Entry<String, ?> entry : map.entrySet()) 
+		for (Entry<String, Object> entry : map.entrySet()) 
 		{
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
-			
+
 			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
 			for (String value : values) 
 			{
@@ -685,17 +699,6 @@ public class SwornRPG extends JavaPlugin
 		return false;
 	}
 	
-	/** Essentials Hooks **/
-	public void hookIntoEssentials()
-	{
-		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("Essentials"))
-		{
-			Plugin plugin = pm.getPlugin("Essentials");
-			essentials = (IEssentials) plugin;
-		}
-	}
-	
 	/** WarZone / SafeZone Check **/
 	public boolean checkFactions(Player player, boolean safeZoneCheck)
 	{
@@ -719,16 +722,6 @@ public class SwornRPG extends JavaPlugin
 		return false;
 	}
 	
-	public void loadDisabledWorlds()
-	{
-		for (String string : getConfig().getStringList("disabledWorlds"))
-		{
-			World world = getServer().getWorld(string);
-			if (world != null)
-				disabledWorlds.add(world);
-		}
-	}
-	
 	/** Disabled World Checks **/
 	public boolean isDisabledWorld(Player player)
 	{
@@ -747,6 +740,6 @@ public class SwornRPG extends JavaPlugin
 	
 	public boolean isDisabledWorld(World world)
 	{
-		return disabledWorlds.contains(world);
+		return getConfig().getStringList("disabledWorlds").contains(world.getName());
 	}
 }
