@@ -114,18 +114,18 @@ public class SwornRPG extends JavaPlugin
 	private @Getter Essentials essentials;
 	private @Getter PluginManager pluginManager;
 	private @Getter PlayerDataCache playerDataCache;
-	
+
 	/** Handlers **/
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter LogHandler logHandler;
-	
+
 	private @Getter AbilityHandler abilityHandler;
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter TagHandler tagHandler;
-	
+
 	/** Disabled Worlds **/
 	private @Getter List<World> disabledWorlds = new ArrayList<World>();
 
@@ -134,10 +134,10 @@ public class SwornRPG extends JavaPlugin
     private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
     private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
     private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
-	
+
     /** Update Checking **/
 	private double newVersion, currentVersion;
-    
+
 	/** Global Prefix Variable **/
 	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] ");
 
@@ -591,7 +591,7 @@ public class SwornRPG extends JavaPlugin
 	{
 		blockDropsMap.clear();
 		
-		Map<String, ?> map = getConfig().getConfigurationSection("blockDropsItems").getValues(true);
+		Map<String, ?> map = getConfig().getConfigurationSection("blockDropItems").getValues(true);
 		
 		for (Entry<String, ?> entry : map.entrySet()) 
 		{
