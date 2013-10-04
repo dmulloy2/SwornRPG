@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
-
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.events.FrenzyActivateEvent;
 import net.dmulloy2.swornrpg.events.SuperPickaxeActivateEvent;
