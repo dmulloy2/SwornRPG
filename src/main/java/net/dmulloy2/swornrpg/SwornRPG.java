@@ -591,7 +591,7 @@ public class SwornRPG extends JavaPlugin
 	{
 		blockDropsMap.clear();
 		
-		Map<String, ?> map = getConfig().getConfigurationSection("block-drops").getValues(true);
+		Map<String, ?> map = getConfig().getConfigurationSection("blockDropsItems").getValues(true);
 		
 		for (Entry<String, ?> entry : map.entrySet()) 
 		{
@@ -634,7 +634,7 @@ public class SwornRPG extends JavaPlugin
 	{
 		fishDropsMap.clear();
 		
-		Map<String, Object> map = getConfig().getConfigurationSection("fish-drops").getValues(true);
+		Map<String, Object> map = getConfig().getConfigurationSection("fishDropItems").getValues(true);
 		
 		for (Entry<String, Object> entry : map.entrySet()) 
 		{
@@ -649,7 +649,7 @@ public class SwornRPG extends JavaPlugin
 				Material type = MaterialUtil.getMaterial(ss[0]);
 				if (type == null)
 				{
-					outConsole(Level.WARNING, "Null material {0} found while attempting to load block drops!", ss[0]);
+					outConsole(Level.WARNING, "Null material {0} found while attempting to load fish drops!", ss[0]);
 					continue;
 				}
 				
