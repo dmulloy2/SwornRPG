@@ -15,11 +15,13 @@ import org.bukkit.NetherWartsState;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -28,6 +30,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -88,7 +92,41 @@ public class ExperienceListener implements Listener
 			return;
 
 		Player killed = event.getEntity();
-		Player killer = killed.getKiller();
+
+		/** Figure out the killer **/
+		Entity attacker = null;
+		EntityDamageEvent ed = killed.getLastDamageCause();
+		if (ed instanceof EntityDamageByEntityEvent)
+		{
+			EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ed;
+			attacker = ede.getDamager();
+		}
+		
+		if (attacker == null)
+			return;
+		
+		Player killer = null;
+		if (attacker instanceof Player) 
+		{
+			killer = (Player) attacker;
+		} 
+		else if (attacker instanceof Arrow) 
+		{
+			Entity shooter = ((Arrow) attacker).getShooter();
+			if (shooter instanceof Player) 
+			{
+				killer = (Player) shooter;
+			}
+		} 
+		else if (attacker instanceof Snowball) 
+		{
+			Entity shooter = ((Snowball) attacker).getShooter();
+			if (shooter instanceof Player)
+			{
+				killer = (Player) shooter;
+			}
+		}
+		
 		if (killer != null)
 		{
 			/** Warzone Checks **/
