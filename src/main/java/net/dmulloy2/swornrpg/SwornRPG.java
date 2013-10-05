@@ -74,7 +74,6 @@ import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
 import net.dmulloy2.swornrpg.listeners.ExperienceListener;
 import net.dmulloy2.swornrpg.listeners.PlayerListener;
-import net.dmulloy2.swornrpg.listeners.SwornGunsListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
@@ -334,8 +333,8 @@ public class SwornRPG extends JavaPlugin
 		/** SwornGuns Integration **/
 		if (pluginManager.isPluginEnabled("SwornGuns") && getConfig().getBoolean("unlimitedAmmo.enabled"))
 		{
-			outConsole(getMessage("log_gun_found"));
-			pluginManager.registerEvents(new SwornGunsListener(this), this);
+//			outConsole(getMessage("log_gun_found"));
+//			pluginManager.registerEvents(new SwornGunsListener(this), this);
 			
 			new BukkitRunnable()
 			{

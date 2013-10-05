@@ -103,11 +103,6 @@
       <systemPath>${basedir}/lib/Factions.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>net.dmulloy2</groupId>
-      <artifactId>swornguns</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.kitteh</groupId>
       <artifactId>tagapi</artifactId>
       <version>2.3</version>
