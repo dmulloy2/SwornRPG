@@ -42,7 +42,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
 /**
@@ -192,7 +192,7 @@ public class PlayerListener implements Listener
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 		if (! data.isDeathbookdisabled())
 		{
-			IEssentials ess = plugin.getEssentials();
+			Essentials ess = plugin.getEssentials();
 			if (ess != null)
 			{
 				User user = ess.getUser(player);
