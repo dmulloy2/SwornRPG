@@ -94,39 +94,8 @@ public class ExperienceListener implements Listener
 		Player killed = event.getEntity();
 
 		/** Figure out the killer **/
-		Entity attacker = null;
-		EntityDamageEvent ed = killed.getLastDamageCause();
-		if (ed instanceof EntityDamageByEntityEvent)
-		{
-			EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ed;
-			attacker = ede.getDamager();
-		}
-		
-		if (attacker == null)
-			return;
-		
-		Player killer = null;
-		if (attacker instanceof Player) 
-		{
-			killer = (Player) attacker;
-		} 
-		else if (attacker instanceof Arrow) 
-		{
-			Entity shooter = ((Arrow) attacker).getShooter();
-			if (shooter instanceof Player) 
-			{
-				killer = (Player) shooter;
-			}
-		} 
-		else if (attacker instanceof Snowball) 
-		{
-			Entity shooter = ((Snowball) attacker).getShooter();
-			if (shooter instanceof Player)
-			{
-				killer = (Player) shooter;
-			}
-		}
-		
+		Player killer = getKiller(killed);
+
 		if (killer != null)
 		{
 			/** Warzone Checks **/
@@ -137,12 +106,12 @@ public class ExperienceListener implements Listener
 			if (killed.getName().equals(killer.getName()))
 				return;
 
-			/** Recent Death Check **/
-			PlayerData data = plugin.getPlayerDataCache().getData(killed);
-			if (data.getTimeOfLastDeath() - System.currentTimeMillis() <= 60L)
-				return;
-
-			data.setTimeOfLastDeath(System.currentTimeMillis());
+//			Fixed with SwornGuns 2.0
+//			PlayerData data = plugin.getPlayerDataCache().getData(killed);
+//			if (System.currentTimeMillis() - data.getTimeOfLastDeath() <= 60L)
+//				return;
+//
+//			data.setTimeOfLastDeath(System.currentTimeMillis());
 
 			/** Killer Xp Gain **/
 			String message = plugin.getPrefix() + 
@@ -159,6 +128,47 @@ public class ExperienceListener implements Listener
 			plugin.debug(plugin.getMessage("log_pvp_killer"), killer.getName(), killerXpGain, killed.getName());
 			plugin.debug(plugin.getMessage("log_pvp_killed"), killed.getName(), msgxp, killer.getName());
 		}
+	}
+	
+	public Player getKiller(Player killed)
+	{
+		Entity attacker = killed.getKiller();
+		if (attacker == null)
+		{
+			EntityDamageEvent ed = killed.getLastDamageCause();
+			if (ed instanceof EntityDamageByEntityEvent)
+			{
+				EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ed;
+				attacker = ede.getDamager();
+			}
+		}
+		
+		Player killer = null;
+		if (attacker != null)
+		{
+			if (attacker instanceof Player) 
+			{
+				killer = (Player) attacker;
+			} 
+			else if (attacker instanceof Arrow) 
+			{
+				Entity shooter = ((Arrow) attacker).getShooter();
+				if (shooter instanceof Player) 
+				{
+					killer = (Player) shooter;
+				}
+			} 
+			else if (attacker instanceof Snowball) 
+			{
+				Entity shooter = ((Snowball) attacker).getShooter();
+				if (shooter instanceof Player)
+				{
+					killer = (Player) shooter;
+				}
+			}
+		}
+		
+		return killer;
 	}
 
 	/** Rewards XP in PvE situations **/
