@@ -196,6 +196,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 			updating = false;
 			
 			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
+			
+			plugin.getPlayerDataCache().save();
 		}
 	}
 
