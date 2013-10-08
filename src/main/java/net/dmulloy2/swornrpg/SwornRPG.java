@@ -125,9 +125,6 @@ public class SwornRPG extends JavaPlugin
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter TagHandler tagHandler;
 
-	/** Disabled Worlds **/
-	private @Getter List<World> disabledWorlds = new ArrayList<World>();
-
 	/** Maps **/
 	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
     private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();

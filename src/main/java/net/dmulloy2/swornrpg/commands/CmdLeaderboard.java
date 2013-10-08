@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
@@ -142,18 +143,21 @@ public class CmdLeaderboard extends SwornRPGCommand
 			
 			long start = System.currentTimeMillis();
 			
-			Map<String, PlayerData> data = plugin.getPlayerDataCache().getAllPlayerData();
-			HashMap<String, Integer> xpmap = new HashMap<String, Integer>();
-			for (Entry<String, PlayerData> entrySet : data.entrySet())
+			Map<String, PlayerData> loadedData = plugin.getPlayerDataCache().getAllLoadedPlayerData();
+			Map<String, Integer> experienceMap = new HashMap<String, Integer>();
+			
+			for (Entry<String, PlayerData> entry : loadedData.entrySet())
 			{
-				String player = entrySet.getKey();
-				PlayerData data1 = entrySet.getValue();
-				int xp = data1.getTotalxp();
-				if (xp > 0)
-					xpmap.put(player, xp);
+				if (entry.getValue().getTotalxp()  > 0)
+				{
+					experienceMap.put(entry.getKey(), entry.getValue().getTotalxp());
+				}
 			}
 
-			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(xpmap.entrySet());
+			loadedData.clear();
+			loadedData = null;
+
+			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(experienceMap.entrySet());
 			Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
 			{
 				@Override
@@ -163,40 +167,46 @@ public class CmdLeaderboard extends SwornRPGCommand
 				}
 			});
 
-			List<String> lines = new ArrayList<String>();
-			StringBuilder line = new StringBuilder();
+			experienceMap.clear();
+			experienceMap = null;
 
 			int pos = 1;
 			for (Entry<String, Integer> entry : sortedEntries)
 			{
-				String string = entry.getKey();
-				if (string.length() >= 16) continue;
-				
-				OfflinePlayer player = Util.matchOfflinePlayer(string);
-				if (player != null)
+				try
 				{
-					PlayerData data2 = getPlayerData(player);
-					if (data2 != null)
+					OfflinePlayer player = Util.matchOfflinePlayer(entry.getKey());
+					if (player != null)
 					{
-						int level = data2.getLevel();
-						int xp = data2.getTotalxp();
-
-						line = new StringBuilder();
-						line.append(FormatUtil.format(getMessage("leaderboard_format"), pos, player.getName(), level, xp));
-						lines.add(line.toString());
-						pos++;
+						PlayerData data = getPlayerData(player);
+						if (data != null)
+						{
+							leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"),
+									pos, player.getName(), data.getLevel(), data.getTotalxp()));
+							pos++;
+						}
+						
+						data = null;
 					}
+					
+					player = null;
+				}
+				catch (Exception e)
+				{
+					plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "building leaderboard entry for " + entry.getKey()));
+					continue;
 				}
 			}
+			
+			sortedEntries.clear();
+			sortedEntries = null;
 
-			leaderboard = lines;
-			
 			lastUpdateTime = System.currentTimeMillis();
-			
+
 			updating = false;
-			
+
 			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
-			
+
 			plugin.getPlayerDataCache().save();
 		}
 	}

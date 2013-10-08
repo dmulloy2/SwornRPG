@@ -91,7 +91,7 @@
     <dependency>
       <groupId>com.earth2me</groupId>
       <artifactId>essentials</artifactId>
-      <version>2.12.108</version>
+      <version>2.12.124</version>
       <scope>system</scope>
       <systemPath>${basedir}/lib/Essentials.jar</systemPath>
     </dependency>
