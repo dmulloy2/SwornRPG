@@ -15,8 +15,8 @@ public class CmdASay extends SwornRPGCommand
 		super(plugin);
 		this.name = "asay";
 		this.aliases.add("adm");
-		this.description = "Alternate admin say command";
 		this.requiredArgs.add("message");
+		this.description = "Alternate admin say command";
 		this.permission = Permission.CMD_ASAY;
 		
 		this.mustBePlayer = false;
@@ -26,11 +26,16 @@ public class CmdASay extends SwornRPGCommand
 	public void perform()
 	{
 		StringBuilder message = new StringBuilder();
-		for (int i=0; i<args.length; i++)
+		for (String arg : args)
 		{
-			message.append(args[i] + " ");
+			message.append(arg + " ");
 		}
-		
+
+		if (message.lastIndexOf(" ") >= 0)
+		{
+			message.deleteCharAt(message.lastIndexOf(" "));
+		}
+
 		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("admin_say"), message.toString()));
 	}
 }

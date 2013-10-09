@@ -60,7 +60,7 @@ public class CmdAbilities extends SwornRPGCommand
 			sendMessage(line.toString());
 		}
 		
-		if (plugin.getConfig().getBoolean("superPickaxe.enabled"))
+		if (abilityHandler.isSuperPickaxeEnabled())
 		{
 			StringBuilder line = new StringBuilder();
 			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data)));
@@ -73,7 +73,7 @@ public class CmdAbilities extends SwornRPGCommand
 			sendMessage(line.toString());
 		}
 		
-		if (plugin.getConfig().getBoolean("unlimitedAmmo.enabled") && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
+		if (abilityHandler.isUnlimitedAmmoEnabled() && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
 		{
 			StringBuilder line = new StringBuilder();
 			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoCooldown(data)));

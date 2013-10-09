@@ -3,6 +3,8 @@ package net.dmulloy2.swornrpg.util;
 import java.util.List;
 import java.util.Random;
 
+import net.dmulloy2.swornrpg.SwornRPG;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -145,7 +147,8 @@ public class Util
 	/**
 	 * Turns a {@link Location} into a string for debug purpouses
 	 * 
-	 * @param loc - {@link Location} to convert
+	 * @param loc
+	 *            - {@link Location} to convert
 	 * @return String for debug purpouses
 	 */
 	public static String locationToString(Location loc)
@@ -158,6 +161,15 @@ public class Util
 		return ret.toString();
 	}
 
+	/**
+	 * Gets a useful stack trace from a given {@link Throwable}
+	 * 
+	 * @param e
+	 *            - Base {@link Throwable}
+	 * @param circumstance
+	 *            - Circumstance in which the error occured
+	 * @return Useful stack trace
+	 */
 	public static String getUsefulStack(Throwable e, String circumstance)
 	{
 		StringBuilder ret = new StringBuilder();
@@ -167,7 +179,7 @@ public class Util
 
 		for (StackTraceElement ste : e.getStackTrace())
 		{
-			if (ste.getClassName().contains("net.dmulloy2.ultimatearena"))
+			if (ste.getClassName().contains(SwornRPG.class.getPackage().getName()))
 				ret.append('\t' + ste.toString() + '\n');
 		}
 

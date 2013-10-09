@@ -4,8 +4,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
-import org.bukkit.entity.Player;
-
 /**
  * @author dmulloy2
  */
@@ -16,30 +14,30 @@ public class CmdAChat extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "a";
-		this.description = "Talk in admin-only chat";
 		this.aliases.add("achat");
 		this.requiredArgs.add("message");
+		this.description = "Talk in admin-only chat";
 		this.permission = Permission.CMD_ACHAT;
 		
 		this.mustBePlayer = false;
 	}
-	
+
 	@Override
 	public void perform()
 	{
 		StringBuilder message = new StringBuilder();
-		for (int i=0; i<args.length; i++)
+		for (String arg : args)
 		{
-			message.append(args[i] + " ");
+			message.append(arg + " ");
 		}
-		
-		String sname;
-		if (sender instanceof Player)
-			sname = sender.getName();
-		else
-			sname = "Console";
-		
+
+		if (message.lastIndexOf(" ") >= 0)
+		{
+			message.deleteCharAt(message.lastIndexOf(" "));
+		}
+
+		String name = isPlayer() ? player.getName() : "Console";
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
-		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("achat"), sname, message.toString()), node);
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("achat"), name, message.toString()), node);
 	}
 }
