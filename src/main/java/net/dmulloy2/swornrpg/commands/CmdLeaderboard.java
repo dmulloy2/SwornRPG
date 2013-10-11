@@ -154,8 +154,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 				}
 			}
 
-			loadedData.clear();
-			loadedData = null;
+//			loadedData.clear();
+//			loadedData = null;
 
 			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(experienceMap.entrySet());
 			Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
