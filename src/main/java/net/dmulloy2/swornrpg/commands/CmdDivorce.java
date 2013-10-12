@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -17,6 +18,8 @@ public class CmdDivorce extends SwornRPGCommand
 		super(plugin);
 		this.name = "divorce";
 		this.description = "Divorce your spouse";
+		this.permission = Permission.DIVORCE;
+
 		this.mustBePlayer = true;
 	}
 	

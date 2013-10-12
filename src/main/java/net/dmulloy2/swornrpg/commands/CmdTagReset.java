@@ -10,19 +10,20 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public class CmdTagr extends SwornRPGCommand
+public class CmdTagReset extends SwornRPGCommand
 {
-	public CmdTagr(SwornRPG plugin)
+	public CmdTagReset(SwornRPG plugin)
 	{
 		super(plugin);
-		this.name = "tagr";
-		this.description = "Reset a player's tag";
-		this.aliases.add("tagreset");
+		this.name = "tagreset";
+		this.aliases.add("tagr");
 		this.optionalArgs.add("player");
-		this.permission = Permission.CMD_TAG_RESET;
+		this.description = "Reset a player's tag";
+		this.permission = Permission.TAG_RESET;
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -32,27 +33,33 @@ public class CmdTagr extends SwornRPGCommand
 			plugin.debug(plugin.getMessage("log_tagapi_null"));
 			return;
 		}
-		
-		if (args.length == 0) 
+
+		if (args.length == 0)
 		{
 			plugin.getTagHandler().removeTagChange(player);
 			sendpMessage(plugin.getMessage("tag_reset_self"));
 		}
 		else if (args.length == 1)
 		{
-			if (args[0].length() > 16) 
+			if (! hasPermission(Permission.TAG_RESET_OTHERS))
+			{
+				err(getMessage("noperm"));
+				return;
+			}
+
+			if (args[0].length() > 16)
 			{
 				err(plugin.getMessage("username_too_large"));
 				return;
 			}
-			
+
 			Player target = Util.matchPlayer(args[0]);
 			if (target == null)
 			{
 				err(getMessage("noplayer"));
 				return;
 			}
-			
+
 			plugin.getTagHandler().removeTagChange(target);
 			sendpMessage(plugin.getMessage("tag_reset_resetter"), target.getName());
 			sendMessageTarget(plugin.getMessage("tag_reset_resetee"), target);

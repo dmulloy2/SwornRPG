@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -17,6 +18,7 @@ public class CmdStandup extends SwornRPGCommand
 		this.name = "standup";
 		this.aliases.add("stand");
 		this.description = "Get out of your chair";
+		this.permission = Permission.STANDUP;
 		
 		this.mustBePlayer = true;
 	}
@@ -37,9 +39,9 @@ public class CmdStandup extends SwornRPGCommand
 			return;
 		}
 		
-		player.leaveVehicle();
-
 		player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
+		
+//		player.leaveVehicle();
 		
 		vehicle.remove();
 	}

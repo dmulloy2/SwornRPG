@@ -15,8 +15,8 @@ public class CmdReload extends SwornRPGCommand
 		this.name = "reload";
 		this.aliases.add("rl");
 		this.description = "Reload SwornRPG";
-		this.permission = Permission.CMD_RELOAD;
-		this.mustBePlayer = false;
+		this.permission = Permission.RELOAD;
+
 		this.usesPrefix = true;
 	}
 	

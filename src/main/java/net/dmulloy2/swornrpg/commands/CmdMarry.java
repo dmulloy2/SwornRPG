@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -16,9 +17,10 @@ public class CmdMarry extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "marry";
-		this.aliases.add("matrimony");
-		this.description = "Marry another player";
 		this.requiredArgs.add("player");
+		this.description = "Marry another player";
+		this.permission = Permission.MARRY;
+
 		this.mustBePlayer = true;
 	}
 	

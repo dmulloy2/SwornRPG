@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 
 /**
@@ -12,18 +13,17 @@ public class CmdCoordsToggle extends SwornRPGCommand
 	public CmdCoordsToggle(SwornRPG plugin)
 	{
 		super(plugin);
-		this.name = "deathcoords";
-		this.description = "Toggle death coordinates";
-		this.aliases.add("deathbook");
-		this.aliases.add("deathmail");
-		this.aliases.add("coordstoggle");
+		this.name = "coordstoggle";
+		this.description = "Toggle death coordinate messages";
+		this.permission = Permission.COORDSTOGGLE;
+
 		this.mustBePlayer = true;
 	}
 	
 	@Override
 	public void perform()
 	{
-		final PlayerData data = getPlayerData(player);
+		PlayerData data = getPlayerData(player);
 		if (data.isDeathbookdisabled())
 		{
 			data.setDeathbookdisabled(false);

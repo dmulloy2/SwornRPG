@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
@@ -32,6 +33,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		this.name = "lb";
 		this.aliases.add("top");
 		this.description = "Display experience leaderboard";
+		this.permission = Permission.LEADERBOARD;
 
 		this.usesPrefix = true;
 	}
@@ -44,9 +46,11 @@ public class CmdLeaderboard extends SwornRPGCommand
 			this.leaderboard = new ArrayList<String>();
 		}
 
-		if ((System.currentTimeMillis() - lastUpdateTime) > 18000L)
+		if (System.currentTimeMillis() - lastUpdateTime > 600000L)
 		{
 			sendpMessage(getMessage("leaderboard_wait"));
+			
+			leaderboard.clear();
 
 			new BuildLeaderboardThread();
 		}

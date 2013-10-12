@@ -30,10 +30,10 @@ import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import lombok.Getter;
-import net.dmulloy2.swornrpg.commands.CmdAChat;
-import net.dmulloy2.swornrpg.commands.CmdASay;
 import net.dmulloy2.swornrpg.commands.CmdAbilities;
 import net.dmulloy2.swornrpg.commands.CmdAddxp;
+import net.dmulloy2.swornrpg.commands.CmdAdminChat;
+import net.dmulloy2.swornrpg.commands.CmdAdminSay;
 import net.dmulloy2.swornrpg.commands.CmdCoordsToggle;
 import net.dmulloy2.swornrpg.commands.CmdDeny;
 import net.dmulloy2.swornrpg.commands.CmdDivorce;
@@ -45,19 +45,19 @@ import net.dmulloy2.swornrpg.commands.CmdHighCouncil;
 import net.dmulloy2.swornrpg.commands.CmdItemName;
 import net.dmulloy2.swornrpg.commands.CmdLeaderboard;
 import net.dmulloy2.swornrpg.commands.CmdLevel;
-import net.dmulloy2.swornrpg.commands.CmdLevelr;
 import net.dmulloy2.swornrpg.commands.CmdMarry;
 import net.dmulloy2.swornrpg.commands.CmdMatch;
-import net.dmulloy2.swornrpg.commands.CmdMine;
 import net.dmulloy2.swornrpg.commands.CmdPropose;
 import net.dmulloy2.swornrpg.commands.CmdReload;
+import net.dmulloy2.swornrpg.commands.CmdResetLevel;
 import net.dmulloy2.swornrpg.commands.CmdRide;
 import net.dmulloy2.swornrpg.commands.CmdSitdown;
 import net.dmulloy2.swornrpg.commands.CmdSpouse;
 import net.dmulloy2.swornrpg.commands.CmdStaffList;
 import net.dmulloy2.swornrpg.commands.CmdStandup;
+import net.dmulloy2.swornrpg.commands.CmdSuperPickaxe;
 import net.dmulloy2.swornrpg.commands.CmdTag;
-import net.dmulloy2.swornrpg.commands.CmdTagr;
+import net.dmulloy2.swornrpg.commands.CmdTagReset;
 import net.dmulloy2.swornrpg.commands.CmdUnlimitedAmmo;
 import net.dmulloy2.swornrpg.commands.CmdUnride;
 import net.dmulloy2.swornrpg.commands.CmdVersion;
@@ -79,6 +79,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -110,6 +111,8 @@ public class SwornRPG extends JavaPlugin
 {
 	/** Getters **/
 	private @Getter Economy economy;
+	private @Getter Permission permission;
+
 	private @Getter Essentials essentials;
 	private @Getter PluginManager pluginManager;
 	private @Getter PlayerDataCache playerDataCache;
@@ -217,9 +220,10 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerPrefixedCommand(new CmdReload(this));
 		
 		/** Register Non-Prefixed Commands **/
-		commandHandler.registerCommand(new CmdAChat(this));
+		commandHandler.registerCommand(new CmdAbilities(this));
 		commandHandler.registerCommand(new CmdAddxp(this));
-		commandHandler.registerCommand(new CmdASay(this));
+		commandHandler.registerCommand(new CmdAdminChat(this));
+		commandHandler.registerCommand(new CmdAdminSay(this));
 		commandHandler.registerCommand(new CmdCoordsToggle(this));
 		commandHandler.registerCommand(new CmdDeny(this));
 		commandHandler.registerCommand(new CmdDivorce(this));
@@ -229,21 +233,20 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdHighCouncil(this));
 		commandHandler.registerCommand(new CmdItemName(this));
 		commandHandler.registerCommand(new CmdLevel(this));
-		commandHandler.registerCommand(new CmdLevelr(this));
 		commandHandler.registerCommand(new CmdMarry(this));
 		commandHandler.registerCommand(new CmdMatch(this));
-		commandHandler.registerCommand(new CmdMine(this));
 		commandHandler.registerCommand(new CmdPropose(this));
+		commandHandler.registerCommand(new CmdResetLevel(this));
 		commandHandler.registerCommand(new CmdRide(this));
-		commandHandler.registerCommand(new CmdSpouse(this));
-		commandHandler.registerCommand(new CmdStandup(this));
-		commandHandler.registerCommand(new CmdTag(this));
-		commandHandler.registerCommand(new CmdTagr(this));
-		commandHandler.registerCommand(new CmdUnride(this));
-		commandHandler.registerCommand(new CmdStaffList(this));
 		commandHandler.registerCommand(new CmdSitdown(this));
+		commandHandler.registerCommand(new CmdSpouse(this));
+		commandHandler.registerCommand(new CmdStaffList(this));
+		commandHandler.registerCommand(new CmdStandup(this));
+		commandHandler.registerCommand(new CmdSuperPickaxe(this));
+		commandHandler.registerCommand(new CmdTag(this));
+		commandHandler.registerCommand(new CmdTagReset(this));
+		commandHandler.registerCommand(new CmdUnride(this));
 		commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
-		commandHandler.registerCommand(new CmdAbilities(this));
 		
 		/** Handle Health if Reload **/
 		for (Player player : getServer().getOnlinePlayers())
@@ -478,6 +481,12 @@ public class SwornRPG extends JavaPlugin
 			if (economyProvider != null) 
 			{
 				economy = economyProvider.getProvider();
+			}
+			
+			RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(Permission.class);
+			if (permissionProvider != null) 
+			{
+				permission = permissionProvider.getProvider();
 			}
 		}
 		

@@ -356,7 +356,7 @@ public class PlayerListener implements Listener
 		if (! array[1].equalsIgnoreCase("pickaxe") && ! array[1].equalsIgnoreCase("spade"))
 			return;
 
-		plugin.getAbilityHandler().activateSpick(player, false, action);
+		plugin.getAbilityHandler().activateSuperPickaxe(player, false, action);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

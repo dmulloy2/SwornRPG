@@ -20,7 +20,7 @@ public class CmdAddxp extends SwornRPGCommand
 		this.requiredArgs.add("player");
 		this.requiredArgs.add("xp");
 		this.description = "Manually give xp to a player";
-		this.permission = Permission.CMD_ADDXP;
+		this.permission = Permission.ADDXP;
 		
 		this.mustBePlayer = true;
 	}

@@ -6,26 +6,58 @@ package net.dmulloy2.swornrpg.types;
 
 public enum Permission
 {
-	CMD_ACHAT("adminchat"),
-	CMD_HAT("hat"),
-	CMD_RIDE("ride"),
-	CMD_ASAY("asay"),
-	CMD_COUNCIL("council"),
-	CMD_TAG_RESET("tag.reset"),
-	CMD_TAG("tag"),
-	CMD_TAG_OTHERS("tag.others"),
-	CMD_LEVEL_RESET("level.reset"),
-	CMD_INAME("iname"),
-	CMD_MATCH("match"),
-	CMD_ADDXP("addxp"), 
-	CMD_RELOAD("reload"),
+	ABILITIES,
+	ABILITIES_OTHERS,
+	ADDXP,
+	ADMINCHAT,
+	ADMINSAY,
+	COORDSTOGGLE,
+	DENY,
+	DIVORCE,
+	EJECT,
+	FRENZY,
+	HAT,
+	HIGHCOUNCIL,
+	ITEMNAME,
+	LEADERBOARD,
+	LEVEL,
+	LEVEL_OTHERS,
+	LEVEL_RESET,
+	MARRY,
+	MATCH,
+	PROPOSE,
+	RELOAD,
+	RIDE,
+	SITDOWN,
+	SPOUSE,
+	SPOUSE_OTHERS,
+	STAFFLIST,
+	STANDUP,
+	SUPERPICKAXE,
+	TAG,
+	TAG_OTHERS,
+	TAG_RESET,
+	TAG_RESET_OTHERS,
+	UNLIMITEDAMMO,
+	UNRIDE,
+	VERSION,
 	
-	UPDATE_NOTIFY("update");
-	
+	STAFF(false),
+	UPDATE_NOTIFY(false),
+	;
+
 	private String node;
-	Permission(String node)
+
+	Permission(boolean command)
 	{
-		this.node = node;
+		this.node = toString().toLowerCase().replaceAll("_", ".");
+		
+		if (command) node = "cmd." + node;
+	}
+
+	Permission()
+	{
+		this(true);
 	}
 	
 	public String getNode()

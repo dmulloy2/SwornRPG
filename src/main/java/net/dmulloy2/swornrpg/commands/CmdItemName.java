@@ -17,11 +17,12 @@ public class CmdItemName extends SwornRPGCommand
 	public CmdItemName(SwornRPG plugin)
 	{
 		super(plugin);
-		this.name = "iname";
-		this.description = "Set the name of your inhand item";
-		this.aliases.add("itemname");
+		this.name = "itemname";
+		this.aliases.add("iname");
 		this.requiredArgs.add("name");
-		this.permission = Permission.CMD_INAME;
+		this.description = "Set the name of your in-hand item";
+		this.permission = Permission.ITEMNAME;
+
 		this.mustBePlayer = true;
 	}
 	
@@ -29,21 +30,25 @@ public class CmdItemName extends SwornRPGCommand
 	public void perform()
 	{
 	    ItemStack hand = player.getItemInHand();
-	    if (hand == null || hand.getType().equals(Material.AIR))
+	    if (hand == null || hand.getType() == Material.AIR)
 	    {
 	    	sendpMessage(plugin.getMessage("hand_empty"));
 	    	return;
 	    }
 
-	    ItemMeta meta = hand.getItemMeta();
 	    StringBuilder name = new StringBuilder();
-	    for (int i = 0; i < args.length; i++) 
-	    { 
-	    	name.append(FormatUtil.format(args[i] + " "));
+	    for (String arg : args)
+	    {
+	    	name.append(arg + " ");
 	    }
-	    name.deleteCharAt(name.lastIndexOf(" "));
 	    
-	    meta.setDisplayName(name.toString());
+	    if (name.lastIndexOf(" ") >= 0)
+	    {
+	    	name.deleteCharAt(name.lastIndexOf(" "));
+	    }
+
+	    ItemMeta meta = hand.getItemMeta();
+	    meta.setDisplayName(FormatUtil.format(name.toString()));
 	    hand.setItemMeta(meta);
 	    	
 	    String inhand = FormatUtil.getFriendlyName(hand.getType());

@@ -34,35 +34,36 @@ public class AbilityHandler
 	private int frenzyDuration;
 	private int frenzyMultiplier;
 	private int frenzyCooldown;
-	
+
 	private boolean superPickaxeEnabled;
 	private int superPickaxeDuration;
 	private int superPickaxeMultiplier;
 	private int superPickaxeCooldown;
-	
+
 	private boolean unlimitedAmmoEnabled;
 	private int unlimitedAmmoDuration;
 	private int unlimitedAmmoMultiplier;
 	private int unlimitedAmmoCooldown;
-	
+
 	private HashMap<String, Long> frenzyWaiting;
 	private HashMap<String, Long> spickWaiting;
-	
+
 	private final SwornRPG plugin;
+
 	public AbilityHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		
+
 		this.frenzyEnabled = plugin.getConfig().getBoolean("frenzy.enabled");
 		this.frenzyDuration = plugin.getConfig().getInt("frenzy.baseDuration");
 		this.frenzyMultiplier = plugin.getConfig().getInt("frenzy.levelMultiplier");
 		this.frenzyCooldown = plugin.getConfig().getInt("frenzy.baseCooldown");
-		
+
 		this.superPickaxeEnabled = plugin.getConfig().getBoolean("superPickaxe.enabled");
 		this.superPickaxeDuration = plugin.getConfig().getInt("superPickaxe.baseDuration");
 		this.superPickaxeMultiplier = plugin.getConfig().getInt("superPickaxe.levelMultiplier");
 		this.superPickaxeCooldown = plugin.getConfig().getInt("superPickaxe.baseCooldown");
-		
+
 		this.unlimitedAmmoEnabled = plugin.getConfig().getBoolean("unlimitedAmmo.enabled");
 		this.unlimitedAmmoDuration = plugin.getConfig().getInt("unlimitedAmmo.baseDuration");
 		this.unlimitedAmmoMultiplier = plugin.getConfig().getInt("unlimitedAmmo.levelMultiplier");
@@ -71,45 +72,52 @@ public class AbilityHandler
 		this.frenzyWaiting = new HashMap<String, Long>();
 		this.spickWaiting = new HashMap<String, Long>();
 	}
-	
+
 	/**
 	 * Activates Frenzy for a player
 	 * 
-	 * @param player - {@link Player} to activate Frenzy for
-	 * @param command - Whether or not it was activated via command
-	 * @param actions - {@link Action} taken
+	 * @param player
+	 *            - {@link Player} to activate Frenzy for
+	 * @param command
+	 *            - Whether or not it was activated via command
+	 * @param actions
+	 *            - {@link Action} taken
 	 */
 	public void activateFrenzy(final Player player, boolean command, Action... actions)
 	{
 		/** Enable Check **/
 		if (! frenzyEnabled)
 		{
-			if (command) sendpMessage(player, plugin.getMessage("command_disabled"));
+			if (command)
+				sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
-		
+
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
-			if (command) sendpMessage(player, plugin.getMessage("disabled_world"));
+			if (command)
+				sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
-		
+
 		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
-			if (command) sendpMessage(player, plugin.getMessage("creative_ability"));
+			if (command)
+				sendpMessage(player, plugin.getMessage("creative_ability"));
 			return;
 		}
-		
+
 		/** Check for Frenzy In Progress **/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isFrenzyEnabled())
 		{
-			if (command) sendpMessage(player, plugin.getMessage("ability_in_progress"), "Frenzy Mode");
+			if (command)
+				sendpMessage(player, plugin.getMessage("ability_in_progress"), "Frenzy Mode");
 			return;
 		}
-		
+
 		/** Action Check **/
 		boolean activate = false;
 		if (actions.length > 0)
@@ -124,7 +132,7 @@ public class AbilityHandler
 		{
 			activate = true;
 		}
-		
+
 		/** The player did not left click **/
 		if (! activate)
 		{
@@ -135,22 +143,24 @@ public class AbilityHandler
 				frenzyWaiting.put(player.getName(), System.currentTimeMillis());
 				new FrenzyRemoveTask(player).runTaskLater(plugin, 60);
 			}
+
 			return;
 		}
-		
+
 		/** The player is activating using an item **/
 		if (! command)
 		{
 			/** Check if the player is on the waiting list **/
 			if (frenzyWaiting.containsKey(player.getName()))
 			{
-				/**Cooldown Check**/
+				/** Cooldown Check **/
 				if (data.isFrenzyCooldownEnabled())
 				{
 					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), (data.getFrenzyCooldownTime()));
 					frenzyWaiting.remove(player.getName());
 					return;
 				}
+
 				frenzyWaiting.remove(player.getName());
 			}
 			else
@@ -166,24 +176,24 @@ public class AbilityHandler
 				return;
 			}
 		}
-		
+
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
 
 		final int duration = Integer.valueOf(Math.round(20 * (frenzyDuration + (level * frenzyMultiplier))));
-		
+
 		FrenzyActivateEvent event = new FrenzyActivateEvent(player, duration, command);
 		plugin.getPluginManager().callEvent(event);
-		
+
 		if (event.isCancelled())
 			return;
-		
+
 		sendpMessage(player, plugin.getMessage("frenzy_enter"));
 		data.setFrenzyEnabled(true);
-		
+
 		List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-		
+
 		String[] types = new String[] { "SPEED", "INCREASE_DAMAGE", "REGENERATION", "JUMP", "FIRE_RESISTANCE", "DAMAGE_RESISTANCE" };
 		for (String type : types)
 		{
@@ -191,9 +201,9 @@ public class AbilityHandler
 		}
 
 		player.addPotionEffects(potionEffects);
-		
+
 		plugin.debug(plugin.getMessage("log_frenzy_activate"), player.getName(), duration);
-		
+
 		new BukkitRunnable()
 		{
 			@Override
@@ -201,12 +211,11 @@ public class AbilityHandler
 			{
 				sendpMessage(player, plugin.getMessage("frenzy_wearoff"));
 				data.setFrenzyEnabled(false);
-				
+
 				int cooldown = duration * frenzyCooldown;
 				data.setFrenzyCooldownTime(cooldown);
 				data.setFrenzyCooldownEnabled(true);
-				
-				
+
 				plugin.debug(plugin.getMessage("log_frenzy_cooldown"), player.getName(), cooldown);
 			}
 		}.runTaskLater(plugin, duration);
@@ -215,30 +224,36 @@ public class AbilityHandler
 	/**
 	 * Activates Super Pickaxe for a player
 	 * 
-	 * @param player - {@link Player} to activate Super Pickaxe for
-	 * @param command - Whether or not it was activated via command
-	 * @param actions - {@link Action} taken
+	 * @param player
+	 *            - {@link Player} to activate Super Pickaxe for
+	 * @param command
+	 *            - Whether or not it was activated via command
+	 * @param actions
+	 *            - {@link Action} taken
 	 */
-	public void activateSpick(final Player player, boolean command, Action... actions)
+	public void activateSuperPickaxe(final Player player, boolean command, Action... actions)
 	{
 		/** Enable Check **/
 		if (! superPickaxeEnabled)
 		{
-			if (command) sendpMessage(player, plugin.getMessage("command_disabled"));
+			if (command)
+				sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
-		
+
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
-			if (command) sendpMessage(player, plugin.getMessage("disabled_world"));
+			if (command)
+				sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
-		
+
 		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
-			if (command) sendpMessage(player, plugin.getMessage("creative_ability"));
+			if (command)
+				sendpMessage(player, plugin.getMessage("creative_ability"));
 			return;
 		}
 
@@ -246,10 +261,11 @@ public class AbilityHandler
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSuperPickaxeEnabled())
 		{
-			if (command) sendpMessage(player, plugin.getMessage("ability_in_progress"), "Super Pickaxe");
+			if (command)
+				sendpMessage(player, plugin.getMessage("ability_in_progress"), "Super Pickaxe");
 			return;
 		}
-		
+
 		/** Check the Action **/
 		boolean activate = false;
 		if (actions.length > 0)
@@ -264,7 +280,7 @@ public class AbilityHandler
 		{
 			activate = true;
 		}
-		
+
 		/** The player did not left click **/
 		if (! activate)
 		{
@@ -275,10 +291,10 @@ public class AbilityHandler
 				spickWaiting.put(player.getName(), System.currentTimeMillis());
 				new SuperPickaxeRemoveTask(player).runTaskLater(plugin, 60);
 			}
-			
+
 			return;
 		}
-		
+
 		/** The player is activating using an item **/
 		if (! command)
 		{
@@ -292,7 +308,7 @@ public class AbilityHandler
 					spickWaiting.remove(player.getName());
 					return;
 				}
-				
+
 				spickWaiting.remove(player.getName());
 			}
 			else
@@ -308,16 +324,16 @@ public class AbilityHandler
 				return;
 			}
 		}
-		
+
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
-		
+
 		final int duration = Integer.valueOf(Math.round(20 * (superPickaxeDuration + (level * superPickaxeMultiplier))));
-		
+
 		SuperPickaxeActivateEvent event = new SuperPickaxeActivateEvent(player, duration, command);
 		plugin.getPluginManager().callEvent(event);
-		
+
 		if (event.isCancelled())
 			return;
 
@@ -337,20 +353,21 @@ public class AbilityHandler
 				data.setSuperPickaxeEnabled(false);
 
 				player.removePotionEffect(PotionEffectType.FAST_DIGGING);
-				
+
 				int cooldown = duration * superPickaxeCooldown;
 				data.setSuperPickaxeCooldownEnabled(true);
 				data.setSuperPickaxeCooldownTime(cooldown);
-				
+
 				plugin.debug(plugin.getMessage("log_superpick_cooldown"), player.getName(), cooldown);
 			}
 		}.runTaskLater(plugin, duration);
 	}
-	
+
 	/**
 	 * Activates Unlimited Ammo ability
 	 * 
-	 * @param player - {@link Player} to activate it for
+	 * @param player
+	 *            - {@link Player} to activate it for
 	 */
 	public void activateAmmo(final Player player)
 	{
@@ -361,21 +378,21 @@ public class AbilityHandler
 			sendpMessage(player, plugin.getMessage("plugin_not_found"), "SwornGuns");
 			return;
 		}
-		
+
 		/** Enable Check **/
 		if (! unlimitedAmmoEnabled)
 		{
 			sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
-		
+
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
 			sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
-		
+
 		/** Check to see if they are already using Unlimited Ammo **/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isUnlimitedAmmoEnabled())
@@ -383,31 +400,31 @@ public class AbilityHandler
 			sendpMessage(player, plugin.getMessage("ability_in_progress"), "Unlimited Ammo");
 			return;
 		}
-		
+
 		/** Cooldown Check **/
 		if (data.isUnlimitedAmmoCooldownEnabled())
 		{
 			sendpMessage(player, plugin.getMessage("ammo_cooldown"), data.getSuperPickaxeCooldownTime());
 			return;
 		}
-		
+
 		int level = data.getLevel();
 		if (level == 0)
 			level = 1;
-		
+
 		final int duration = Integer.valueOf(Math.round(20 * (unlimitedAmmoDuration + (level * unlimitedAmmoMultiplier))));
-		
+
 		UnlimitedAmmoActivateEvent event = new UnlimitedAmmoActivateEvent(player, duration);
 		plugin.getPluginManager().callEvent(event);
-		
+
 		if (event.isCancelled())
 			return;
-		
+
 		sendpMessage(player, plugin.getMessage("ammo_now_unlimited"));
 		data.setUnlimitedAmmoEnabled(true);
-		
+
 		plugin.debug(plugin.getMessage("log_ammo_activate"), player.getName(), duration);
-		
+
 		new BukkitRunnable()
 		{
 			@Override
@@ -415,35 +432,37 @@ public class AbilityHandler
 			{
 				sendpMessage(player, plugin.getMessage("ammo_nolonger_unlimited"));
 				data.setUnlimitedAmmoCooldownEnabled(false);
-				
+
 				int cooldown = duration * unlimitedAmmoCooldown;
 				data.setUnlimitedAmmoCooldownEnabled(true);
 				data.setUnlimitedAmmoCooldownTime(cooldown);
-				
+
 				plugin.debug(plugin.getMessage("log_ammo_cooldown"), player.getName(), cooldown);
 			}
 		}.runTaskLater(plugin, duration);
 	}
 
 	/** Send prefixed message **/
-	protected final void sendpMessage(Player player, String msg, Object... args) 
+	protected final void sendpMessage(Player player, String msg, Object... args)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
-	
+
 	/**
-	 *  If the player has been on the frenzy waiting list for more than 3 seconds, remove them from the list 
+	 * If the player has been on the frenzy waiting list for more than 3
+	 * seconds, remove them from the list
 	 */
 	public class FrenzyRemoveTask extends BukkitRunnable
 	{
 		private final Player player;
 		private final ItemStack hand;
+
 		public FrenzyRemoveTask(Player player)
 		{
 			this.player = player;
 			this.hand = player.getItemInHand();
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -457,27 +476,28 @@ public class AbilityHandler
 					if (player.isOnline())
 					{
 						String inHand = FormatUtil.getFriendlyName(hand.getType());
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format(plugin.getMessage("lower_item"), inHand));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
 					}
 				}
 			}
 		}
 	}
-	
-	/** 
-	 * If the player has been on the spick waiting list for more than 3 seconds, remove them
+
+	/**
+	 * If the player has been on the spick waiting list for more than 3 seconds,
+	 * remove them
 	 */
 	public class SuperPickaxeRemoveTask extends BukkitRunnable
 	{
 		private final Player player;
 		private final ItemStack hand;
+
 		public SuperPickaxeRemoveTask(Player player)
 		{
 			this.player = player;
 			this.hand = player.getItemInHand();
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -491,24 +511,23 @@ public class AbilityHandler
 					if (player.isOnline())
 					{
 						String inHand = FormatUtil.getFriendlyName(hand.getType());
-						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format(plugin.getMessage("lower_item"), inHand));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("lower_item"), inHand));
 					}
 				}
 			}
 		}
 	}
-	
+
 	public int getFrenzyDuration(PlayerData data)
 	{
 		return frenzyDuration + (data.getLevel() * frenzyMultiplier);
 	}
-	
+
 	public int getSuperPickaxeDuration(PlayerData data)
 	{
 		return superPickaxeDuration + (data.getLevel() + superPickaxeMultiplier);
 	}
-	
+
 	public int getUnlimitedAmmoCooldown(PlayerData data)
 	{
 		return unlimitedAmmoDuration + (data.getLevel() + unlimitedAmmoMultiplier);

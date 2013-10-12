@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.block.Block;
@@ -19,10 +20,11 @@ public class CmdSitdown extends SwornRPGCommand
 		this.name = "sitdown";
 		this.aliases.add("sit");
 		this.description = "Sit in a chair";
-		
+		this.permission = Permission.SITDOWN;
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -30,7 +32,7 @@ public class CmdSitdown extends SwornRPGCommand
 		// A method that ignores transparency would be wonderful...
 		@SuppressWarnings("deprecation")
 		Block block = player.getTargetBlock(null, 10);
-		
+
 		if (block == null)
 		{
 			err(getMessage("no_block"));
@@ -43,13 +45,13 @@ public class CmdSitdown extends SwornRPGCommand
 			err(getMessage("no_chair"));
 			return;
 		}
-		
+
 		Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
-			
+
 		if (! it.setPassenger(player))
 		{
 			it.remove();
-			
+
 			err(getMessage("sit_error"));
 			return;
 		}

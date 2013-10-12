@@ -8,17 +8,17 @@ import net.dmulloy2.swornrpg.util.FormatUtil;
  * @author dmulloy2
  */
 
-public class CmdAChat extends SwornRPGCommand
+public class CmdAdminChat extends SwornRPGCommand
 {
-	public CmdAChat(SwornRPG plugin)
+	public CmdAdminChat(SwornRPG plugin)
 	{
 		super(plugin);
 		this.name = "a";
-		this.aliases.add("achat");
+		this.aliases.add("adminchat");
 		this.requiredArgs.add("message");
 		this.description = "Talk in admin-only chat";
-		this.permission = Permission.CMD_ACHAT;
-		
+		this.permission = Permission.ADMINCHAT;
+
 		this.mustBePlayer = false;
 	}
 

@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.entity.Entity;
@@ -17,6 +18,7 @@ public class CmdEject extends SwornRPGCommand
 		super(plugin);
 		this.name = "eject";
 		this.description = "Remove a player from your head";
+		this.permission = Permission.EJECT;
 		
 		this.mustBePlayer = true;
 	}
@@ -34,7 +36,7 @@ public class CmdEject extends SwornRPGCommand
 		String name = "";
 		if (passenger instanceof Player)
 		{
-			name = ((Player)passenger).getName();
+			name = ((Player) passenger).getName();
 		}
 		else
 		{
@@ -43,9 +45,14 @@ public class CmdEject extends SwornRPGCommand
 			
 			name = article + " " + type;
 		}
-		
-		sendMessage(getMessage("eject_successful"), name);
-		
-		player.eject();
+
+		if (player.eject())
+		{
+			sendMessage(getMessage("eject_successful"), name);
+		}
+		else
+		{
+			err("Could not eject {0}", name);
+		}
 	}
 }

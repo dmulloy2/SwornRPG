@@ -1,11 +1,10 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -19,38 +18,15 @@ public class CmdLevel extends SwornRPGCommand
 		this.name = "level";
 		this.description = "Check a player's level";
 		this.optionalArgs.add("player");
+		this.permission = Permission.LEVEL;
+
 		this.mustBePlayer = false;
 	}
 	
 	@Override
 	public void perform()
 	{
-		OfflinePlayer target = null;
-		if (args.length == 1)
-		{
-			target = Util.matchPlayer(args[0]);
-			if (target == null)
-			{
-				target = Util.matchOfflinePlayer(args[0]);
-				if (target == null)
-				{
-					err(plugin.getMessage("noplayer"));
-					return;
-				}
-			}
-		}
-		else
-		{
-			if (sender instanceof Player)
-			{
-				target = (Player)sender;
-			}
-			else
-			{
-				err(plugin.getMessage("console_level"));
-				return;
-			}
-		}
+		OfflinePlayer target = getTarget(0, hasPermission(Permission.LEVEL_OTHERS));
 		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
@@ -58,17 +34,17 @@ public class CmdLevel extends SwornRPGCommand
 			err(plugin.getMessage("noplayer"));
 			return;
 		}
-		
+
 		int level = data.getLevel();
 		int nextlevel = level+1;
 		int totalxp = data.getTotalxp();
 		int xptonext = (data.getXpneeded() - data.getPlayerxp());
-		
+
 		String name, title;
 		String senderp = sender.getName();
 		String targetp = target.getName();
-		
-		if (targetp == senderp)
+
+		if (targetp.equals(senderp))
 		{
 			name = "You are";
 			title = senderp;
@@ -78,7 +54,7 @@ public class CmdLevel extends SwornRPGCommand
 			name = targetp + " is";
 			title = targetp;
 		}
-		
+
 		sendMessage(plugin.getMessage("level_header"), title);
 		sendMessage(plugin.getMessage("level_info"), name, level, totalxp);
 		sendMessage(plugin.getMessage("level_xptonext"), name, xptonext, nextlevel);
@@ -96,7 +72,7 @@ public class CmdLevel extends SwornRPGCommand
 		{
 			bar.append("&e=");
 		}
-		
+
 		sendMessage(plugin.getMessage("level_bar"), bar.toString());
 	}
 }

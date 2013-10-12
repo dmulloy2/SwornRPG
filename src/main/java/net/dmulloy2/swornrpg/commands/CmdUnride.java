@@ -17,7 +17,8 @@ public class CmdUnride extends SwornRPGCommand
 		super(plugin);
 		this.name = "unride";
 		this.description = "Get off of a player's head";
-		this.permission = Permission.CMD_RIDE;
+		this.permission = Permission.UNRIDE;
+
 		this.mustBePlayer = true;
 	}
 	
@@ -29,17 +30,18 @@ public class CmdUnride extends SwornRPGCommand
 			err(plugin.getMessage("not_riding"));
 			return;
 		}
-		
-		player.leaveVehicle();
 
 		Entity vehicle = player.getVehicle();
 		
 		player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
 		
-		
 		if (vehicle instanceof Arrow)
 		{
 			vehicle.remove();
+		}
+		else
+		{
+			player.leaveVehicle();
 		}
 		
 		sendMessage(getMessage("unride_successful"));

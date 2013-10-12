@@ -4,147 +4,127 @@ version: "${project.version}"
 author: dmulloy2
 description: The fully featured mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, SwornNations, Vault]
+
+# Commands
 commands:
-  a:
-    description: Admin only chat
+  abilities:
+    description: Check SwornRPG ability levels
+    usage: /<command> [player]
+    aliases: [skills]
+  addxp:
+    description: Manually give xp to a player
+    usage: /<command> <player> <xp>
+    aliases: [givexp]
+  adminchat:
+    description: Talk in admin-only chat
     usage: /<command> <message>
-    aliases: [achat]
-  ride:
-    description: Get on someones head
-    usage: /<command> <player>
-    aliases: [mount]
-  unride:
-    description: Get off someone's head
-    usage: /<command>
-    aliases: [dismount]
-  hat:
-    description: Puts the block in your hand on your head
-    permission: srpg.hat
-    usage: |
-      /<command>
-      /<command> remove
-    aliases: [headgear]
-  asay:
+    aliases: [a]
+  adminsay:
     description: Alternate admin say command
-    usage: /<command> <message>
-    aliases: [adm]
-  srpg:
-    description: SwornRPG root command
-    usage: |
-      /<command>
-      /<command> <args>
-    aliases: [swornrpg]
-  frenzy:
-    description: Gives special abilities based on level
-    usage: /<command>
-  hc:
-    description: High Council Chat
-    usage: /<command> <message>
-    aliases: [council]
-  eject:
-    description: Kick someone off your head
-    usage: /<command>
-  match:
-    description: Match online and offline players
-    usage: /<command> <player>
-    aliases: [matchplayer]
-  tag:
-    description: Change the tag above your head
-    usage: |
-      /<command> <tag>
-      /<command> <player> <tag>
-    aliases: [settag]
-  tagr:
-    description: Removes/resets a player's tag
-    usage: |
-      /<command>
-      /<command> <tag>
-    aliases: [resettag]
-  level:
-    description: Shows a player's level
-    usage: |
-      /<command>
-      /<command> <player>
-  levelr:
-    description: Resets a player's level
-    usage: |
-      /<command>
-      /<command> <player>
-    aliases: [resetlevel]
-  deathcoords:
+    usage: /<command> message>
+    aliases: [asay]
+  coordstoggle:
     description: Toggle death coordinate messages
     usage: /<command>
-    aliases: [deathbook, deathmail, coordstoggle]
-  propose:
-    description: Propose to another player
-    usage: /<command> <player>
-    aliases: [engage]
-  marry:
-    description: Marry another player
-    usage: /<command> <player>
-    aliases: [matrimony]
   deny:
-    description: Deny someone's hand in marriage
+    description: Deny a player's proposal
     usage: /<command>
     aliases: [reject]
-  spouse:
-    description: Shows information on a player's spouse
-    usage: |
-      /<command>
-      /<command> <player>
-    aliases: [spouseinfo]
   divorce:
     description: Divorce your spouse
     usage: /<command>
-  standup:
-    description: Get off your chair
+  eject:
+    description: Remove a player from your head
     usage: /<command>
-    aliases: [stand]
-  iname:
-    description: Change the name of items!
+  frenzy:
+    description: Enter frenzy mode
+    usage: /<command>
+  hat:
+    description: Put the block in your hand on your head
+    usage: /<command> [remove]
+  highcouncil:
+    description: Talk in high council chat
+    usage: /<command> <message>
+    usage: [hc]
+  itemname:
+    description: Set the name of your in-hand item
     usage: /<command> <name>
-    permission: srpg.iname
-    aliases: [itemname]
-  addxp:
-    description: Manually add xp to a player
+    aliases: [iname]
+  level:
+    description: Check a player's level
+    usage: /<command> [player]
+  marry:
+    description: Marry another player
     usage: /<command> <player>
-    permission: srpg.addxp
-    aliases: [givexp]
-  mine:
-    description: Super pickaxe based upon level
+  match:
+    description: Match a string with the closest player
+    usage: /<command> <string>
+    aliases: [matchplayer]
+  propose:
+    description: Propose marriage to a player
+    usage: /<command> <player>
+  resetlevel:
+    description: Reset a player's level
+    usage: /<command> [player]
+    aliases: [levelr]
+  ride:
+    description: Get on a player's head
+    usage: /<command> <player>
+  sitdown:
+    description: Sit in a chair
     usage: /<command>
-    aliases: [superpick]
+    aliases: [sit]
+  spouse:
+    description: Check a player's spouse
+    usage: /<command> [player]
+  srpg:
+    description: SwornRPG base command
+    usage: /<command> <args>
+    aliases: [swornrpg]
   stafflist:
     description: List online staff
     usage: /<command>
     aliases: [staff]
-  sitdown:
-    description: Sit down on a chair
+  standup:
+    description: Get out of your chair
     usage: /<command>
-    aliases: [sit]
-  ammo:
-    description: Unlimited ammo for your gun
+    aliases: [stand]
+  superpick:
+    description: Activate super pickaxe
     usage: /<command>
-    aliases: [unlimitedammo]
-  abilities:
-    description: Check your SwornRPG ability levels
+    aliases: [mine, superpickaxe]
+  tag:
+    description: Change the color above your head
+    usage: /<command> [player] <tag>
+  tagreset:
+    description: Reset a player's tag
+    usage: /<command> [player]
+    aliases: [tagr]
+  unlimitedammo:
+    description: Activate unlimited ammo ability
     usage: /<command>
-    aliases: [skills]
+  unride:
+    description: Get off of a player's head
+    usgae: /<command>
+
+# Permission Groupings
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
     default: false
     children:
       srpg.moderator: true
-      srpg.asay: true
-      srpg.council: true
-      srpg.tag: true
-      srpg.tag.remove: true
-      srpg.tag.others: true
-      srpg.level.reset: true
-      srpg.iname: true
-      srpg.addxp: true
-      srpg.update: true
+      srpg.cmd.addxp: true
+      srpg.cmd.adminsay: true
+      srpg.cmd.highcouncil: true
+      srpg.cmd.itemname: true
+      srpg.cmd.level.reset: true
+      srpg.cmd.reload: true
+      srpg.cmd.tag: true
+      srpg.cmd.tag.others: true
+      srpg.cmd.tag.reset: true
+      srpg.cmd.tag.reset.others: true
+      srpg.update.notify: true
   srpg.*:
     description: Just an alias for srpg.admin
     default: op
@@ -155,47 +135,152 @@ permissions:
     default: false
     children:
       srpg.guard: true
-      srpg.ride: true
-      srpg.match: true
+      srpg.cmd.match: true
+      srpg.cmd.ride: true
+      srpg.cmd.unride: true
   srpg.guard:
     description: Gives access to features meant for server guards
     default: false
     children:
-      srpg.adminchat: true
+      srpg.player: true
+      srpg.cmd.adminchat: true
       srpg.staff: true
-  srpg.hat:
-    description: Allows access to /hat
+  srpg.player:
+    description: Gives access to features meant for regular players
     default: true
-  srpg.ride:
-    description: Allows access to /ride, /eject, and /unride
+    children:
+      srpg.cmd.abilities: true
+      srpg.cmd.abilities.others: true
+      srpg.cmd.coordstoggle: true
+      srpg.cmd.deny: true
+      srpg.cmd.divorce: true
+      srpg.cmd.eject: true
+      srpg.cmd.frenzy: true
+      srpg.cmd.hat: true
+      srpg.cmd.leaderboard: true
+      srpg.cmd.level: true
+      srpg.cmd.level.others: true
+      srpg.cmd.marry: true
+      srpg.cmd.propose: true
+      srpg.cmd.sitdown: true
+      srpg.cmd.spouse: true
+      srpg.cmd.spouse.others: true
+      srpg.cmd.stafflist: true
+      srpg.cmd.standup: true
+      srpg.cmd.superpickaxe: true
+      srpg.cmd.unlimitedammo: true
+      srpg.cmd.version: true
+
+# Individual Nodes
+  srpg.cmd.abilities:
+    description: Allows checking of individual abilities
+    default: true
+  srpg.cmd.abilities.others:
+    description: Allows checking of other players' abilities
+    default: true
+  srpg.cmd.addxp:
+    description: Allows forced addition of xp
     default: false
-  srpg.asay:
-    description: Allows access to /asay
+  srpg.cmd.adminchat:
+    description: Allows access to admin chat
     default: false
-  srpg.council:
-    description: Allows access to /hc
+  srpg.cmd.adminsay:
+    description: Allows access to '/asay'
     default: false
-  srpg.adminchat:
-    description: Allows access to /a
+  srpg.cmd.coordstoggle:
+    description: Allows access to '/coordstoggle'
+    default: true
+  srpg.cmd.deny:
+    description: Allows access to '/deny'
+    default: true
+  srpg.cmd.divorce:
+    description: Allows access to '/divorce'
+    default: true
+  srpg.cmd.eject:
+    description: Allows access to '/eject'
+    default: true
+  srpg.cmd.frenzy:
+    description: Allows access to '/frenzy'
+    default: true
+  srpg.cmd.hat:
+    description: Allows access to '/hc' 
+    default: true
+  srpg.cmd.highcouncil:
+    description: Allows access to high council chat
     default: false
-  srpg.tag:
-    description: Allows a player to set their own tag
+  srpg.cmd.itemname:
+    description: Allows access to '/itemname'
     default: false
-  srpg.tag.remove:
-    description: Allows access to /tagr
+  srpg.cmd.leaderboard:
+    description: Allows access to '/srpg lb'
+    default: true
+  srpg.cmd.level:
+    description: Allows checking of individual level
+    default: true
+  srpg.cmd.level.others:
+    description: Allows checking of others' levels
+    default: true
+  srpg.cmd.level.reset:
+    description: Allows access to '/resetlevel'
     default: false
-  srpg.tag.others:
-    description: Allows a player to set another player's tag
+  srpg.cmd.marry:
+    description: Allows access to '/marry'
+    default: true
+  srpg.cmd.match:
+    description: Allows access to '/match'
+    default: true
+  srpg.cmd.propose:
+    description: Allows access to '/propose'
+    default: true
+  srpg.cmd.reload:
+    description: Allows access to '/srpg reload' 
     default: false
-  srpg.level.reset:
-    description: Allows access to /levelr
+  srpg.cmd.ride:
+    description: Allows access to '/ride'
     default: false
-  srpg.iname:
-    description: Allows setting of item names
+  srpg.cmd.sitdown:
+    description: Allows access to '/sitdown'
+    default: true
+  srpg.cmd.spouse:
+    description: Allows checking of individual spouse
+    default: true
+  srpg.cmd.spouse.others:
+    description: Allows checking of others' spouses
+    default: true
+  srpg.cmd.stafflist:
+    description: Allows access to '/staff'
+    default: true
+  srpg.cmd.standup:
+    description: Allows access to '/standup'
+    default: true
+  srpg.cmd.superpickaxe:
+    description: Allows access to '/superpickaxe'
+    default: true
+  srpg.cmd.tag:
+    description: Allows setting of individual tag
     default: false
-  srpg.update:
-    description: Allows a player to see update messages
+  srpg.cmd.tag.others:
+    description: Allows setting of others' tags
     default: false
+  srpg.cmd.tag.reset:
+    description: Allows resetting of individual tag
+    default: false
+  srpg.cmd.tag.reset.others:
+    description: Allows resetting of others' tags
+    default: false
+  srpg.cmd.unlimitedammo:
+    description: Allows access to '/unlimitedammo'
+    default: true
+  srpg.cmd.unride:
+    description: Allows access to '/unride'
+    default: false
+  srpg.cmd.version:
+    description: Allows access to '/srpg version'
+    default: true
+  
   srpg.staff:
-    description: Designates a player as staff (for /stafflist)
+    description: Displays a player as staff in '/stafflist'
+    default: false
+  srpg.update.notify:
+    description: Allows notification of updates
     default: false

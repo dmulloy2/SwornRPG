@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 
 /**
  * @author dmulloy2
@@ -14,6 +15,8 @@ public class CmdVersion extends SwornRPGCommand
 		this.name = "version";
 		this.aliases.add("v");
 		this.description = "Display SwornRPG version";
+		this.permission = Permission.VERSION;
+
 		this.usesPrefix = true;
 	}
 
@@ -24,11 +27,17 @@ public class CmdVersion extends SwornRPGCommand
 		
 		StringBuilder line = new StringBuilder();
 		line.append(plugin.getMessage("version_author") + " ");
+
 		for (String author : plugin.getDescription().getAuthors())
 		{
 			line.append("&e" + author + ", ");
 		}
-		line.deleteCharAt(line.lastIndexOf(","));
+		
+		if (line.lastIndexOf(",") >= 0)
+		{
+			line.deleteCharAt(line.lastIndexOf(","));
+		}
+
 		sendMessage(line.toString());
 		
 		sendMessage(plugin.getMessage("version_loaded"), plugin.getDescription().getFullName());

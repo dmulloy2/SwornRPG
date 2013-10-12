@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.entity.Player;
@@ -16,8 +17,8 @@ public class CmdDeny extends SwornRPGCommand
 		super(plugin);
 		this.name = "deny";
 		this.aliases.add("reject");
-		this.optionalArgs.add("player");
 		this.description = "Deny a player's proposal";
+		this.permission = Permission.DENY;
 
 		this.mustBePlayer = true;
 	}
@@ -36,7 +37,7 @@ public class CmdDeny extends SwornRPGCommand
 			err(plugin.getMessage("no_proposal"));
 			return;
 		}
-		
+
 		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
 		if (target == null)
 		{
@@ -44,11 +45,10 @@ public class CmdDeny extends SwornRPGCommand
 			return;
 		}
 
-		String targetp = target.getName();
-		String senderp = sender.getName();
-		plugin.getProposal().remove(senderp);
-		plugin.getProposal().remove(targetp);
-		sendpMessage(plugin.getMessage("deny_sender"), targetp);
-		sendMessageTarget(plugin.getMessage("deny_rejcted"), target, senderp);
+		plugin.getProposal().remove(sender.getName());
+		plugin.getProposal().remove(target.getName());
+
+		sendpMessage(plugin.getMessage("deny_sender"), target.getName());
+		sendMessageTarget(plugin.getMessage("deny_rejcted"), target, sender.getName());
 	}
 }

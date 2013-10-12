@@ -206,18 +206,18 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		err(plugin.getMessage("invalidargs") + " " + getUsageTemplate(false));
 	}
 	
-	protected final OfflinePlayer getTarget(boolean msg)
+	protected final OfflinePlayer getTarget(int arg, boolean others)
 	{
 		OfflinePlayer target = null;
-		if (args.length == 1)
+		if (args.length == 1 && others)
 		{
-			target = Util.matchPlayer(args[0]);
+			target = Util.matchPlayer(args[arg]);
 			if (target == null)
 			{
-				target = Util.matchOfflinePlayer(args[0]);
+				target = Util.matchOfflinePlayer(args[arg]);
 				if (target == null)
 				{
-					if (msg) err(plugin.getMessage("noplayer"));
+					err(plugin.getMessage("noplayer"));
 					return null;
 				}
 			}
@@ -226,15 +226,20 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		{
 			if (sender instanceof Player)
 			{
-				target = (Player)sender;
+				target = player;
 			}
 			else
 			{
-				if (msg) err(plugin.getMessage("console_level"));
+				err(plugin.getMessage("console_level"));
 				return null;
 			}
 		}
 		
 		return target;
+	}
+	
+	protected final boolean hasPermission(Permission permission)
+	{
+		return plugin.getPermissionHandler().hasPermission(sender, permission);
 	}
 }

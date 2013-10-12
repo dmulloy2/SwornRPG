@@ -17,42 +17,44 @@ public class CmdRide extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "ride";
-		this.description = "Get on a player's head!";
 		this.requiredArgs.add("player");
-		this.permission = Permission.CMD_RIDE;
-		
+		this.description = "Get on a player's head";
+		this.permission = Permission.RIDE;
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
 		final Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 		{
-			err(getMessage("noplayer"));
+			err("Player not found!");
 			return;
 		}
-		
+
 		if (target.getPassenger() != null)
 		{
-			err(getMessage("ride_passenger"));
+			err("Someone is already riding that person!");
 			return;
 		}
-		
+
 		if (target.getVehicle() != null)
 		{
-			err(getMessage("ride_vehicle"));
+			err("That person is riding someone else!");
 			return;
 		}
-		
+
+		player.teleport(target);
+
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
 				target.setPassenger(player);
-				
+
 				sendpMessage(plugin.getMessage("now_riding"), target.getName());
 			}
 		}.runTaskLater(plugin, 40L);
