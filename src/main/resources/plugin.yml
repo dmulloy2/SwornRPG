@@ -45,7 +45,7 @@ commands:
   highcouncil:
     description: Talk in high council chat
     usage: /<command> <message>
-    usage: [hc]
+    aliases: [hc]
   itemname:
     description: Set the name of your in-hand item
     usage: /<command> <name>
@@ -203,7 +203,7 @@ permissions:
     description: Allows access to '/frenzy'
     default: true
   srpg.cmd.hat:
-    description: Allows access to '/hc' 
+    description: Allows access to '/hat' 
     default: true
   srpg.cmd.highcouncil:
     description: Allows access to high council chat
