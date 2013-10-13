@@ -85,8 +85,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -443,7 +447,7 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Clear Memory **/
-	public void clearMemory()
+	private final void clearMemory()
 	{
 //		healthBarHandler.clear();
 		
@@ -455,17 +459,17 @@ public class SwornRPG extends JavaPlugin
 	}
 	    
 	/** Console logging **/
-	public void outConsole(String string, Object... objects)
+	public final void outConsole(String string, Object... objects)
 	{
 		logHandler.log(string, objects);
 	}
 	
-	public void outConsole(Level level, String string, Object... objects)
+	public final void outConsole(Level level, String string, Object... objects)
 	{
 		logHandler.log(level, string, objects);
 	}
 	
-	public void debug(String string, Object... objects)
+	public final void debug(String string, Object... objects)
 	{
 		logHandler.debug(string, objects);
 	}
@@ -473,7 +477,7 @@ public class SwornRPG extends JavaPlugin
     /**
      * Setup Vault Integration
      */
-	private void setupVaultIntegration() 
+	private final void setupVaultIntegration() 
 	{
 		if (pluginManager.isPluginEnabled("Vault"))
 		{
@@ -503,7 +507,7 @@ public class SwornRPG extends JavaPlugin
 	/**
 	 * Setup Essentials Integration
 	 */
-	public void setupEssentialsIntegration()
+	private final void setupEssentialsIntegration()
 	{
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.isPluginEnabled("Essentials"))
@@ -514,7 +518,7 @@ public class SwornRPG extends JavaPlugin
 	}
 
     /** Update Checker **/
-    public double updateCheck(double currentVersion)
+    private final double updateCheck(double currentVersion)
     {
         String pluginUrlString = "http://dev.bukkit.org/bukkit-plugins/swornrpg/files.rss";
         try
@@ -541,13 +545,13 @@ public class SwornRPG extends JavaPlugin
         return currentVersion;
     }
     
-    public boolean updateNeeded()
+    public final boolean updateNeeded()
     {
     	return (updateCheck(currentVersion) > currentVersion);
     }
     
     /** Get messages **/
-	public String getMessage(String string) 
+	public final String getMessage(String string) 
 	{
 		try
 		{
@@ -561,7 +565,7 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Reload the Configuration **/
-	public void reload()
+	public final void reload()
 	{
 		reloadConfig();
 		updateSalvageRef();
@@ -570,7 +574,7 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Update salvage ref tables **/
-	private void updateSalvageRef() 
+	private final void updateSalvageRef() 
 	{
 		String salvage = getConfig().getString("salvage");
 
@@ -592,7 +596,7 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Update Block Drops **/
-	public void updateBlockDrops() 
+	public final void updateBlockDrops() 
 	{
 		blockDropsMap.clear();
 		
@@ -634,8 +638,8 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 	
-	/**Update Fish Drops**/
-	public void updateFishDrops() 
+	/** Update Fish Drops **/
+	private final void updateFishDrops() 
 	{
 		fishDropsMap.clear();
 		
@@ -678,7 +682,7 @@ public class SwornRPG extends JavaPlugin
 	}
 
 	/** Camping Check **/
-	public boolean checkCamper(Player player)
+	public final boolean checkCamper(Player player)
 	{
 		Location loc = player.getLocation();
 		World world = loc.getWorld();
@@ -703,28 +707,101 @@ public class SwornRPG extends JavaPlugin
 		
 		return false;
 	}
-	
-	/** WarZone / SafeZone Check **/
-	public boolean checkFactions(Player player, boolean safeZoneCheck)
+
+	/** Factions Checks **/
+	public final boolean checkFactions(Location location, boolean safeZoneCheck)
+	{
+		return safeZoneCheck ? isSafeZone(location) || isWarZone(location) : isWarZone(location);
+	}
+
+	public final boolean checkFactions(Player player, boolean safeZoneCheck)
+	{
+		return checkFactions(player.getLocation(), safeZoneCheck);
+	}
+
+	private final boolean isWarZone(Location location)
 	{
 		if (pluginManager.isPluginEnabled("Factions"))
 		{
 			Plugin pl = pluginManager.getPlugin("Factions");
 			String version = pl.getDescription().getVersion();
-			if (version.startsWith("1.6."))
+			if (version.startsWith("1.6"))
 			{
-				Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-				return (safeZoneCheck ? (otherFaction.isWarZone() || otherFaction.isSafeZone()) : otherFaction.isWarZone());
+				Faction fac = Board.getFactionAt(new FLocation(location));
+				return fac.isWarZone();
+			}
+		}
+
+		if (pluginManager.isPluginEnabled("SwornNations"))
+		{
+			Faction fac = Board.getAbsoluteFactionAt(new FLocation(location));
+			return fac.isWarZone();
+		}
+
+		return false;
+	}
+	
+	private final boolean isSafeZone(Location location)
+	{
+		if (pluginManager.isPluginEnabled("Factions"))
+		{
+			Plugin pl = pluginManager.getPlugin("Factions");
+			String version = pl.getDescription().getVersion();
+			if (version.startsWith("1.6"))
+			{
+				Faction fac = Board.getFactionAt(new FLocation(location));
+				return fac.isSafeZone();
+			}
+		}
+
+		if (pluginManager.isPluginEnabled("SwornNations"))
+		{
+			Faction fac = Board.getAbsoluteFactionAt(new FLocation(location));
+			return fac.isSafeZone();
+		}
+
+		return false;
+	}
+	
+	public final Player getKiller(Player killed)
+	{
+		Entity attacker = killed.getKiller();
+		if (attacker == null)
+		{
+			EntityDamageEvent ed = killed.getLastDamageCause();
+			if (ed instanceof EntityDamageByEntityEvent)
+			{
+				EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ed;
+				attacker = ede.getDamager();
 			}
 		}
 		
-		if (pluginManager.isPluginEnabled("SwornNations"))
+		Player killer = null;
+		if (attacker != null)
 		{
-			Faction otherFaction = Board.getFactionAt(new FLocation(player.getLocation()));
-			return (safeZoneCheck ? (otherFaction.isWarZone() || otherFaction.isSafeZone()) : otherFaction.isWarZone());
+			if (attacker instanceof Player) 
+			{
+				killer = (Player) attacker;
+			} 
+			else if (attacker instanceof Arrow) 
+			{
+				Entity shooter = ((Arrow) attacker).getShooter();
+				if (shooter instanceof Player) 
+				{
+					killer = (Player) shooter;
+				}
+			} 
+			else if (attacker instanceof Snowball) 
+			{
+				Entity shooter = ((Snowball) attacker).getShooter();
+				if (shooter instanceof Player)
+				{
+					killer = (Player) shooter;
+				}
+			}
 		}
 		
-		return false;
+		return killer;
 	}
 	
 	/** Disabled World Checks **/

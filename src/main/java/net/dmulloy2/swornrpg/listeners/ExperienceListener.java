@@ -15,13 +15,11 @@ import org.bukkit.NetherWartsState;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -30,8 +28,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -94,7 +90,7 @@ public class ExperienceListener implements Listener
 		Player killed = event.getEntity();
 
 		/** Figure out the killer **/
-		Player killer = getKiller(killed);
+		Player killer = plugin.getKiller(killed);
 
 		if (killer != null)
 		{
@@ -128,47 +124,6 @@ public class ExperienceListener implements Listener
 			plugin.debug(plugin.getMessage("log_pvp_killer"), killer.getName(), killerXpGain, killed.getName());
 			plugin.debug(plugin.getMessage("log_pvp_killed"), killed.getName(), msgxp, killer.getName());
 		}
-	}
-	
-	public Player getKiller(Player killed)
-	{
-		Entity attacker = killed.getKiller();
-		if (attacker == null)
-		{
-			EntityDamageEvent ed = killed.getLastDamageCause();
-			if (ed instanceof EntityDamageByEntityEvent)
-			{
-				EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ed;
-				attacker = ede.getDamager();
-			}
-		}
-		
-		Player killer = null;
-		if (attacker != null)
-		{
-			if (attacker instanceof Player) 
-			{
-				killer = (Player) attacker;
-			} 
-			else if (attacker instanceof Arrow) 
-			{
-				Entity shooter = ((Arrow) attacker).getShooter();
-				if (shooter instanceof Player) 
-				{
-					killer = (Player) shooter;
-				}
-			} 
-			else if (attacker instanceof Snowball) 
-			{
-				Entity shooter = ((Snowball) attacker).getShooter();
-				if (shooter instanceof Player)
-				{
-					killer = (Player) shooter;
-				}
-			}
-		}
-		
-		return killer;
 	}
 
 	/** Rewards XP in PvE situations **/

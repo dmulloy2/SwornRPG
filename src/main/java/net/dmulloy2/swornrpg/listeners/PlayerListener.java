@@ -57,26 +57,27 @@ public class PlayerListener implements Listener
 	private boolean fishingEnabled;
 	private boolean fishDropsEnabled;
 	private boolean speedBoostEnabled;
-	
+
 	private int fishingGain;
 	private int speedBoostOdds;
 	private int speedBoostDuration;
 	private int speedBoostStrength;
-	
+
 	private HashMap<String, ItemStack> bookMap;
 
 	private final SwornRPG plugin;
+
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		
+
 		this.salvagingEnabled = plugin.getConfig().getBoolean("salvaging");
 		this.deathCoordinateMessages = plugin.getConfig().getBoolean("deathCoordinateMessages");
 		this.checkForUpdates = plugin.getConfig().getBoolean("checkForUpdates");
 		this.fishingEnabled = plugin.getConfig().getBoolean("levelingMethods.fishing.enabled");
 		this.fishDropsEnabled = plugin.getConfig().getBoolean("fishDropsEnabled");
 		this.speedBoostEnabled = plugin.getConfig().getBoolean("speedBoost.enabled");
-		
+
 		this.fishingGain = plugin.getConfig().getInt("levelingMethods.fishing.xpgain");
 		this.speedBoostOdds = plugin.getConfig().getInt("speedBoost.odds");
 		this.speedBoostDuration = plugin.getConfig().getInt("speedBoost.duration");
@@ -93,7 +94,7 @@ public class PlayerListener implements Listener
 
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
-		
+
 		if (! event.hasBlock())
 			return;
 
@@ -122,7 +123,7 @@ public class PlayerListener implements Listener
 				ItemStack item = player.getItemInHand();
 
 				Material type = item.getType();
-				
+
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amt = 0.0D;
 
@@ -143,8 +144,8 @@ public class PlayerListener implements Listener
 
 					String itemName = FormatUtil.getFriendlyName(item.getType());
 					player.sendMessage(plugin.getPrefix() + 
-							FormatUtil.format(plugin.getMessage("salvage_success"), article, itemName, amt, blockType.toLowerCase(),
-									materialExtension, plural));
+							FormatUtil.format(plugin.getMessage("salvage_success"),
+									article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
 
 					plugin.outConsole(plugin.getMessage("log_salvage"), player.getName(), itemName, amt, blockType.toLowerCase(),
 							materialExtension, plural);
@@ -196,30 +197,28 @@ public class PlayerListener implements Listener
 			if (ess != null)
 			{
 				User user = ess.getUser(player);
-
-				Entity killer = event.getEntity().getKiller();
-				if (killer instanceof Player)
+				
+				Player killer = plugin.getKiller(player);
+				if (killer != null)
 				{
-					Player killerp = event.getEntity().getKiller();
-					String killern = killerp.getName();
-					String world = player.getWorld().getName();
-
 					String mail = FormatUtil.format(plugin.getMessage("mail_pvp_format"), 
-							killern, x, y, z, world, TimeUtil.getLongDateCurr());
+							killer.getName(), x, y, z, loc.getWorld().getName(), TimeUtil.getLongDateCurr());
 					user.addMail(mail);
-
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
+					
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 				else
 				{
 					String world = player.getWorld().getName();
 
-					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"),
+					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"), 
 							x, y, z, world, TimeUtil.getLongDateCurr());
 					user.addMail(mail);
 
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
+					player.sendMessage(plugin.getPrefix() + 
+							FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 			}
@@ -263,16 +262,17 @@ public class PlayerListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data == null)
 		{
 			plugin.debug(plugin.getMessage("log_new_data"), player.getName());
 
-			data = plugin.getPlayerDataCache().newData(player.getName());
+			data = plugin.getPlayerDataCache().newData(player);
 			data.setXpneeded(100 + (data.getPlayerxp() / 4));
 			data.setLevel(0);
 		}
 
+		/** Update Notification **/
 		if (checkForUpdates && plugin.updateNeeded())
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.UPDATE_NOTIFY))
@@ -298,23 +298,14 @@ public class PlayerListener implements Listener
 		}
 	}
 
+	/** Basic stuff needed when a player leaves **/
 	public void onPlayerDisconnect(Player player)
 	{
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (data.isFrenzyEnabled())
-		{
-			data.setFrenzyEnabled(false);
-		}
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
-		if (data.isSuperPickaxeEnabled())
-		{
-			data.setSuperPickaxeEnabled(false);
-		}
-
-		if (data.isUnlimitedAmmoEnabled())
-		{
-			data.setUnlimitedAmmoEnabled(false);
-		}
+		data.setFrenzyEnabled(false);
+		data.setSuperPickaxeEnabled(false);
+		data.setUnlimitedAmmoEnabled(false);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -374,10 +365,10 @@ public class PlayerListener implements Listener
 		if (array.length < 2)
 			return;
 
-		if (!array[0].equalsIgnoreCase("diamond") && !array[0].equalsIgnoreCase("iron"))
+		if (! array[0].equalsIgnoreCase("diamond") && ! array[0].equalsIgnoreCase("iron"))
 			return;
 
-		if (!array[1].equalsIgnoreCase("sword"))
+		if (! array[1].equalsIgnoreCase("sword"))
 			return;
 
 		plugin.getAbilityHandler().activateFrenzy(player, false, action);
@@ -396,14 +387,16 @@ public class PlayerListener implements Listener
 		Entity caught = event.getCaught();
 		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
 			return;
-		
+
+		/** Fishing XP Gain **/
 		String message = plugin.getPrefix() + 
 				FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
 		plugin.getExperienceHandler().onXPGain(event.getPlayer(), fishingGain, message);
-		
+
+		/** Fish Drops **/
 		if (! fishDropsEnabled)
 			return;
-		
+
 		if (player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
@@ -469,9 +462,8 @@ public class PlayerListener implements Listener
 		{
 			if (Util.random(speedBoostOdds) == 0)
 			{
-				player.addPotionEffect(
-						new PotionEffect(PotionEffectType.SPEED, speedBoostDuration, speedBoostStrength));
-				player.sendMessage(plugin.getPrefix() +
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedBoostDuration, speedBoostStrength));
+				player.sendMessage(plugin.getPrefix() + 
 						FormatUtil.format(plugin.getMessage("speed_boost")));
 			}
 		}

@@ -46,7 +46,7 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isFrenzyEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), abilityHandler.getFrenzyDuration(data)));
+			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), abilityHandler.getFrenzyDuration(data.getLevel())));
 
 			if (data.isFrenzyCooldownEnabled())
 			{
@@ -59,7 +59,7 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isSuperPickaxeEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data)));
+			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data.getLevel())));
 
 			if (data.isSuperPickaxeCooldownEnabled())
 			{
@@ -72,7 +72,7 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isUnlimitedAmmoEnabled() && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoCooldown(data)));
+			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoCooldown(data.getLevel())));
 
 			if (data.isUnlimitedAmmoCooldownEnabled())
 			{
