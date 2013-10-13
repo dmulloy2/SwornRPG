@@ -31,7 +31,7 @@ public class PlayerDataCache
 	{
 		this.folder = new File(plugin.getDataFolder(), folderName);
 		
-		if (!folder.exists())
+		if (! folder.exists())
 			folder.mkdir();
 		
 		this.data = new ConcurrentHashMap<String, PlayerData>(64, 0.75f, 64);
@@ -72,7 +72,7 @@ public class PlayerDataCache
 			if (file.getName().contains(extension))
 			{
 				String fileName = trimFileExtension(file);
-				if (!isFileAlreadyLoaded(fileName, data))
+				if (! isFileAlreadyLoaded(fileName, data))
 					data.put(fileName, loadData(fileName));
 			}
 		return Collections.unmodifiableMap(data);
@@ -103,7 +103,7 @@ public class PlayerDataCache
 	private void cleanupData() 
 	{
 		for (String key : getAllLoadedPlayerData().keySet())
-			if (!Util.matchOfflinePlayer(key).isOnline())
+			if (! Util.matchOfflinePlayer(key).isOnline())
 				removeData(key);
 	}
 	

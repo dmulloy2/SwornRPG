@@ -4,7 +4,7 @@
 
 **Introducing SwornRPG, the fully featured (and much less laggy and exploitable) alternative to mcMMO! SwornRPG is based upon a very simplistic leveling system, where daily tasks, like farming, fighting players and mobs, enchanting, taming, and being on the server, contribute experience to one single experience pool. As with any good leveling system, SwornRPG awards players with diamonds and cash (both configurable) every time they amass enough xp to level up! Players also receive increased ability times and greater chances for many of SwornRPG's extra features! Players can check their xp and level using /level and check the leaderboard with /srpg top. This plugin also has many, many other features that would not fit on this page!
 
- ** Thanks for over 5,500 downloads!!! ** 
+ ** Thanks for over 6,000 downloads!!! ** 
 ----
 
 == Official SwornRPG Servers

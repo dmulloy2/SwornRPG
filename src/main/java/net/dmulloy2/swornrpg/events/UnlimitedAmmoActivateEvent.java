@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class UnlimitedAmmoActivateEvent extends AbilityActivateEvent
 {
-	public int duration;
+	private final int duration;
 	
 	public UnlimitedAmmoActivateEvent(Player player, int duration)
 	{
@@ -16,8 +16,13 @@ public class UnlimitedAmmoActivateEvent extends AbilityActivateEvent
 		this.duration = duration;
 	}
 	
-	public int getDuration()
+	public final int getDuration()
 	{
 		return duration;
+	}
+	
+	public final boolean isCommand()
+	{
+		return true;
 	}
 }

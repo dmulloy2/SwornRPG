@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerEvent;
 public class PlayerLevelupEvent extends PlayerEvent implements Cancellable
 {	
 	private static final HandlerList handlers = new HandlerList();
-	public int oldLevel;
-	public int newLevel;
+	private final int oldLevel;
+	private final int newLevel;
 	
 	public boolean cancelled;
 	
@@ -24,12 +24,12 @@ public class PlayerLevelupEvent extends PlayerEvent implements Cancellable
 		this.newLevel = newLevel;
 	}
 	
-	public int getOldLevel()
+	public final int getOldLevel()
 	{
 		return oldLevel;
 	}
 	
-	public int getNewLevel()
+	public final int getNewLevel()
 	{
 		return newLevel;
 	}

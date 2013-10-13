@@ -32,6 +32,8 @@ public class CmdStaffList extends SwornRPGCommand
 	{
 		HashMap<String, List<String>> staffMap = new HashMap<String, List<String>>();
 
+		int total = 0;
+
 		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.STAFF))
@@ -45,7 +47,7 @@ public class CmdStaffList extends SwornRPGCommand
 						{
 							staffMap.put(group, new ArrayList<String>());
 						}
-	
+
 						staffMap.get(group).add((player.isOp() ? "&b" : "&e") + player.getName());
 					}
 				}
@@ -55,17 +57,18 @@ public class CmdStaffList extends SwornRPGCommand
 					{
 						staffMap.put("staff", new ArrayList<String>());
 					}
-	
+
 					staffMap.get("staff").add(player.isOp() ? "&b" : "&e" + player.getName());
 				}
+
+				total++;
 			}
 		}
 
 		List<String> lines = new ArrayList<String>();
 
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format("&3There are &e{0} &3out of a maximum &e{1} &3staff online", staffMap.values().size(),
-				plugin.getServer().getMaxPlayers()));
+		line.append(FormatUtil.format("&3There are &e{0} &3out of a maximum &e{1} &3staff online", total, plugin.getServer().getMaxPlayers()));
 		lines.add(line.toString());
 
 		for (Entry<String, List<String>> entry : staffMap.entrySet())

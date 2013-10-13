@@ -13,9 +13,9 @@ public class PlayerXpGainEvent extends PlayerEvent implements Cancellable
 {	
 	private static final HandlerList handlers = new HandlerList();
 	
-	public boolean cancelled;
-	public int xpgained;
-	public String message;
+	private boolean cancelled;
+	private final int xpgained;
+	private final String message;
 	
 	public PlayerXpGainEvent(final Player player, int xpgained, String message)
 	{
@@ -35,12 +35,12 @@ public class PlayerXpGainEvent extends PlayerEvent implements Cancellable
 		return handlers;
 	}
 	
-	public int getXpGained()
+	public final int getXpGained()
 	{
 		return xpgained;
 	}
 	
-	public String getMessage()
+	public final String getMessage()
 	{
 		return message;
 	}

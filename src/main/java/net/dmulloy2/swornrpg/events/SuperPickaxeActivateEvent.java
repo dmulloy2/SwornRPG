@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 
 public class SuperPickaxeActivateEvent extends AbilityActivateEvent
 {
-	public boolean command;
-	public int duration;
+	private final boolean command;
+	private int duration;
 	
 	public SuperPickaxeActivateEvent(Player player, int duration, boolean command)
 	{
@@ -18,13 +18,18 @@ public class SuperPickaxeActivateEvent extends AbilityActivateEvent
 		this.duration = duration;
 	}
 	
-	public boolean isCommand()
+	public final boolean isCommand()
 	{
 		return command;
 	}
 	
-	public int getDuration()
+	public final int getDuration()
 	{
 		return duration;
+	}
+	
+	public final void setDuration(int duration)
+	{
+		this.duration = duration;
 	}
 }

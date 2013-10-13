@@ -13,7 +13,7 @@ public class AbilityActivateEvent extends PlayerEvent implements Cancellable
 {	
 	private static final HandlerList handlers = new HandlerList();
 	
-	public boolean cancelled;
+	private boolean cancelled;
 	
 	public AbilityActivateEvent(final Player player)
 	{
