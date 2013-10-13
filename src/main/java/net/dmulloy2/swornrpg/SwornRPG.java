@@ -85,10 +85,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -775,35 +774,27 @@ public class SwornRPG extends JavaPlugin
 				attacker = ede.getDamager();
 			}
 		}
-		
+
 		Player killer = null;
 		if (attacker != null)
 		{
 			if (attacker instanceof Player) 
 			{
 				killer = (Player) attacker;
-			} 
-			else if (attacker instanceof Arrow) 
+			}
+			else if (attacker instanceof Projectile)
 			{
-				Entity shooter = ((Arrow) attacker).getShooter();
+				Entity shooter = ((Projectile) attacker).getShooter();
 				if (shooter instanceof Player) 
-				{
-					killer = (Player) shooter;
-				}
-			} 
-			else if (attacker instanceof Snowball) 
-			{
-				Entity shooter = ((Snowball) attacker).getShooter();
-				if (shooter instanceof Player)
 				{
 					killer = (Player) shooter;
 				}
 			}
 		}
-		
+
 		return killer;
 	}
-	
+
 	/** Disabled World Checks **/
 	public boolean isDisabledWorld(Player player)
 	{
