@@ -174,7 +174,7 @@ public class SwornRPG extends JavaPlugin
 		
 		currentVersion = Double.valueOf(version.replaceFirst("\\.", ""));
 		
-		/**Register Listeners**/
+		/** Register Listeners **/
 		pluginManager.registerEvents(new PlayerListener(this), this);
 		pluginManager.registerEvents(new EntityListener(this), this);
 		pluginManager.registerEvents(new BlockListener(this), this);
@@ -305,7 +305,7 @@ public class SwornRPG extends JavaPlugin
 			}.runTaskTimer(this, 20L, 20L);
 		}
 		
-		/**Super Pickaxe Cooldown**/
+		/** Super Pickaxe Cooldown **/
 		if (getConfig().getBoolean("superPickaxe.enabled"))
 		{
 			new BukkitRunnable()
@@ -595,29 +595,29 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** Update Block Drops **/
-	public final void updateBlockDrops() 
+	public final void updateBlockDrops()
 	{
 		blockDropsMap.clear();
-		
-		Map<String, ?> map = getConfig().getConfigurationSection("blockDropItems").getValues(true);
-		
-		for (Entry<String, ?> entry : map.entrySet()) 
+
+		Map<String, Object> map = getConfig().getConfigurationSection("blockDropItems").getValues(true);
+
+		for (Entry<String, Object> entry : map.entrySet())
 		{
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
-			
+
 			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
-			for (String value : values) 
+			for (String value : values)
 			{
 				String[] ss = value.split(":");
-				
+
 				Material type = MaterialUtil.getMaterial(ss[0]);
 				if (type == null)
 				{
 					outConsole(Level.WARNING, "Null material {0} found while attempting to load block drops!", ss[0]);
 					continue;
 				}
-				
+
 				short data = 0;
 				int chance = 0;
 				if (ss.length == 3)
@@ -625,14 +625,14 @@ public class SwornRPG extends JavaPlugin
 					data = Short.valueOf(ss[1]);
 					chance = Integer.valueOf(ss[2]);
 				}
-				else 
+				else
 				{
 					chance = Integer.valueOf(ss[1]);
 				}
-				
+
 				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 			}
-			
+
 			blockDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
 		}
 	}
