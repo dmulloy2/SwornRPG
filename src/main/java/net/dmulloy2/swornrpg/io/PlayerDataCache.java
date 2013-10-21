@@ -100,7 +100,7 @@ public class PlayerDataCache
 		return newData(player.getName());
 	}
 	
-	private void cleanupData() 
+	public void cleanupData() 
 	{
 		for (String key : getAllLoadedPlayerData().keySet())
 			if (! Util.matchOfflinePlayer(key).isOnline())

@@ -7,15 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.OfflinePlayer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -135,6 +133,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		public BuildLeaderboardThread()
 		{
 			this.thread = new Thread(this, "SwornRPG-BuildLeaderboard");
+			this.thread.setPriority(1); // lowest priority
 			this.thread.start();
 		}
 
@@ -158,9 +157,6 @@ public class CmdLeaderboard extends SwornRPGCommand
 				}
 			}
 
-//			loadedData.clear();
-//			loadedData = null;
-
 			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(experienceMap.entrySet());
 			Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
 			{
@@ -179,10 +175,11 @@ public class CmdLeaderboard extends SwornRPGCommand
 			{
 				try
 				{
-					OfflinePlayer player = Util.matchOfflinePlayer(entry.getKey());
-					if (player != null)
-					{
-						PlayerData data = getPlayerData(player);
+//					Theres actually no reason to match the player first
+//					OfflinePlayer player = Util.matchOfflinePlayer(entry.getKey());
+//					if (player != null)
+//					{
+						PlayerData data = getPlayerData(entry.getKey());
 						if (data != null)
 						{
 							leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"),
@@ -191,13 +188,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 						}
 						
 						data = null;
-					}
-					
-					player = null;
+//					}
+//					
+//					player = null;
 				}
 				catch (Exception e)
 				{
-					plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "building leaderboard entry for " + entry.getKey()));
+//					Swallow the exception, move on
+//					plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "building leaderboard entry for " + entry.getKey()));
 					continue;
 				}
 			}
@@ -211,7 +209,18 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
 
+			// Save the data
 			plugin.getPlayerDataCache().save();
+
+			// Clean up the data sync
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					plugin.getPlayerDataCache().cleanupData();
+				}
+			}.runTaskLater(plugin, 2L);
 		}
 	}
 
