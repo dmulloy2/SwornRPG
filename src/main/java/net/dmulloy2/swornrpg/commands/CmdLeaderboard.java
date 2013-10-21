@@ -183,7 +183,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 						if (data != null)
 						{
 							leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"),
-									pos, player.getName(), data.getLevel(), data.getTotalxp()));
+									pos, entry.getKey(), data.getLevel(), data.getTotalxp()));
 							pos++;
 						}
 						
