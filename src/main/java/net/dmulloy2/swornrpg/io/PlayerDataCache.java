@@ -116,8 +116,14 @@ public class PlayerDataCache
 			return FileSerialization.load(new File(folder, getFileName(key)), PlayerData.class);
 		}
 	}
-	
-	public void save() 
+
+	// Alias for save
+	public void save()
+	{
+		save(true);
+	}
+
+	public void save(boolean cleanup)
 	{
 		plugin.outConsole("Saving {0} to disk...", folderName);
 		long start = System.currentTimeMillis();
@@ -130,7 +136,9 @@ public class PlayerDataCache
 				FileSerialization.save(entry.getValue(), new File(folder, getFileName(entry.getKey())));
 			}
 		}
-		cleanupData();
+
+		if (cleanup) cleanupData();
+
 		plugin.outConsole("Players saved! [{0} ms]", (System.currentTimeMillis() - start));
 	}
 	

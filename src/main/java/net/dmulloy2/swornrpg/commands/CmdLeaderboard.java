@@ -209,8 +209,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
 
-			// Save the data
-			plugin.getPlayerDataCache().save();
+			// Save the data, but don't cleanup
+			plugin.getPlayerDataCache().save(false);
 
 			// Clean up the data sync
 			new BukkitRunnable()
