@@ -268,7 +268,7 @@ public class PlayerListener implements Listener
 			plugin.debug(plugin.getMessage("log_new_data"), player.getName());
 
 			data = plugin.getPlayerDataCache().newData(player);
-			data.setXpneeded(100 + (data.getPlayerxp() / 4));
+			data.setXpneeded(100);
 			data.setLevel(0);
 		}
 

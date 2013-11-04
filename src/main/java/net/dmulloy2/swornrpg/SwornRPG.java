@@ -406,8 +406,13 @@ public class SwornRPG extends JavaPlugin
 						
 						/** Levelup check **/
 						int xp = data.getPlayerxp();
+
+						if (data.getXpneeded() == 0)
+							data.setXpneeded(100);
+
 						int xpneeded = data.getXpneeded();
-						int newlevel = (xp/xpneeded);
+
+						int newlevel = xp / xpneeded;
 						int oldlevel = data.getLevel();
 						
 						if ((xp - xpneeded) >= 0)
