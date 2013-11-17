@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,5 +104,10 @@ public final class TimeUtil
 			}
 		}
 		throw new Exception("badtime");
+	}
+
+	public static long toMilliseconds(int seconds)
+	{
+		return TimeUnit.MILLISECONDS.toMillis(seconds);
 	}
 }

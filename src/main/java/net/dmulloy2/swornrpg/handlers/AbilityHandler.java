@@ -8,6 +8,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.GameMode;
@@ -448,7 +449,7 @@ public class AbilityHandler
 				if (data.isFrenzyWaiting())
 				{
 					plugin.debug("Checking frenzy waiting for {0}", wait);
-					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > 60L)
+					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > TimeUtil.toMilliseconds(3))
 					{
 						plugin.debug("(({0} - {1}) > 60L = true", System.currentTimeMillis(), data.getFrenzyReadyTime());
 						
@@ -464,7 +465,7 @@ public class AbilityHandler
 
 				if (data.isSuperPickaxeWaiting())
 				{
-					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > 60L)
+					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > TimeUtil.toMilliseconds(3))
 					{
 						Player player = Util.matchPlayer(wait);
 						sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
