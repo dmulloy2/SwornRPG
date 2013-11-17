@@ -168,10 +168,10 @@ public class SwornRPG extends JavaPlugin
 		/** Update Checker **/
 		String version = getDescription().getVersion();
 		version = version.substring(0, version.indexOf("("));
-		version.replaceFirst("\\.", "");
+		version.replaceAll("\\.", "");
 
 		currentVersion = Double.valueOf(version.trim());
-		debug("Current version: " + currentVersion);
+		debug("Current version: \"{0}\"", currentVersion);
 
 		/** Register Listeners **/
 		pluginManager.registerEvents(new PlayerListener(this), this);
@@ -537,7 +537,7 @@ public class SwornRPG extends JavaPlugin
                 NodeList firstElementTagName = firstElement.getElementsByTagName("title");
                 Element firstNameElement = (Element) firstElementTagName.item(0);
                 NodeList firstNodes = firstNameElement.getChildNodes();
-                return Double.valueOf(firstNodes.item(0).getNodeValue().replaceAll("[a-zA-Z ]", "").replaceFirst("\\.", ""));
+                return Double.valueOf(firstNodes.item(0).getNodeValue().replaceAll("[a-zA-Z ]", "").replaceAll("\\.", ""));
             }
         }
         catch (Exception e) 

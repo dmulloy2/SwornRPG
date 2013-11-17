@@ -465,9 +465,45 @@ public class PlayerListener implements Listener
 		Player player = event.getPlayer();
 		if (plugin.getPermissionHandler().hasPermission(player, Permission.RIDE))
 		{
-			if (! player.isInsideVehicle())
+			if (! player.isInsideVehicle() && player.isSneaking())
 			{
-				event.getRightClicked().setPassenger(player);
+				Entity clicked = event.getRightClicked();
+				EntityType type = clicked.getType();
+				switch (type)
+				{
+					case BLAZE:
+					case CAVE_SPIDER:
+					case CHICKEN:
+					case COW:
+					case CREEPER:
+					case ENDERMAN:
+					case GHAST:
+					case GIANT:
+					case IRON_GOLEM:
+					case MAGMA_CUBE:
+					case MUSHROOM_COW:
+					case OCELOT:
+					case PIG:
+					case PIG_ZOMBIE:
+					case SHEEP:
+					case SILVERFISH:
+					case SKELETON:
+					case SLIME:
+					case SNOWMAN:
+					case SPIDER:
+					case SQUID:
+					case VILLAGER:
+					case WITCH:
+					case WITHER:
+					case WOLF:
+					case ZOMBIE:
+						clicked.setPassenger(player);
+
+						String name = FormatUtil.getFriendlyName(type);
+						player.sendMessage(FormatUtil.format("You are now riding {0}{1}", FormatUtil.getArticle(name), name));
+					default:
+						break;
+				}
 			}
 		}
 	}
