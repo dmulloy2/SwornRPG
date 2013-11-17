@@ -500,7 +500,7 @@ public class PlayerListener implements Listener
 						clicked.setPassenger(player);
 
 						String name = FormatUtil.getFriendlyName(type);
-						player.sendMessage(FormatUtil.format("You are now riding {0}{1}", FormatUtil.getArticle(name), name));
+						player.sendMessage(FormatUtil.format("&aYou are now riding {0} &e{1}", FormatUtil.getArticle(name), name));
 						break;
 					}
 
