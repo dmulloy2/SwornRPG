@@ -177,7 +177,7 @@ public class HealthBarHandler
 
 				if (blockedTypes.contains(entity.getType()))
 				{
-					if (!entity.getCustomName().isEmpty())
+					if (entity.isCustomNameVisible() && ! entity.getCustomName().isEmpty())
 					{
 						if (entity.getCustomName().contains("\u2764"))
 						{

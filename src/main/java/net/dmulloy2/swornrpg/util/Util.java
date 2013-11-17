@@ -1,5 +1,6 @@
 package net.dmulloy2.swornrpg.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -162,19 +163,18 @@ public class Util
 	}
 
 	/**
-	 * Gets a useful stack trace from a given {@link Throwable}
+	 * Returns a useful Stack Trace for debugging purpouses
 	 * 
 	 * @param e
-	 *        - Base {@link Throwable}
+	 *        - Underlying {@link Throwable}
 	 * @param circumstance
-	 *        - Circumstance in which the error occured
-	 * @return Useful stack trace
+	 *        - Circumstance in which the Exception occured
 	 */
 	public static String getUsefulStack(Throwable e, String circumstance)
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("Encountered an exception while " + circumstance + ":" + '\n');
-		ret.append(e.getClass().getName() + ":" + e.getMessage() + '\n');
+		ret.append(e.getClass().getName() + ": " + e.getMessage() + '\n');
 		ret.append("Affected classes: " + '\n');
 
 		for (StackTraceElement ste : e.getStackTrace())
@@ -183,6 +183,34 @@ public class Util
 				ret.append('\t' + ste.toString() + '\n');
 		}
 
+		if (ret.lastIndexOf("\n") >= 0)
+		{
+			ret.replace(ret.lastIndexOf("\n"), ret.length(), "");
+		}
+
 		return ret.toString();
+	}
+
+	/**
+	 * Constructs a new list from an existing {@link List}
+	 * <p>
+	 * This fixes concurrency for some reason
+	 * <p>
+	 * Should not be used to edit the base List
+	 * 
+	 * @param list
+	 *        - Base {@link List}
+	 * @return a new list from the given list
+	 */
+	public static <T> List<T> newList(List<T> list)
+	{
+		List<T> ret = new ArrayList<T>();
+
+		for (int i = 0; i < list.size(); i++)
+		{
+			ret.add(list.get(i));
+		}
+
+		return ret;
 	}
 }

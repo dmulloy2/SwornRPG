@@ -169,7 +169,7 @@ public class AbilityHandler
 
 		if (data.isFrenzyWaiting())
 		{
-			if (action == Action.RIGHT_CLICK_AIR || action == Action.PHYSICAL)
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK || action == Action.PHYSICAL)
 			{
 				frenzy(player);
 				return;
@@ -177,14 +177,17 @@ public class AbilityHandler
 		}
 		else
 		{
-			String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
-			sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
-
-			data.setFrenzyWaiting(true);
-			data.setFrenzyReadyTime(System.currentTimeMillis());
-			data.setItemName(inHand);
-
-			waiting.add(player.getName());
+			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK)
+			{
+				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
+				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
+	
+				data.setFrenzyWaiting(true);
+				data.setFrenzyReadyTime(System.currentTimeMillis());
+				data.setItemName(inHand);
+	
+				waiting.add(player.getName());
+			}
 		}
 	}
 
@@ -298,7 +301,7 @@ public class AbilityHandler
 
 		if (data.isSuperPickaxeWaiting())
 		{
-			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK)
 			{
 				superPickaxe(player);
 				return;
@@ -433,7 +436,7 @@ public class AbilityHandler
 		@Override
 		public void run()
 		{
-			for (String wait : waiting)
+			for (String wait : Util.newList(waiting))
 			{
 				PlayerData data = plugin.getPlayerDataCache().getData(wait);
 				if (data.isFrenzyWaiting())
