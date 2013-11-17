@@ -27,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -450,6 +451,23 @@ public class PlayerListener implements Listener
 			if (type == EntityType.ARROW || type == EntityType.PLAYER)
 			{
 				event.setCancelled(true);
+			}
+		}
+	}
+
+	/** Tee Hee **/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)
+	{
+		if (event.isCancelled())
+			return;
+
+		Player player = event.getPlayer();
+		if (plugin.getPermissionHandler().hasPermission(player, Permission.RIDE))
+		{
+			if (! player.isInsideVehicle())
+			{
+				event.getRightClicked().setPassenger(player);
 			}
 		}
 	}

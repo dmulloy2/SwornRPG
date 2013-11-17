@@ -171,6 +171,7 @@ public class SwornRPG extends JavaPlugin
 		version.replaceFirst("\\.", "");
 
 		currentVersion = Double.valueOf(version.trim());
+		debug("Current version: " + currentVersion);
 
 		/** Register Listeners **/
 		pluginManager.registerEvents(new PlayerListener(this), this);
