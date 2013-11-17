@@ -1,20 +1,20 @@
 /**
-* Essentials - a bukkit plugin
-* Copyright (C) 2011 Essentials Team
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Essentials - a bukkit plugin 
+ * Copyright (C) 2011 Essentials Team
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.dmulloy2.swornrpg.util;
 
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class InventoryUtil
 		for (int i = 0; i < stacks.length; i++)
 		{
 			final ItemStack cItem = stacks[i];
-			if(cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
+			if (cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
 			{
 				return i;
 			}
@@ -74,8 +74,8 @@ public class InventoryUtil
 		final Map<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
 
 		/**
-		 * TODO: some optimization - Create a 'firstPartial' with a 'fromIndex' - Record the lastPartial per Material -
-		 * Cache firstEmpty result
+		 * TODO: some optimization - Create a 'firstPartial' with a 'fromIndex'
+		 * - Record the lastPartial per Material - Cache firstEmpty result
 		 */
 
 		// combine items
@@ -101,7 +101,6 @@ public class InventoryUtil
 				}
 			}
 		}
-
 
 		for (int i = 0; i < combined.length; i++)
 		{
@@ -149,7 +148,8 @@ public class InventoryUtil
 				}
 				else
 				{
-					// So, apparently it might only partially fit, well lets do just that
+					// So, apparently it might only partially fit, well lets do
+					// just that
 					final ItemStack partialItem = inventory.getItem(firstPartial);
 
 					final int amount = item.getAmount();

@@ -22,7 +22,7 @@ public class Util
 	 * Gets the OfflinePlayer from a given string
 	 * 
 	 * @param pl
-	 *            - String to match with a player
+	 *        - String to match with a player
 	 * @return Player from the given string, null if none exists
 	 */
 	public static Player matchPlayer(String pl)
@@ -39,7 +39,7 @@ public class Util
 	 * Gets the OfflinePlayer from a given string
 	 * 
 	 * @param pl
-	 *            - String to match with a player
+	 *        - String to match with a player
 	 * @return Player from the given string, null if none exists
 	 */
 	public static OfflinePlayer matchOfflinePlayer(String pl)
@@ -60,7 +60,7 @@ public class Util
 	 * Returns whether or not a player is banned
 	 * 
 	 * @param p
-	 *            - OfflinePlayer to check for banned status
+	 *        - OfflinePlayer to check for banned status
 	 * @return Whether or not the player is banned
 	 */
 	public static boolean isBanned(OfflinePlayer p)
@@ -72,7 +72,7 @@ public class Util
 	 * Returns whether or not a player is banned
 	 * 
 	 * @param p
-	 *            - Player name to check for banned status
+	 *        - Player name to check for banned status
 	 * @return Whether or not the player is banned
 	 */
 	public static boolean isBanned(String p)
@@ -90,7 +90,7 @@ public class Util
 	 * Returns a random integer out of x
 	 * 
 	 * @param x
-	 *            - Integer the random should be out of
+	 *        - Integer the random should be out of
 	 * @return A random integer out of x
 	 */
 	public static int random(int x)
@@ -103,9 +103,9 @@ public class Util
 	 * Returns how far two locations are from each other
 	 * 
 	 * @param loc1
-	 *            - First location to compare
+	 *        - First location to compare
 	 * @param loc2
-	 *            - Second location to compare
+	 *        - Second location to compare
 	 * @return Integer value of how far away they are
 	 */
 	public static int pointDistance(Location loc1, Location loc2)
@@ -133,9 +133,9 @@ public class Util
 	 * Returns whether or not two locations are identical
 	 * 
 	 * @param loc1
-	 *            - First location
+	 *        - First location
 	 * @param loc2
-	 *            - Second location
+	 *        - Second location
 	 * @return Whether or not the two locations are identical
 	 */
 	public static boolean checkLocation(Location loc, Location loc2)
@@ -148,7 +148,7 @@ public class Util
 	 * Turns a {@link Location} into a string for debug purpouses
 	 * 
 	 * @param loc
-	 *            - {@link Location} to convert
+	 *        - {@link Location} to convert
 	 * @return String for debug purpouses
 	 */
 	public static String locationToString(Location loc)
@@ -165,9 +165,9 @@ public class Util
 	 * Gets a useful stack trace from a given {@link Throwable}
 	 * 
 	 * @param e
-	 *            - Base {@link Throwable}
+	 *        - Base {@link Throwable}
 	 * @param circumstance
-	 *            - Circumstance in which the error occured
+	 *        - Circumstance in which the error occured
 	 * @return Useful stack trace
 	 */
 	public static String getUsefulStack(Throwable e, String circumstance)

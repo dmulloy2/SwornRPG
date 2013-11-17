@@ -41,7 +41,7 @@ public class CmdDeny extends SwornRPGCommand
 		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
 		if (target == null)
 		{
-			err(plugin.getMessage("no_player"));
+			err(plugin.getMessage("noplayer"));
 			return;
 		}
 

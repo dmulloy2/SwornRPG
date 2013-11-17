@@ -52,7 +52,7 @@ public class CmdEject extends SwornRPGCommand
 		}
 		else
 		{
-			err("Could not eject {0}", name);
+			err(getMessage("eject_error"), name);
 		}
 	}
 }

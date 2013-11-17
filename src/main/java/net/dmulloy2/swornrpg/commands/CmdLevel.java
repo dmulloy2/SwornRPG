@@ -19,8 +19,6 @@ public class CmdLevel extends SwornRPGCommand
 		this.description = "Check a player's level";
 		this.optionalArgs.add("player");
 		this.permission = Permission.LEVEL;
-
-		this.mustBePlayer = false;
 	}
 	
 	@Override
@@ -38,7 +36,7 @@ public class CmdLevel extends SwornRPGCommand
 		int level = data.getLevel();
 		int nextlevel = level+1;
 		int totalxp = data.getTotalxp();
-		int xptonext = (data.getXpneeded() - data.getPlayerxp());
+		int xptonext = data.getXpNeeded() - data.getPlayerxp();
 
 		String name, title;
 		String senderp = sender.getName();
@@ -60,7 +58,7 @@ public class CmdLevel extends SwornRPGCommand
 		sendMessage(plugin.getMessage("level_xptonext"), name, xptonext, nextlevel);
 
 		int scale = 20;
-		int bars = Math.round(scale - ((xptonext * scale) / data.getXpneeded()));
+		int bars = Math.round(scale - ((xptonext * scale) / data.getXpNeeded()));
 		StringBuilder bar = new StringBuilder();
 		for (int i = 0; i < bars; i++)
 		{

@@ -30,10 +30,11 @@ public class CmdRide extends SwornRPGCommand
 		final Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 		{
-			err("Player not found!");
+			err(getMessage("noplayer"));
 			return;
 		}
 
+		// TODO: Move these to the messages.properties
 		if (target.getPassenger() != null)
 		{
 			err("Someone is already riding that person!");

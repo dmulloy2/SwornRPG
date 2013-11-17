@@ -5,8 +5,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.io.FileResourceLoader;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author dmulloy2
@@ -15,8 +16,7 @@ import net.dmulloy2.swornrpg.io.FileResourceLoader;
 public class ResourceHandler
 {
 	private ResourceBundle messages;
-
-	public ResourceHandler(SwornRPG plugin, ClassLoader classLoader)
+	public ResourceHandler(JavaPlugin plugin, ClassLoader classLoader)
 	{
 		try 
 		{

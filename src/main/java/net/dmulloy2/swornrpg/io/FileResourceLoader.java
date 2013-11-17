@@ -13,17 +13,17 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author dmulloy2
  */
 
-public class FileResourceLoader extends ClassLoader 
+public class FileResourceLoader extends ClassLoader
 {
 	private final transient File dataFolder;
-	public FileResourceLoader(final ClassLoader classLoader, final JavaPlugin plugin) 
+	public FileResourceLoader(final ClassLoader classLoader, final JavaPlugin plugin)
 	{
 		super(classLoader);
 		this.dataFolder = plugin.getDataFolder();
 	}
-	
+
 	@Override
-	public URL getResource(final String string) 
+	public URL getResource(final String string)
 	{
 		final File file = new File(dataFolder, string);
 		if (file.exists())
@@ -31,16 +31,16 @@ public class FileResourceLoader extends ClassLoader
 			try
 			{
 				return file.toURI().toURL();
-			} 
-			catch (MalformedURLException ex) 
+			}
+			catch (MalformedURLException ex)
 			{
 				// Nothing...
 			}
 		}
-		
+
 		return super.getResource(string);
 	}
-	
+
 	@Override
 	public InputStream getResourceAsStream(final String string)
 	{
@@ -56,7 +56,7 @@ public class FileResourceLoader extends ClassLoader
 				// Do nothing...
 			}
 		}
-		
+
 		return super.getResourceAsStream(string);
 	}
 }

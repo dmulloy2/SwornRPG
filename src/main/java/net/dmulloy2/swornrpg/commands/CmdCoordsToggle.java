@@ -24,15 +24,15 @@ public class CmdCoordsToggle extends SwornRPGCommand
 	public void perform()
 	{
 		PlayerData data = getPlayerData(player);
-		if (data.isDeathbookdisabled())
+		if (data.isDeathCoordsEnabled())
 		{
-			data.setDeathbookdisabled(false);
-			sendpMessage(plugin.getMessage("deathcoords_enabled"));
+			data.setDeathCoordsEnabled(false);
+			sendpMessage(plugin.getMessage("deathcoords_disabled"));
 		}
 		else
 		{
-			data.setDeathbookdisabled(true);
-			sendpMessage(plugin.getMessage("deathcoords_disabled"));
+			data.setDeathCoordsEnabled(true);
+			sendpMessage(plugin.getMessage("deathcoords_enabled"));
 		}	
 	}
 }

@@ -1,20 +1,20 @@
 /**
-* SwornRPG - a bukkit plugin
-* Copyright (C) 2013 dmulloy2
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * SwornRPG - a bukkit plugin 
+ * Copyright (C) 2013 dmulloy2
+ * 
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.dmulloy2.swornrpg;
 
 import java.io.File;
@@ -153,75 +153,73 @@ public class SwornRPG extends JavaPlugin
 		permissionHandler = new PermissionHandler();
 		logHandler = new LogHandler(this);
 		playerDataCache = new PlayerDataCache(this);
-		
+
 		abilityHandler = new AbilityHandler(this);
 		experienceHandler = new ExperienceHandler(this);
 		healthBarHandler = new HealthBarHandler(this);
 		tagHandler = new TagHandler(this);
-		
+
 		pluginManager = getServer().getPluginManager();
-		
+
 		/** Resource Handler / Messages **/
 		saveResource("messages.properties", true);
 		resourceHandler = new ResourceHandler(this, getClassLoader());
-		
+
 		/** Update Checker **/
 		String version = getDescription().getVersion();
-		if (version.contains("SNAPSHOT"))
-		{
-			version = version.split("-")[0];
-		}
-		
-		currentVersion = Double.valueOf(version.replaceFirst("\\.", ""));
-		
+		version = version.substring(0, version.indexOf("("));
+		version.replaceFirst("\\.", "");
+
+		currentVersion = Double.valueOf(version.trim());
+
 		/** Register Listeners **/
 		pluginManager.registerEvents(new PlayerListener(this), this);
 		pluginManager.registerEvents(new EntityListener(this), this);
 		pluginManager.registerEvents(new BlockListener(this), this);
 		pluginManager.registerEvents(new ExperienceListener(this), this);
-		
+
 		/** Check for PlayerData folder **/
 		File playersFile = new File(getDataFolder(), "players");
 		if (! playersFile.exists())
 		{
-			playersFile.mkdir();
+			playersFile.mkdirs();
 		}
 
 		/** Configuration Stuff **/
-        File conf = new File(getDataFolder(), "config.yml");
-        if (! conf.exists())
-        {
-        	outConsole(getMessage("log_configuration"));
-        	saveDefaultConfig();
-        }
-        else
-        {
-        	if (! getConfig().isSet("checkForUpdates"))
-        	{
-        		conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
-        		
-        		outConsole(getMessage("log_old_config"));
-        		
-        		saveDefaultConfig();
-        	}
-        }
+		File conf = new File(getDataFolder(), "config.yml");
+		if (! conf.exists())
+		{
+			outConsole(getMessage("log_configuration"));
+			saveDefaultConfig();
+		}
+		else
+		{
+			if (! getConfig().isSet("checkForUpdates"))
+			{
+				conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
 
-        reloadConfig();
-		
+				outConsole(getMessage("log_old_config"));
+
+				saveDefaultConfig();
+			}
+		}
+
+		reloadConfig();
+
 		/** Update Block Tables **/
 		updateBlockDrops();
 		updateFishDrops();
-		
+
 		/** Salvaging **/
 		updateSalvageRef();
-		
+
 		/** Register Prefixed Commands **/
 		commandHandler.setCommandPrefix("srpg");
 		commandHandler.registerPrefixedCommand(new CmdHelp(this));
 		commandHandler.registerPrefixedCommand(new CmdLeaderboard(this));
 		commandHandler.registerPrefixedCommand(new CmdVersion(this));
 		commandHandler.registerPrefixedCommand(new CmdReload(this));
-		
+
 		/** Register Non-Prefixed Commands **/
 		commandHandler.registerCommand(new CmdAbilities(this));
 		commandHandler.registerCommand(new CmdAddxp(this));
@@ -250,7 +248,7 @@ public class SwornRPG extends JavaPlugin
 		commandHandler.registerCommand(new CmdTagReset(this));
 		commandHandler.registerCommand(new CmdUnride(this));
 		commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
-		
+
 		/** Handle Health if Reload **/
 		for (Player player : getServer().getOnlinePlayers())
 		{
@@ -266,7 +264,7 @@ public class SwornRPG extends JavaPlugin
 		if (getConfig().getBoolean("autoSave.enabled"))
 		{
 			int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
-	
+
 			new BukkitRunnable()
 			{
 				@Override
@@ -276,14 +274,14 @@ public class SwornRPG extends JavaPlugin
 				}
 			}.runTaskTimerAsynchronously(this, interval, interval);
 		}
-		
+
 		/** Frenzy Mode Cooldown **/
 		if (getConfig().getBoolean("frenzy.enabled"))
 		{
 			new BukkitRunnable()
 			{
 				@Override
-				public void run() 
+				public void run()
 				{
 					for (Player player : getServer().getOnlinePlayers())
 					{
@@ -304,14 +302,14 @@ public class SwornRPG extends JavaPlugin
 				}
 			}.runTaskTimer(this, 20L, 20L);
 		}
-		
+
 		/** Super Pickaxe Cooldown **/
 		if (getConfig().getBoolean("superPickaxe.enabled"))
 		{
 			new BukkitRunnable()
 			{
 				@Override
-				public void run() 
+				public void run()
 				{
 					for (Player player : getServer().getOnlinePlayers())
 					{
@@ -332,17 +330,17 @@ public class SwornRPG extends JavaPlugin
 				}
 			}.runTaskTimer(this, 20L, 20L);
 		}
-		
+
 		/** SwornGuns Integration **/
 		if (pluginManager.isPluginEnabled("SwornGuns") && getConfig().getBoolean("unlimitedAmmo.enabled"))
 		{
-//			outConsole(getMessage("log_gun_found"));
-//			pluginManager.registerEvents(new SwornGunsListener(this), this);
-			
+			// outConsole(getMessage("log_gun_found"));
+			// pluginManager.registerEvents(new SwornGunsListener(this), this);
+
 			new BukkitRunnable()
 			{
 				@Override
-				public void run() 
+				public void run()
 				{
 					for (Player player : getServer().getOnlinePlayers())
 					{
@@ -363,7 +361,7 @@ public class SwornRPG extends JavaPlugin
 				}
 			}.runTaskTimer(this, 20L, 20L);
 		}
-		
+
 		/** Update Checker **/
 		if (getConfig().getBoolean("checkForUpdates"))
 		{
@@ -375,23 +373,23 @@ public class SwornRPG extends JavaPlugin
 					try
 					{
 						newVersion = updateCheck(currentVersion);
-						if (newVersion > currentVersion) 
+						if (newVersion > currentVersion)
 						{
 							outConsole(getMessage("log_update"));
 							outConsole(getMessage("log_update_url"), getMessage("update_url"));
 						}
-					} 
-					catch (Exception e) 
+					}
+					catch (Exception e)
 					{
 						debug(getMessage("log_update_error"), e.getMessage());
 					}
 				}
 			}.runTaskTimer(this, 20L, 432000L);
 		}
-		
+
 		/** Online XP Gain **/
 		final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
-		
+
 		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 		{
 			new BukkitRunnable()
@@ -403,18 +401,18 @@ public class SwornRPG extends JavaPlugin
 					{
 						PlayerData data = playerDataCache.getData(player);
 						data.setPlayerxp(data.getPlayerxp() + onlineXpGain);
-						
+
 						/** Levelup check **/
 						int xp = data.getPlayerxp();
 
-						if (data.getXpneeded() == 0)
+						if (data.getXpNeeded() == 0)
 							data.setXpneeded(100);
 
-						int xpneeded = data.getXpneeded();
+						int xpneeded = data.getXpNeeded();
 
 						int newlevel = xp / xpneeded;
 						int oldlevel = data.getLevel();
-						
+
 						if ((xp - xpneeded) >= 0)
 						{
 							/** If so, call levelup event **/
@@ -426,7 +424,7 @@ public class SwornRPG extends JavaPlugin
 		}
 
 		long finish = System.currentTimeMillis();
-		
+
 		outConsole(getMessage("log_enabled"), getDescription().getFullName(), finish - start);
 	}
 
@@ -568,7 +566,9 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 	
-	/** Reload the Configuration **/
+	/** 
+	 * Reload the Configuration
+	 */
 	public final void reload()
 	{
 		reloadConfig();
@@ -577,7 +577,9 @@ public class SwornRPG extends JavaPlugin
 		updateFishDrops();
 	}
 	
-	/** Update salvage ref tables **/
+	/** 
+	 * Update salvage ref tables
+	 */
 	private final void updateSalvageRef() 
 	{
 		String salvage = getConfig().getString("salvage");
@@ -599,7 +601,9 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 	
-	/** Update Block Drops **/
+	/** 
+	 * Update Block Drops
+	 */
 	public final void updateBlockDrops()
 	{
 		blockDropsMap.clear();
@@ -642,7 +646,9 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 	
-	/** Update Fish Drops **/
+	/** 
+	 * Update Fish Drops
+	 */
 	private final void updateFishDrops() 
 	{
 		fishDropsMap.clear();
@@ -685,7 +691,9 @@ public class SwornRPG extends JavaPlugin
 		}
 	}
 
-	/** Camping Check **/
+	/**
+	 * Camping Check
+	 */
 	public final boolean checkCamper(Player player)
 	{
 		Location loc = player.getLocation();
@@ -711,8 +719,9 @@ public class SwornRPG extends JavaPlugin
 		
 		return false;
 	}
+	
+	// ---- Factions Checks ---- //
 
-	/** Factions Checks **/
 	public final boolean checkFactions(Location location, boolean safeZoneCheck)
 	{
 		return safeZoneCheck ? isSafeZone(location) || isWarZone(location) : isWarZone(location);
@@ -800,7 +809,8 @@ public class SwornRPG extends JavaPlugin
 		return killer;
 	}
 
-	/** Disabled World Checks **/
+	// ---- Disabled World Checks ---- //
+	
 	public boolean isDisabledWorld(Player player)
 	{
 		return isDisabledWorld(player.getWorld());

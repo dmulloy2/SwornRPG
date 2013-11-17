@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.commands.CmdHelp;
@@ -17,31 +18,30 @@ import org.bukkit.command.PluginCommand;
  * @author dmulloy2
  */
 
-public class CommandHandler implements CommandExecutor 
+public class CommandHandler implements CommandExecutor
 {
-	private final SwornRPG plugin;
-	// Only need the name of command prefix - all other aliases listed in plugin.yml will be usable
 	private String commandPrefix;
 	private List<SwornRPGCommand> registeredPrefixedCommands;
 	private List<SwornRPGCommand> registeredCommands;
-	
+
+	private final SwornRPG plugin;
 	public CommandHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		registeredCommands = new ArrayList<SwornRPGCommand>();
+		this.registeredCommands = new ArrayList<SwornRPGCommand>();
 	}
-	
-	public void registerCommand(SwornRPGCommand command) 
+
+	public void registerCommand(SwornRPGCommand command)
 	{
 		PluginCommand pluginCommand = plugin.getCommand(command.getName());
 		if (pluginCommand != null)
 		{
 			pluginCommand.setExecutor(command);
 			registeredCommands.add(command);
-		} 
+		}
 		else
 		{
-			plugin.outConsole("Entry for command {0} is missing in plugin.yml", command.getName());
+			plugin.outConsole(Level.WARNING, "Entry for command {0} is missing in plugin.yml", command.getName());
 		}
 	}
 
@@ -51,7 +51,7 @@ public class CommandHandler implements CommandExecutor
 			registeredPrefixedCommands.add(command);
 	}
 
-	public List<SwornRPGCommand> getRegisteredCommands() 
+	public List<SwornRPGCommand> getRegisteredCommands()
 	{
 		return registeredCommands;
 	}
@@ -61,35 +61,36 @@ public class CommandHandler implements CommandExecutor
 		return registeredPrefixedCommands;
 	}
 
-	public String getCommandPrefix() 
+	public String getCommandPrefix()
 	{
 		return commandPrefix;
 	}
 
-	public void setCommandPrefix(String commandPrefix) 
+	public void setCommandPrefix(String commandPrefix)
 	{
 		this.commandPrefix = commandPrefix;
-		registeredPrefixedCommands = new ArrayList<SwornRPGCommand>();
+		this.registeredPrefixedCommands = new ArrayList<SwornRPGCommand>();
+
 		plugin.getCommand(commandPrefix).setExecutor(this);
 	}
 
-	public boolean usesCommandPrefix() 
+	public boolean usesCommandPrefix()
 	{
 		return commandPrefix != null;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
 		List<String> argsList = new ArrayList<String>();
-		
-		if (args.length > 0) 
+
+		if (args.length > 0)
 		{
 			String commandName = args[0];
 			for (int i = 1; i < args.length; i++)
 				argsList.add(args[i]);
-			
-			for (SwornRPGCommand command : registeredPrefixedCommands) 
+
+			for (SwornRPGCommand command : registeredPrefixedCommands)
 			{
 				if (commandName.equalsIgnoreCase(command.getName()) || command.getAliases().contains(commandName.toLowerCase()))
 				{
@@ -97,14 +98,14 @@ public class CommandHandler implements CommandExecutor
 					return true;
 				}
 			}
-			
+
 			sender.sendMessage(FormatUtil.format(plugin.getMessage("error") + plugin.getMessage("unknown_command"), args[0]));
-		} 
-		else 
+		}
+		else
 		{
 			new CmdHelp(plugin).execute(sender, args);
 		}
-		
+
 		return true;
 	}
 }

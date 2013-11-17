@@ -20,8 +20,6 @@ public class CmdAdminChat extends SwornRPGCommand
 		this.requiredArgs.add("message");
 		this.description = "Talk in admin-only chat";
 		this.permission = Permission.ADMINCHAT;
-
-		this.mustBePlayer = false;
 	}
 
 	@Override

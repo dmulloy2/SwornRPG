@@ -102,12 +102,11 @@ public class ExperienceListener implements Listener
 			if (killed.getName().equals(killer.getName()))
 				return;
 
-//			Fixed with SwornGuns 2.0
-//			PlayerData data = plugin.getPlayerDataCache().getData(killed);
-//			if (System.currentTimeMillis() - data.getTimeOfLastDeath() <= 60L)
-//				return;
-//
-//			data.setTimeOfLastDeath(System.currentTimeMillis());
+			PlayerData data = plugin.getPlayerDataCache().getData(killed);
+			if (System.currentTimeMillis() - data.getTimeOfLastDeath() <= 60L)
+				return;
+
+			data.setTimeOfLastDeath(System.currentTimeMillis());
 
 			/** Killer Xp Gain **/
 			String message = plugin.getPrefix() + 

@@ -44,7 +44,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			this.leaderboard = new ArrayList<String>();
 		}
 
-		if (System.currentTimeMillis() - lastUpdateTime > 600000L)
+		if ((System.currentTimeMillis() - lastUpdateTime) > 600000L || leaderboard.isEmpty())
 		{
 			sendpMessage(getMessage("leaderboard_wait"));
 			
@@ -71,7 +71,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		if (index > pageCount)
 		{
-			err(getMessage("error-no-page-with-index"), args[0]);
+			err(getMessage("error_no_page_with_index"), args[0]);
 			return;
 		}
 
@@ -187,7 +187,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 							pos++;
 						}
 						
-						data = null;
+//						data = null;
 //					}
 //					
 //					player = null;

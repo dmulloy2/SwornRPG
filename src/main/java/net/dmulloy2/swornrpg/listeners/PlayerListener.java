@@ -191,7 +191,7 @@ public class PlayerListener implements Listener
 		int z = loc.getBlockZ();
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		if (! data.isDeathbookdisabled())
+		if (data.isDeathCoordsEnabled())
 		{
 			Essentials ess = plugin.getEssentials();
 			if (ess != null)
@@ -269,7 +269,17 @@ public class PlayerListener implements Listener
 
 			data = plugin.getPlayerDataCache().newData(player);
 			data.setXpneeded(100);
-			data.setLevel(0);
+
+			data.setDeathCoordsEnabled(true);
+		}
+
+		// Conversion to cleaner DeathCoordsEnabled boolean
+
+		@SuppressWarnings("deprecation")
+		boolean deathBookDisabled = data.isDeathbookdisabled();
+		if (deathBookDisabled)
+		{
+			data.setDeathCoordsEnabled(false);
 		}
 
 		/** Update Notification **/
@@ -327,51 +337,10 @@ public class PlayerListener implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onSuperPickActivate(PlayerInteractEvent event)
+	public void onAbilityActivate(PlayerInteractEvent event)
 	{
-		Action action = event.getAction();
-		Player player = event.getPlayer();
-
-		if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)
-			return;
-
-		String inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
-		String[] array = inhand.split(" ");
-
-		if (array.length < 2)
-			return;
-
-		if (! array[0].equalsIgnoreCase("diamond") && ! array[0].equalsIgnoreCase("iron"))
-			return;
-
-		if (! array[1].equalsIgnoreCase("pickaxe") && ! array[1].equalsIgnoreCase("spade"))
-			return;
-
-		plugin.getAbilityHandler().activateSuperPickaxe(player, false, action);
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onFrenzyActicate(PlayerInteractEvent event)
-	{
-		Action action = event.getAction();
-		Player player = event.getPlayer();
-
-		if (player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR)
-			return;
-
-		String inhand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
-		String[] array = inhand.split(" ");
-
-		if (array.length < 2)
-			return;
-
-		if (! array[0].equalsIgnoreCase("diamond") && ! array[0].equalsIgnoreCase("iron"))
-			return;
-
-		if (! array[1].equalsIgnoreCase("sword"))
-			return;
-
-		plugin.getAbilityHandler().activateFrenzy(player, false, action);
+		// Check ability activation
+		plugin.getAbilityHandler().checkActivation(event.getPlayer(), event.getAction());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

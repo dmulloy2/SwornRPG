@@ -11,20 +11,19 @@ import net.dmulloy2.swornrpg.SwornRPG;
 
 public abstract class PaginatedCommand extends SwornRPGCommand
 {
+	protected int linesPerPage = 10;
+	private int pageArgIndex = 0;
+
 	public PaginatedCommand(SwornRPG plugin)
 	{
 		super(plugin);
 	}
 
-	protected int linesPerPage = 10;
-	
-	int pageArgIndex = 0;
-	
 	@Override
 	public void perform()
 	{
 		int index = 1;
-		if (this.args.length > pageArgIndex) 
+		if (args.length > pageArgIndex) 
 		{
 			try 
 			{
@@ -34,12 +33,12 @@ public abstract class PaginatedCommand extends SwornRPGCommand
 			}
 			catch (NumberFormatException ex)
 			{
-				err(plugin.getMessage("error-invalid-number"), args[0]);
+				err(plugin.getMessage("error_invalid_number"), args[0]);
 				return;
 			}
 			catch (IndexOutOfBoundsException ex) 
 			{
-				err(plugin.getMessage("error-no-page-with-index"), args[0]);
+				err(plugin.getMessage("error_no_page_with_index"), args[0]);
 				return;
 			}
 		}

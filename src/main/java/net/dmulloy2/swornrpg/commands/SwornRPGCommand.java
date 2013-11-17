@@ -19,81 +19,81 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
-public abstract class SwornRPGCommand implements CommandExecutor 
+public abstract class SwornRPGCommand implements CommandExecutor
 {
 	protected final SwornRPG plugin;
-	
+
 	protected CommandSender sender;
 	protected Player player;
 	protected String args[];
-	
+
 	protected String name;
 	protected String description;
-	
+
 	protected Permission permission;
-	
+
 	protected boolean mustBePlayer;
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;
-	
+
 	protected boolean usesPrefix;
-		
-	public SwornRPGCommand(SwornRPG plugin) 
+
+	public SwornRPGCommand(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		requiredArgs = new ArrayList<String>(2);
-		optionalArgs = new ArrayList<String>(2);
-		aliases = new ArrayList<String>(2);
+		this.requiredArgs = new ArrayList<String>(2);
+		this.optionalArgs = new ArrayList<String>(2);
+		this.aliases = new ArrayList<String>(2);
 	}
-	
+
 	public abstract void perform();
-	
+
 	@Override
 	public final boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
 		execute(sender, args);
 		return true;
 	}
-	
+
 	public final void execute(CommandSender sender, String[] args)
 	{
 		this.sender = sender;
 		this.args = args;
 		if (sender instanceof Player)
 			player = (Player) sender;
-		
-		if (mustBePlayer && !isPlayer())
+
+		if (mustBePlayer && ! isPlayer())
 		{
 			err(plugin.getMessage("mustbeplayer"));
 			return;
 		}
-		
-		if (requiredArgs.size() > args.length) 
+
+		if (requiredArgs.size() > args.length)
 		{
 			invalidArgs();
 			return;
 		}
-		
-		if (! hasPermission())
+
+		if (!hasPermission())
 		{
 			err(plugin.getMessage("noperm"));
 			return;
 		}
-		
+
 		perform();
 	}
-	
-	protected final boolean isPlayer() 
+
+	protected final boolean isPlayer()
 	{
-		return (player != null);
+		return player != null;
 	}
-	
+
 	private final boolean hasPermission()
 	{
-		return (plugin.getPermissionHandler().hasPermission(sender, permission));
+		return plugin.getPermissionHandler().hasPermission(sender, permission);
 	}
-	
+
 	protected final boolean argMatchesAlias(String arg, String... aliases)
 	{
 		for (String s : aliases)
@@ -101,13 +101,13 @@ public abstract class SwornRPGCommand implements CommandExecutor
 				return true;
 		return false;
 	}
-	
+
 	protected final void err(String msg, Object... args)
 	{
 		sendMessage(getMessage("error") + FormatUtil.format(msg, args));
 	}
-	
-	protected PlayerData getPlayerData(OfflinePlayer target) 
+
+	protected PlayerData getPlayerData(OfflinePlayer target)
 	{
 		return plugin.getPlayerDataCache().getData(target.getName());
 	}
@@ -116,37 +116,37 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	{
 		return plugin.getPlayerDataCache().getData(key);
 	}
-	
-	//Send non prefixed message
-	protected final void sendMessage(String msg, Object... args) 
+
+	// Send non prefixed message
+	protected final void sendMessage(String msg, Object... args)
 	{
 		sender.sendMessage(FormatUtil.format(msg, args));
 	}
-	
-	//Send prefixed message
-	protected final void sendpMessage(String msg, Object... args) 
+
+	// Send prefixed message
+	protected final void sendpMessage(String msg, Object... args)
 	{
 		sender.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
-	
-	//Send message to the whole server
-	protected final void sendMessageAll(String msg, Object... args) 
+
+	// Send message to the whole server
+	protected final void sendMessageAll(String msg, Object... args)
 	{
 		plugin.getServer().broadcastMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
-	
-	//Send prefixed message
-	protected final void sendMessageTarget(String msg, Player target, Object... args) 
+
+	// Send prefixed message to a given target
+	protected final void sendMessageTarget(String msg, Player target, Object... args)
 	{
 		target.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
-	
+
 	protected final String getMessage(String msg)
 	{
 		return plugin.getMessage(msg);
 	}
 
-	public final String getName() 
+	public final String getName()
 	{
 		return name;
 	}
@@ -160,47 +160,47 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	{
 		StringBuilder ret = new StringBuilder();
 		ret.append("&b/");
-				
+
 		if (plugin.getCommandHandler().usesCommandPrefix() && usesPrefix)
 			ret.append(plugin.getCommandHandler().getCommandPrefix() + " ");
-		
+
 		ret.append(name);
 
 		for (String s : optionalArgs)
-			ret.append(String.format(" &3[" + s + "]"));
-		
+			ret.append(String.format(" &3[%s]", s));
+
 		for (String s : requiredArgs)
-			ret.append(String.format(" &3<" + s + ">"));
-		
+			ret.append(String.format(" &3<%s>", s));
+
 		if (displayHelp)
 			ret.append(" &e" + description);
-		
+
 		return FormatUtil.format(ret.toString());
 	}
-	
-	protected int argAsInt(int arg, boolean msg) 
+
+	protected int argAsInt(int arg, boolean msg)
 	{
-		try 
+		try
 		{
 			return Integer.valueOf(args[arg]);
-		} 
-		catch (NumberFormatException ex) 
+		}
+		catch (NumberFormatException ex)
 		{
 			if (msg)
 				invalidArgs();
 			return -1;
 		}
 	}
-	
+
 	protected double argAsDouble(int arg, boolean msg)
 	{
-		try 
+		try
 		{
 			return Double.valueOf(args[arg]);
-		} 
-		catch (NumberFormatException ex) 
+		}
+		catch (NumberFormatException ex)
 		{
-			if (msg)
+			if (msg) 
 				invalidArgs();
 			return -1;
 		}
@@ -210,7 +210,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	{
 		err(plugin.getMessage("invalidargs") + " " + getUsageTemplate(false));
 	}
-	
+
 	protected final OfflinePlayer getTarget(int arg, boolean others)
 	{
 		OfflinePlayer target = null;
@@ -239,10 +239,10 @@ public abstract class SwornRPGCommand implements CommandExecutor
 				return null;
 			}
 		}
-		
+
 		return target;
 	}
-	
+
 	protected final boolean hasPermission(Permission permission)
 	{
 		return plugin.getPermissionHandler().hasPermission(sender, permission);

@@ -36,7 +36,7 @@ public class CmdResetLevel extends SwornRPGCommand
 		data.setPlayerxp(0);
 		data.setLevel(0);
 		data.setTotalxp(0);
-		data.setXpneeded(100 + (data.getPlayerxp() / 4));
+		data.setXpneeded(100);
 
 		sendpMessage(getMessage("level_reset_resetter"), target.getName());
 		if (target.isOnline())
