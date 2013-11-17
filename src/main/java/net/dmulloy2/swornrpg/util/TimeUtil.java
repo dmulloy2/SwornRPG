@@ -108,6 +108,6 @@ public final class TimeUtil
 
 	public static long toMilliseconds(int seconds)
 	{
-		return TimeUnit.MILLISECONDS.toMillis(seconds);
+		return TimeUnit.SECONDS.toMillis(seconds);
 	}
 }
