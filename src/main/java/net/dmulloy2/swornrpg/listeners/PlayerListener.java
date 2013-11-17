@@ -455,7 +455,6 @@ public class PlayerListener implements Listener
 		}
 	}
 
-	/** Tee Hee **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)
 	{
@@ -497,10 +496,20 @@ public class PlayerListener implements Listener
 					case WITHER:
 					case WOLF:
 					case ZOMBIE:
+					{
 						clicked.setPassenger(player);
 
 						String name = FormatUtil.getFriendlyName(type);
 						player.sendMessage(FormatUtil.format("You are now riding {0}{1}", FormatUtil.getArticle(name), name));
+						break;
+					}
+
+					case ENDER_DRAGON:
+					{
+						clicked.setPassenger(player);
+						player.sendMessage(FormatUtil.format("&aYou are a DragonTamer, &e{0}&a!", player.getName()));
+					}
+
 					default:
 						break;
 				}
