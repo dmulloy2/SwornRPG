@@ -169,7 +169,7 @@ public class AbilityHandler
 
 		if (data.isFrenzyWaiting())
 		{
-			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK || action == Action.PHYSICAL)
+			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.PHYSICAL)
 			{
 				frenzy(player);
 				return;
@@ -177,7 +177,7 @@ public class AbilityHandler
 		}
 		else
 		{
-			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK)
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
 			{
 				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
@@ -301,7 +301,7 @@ public class AbilityHandler
 
 		if (data.isSuperPickaxeWaiting())
 		{
-			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK)
+			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK)
 			{
 				superPickaxe(player);
 				return;
@@ -309,14 +309,17 @@ public class AbilityHandler
 		}
 		else
 		{
-			String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
-			sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
-
-			data.setSuperPickaxeWaiting(true);
-			data.setSuperPickaxeReadyTime(System.currentTimeMillis());
-			data.setItemName(inHand);
-
-			waiting.add(player.getName());
+			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
+			{
+				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
+				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
+	
+				data.setSuperPickaxeWaiting(true);
+				data.setSuperPickaxeReadyTime(System.currentTimeMillis());
+				data.setItemName(inHand);
+	
+				waiting.add(player.getName());
+			}
 		}
 	}
 
@@ -441,10 +444,10 @@ public class AbilityHandler
 				PlayerData data = plugin.getPlayerDataCache().getData(wait);
 				if (data.isFrenzyWaiting())
 				{
-					if (System.currentTimeMillis() - data.getFrenzyReadyTime() > 60L)
+					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > 60L)
 					{
 						Player player = Util.matchPlayer(wait);
-						sendpMessage(player, "&aYou lower your &e{0}&a!", data.getItemName());
+						sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
 
 						data.setFrenzyWaiting(false);
 						data.setItemName(null);
@@ -455,10 +458,10 @@ public class AbilityHandler
 
 				if (data.isSuperPickaxeWaiting())
 				{
-					if (System.currentTimeMillis() - data.getSuperPickaxeReadyTime() > 60L)
+					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > 60L)
 					{
 						Player player = Util.matchPlayer(wait);
-						sendpMessage(player, "&aYou lower your &e{0}&a!", data.getItemName());
+						sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
 
 						data.setSuperPickaxeWaiting(false);
 						data.setItemName(null);
