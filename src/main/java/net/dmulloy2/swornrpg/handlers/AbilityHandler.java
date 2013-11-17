@@ -183,7 +183,10 @@ public class AbilityHandler
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 	
 				data.setFrenzyWaiting(true);
+
 				data.setFrenzyReadyTime(System.currentTimeMillis());
+				plugin.debug("Set FrenzyReadyTime for {0} to {1}", player.getName(), System.currentTimeMillis());
+
 				data.setItemName(inHand);
 	
 				waiting.add(player.getName());
@@ -444,8 +447,11 @@ public class AbilityHandler
 				PlayerData data = plugin.getPlayerDataCache().getData(wait);
 				if (data.isFrenzyWaiting())
 				{
+					plugin.debug("Checking frenzy waiting for {0}", wait);
 					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > 60L)
 					{
+						plugin.debug("(({0} - {1}) > 60L = true", System.currentTimeMillis(), data.getFrenzyReadyTime());
+						
 						Player player = Util.matchPlayer(wait);
 						sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
 

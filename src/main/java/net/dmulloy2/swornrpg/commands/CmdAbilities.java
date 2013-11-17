@@ -46,11 +46,11 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isFrenzyEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), abilityHandler.getFrenzyDuration(data.getLevel())));
+			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), abilityHandler.getFrenzyDuration(data.getLevel()) / 20));
 
 			if (data.isFrenzyCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzyCooldownTime()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzyCooldownTime() / 20));
 			}
 
 			sendMessage(line.toString());
@@ -59,11 +59,11 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isSuperPickaxeEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data.getLevel())));
+			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data.getLevel()) / 20));
 
 			if (data.isSuperPickaxeCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperPickaxeCooldownTime()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperPickaxeCooldownTime() / 20));
 			}
 
 			sendMessage(line.toString());
@@ -72,11 +72,11 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isUnlimitedAmmoEnabled() && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoCooldown(data.getLevel())));
+			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoDuration(data.getLevel()) / 20));
 
 			if (data.isUnlimitedAmmoCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getUnlimitedAmmoCooldownTime()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getUnlimitedAmmoCooldownTime() / 20));
 			}
 
 			sendMessage(line.toString());
