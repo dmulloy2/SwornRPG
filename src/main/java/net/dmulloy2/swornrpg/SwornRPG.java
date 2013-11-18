@@ -18,7 +18,6 @@
 package net.dmulloy2.swornrpg;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.logging.Level;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import lombok.Getter;
 import net.dmulloy2.swornrpg.commands.CmdAbilities;
@@ -77,6 +74,7 @@ import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.types.Reloadable;
+import net.dmulloy2.swornrpg.types.Updater;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.milkbowl.vault.economy.Economy;
@@ -98,10 +96,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.earth2me.essentials.Essentials;
 import com.massivecraft.factions.Board;
@@ -143,7 +137,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
     private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
 
     /** Update Checking **/
-	private double newVersion, currentVersion;
+	private @Getter Updater updater;
 
 	/** Global Prefix Variable **/
 	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] ");
@@ -169,14 +163,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		/** Resource Handler / Messages **/
 		saveResource("messages.properties", true);
 		resourceHandler = new ResourceHandler(this, getClassLoader());
-
-		/** Update Checker **/
-		String version = getDescription().getVersion();
-		version = version.substring(0, version.indexOf(" "));
-		version.replaceFirst("\\.", "");
-
-		currentVersion = Double.valueOf(version);
-		debug("Current version: \"{0}\"", currentVersion);
 
 		/** Register Listeners **/
 		listeners = new ArrayList<Listener>();
@@ -370,29 +356,12 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			}.runTaskTimer(this, 20L, 20L);
 		}
 
+		updater = new Updater(this);
+
 		/** Update Checker **/
 		if (getConfig().getBoolean("checkForUpdates"))
 		{
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					try
-					{
-						newVersion = updateCheck(currentVersion);
-						if (newVersion > currentVersion)
-						{
-							outConsole(getMessage("log_update"));
-							outConsole(getMessage("log_update_url"), getMessage("update_url"));
-						}
-					}
-					catch (Exception e)
-					{
-						debug(getMessage("log_update_error"), e.getMessage());
-					}
-				}
-			}.runTaskTimer(this, 20L, 432000L);
+			updater.init();
 		}
 
 		/** Online XP Gain **/
@@ -526,39 +495,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			essentials = (Essentials) plugin;
 		}
 	}
-
-    /** Update Checker **/
-    private final double updateCheck(double currentVersion)
-    {
-        String pluginUrlString = "http://dev.bukkit.org/bukkit-plugins/swornrpg/files.rss";
-        try
-        {
-            URL url = new URL(pluginUrlString);
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openConnection().getInputStream());
-            doc.getDocumentElement().normalize();
-            NodeList nodes = doc.getElementsByTagName("item");
-            Node firstNode = nodes.item(0);
-            if (firstNode.getNodeType() == 1) 
-            {
-                Element firstElement = (Element)firstNode;
-                NodeList firstElementTagName = firstElement.getElementsByTagName("title");
-                Element firstNameElement = (Element) firstElementTagName.item(0);
-                NodeList firstNodes = firstNameElement.getChildNodes();
-                return Double.valueOf(firstNodes.item(0).getNodeValue().replaceAll("[a-zA-Z ]", "").replaceFirst("\\.", ""));
-            }
-        }
-        catch (Exception e) 
-        {
-        	debug(getMessage("log_update_error"), e.getMessage());
-        }
-        
-        return currentVersion;
-    }
-    
-    public final boolean updateNeeded()
-    {
-    	return (updateCheck(currentVersion) > currentVersion);
-    }
     
     /** Get messages **/
 	public final String getMessage(String string) 

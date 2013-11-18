@@ -41,7 +41,7 @@ public class CmdVersion extends SwornRPGCommand
 		sendMessage(line.toString());
 		
 		sendMessage(getMessage("version_loaded"), plugin.getDescription().getFullName());
-		sendMessage(getMessage("version_update"), plugin.updateNeeded() ? "true" : "false");
+		sendMessage(getMessage("version_update"), plugin.getUpdater().isUpdateAvailable() ? "true" : "false");
 		sendMessage(getMessage("version_download"));
 	}
 }

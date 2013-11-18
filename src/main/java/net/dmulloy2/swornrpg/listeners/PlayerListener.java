@@ -274,12 +274,14 @@ public class PlayerListener implements Listener, Reloadable
 		}
 
 		/** Update Notification **/
-		if (checkForUpdates && plugin.updateNeeded())
+		if (checkForUpdates && plugin.getUpdater().isUpdateAvailable())
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.UPDATE_NOTIFY))
 			{
-				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("update_message")));
-				player.sendMessage(FormatUtil.format("&6[SwornRPG]&e " + plugin.getMessage("update_url")));
+				player.sendMessage(plugin.getPrefix() + 
+						FormatUtil.format("&eVersion &a{0} &eis now available!", plugin.getUpdater().getLatestVersion()));
+				player.sendMessage(plugin.getPrefix() +
+						FormatUtil.format("&eGet it here:&a {0}", plugin.getUpdater().getPluginURL()));
 			}
 		}
 	}
