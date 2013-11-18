@@ -98,9 +98,9 @@ public class ExperienceHandler
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 
 		/** Prior Skill Data **/
-		int oldFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data.getLevel());
-		int oldSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel());
-		int oldUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoCooldown(data.getLevel());
+		int oldFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()) / 20;
+		int oldSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()) / 20;
+		int oldUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()) / 20;
 
 		/** Prepare data for the next level **/
 		if (data.getLevel() < 250)
@@ -112,9 +112,9 @@ public class ExperienceHandler
 		data.setPlayerxp(0);
 
 		/** New Skill Data **/
-		int newFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data.getLevel());
-		int newSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel());
-		int newUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoCooldown(data.getLevel());
+		int newFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()) / 20;
+		int newSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()) / 20;
+		int newUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()) / 20;
 
 		/** Send messages **/
 		int level = data.getLevel();

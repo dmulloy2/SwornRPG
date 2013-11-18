@@ -7,6 +7,7 @@ import lombok.Getter;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.Util;
@@ -25,7 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 
 @Getter
-public class AbilityHandler
+public class AbilityHandler implements Reloadable
 {
 	private boolean frenzyEnabled;
 	private int frenzyDuration;
@@ -49,20 +50,7 @@ public class AbilityHandler
 	{
 		this.plugin = plugin;
 
-		this.frenzyEnabled = plugin.getConfig().getBoolean("frenzy.enabled");
-		this.frenzyDuration = plugin.getConfig().getInt("frenzy.baseDuration");
-		this.frenzyLevelMultiplier = plugin.getConfig().getInt("frenzy.levelMultiplier");
-		this.frenzyCooldownMultiplier = plugin.getConfig().getInt("frenzy.cooldownMultiplier");
-
-		this.superPickaxeEnabled = plugin.getConfig().getBoolean("superPickaxe.enabled");
-		this.superPickaxeDuration = plugin.getConfig().getInt("superPickaxe.baseDuration");
-		this.superPickaxeLevelMultiplier = plugin.getConfig().getInt("superPickaxe.levelMultiplier");
-		this.superPickaxeCooldownMultiplier = plugin.getConfig().getInt("superPickaxe.cooldownMultiplier");
-
-		this.unlimitedAmmoEnabled = plugin.getConfig().getBoolean("unlimitedAmmo.enabled");
-		this.unlimitedAmmoDuration = plugin.getConfig().getInt("unlimitedAmmo.baseDuration");
-		this.unlimitedAmmoLevelMultiplier = plugin.getConfig().getInt("unlimitedAmmo.levelMultiplier");
-		this.unlimitedAmmoCooldownMultiplier = plugin.getConfig().getInt("unlimitedAmmo.cooldownMultiplier");
+		this.reload(); // Load configuration
 
 		this.waiting = new ArrayList<String>();
 
@@ -206,7 +194,10 @@ public class AbilityHandler
 		final int duration = getFrenzyDuration(level);
 
 		sendpMessage(player, plugin.getMessage("frenzy_enter"));
+
 		data.setFrenzyEnabled(true);
+		data.setFrenzyWaiting(false);
+		waiting.remove(player.getName());
 
 		List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
 
@@ -338,7 +329,10 @@ public class AbilityHandler
 		final int duration = getSuperPickaxeDuration(level);
 
 		sendpMessage(player, plugin.getMessage("superpick_activated"));
+
 		data.setSuperPickaxeEnabled(true);
+		data.setSuperPickaxeWaiting(false);
+		waiting.remove(player.getName());
 
 		player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, duration, 1), true);
 
@@ -510,5 +504,24 @@ public class AbilityHandler
 	public final int getUnlimitedAmmoCooldown(int duration)
 	{
 		return duration * unlimitedAmmoCooldownMultiplier;
+	}
+
+	@Override
+	public void reload()
+	{
+		this.frenzyEnabled = plugin.getConfig().getBoolean("frenzy.enabled");
+		this.frenzyDuration = plugin.getConfig().getInt("frenzy.baseDuration");
+		this.frenzyLevelMultiplier = plugin.getConfig().getInt("frenzy.levelMultiplier");
+		this.frenzyCooldownMultiplier = plugin.getConfig().getInt("frenzy.cooldownMultiplier");
+
+		this.superPickaxeEnabled = plugin.getConfig().getBoolean("superPickaxe.enabled");
+		this.superPickaxeDuration = plugin.getConfig().getInt("superPickaxe.baseDuration");
+		this.superPickaxeLevelMultiplier = plugin.getConfig().getInt("superPickaxe.levelMultiplier");
+		this.superPickaxeCooldownMultiplier = plugin.getConfig().getInt("superPickaxe.cooldownMultiplier");
+
+		this.unlimitedAmmoEnabled = plugin.getConfig().getBoolean("unlimitedAmmo.enabled");
+		this.unlimitedAmmoDuration = plugin.getConfig().getInt("unlimitedAmmo.baseDuration");
+		this.unlimitedAmmoLevelMultiplier = plugin.getConfig().getInt("unlimitedAmmo.levelMultiplier");
+		this.unlimitedAmmoCooldownMultiplier = plugin.getConfig().getInt("unlimitedAmmo.cooldownMultiplier");
 	}
 }

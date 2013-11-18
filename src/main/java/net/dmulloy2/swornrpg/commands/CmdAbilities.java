@@ -50,7 +50,7 @@ public class CmdAbilities extends SwornRPGCommand
 
 			if (data.isFrenzyCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzyCooldownTime() / 20));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzyCooldownTime()));
 			}
 
 			sendMessage(line.toString());
@@ -63,7 +63,7 @@ public class CmdAbilities extends SwornRPGCommand
 
 			if (data.isSuperPickaxeCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperPickaxeCooldownTime() / 20));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getSuperPickaxeCooldownTime()));
 			}
 
 			sendMessage(line.toString());
@@ -76,7 +76,7 @@ public class CmdAbilities extends SwornRPGCommand
 
 			if (data.isUnlimitedAmmoCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getUnlimitedAmmoCooldownTime() / 20));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getUnlimitedAmmoCooldownTime()));
 			}
 
 			sendMessage(line.toString());

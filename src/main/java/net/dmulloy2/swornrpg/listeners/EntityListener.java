@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -29,7 +30,7 @@ import org.bukkit.util.Vector;
  * @author dmulloy2
  */
 
-public class EntityListener implements Listener
+public class EntityListener implements Listener, Reloadable
 {
 	private boolean arrowFireEnabled;
 	private boolean axeKnockbackEnabled;
@@ -48,19 +49,7 @@ public class EntityListener implements Listener
 	public EntityListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		
-		this.arrowFireEnabled = plugin.getConfig().getBoolean("arrowFire.enabled");
-		this.axeKnockbackEnabled = plugin.getConfig().getBoolean("axeKnockback.enabled");
-		this.confusionEnabled = plugin.getConfig().getBoolean("confusion.enabled");
-		this.gracefulRollEnabled = plugin.getConfig().getBoolean("gracefulRoll.enabled");
-		this.instaKillEnabled = plugin.getConfig().getBoolean("instaKill.enabled");
-		
-		this.arrowFireOdds = plugin.getConfig().getInt("arrowFire.odds");
-		this.axeKnockbackOdds = plugin.getConfig().getInt("axeKnockback.odds");
-		this.confusionDuration = plugin.getConfig().getInt("confusion.duration");
-		this.confusionStrength = plugin.getConfig().getInt("confusion.strength");
-		this.gracefulRollOdds = plugin.getConfig().getInt("gracefulRoll.odds");
-		this.instaKillOdds = plugin.getConfig().getInt("instaKill.odds");
+		this.reload(); // Load configuration
 	}
 
 	/** Axe blowback and Arrow fire **/
@@ -285,5 +274,22 @@ public class EntityListener implements Listener
 				}
 			}
 		}
+	}
+
+	@Override
+	public void reload()
+	{
+		this.arrowFireEnabled = plugin.getConfig().getBoolean("arrowFire.enabled");
+		this.axeKnockbackEnabled = plugin.getConfig().getBoolean("axeKnockback.enabled");
+		this.confusionEnabled = plugin.getConfig().getBoolean("confusion.enabled");
+		this.gracefulRollEnabled = plugin.getConfig().getBoolean("gracefulRoll.enabled");
+		this.instaKillEnabled = plugin.getConfig().getBoolean("instaKill.enabled");
+		
+		this.arrowFireOdds = plugin.getConfig().getInt("arrowFire.odds");
+		this.axeKnockbackOdds = plugin.getConfig().getInt("axeKnockback.odds");
+		this.confusionDuration = plugin.getConfig().getInt("confusion.duration");
+		this.confusionStrength = plugin.getConfig().getInt("confusion.strength");
+		this.gracefulRollOdds = plugin.getConfig().getInt("gracefulRoll.odds");
+		this.instaKillOdds = plugin.getConfig().getInt("instaKill.odds");
 	}
 }

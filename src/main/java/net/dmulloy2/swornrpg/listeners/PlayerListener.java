@@ -8,6 +8,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.dmulloy2.swornrpg.util.TimeUtil;
@@ -50,7 +51,7 @@ import com.earth2me.essentials.User;
  * @author dmulloy2
  */
 
-public class PlayerListener implements Listener
+public class PlayerListener implements Listener, Reloadable
 {
 	private boolean salvagingEnabled;
 	private boolean deathCoordinateMessages;
@@ -71,18 +72,7 @@ public class PlayerListener implements Listener
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-
-		this.salvagingEnabled = plugin.getConfig().getBoolean("salvaging");
-		this.deathCoordinateMessages = plugin.getConfig().getBoolean("deathCoordinateMessages");
-		this.checkForUpdates = plugin.getConfig().getBoolean("checkForUpdates");
-		this.fishingEnabled = plugin.getConfig().getBoolean("levelingMethods.fishing.enabled");
-		this.fishDropsEnabled = plugin.getConfig().getBoolean("fishDropsEnabled");
-		this.speedBoostEnabled = plugin.getConfig().getBoolean("speedBoost.enabled");
-
-		this.fishingGain = plugin.getConfig().getInt("levelingMethods.fishing.xpgain");
-		this.speedBoostOdds = plugin.getConfig().getInt("speedBoost.odds");
-		this.speedBoostDuration = plugin.getConfig().getInt("speedBoost.duration");
-		this.speedBoostStrength = plugin.getConfig().getInt("speedBoost.strength");
+		this.reload();
 
 		this.bookMap = new HashMap<String, ItemStack>();
 	}
@@ -515,5 +505,21 @@ public class PlayerListener implements Listener
 				}
 			}
 		}
+	}
+
+	@Override
+	public void reload()
+	{
+		this.salvagingEnabled = plugin.getConfig().getBoolean("salvaging");
+		this.deathCoordinateMessages = plugin.getConfig().getBoolean("deathCoordinateMessages");
+		this.checkForUpdates = plugin.getConfig().getBoolean("checkForUpdates");
+		this.fishingEnabled = plugin.getConfig().getBoolean("levelingMethods.fishing.enabled");
+		this.fishDropsEnabled = plugin.getConfig().getBoolean("fishDropsEnabled");
+		this.speedBoostEnabled = plugin.getConfig().getBoolean("speedBoost.enabled");
+
+		this.fishingGain = plugin.getConfig().getInt("levelingMethods.fishing.xpgain");
+		this.speedBoostOdds = plugin.getConfig().getInt("speedBoost.odds");
+		this.speedBoostDuration = plugin.getConfig().getInt("speedBoost.duration");
+		this.speedBoostStrength = plugin.getConfig().getInt("speedBoost.strength");
 	}
 }

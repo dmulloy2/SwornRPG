@@ -76,6 +76,7 @@ import net.dmulloy2.swornrpg.listeners.ExperienceListener;
 import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.milkbowl.vault.economy.Economy;
@@ -88,6 +89,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -110,7 +112,7 @@ import com.massivecraft.factions.Faction;
  * @author dmulloy2
  */
 
-public class SwornRPG extends JavaPlugin
+public class SwornRPG extends JavaPlugin implements Reloadable
 {
 	/** Getters **/
 	private @Getter Economy economy;
@@ -130,6 +132,9 @@ public class SwornRPG extends JavaPlugin
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter TagHandler tagHandler;
+
+	/** Listeners, Stored for Reloading **/
+	private List<Listener> listeners;
 
 	/** Maps **/
 	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
@@ -174,10 +179,12 @@ public class SwornRPG extends JavaPlugin
 		debug("Current version: \"{0}\"", currentVersion);
 
 		/** Register Listeners **/
-		pluginManager.registerEvents(new PlayerListener(this), this);
-		pluginManager.registerEvents(new EntityListener(this), this);
-		pluginManager.registerEvents(new BlockListener(this), this);
-		pluginManager.registerEvents(new ExperienceListener(this), this);
+		listeners = new ArrayList<Listener>();
+
+		registerListener(new PlayerListener(this));
+		registerListener(new EntityListener(this));
+		registerListener(new BlockListener(this));
+		registerListener(new ExperienceListener(this));
 
 		/** Check for PlayerData folder **/
 		File playersFile = new File(getDataFolder(), "players");
@@ -568,14 +575,44 @@ public class SwornRPG extends JavaPlugin
 	}
 	
 	/** 
-	 * Reload the Configuration
+	 * Reloads the Configuration
 	 */
+	@Override
 	public final void reload()
 	{
 		reloadConfig();
+		reloadListeners();
 		updateSalvageRef();
 		updateBlockDrops();
 		updateFishDrops();
+
+		abilityHandler.reload();
+	}
+
+	/**
+	 * Registers a {@link Listener}
+	 * 
+	 * @param listener
+	 *        - Listener to register
+	 */
+	private final void registerListener(Listener listener)
+	{
+		listeners.add(listener);
+		pluginManager.registerEvents(listener, this);
+	}
+
+	/**
+	 * Reloads the configuration settings of the listeners
+	 */
+	private final void reloadListeners()
+	{
+		for (Listener listener : listeners)
+		{
+			if (listener instanceof Reloadable)
+			{
+				((Reloadable) listener).reload();
+			}
+		}
 	}
 	
 	/** 

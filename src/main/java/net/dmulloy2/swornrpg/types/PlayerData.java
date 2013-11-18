@@ -55,11 +55,9 @@ public class PlayerData implements ConfigurationSerializable
 
 	private transient boolean frenzyWaiting;
 	private transient boolean superPickaxeWaiting;
-	private transient boolean unlimitedAmmoWaiting;
 
 	private transient long frenzyReadyTime;
 	private transient long superPickaxeReadyTime;
-	private transient long unlimitedAmmoReadyTime;
 
 	// Used for ability cleanup
 	private transient String itemName;

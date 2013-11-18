@@ -6,6 +6,7 @@ import java.util.List;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.dmulloy2.swornrpg.util.Util;
@@ -27,7 +28,7 @@ import org.bukkit.material.MaterialData;
  * @author dmulloy2
  */
 
-public class BlockListener implements Listener
+public class BlockListener implements Listener, Reloadable
 {
 	private boolean blockDropsEnabled;
 	private boolean ironDoorProtection;
@@ -39,19 +40,7 @@ public class BlockListener implements Listener
 	public BlockListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		
-		this.blockDropsEnabled = plugin.getConfig().getBoolean("blockDropsEnabled");
-		this.ironDoorProtection = plugin.getConfig().getBoolean("ironDoorProtection");
-		this.redemptionEnabled = plugin.getConfig().getBoolean("redemptionEnabled");
-		
-		this.redemptionBlacklist = new ArrayList<Material>();
-		
-		for (String s : plugin.getConfig().getStringList("redemptionBlacklist"))
-		{
-			Material mat = MaterialUtil.getMaterial(s);
-			if (mat != null)
-				redemptionBlacklist.add(mat);
-		}
+		this.reload(); // Load configuration
 	}
 
 	/** Block Drops **/
@@ -165,22 +154,20 @@ public class BlockListener implements Listener
 		}
 	}
 
-//	public boolean isBlacklistedMaterial(Material mat)
-//	{
-//		if (redemptionBlacklist.contains(mat))
-//			return true;
-//
-//		String[] defaultBlackList = new String[] { "FIRE", "CROPS", "POTATO", "CARROT", "NETHER_WARTS", "PUMPKIN_STEM", "MELON_STEM" };
-//		for (String string : defaultBlackList)
-//		{
-//			if (MaterialUtil.isValidMaterial(string))
-//			{
-//				Material material = Material.matchMaterial(string);
-//				if (material.equals(mat))
-//					return true;
-//			}
-//		}
-//
-//		return false;
-//	}
+	@Override
+	public void reload()
+	{
+		this.blockDropsEnabled = plugin.getConfig().getBoolean("blockDropsEnabled");
+		this.ironDoorProtection = plugin.getConfig().getBoolean("ironDoorProtection");
+		this.redemptionEnabled = plugin.getConfig().getBoolean("redemptionEnabled");
+		
+		this.redemptionBlacklist = new ArrayList<Material>();
+		
+		for (String s : plugin.getConfig().getStringList("redemptionBlacklist"))
+		{
+			Material mat = MaterialUtil.getMaterial(s);
+			if (mat != null)
+				redemptionBlacklist.add(mat);
+		}
+	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -41,7 +42,7 @@ import org.bukkit.material.NetherWarts;
  * @author dmulloy2
  */
 
-public class ExperienceListener implements Listener
+public class ExperienceListener implements Listener, Reloadable
 {
 	private boolean playerKillsEnabled;
 	private boolean mobKillsEnabled;
@@ -62,21 +63,7 @@ public class ExperienceListener implements Listener
 	public ExperienceListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		
-		this.playerKillsEnabled = plugin.getConfig().getBoolean("levelingMethods.playerKills.enabled");
-		this.mobKillsEnabled = plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled");
-		this.mcXpEnabled = plugin.getConfig().getBoolean("levelingMethods.mcXpGain.enabled");
-		this.herbalismEnabled = plugin.getConfig().getBoolean("levelingMethods.herbalism.enabled");
-		this.tamingEnabled = plugin.getConfig().getBoolean("levelingMethods.taming.enabled");
-		this.enchantingEnabled = plugin.getConfig().getBoolean("levelingMethods.enchanting.enabled");
-
-		this.killerXpGain = plugin.getConfig().getInt("levelingMethods.playerKills.xpgain");
-		this.killedXpLoss = plugin.getConfig().getInt("levelingMethods.playerKills.xploss");
-		this.mobKillsGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain");
-		this.mcXpGain = plugin.getConfig().getInt("levelingMethods.mcXpGain.xpgain");
-		this.herbalismGain = plugin.getConfig().getInt("levelingMethods.herbalism.xpgain");
-		this.tamingGain = plugin.getConfig().getInt("levelingMethods.taming.xpgain");
-		this.enchantingGain = plugin.getConfig().getInt("levelingMethods.enchanting.xpgain");
+		this.reload();
 	}
 
 	/** Rewards XP in PvP situations **/
@@ -431,5 +418,24 @@ public class ExperienceListener implements Listener
 		String message = plugin.getPrefix() +
 				FormatUtil.format(plugin.getMessage("enchant_gain"), xp);
 		plugin.getExperienceHandler().onXPGain(player, xp, message);
+	}
+
+	@Override
+	public void reload()
+	{
+		this.playerKillsEnabled = plugin.getConfig().getBoolean("levelingMethods.playerKills.enabled");
+		this.mobKillsEnabled = plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled");
+		this.mcXpEnabled = plugin.getConfig().getBoolean("levelingMethods.mcXpGain.enabled");
+		this.herbalismEnabled = plugin.getConfig().getBoolean("levelingMethods.herbalism.enabled");
+		this.tamingEnabled = plugin.getConfig().getBoolean("levelingMethods.taming.enabled");
+		this.enchantingEnabled = plugin.getConfig().getBoolean("levelingMethods.enchanting.enabled");
+
+		this.killerXpGain = plugin.getConfig().getInt("levelingMethods.playerKills.xpgain");
+		this.killedXpLoss = plugin.getConfig().getInt("levelingMethods.playerKills.xploss");
+		this.mobKillsGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain");
+		this.mcXpGain = plugin.getConfig().getInt("levelingMethods.mcXpGain.xpgain");
+		this.herbalismGain = plugin.getConfig().getInt("levelingMethods.herbalism.xpgain");
+		this.tamingGain = plugin.getConfig().getInt("levelingMethods.taming.xpgain");
+		this.enchantingGain = plugin.getConfig().getInt("levelingMethods.enchanting.xpgain");
 	}
 }
