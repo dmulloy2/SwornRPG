@@ -448,7 +448,8 @@ public class AbilityHandler implements Reloadable
 						plugin.debug("(({0} - {1}) > 60L = true", System.currentTimeMillis(), data.getFrenzyReadyTime());
 						
 						Player player = Util.matchPlayer(wait);
-						sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
+						if (player != null)
+							sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
 
 						data.setFrenzyWaiting(false);
 						data.setItemName(null);
@@ -462,7 +463,8 @@ public class AbilityHandler implements Reloadable
 					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > TimeUtil.toMilliseconds(3))
 					{
 						Player player = Util.matchPlayer(wait);
-						sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
+						if (player != null)
+							sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
 
 						data.setSuperPickaxeWaiting(false);
 						data.setItemName(null);
