@@ -110,4 +110,9 @@ public final class TimeUtil
 	{
 		return TimeUnit.SECONDS.toMillis(seconds);
 	}
+
+	public static int toSeconds(long millis)
+	{
+		return (int) TimeUnit.MILLISECONDS.toSeconds(millis);
+	}
 }

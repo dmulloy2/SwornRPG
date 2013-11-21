@@ -49,9 +49,9 @@ public class PlayerData implements ConfigurationSerializable
 	private boolean superPickaxeCooldownEnabled;
 	private boolean unlimitedAmmoCooldownEnabled;
 
-	private int frenzyCooldownTime;
-	private int superPickaxeCooldownTime;
-	private int unlimitedAmmoCooldownTime;
+	private long frenzyCooldownTime;
+	private long superPickaxeCooldownTime;
+	private long unlimitedAmmoCooldownTime;
 
 	private transient boolean frenzyWaiting;
 	private transient boolean superPickaxeWaiting;

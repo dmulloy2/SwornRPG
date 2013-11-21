@@ -9,6 +9,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.dmulloy2.swornrpg.util.ItemUtil;
+import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
@@ -98,9 +99,9 @@ public class ExperienceHandler
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
 
 		/** Prior Skill Data **/
-		int oldFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()) / 20;
-		int oldSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()) / 20;
-		int oldUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()) / 20;
+		int oldFrenzy = TimeUtil.toSeconds(plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()));
+		int oldSuperPickaxe = TimeUtil.toSeconds(plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()));
+		int oldUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
 		/** Prepare data for the next level **/
 		if (data.getLevel() < 250)
@@ -112,9 +113,9 @@ public class ExperienceHandler
 		data.setPlayerxp(0);
 
 		/** New Skill Data **/
-		int newFrenzy = plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()) / 20;
-		int newSuperPickaxe = plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()) / 20;
-		int newUnlimitedAmmo = plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()) / 20;
+		int newFrenzy = TimeUtil.toSeconds(plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()));
+		int newSuperPickaxe = TimeUtil.toSeconds(plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()));
+		int newUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
 		/** Send messages **/
 		int level = data.getLevel();

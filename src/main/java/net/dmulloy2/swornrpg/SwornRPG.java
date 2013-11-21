@@ -77,6 +77,7 @@ import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.types.Updater;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
+import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -294,7 +295,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						}
 					}
 				}
-			}.runTaskTimer(this, 20L, 20L);
+//			}.runTaskTimer(this, 20L, 20L);
+			}.runTaskTimer(this, 2L, 1L);
 		}
 
 		/** Super Pickaxe Cooldown **/
@@ -322,7 +324,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						}
 					}
 				}
-			}.runTaskTimer(this, 20L, 20L);
+//			}.runTaskTimer(this, 20L, 20L);
+			}.runTaskTimer(this, 2L, 1L);
 		}
 
 		/** SwornGuns Integration **/
@@ -353,7 +356,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						}
 					}
 				}
-			}.runTaskTimer(this, 20L, 20L);
+//			}.runTaskTimer(this, 20L, 20L);
+			}.runTaskTimer(this, 2L, 1L);
 		}
 
 		updater = new Updater(this);
@@ -366,6 +370,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 		/** Online XP Gain **/
 		final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
+		final long interval = TimeUtil.toMilliseconds(60);
 
 		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 		{
@@ -397,7 +402,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						}
 					}
 				}
-			}.runTaskTimer(this, 120L, 120L);
+			}.runTaskTimer(this, interval, interval);
 		}
 
 		long finish = System.currentTimeMillis();

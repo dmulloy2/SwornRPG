@@ -5,6 +5,7 @@ import net.dmulloy2.swornrpg.handlers.AbilityHandler;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.TimeUtil;
 
 import org.bukkit.OfflinePlayer;
 
@@ -46,11 +47,12 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isFrenzyEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"), abilityHandler.getFrenzyDuration(data.getLevel()) / 20));
+			line.append(FormatUtil.format(plugin.getMessage("ability_frenzy"),
+					TimeUtil.toSeconds(abilityHandler.getFrenzyDuration(data.getLevel()))));
 
 			if (data.isFrenzyCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getFrenzyCooldownTime()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", TimeUtil.toSeconds(data.getFrenzyCooldownTime())));
 			}
 
 			sendMessage(line.toString());
@@ -59,7 +61,8 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isSuperPickaxeEnabled())
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), abilityHandler.getSuperPickaxeDuration(data.getLevel()) / 20));
+			line.append(FormatUtil.format(plugin.getMessage("ability_spick"), 
+					TimeUtil.toSeconds(abilityHandler.getSuperPickaxeDuration(data.getLevel()))));
 
 			if (data.isSuperPickaxeCooldownEnabled())
 			{
@@ -72,11 +75,12 @@ public class CmdAbilities extends SwornRPGCommand
 		if (abilityHandler.isUnlimitedAmmoEnabled() && plugin.getPluginManager().isPluginEnabled("SwornGuns"))
 		{
 			StringBuilder line = new StringBuilder();
-			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), abilityHandler.getUnlimitedAmmoDuration(data.getLevel()) / 20));
+			line.append(FormatUtil.format(plugin.getMessage("ability_ammo"), 
+					TimeUtil.toSeconds(abilityHandler.getUnlimitedAmmoDuration(data.getLevel()))));
 
 			if (data.isUnlimitedAmmoCooldownEnabled())
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", data.getUnlimitedAmmoCooldownTime()));
+				line.append(FormatUtil.format(" &c(Cooldown: {0})", TimeUtil.toSeconds(data.getUnlimitedAmmoCooldownTime())));
 			}
 
 			sendMessage(line.toString());
