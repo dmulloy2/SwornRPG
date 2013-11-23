@@ -49,10 +49,8 @@ public class AbilityHandler implements Reloadable
 	public AbilityHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-
-		this.reload(); // Load configuration
-
 		this.waiting = new ArrayList<String>();
+		this.reload(); // Load configuration
 
 		new CleanupTask().runTaskTimer(plugin, 2L, 1L);
 	}
@@ -130,21 +128,21 @@ public class AbilityHandler implements Reloadable
 		/** Enable Check **/
 		if (! frenzyEnabled)
 		{
-//			sendpMessage(player, plugin.getMessage("command_disabled"));
+			// sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
 
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
-//			sendpMessage(player, plugin.getMessage("disabled_world"));
+			// sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
 
 		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
-//			sendpMessage(player, plugin.getMessage("creative_ability"));
+			// sendpMessage(player, plugin.getMessage("creative_ability"));
 			return;
 		}
 
@@ -265,37 +263,30 @@ public class AbilityHandler implements Reloadable
 		/** Enable Check **/
 		if (! superPickaxeEnabled)
 		{
-//			sendpMessage(player, plugin.getMessage("command_disabled"));
+			// sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
 
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
-//			sendpMessage(player, plugin.getMessage("disabled_world"));
+			// sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
 
 		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
-//			sendpMessage(player, plugin.getMessage("creative_ability"));
+			// sendpMessage(player, plugin.getMessage("creative_ability"));
 			return;
 		}
 
-		/** Check for Super Pickaxe In Progress **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		if (data.isSuperPickaxeEnabled())
-		{
-			sendpMessage(player, plugin.getMessage("ability_in_progress"), "Super Pickaxe");
-			return;
-		}
-
 		if (data.isSuperPickaxeWaiting())
 		{
 			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK)
 			{
-				if (data.isFrenzyCooldownEnabled())
+				if (data.isSuperPickaxeEnabled())
 					return;
 
 				superPickaxe(player);
@@ -366,7 +357,7 @@ public class AbilityHandler implements Reloadable
 	{
 		/** SwornGuns Enable Check **/
 		PluginManager pm = plugin.getServer().getPluginManager();
-		if (! pm.isPluginEnabled("SwornGuns"))
+		if (!pm.isPluginEnabled("SwornGuns"))
 		{
 			sendpMessage(player, plugin.getMessage("plugin_not_found"), "SwornGuns");
 			return;
@@ -420,7 +411,7 @@ public class AbilityHandler implements Reloadable
 				data.setUnlimitedAmmoCooldownEnabled(true);
 				data.setUnlimitedAmmoCooldownTime(getUnlimitedAmmoCooldown(level));
 
-				plugin.debug(plugin.getMessage("log_ammo_cooldown"), player.getName(), 
+				plugin.debug(plugin.getMessage("log_ammo_cooldown"), player.getName(),
 						TimeUtil.toSeconds(data.getUnlimitedAmmoCooldownTime()));
 			}
 		}.runTaskLater(plugin, duration);
@@ -481,37 +472,39 @@ public class AbilityHandler implements Reloadable
 
 	public final long getFrenzyDuration(int level)
 	{
-//		return 20 * (frenzyDuration + (level * frenzyLevelMultiplier));
+		// return 20 * (frenzyDuration + (level * frenzyLevelMultiplier));
 		return TimeUtil.toTicks(frenzyDuration + (level * frenzyLevelMultiplier));
 	}
 
 	public final long getFrenzyCooldown(int level)
 	{
-//		return duration * frenzyCooldownMultiplier;
+		// return duration * frenzyCooldownMultiplier;
 		return getFrenzyDuration(level) * frenzyCooldownMultiplier;
 	}
 
 	public final long getSuperPickaxeDuration(int level)
 	{
-//		return 20 * (superPickaxeDuration + (level * superPickaxeLevelMultiplier));
+		// return 20 * (superPickaxeDuration + (level *
+		// superPickaxeLevelMultiplier));
 		return TimeUtil.toTicks(superPickaxeDuration + (level * superPickaxeLevelMultiplier));
 	}
 
 	public final long getSuperPickaxeCooldown(int level)
 	{
-//		return duration * superPickaxeCooldownMultiplier;
+		// return duration * superPickaxeCooldownMultiplier;
 		return getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier;
 	}
 
 	public final long getUnlimitedAmmoDuration(int level)
 	{
-//		return 20 * (unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
+		// return 20 * (unlimitedAmmoDuration + (level *
+		// unlimitedAmmoLevelMultiplier));
 		return TimeUtil.toTicks(unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
 	}
 
 	public final long getUnlimitedAmmoCooldown(int level)
 	{
-//		return duration * unlimitedAmmoCooldownMultiplier;
+		// return duration * unlimitedAmmoCooldownMultiplier;
 		return getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier;
 	}
 
