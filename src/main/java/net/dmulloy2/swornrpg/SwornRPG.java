@@ -370,7 +370,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 		/** Online XP Gain **/
 		final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
-		final long interval = TimeUtil.toMilliseconds(60);
+		final long interval = TimeUtil.toTicks(60);
 
 		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 		{

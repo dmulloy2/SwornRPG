@@ -96,21 +96,21 @@ public class AbilityHandler implements Reloadable
 		/** Enable Check **/
 		if (! frenzyEnabled)
 		{
-			sendpMessage(player, plugin.getMessage("command_disabled"));
+			sendpMessage(player, "&c" + plugin.getMessage("command_disabled"));
 			return;
 		}
 
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
-			sendpMessage(player, plugin.getMessage("disabled_world"));
+			sendpMessage(player, "&c" + plugin.getMessage("disabled_world"));
 			return;
 		}
 
 		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
-			sendpMessage(player, plugin.getMessage("creative_ability"));
+			sendpMessage(player, "&c" + plugin.getMessage("creative_ability"));
 			return;
 		}
 
@@ -231,21 +231,21 @@ public class AbilityHandler implements Reloadable
 		/** Enable Check **/
 		if (! superPickaxeEnabled)
 		{
-			sendpMessage(player, plugin.getMessage("command_disabled"));
+			sendpMessage(player, "&c" + plugin.getMessage("command_disabled"));
 			return;
 		}
 
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
-			sendpMessage(player, plugin.getMessage("disabled_world"));
+			sendpMessage(player, "&c" + plugin.getMessage("disabled_world"));
 			return;
 		}
 
 		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
-			sendpMessage(player, plugin.getMessage("creative_ability"));
+			sendpMessage(player, "&c" + plugin.getMessage("creative_ability"));
 			return;
 		}
 
@@ -444,7 +444,7 @@ public class AbilityHandler implements Reloadable
 				if (data.isFrenzyWaiting())
 				{
 					plugin.debug("Checking frenzy waiting for {0}", wait);
-					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > TimeUtil.toMilliseconds(3))
+					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > TimeUtil.toTicks(3))
 					{
 						plugin.debug("(({0} - {1}) > 60L = true", System.currentTimeMillis(), data.getFrenzyReadyTime());
 
@@ -461,7 +461,7 @@ public class AbilityHandler implements Reloadable
 
 				if (data.isSuperPickaxeWaiting())
 				{
-					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > TimeUtil.toMilliseconds(3))
+					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > TimeUtil.toTicks(3))
 					{
 						Player player = Util.matchPlayer(wait);
 						if (player != null)
@@ -482,7 +482,7 @@ public class AbilityHandler implements Reloadable
 	public final long getFrenzyDuration(int level)
 	{
 //		return 20 * (frenzyDuration + (level * frenzyLevelMultiplier));
-		return TimeUtil.toMilliseconds(frenzyDuration + (level * frenzyLevelMultiplier));
+		return TimeUtil.toTicks(frenzyDuration + (level * frenzyLevelMultiplier));
 	}
 
 	public final long getFrenzyCooldown(int level)
@@ -494,7 +494,7 @@ public class AbilityHandler implements Reloadable
 	public final long getSuperPickaxeDuration(int level)
 	{
 //		return 20 * (superPickaxeDuration + (level * superPickaxeLevelMultiplier));
-		return TimeUtil.toMilliseconds(superPickaxeDuration + (level * superPickaxeLevelMultiplier));
+		return TimeUtil.toTicks(superPickaxeDuration + (level * superPickaxeLevelMultiplier));
 	}
 
 	public final long getSuperPickaxeCooldown(int level)
@@ -506,7 +506,7 @@ public class AbilityHandler implements Reloadable
 	public final long getUnlimitedAmmoDuration(int level)
 	{
 //		return 20 * (unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
-		return TimeUtil.toMilliseconds(unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
+		return TimeUtil.toTicks(unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
 	}
 
 	public final long getUnlimitedAmmoCooldown(int level)
