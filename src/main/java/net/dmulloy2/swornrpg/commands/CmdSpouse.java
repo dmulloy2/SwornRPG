@@ -26,13 +26,24 @@ public class CmdSpouse extends SwornRPGCommand
 	{
 		if (! plugin.getConfig().getBoolean("marriage"))
 		{
-			err(plugin.getMessage("command_disabled"));
+			err(getMessage("command_disabled"));
 			return;
 		}
 
 		OfflinePlayer target = getTarget(0, hasPermission(Permission.SPOUSE_OTHERS));
+		if (target == null)
+		{
+			err(getMessage("player_not_found"), args[0]);
+			return;
+		}
 
 		PlayerData data = getPlayerData(target);
+		if (data == null)
+		{
+			err(getMessage("player_not_found"), args[0]);
+			return;
+		}
+
 		String spouse = data.getSpouse();
 
 		String name;
@@ -47,11 +58,11 @@ public class CmdSpouse extends SwornRPGCommand
 
 		if (spouse != null)
 		{
-			sendpMessage(plugin.getMessage("spouse_info"), name, spouse);
+			sendpMessage(getMessage("spouse_info"), name, spouse);
 		}
 		else
 		{
-			sendpMessage(plugin.getMessage("no_spouse"), name);
+			sendpMessage(getMessage("no_spouse"), name);
 		}
 	}
 }
