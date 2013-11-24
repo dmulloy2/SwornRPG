@@ -2,12 +2,13 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.types.Reloadable;
 
 /**
  * @author dmulloy2
  */
 
-public class CmdReload extends SwornRPGCommand
+public class CmdReload extends SwornRPGCommand implements Reloadable
 {
 	public CmdReload(SwornRPG plugin)
 	{
@@ -22,6 +23,12 @@ public class CmdReload extends SwornRPGCommand
 	
 	@Override
 	public void perform()
+	{
+		reload();
+	}
+
+	@Override
+	public void reload()
 	{
 		sendpMessage("&aReloading Configuration...");
 		

@@ -75,13 +75,21 @@ public abstract class SwornRPGCommand implements CommandExecutor
 			return;
 		}
 
-		if (!hasPermission())
+		if (! hasPermission())
 		{
 			err(plugin.getMessage("noperm"));
 			return;
 		}
 
-		perform();
+		try
+		{
+			perform();
+		}
+		catch (Throwable e)
+		{
+			err("Error executing command: {0}", e.getMessage());
+			plugin.getLogHandler().debug(Util.getUsefulStack(e, "executing command " + name));
+		}
 	}
 
 	protected final boolean isPlayer()
@@ -92,14 +100,6 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	private final boolean hasPermission()
 	{
 		return plugin.getPermissionHandler().hasPermission(sender, permission);
-	}
-
-	protected final boolean argMatchesAlias(String arg, String... aliases)
-	{
-		for (String s : aliases)
-			if (arg.equalsIgnoreCase(s))
-				return true;
-		return false;
 	}
 
 	protected final void err(String msg, Object... args)
@@ -117,25 +117,21 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return plugin.getPlayerDataCache().getData(key);
 	}
 
-	// Send non prefixed message
 	protected final void sendMessage(String msg, Object... args)
 	{
 		sender.sendMessage(FormatUtil.format(msg, args));
 	}
 
-	// Send prefixed message
 	protected final void sendpMessage(String msg, Object... args)
 	{
 		sender.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 
-	// Send message to the whole server
 	protected final void sendMessageAll(String msg, Object... args)
 	{
 		plugin.getServer().broadcastMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 
-	// Send prefixed message to a given target
 	protected final void sendMessageTarget(String msg, Player target, Object... args)
 	{
 		target.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
@@ -176,6 +172,17 @@ public abstract class SwornRPGCommand implements CommandExecutor
 			ret.append(" &e" + description);
 
 		return FormatUtil.format(ret.toString());
+	}
+
+	protected final boolean argMatchesAlias(String arg, String... aliases)
+	{
+		for (String s : aliases)
+		{
+			if (arg.equalsIgnoreCase(s))
+				return true;
+		}
+
+		return false;
 	}
 
 	protected int argAsInt(int arg, boolean msg)

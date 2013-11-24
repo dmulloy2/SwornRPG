@@ -12,7 +12,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 public abstract class PaginatedCommand extends SwornRPGCommand
 {
 	protected int linesPerPage = 10;
-	private int pageArgIndex = 0;
+	protected int pageArgIndex = 0;
 
 	public PaginatedCommand(SwornRPG plugin)
 	{

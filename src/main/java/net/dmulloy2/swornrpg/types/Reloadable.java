@@ -9,5 +9,5 @@ package net.dmulloy2.swornrpg.types;
 
 public interface Reloadable
 {
-	public abstract void reload();
+	void reload();
 }
