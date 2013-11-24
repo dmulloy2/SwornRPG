@@ -213,4 +213,60 @@ public class Util
 
 		return ret;
 	}
+
+	/**
+	 * Constructs a new {@link List} paramaterized with <code>T</code>
+	 * 
+	 * @param objects
+	 *        - Array of <code>T</code> to create the list with
+	 * @return a new {@link List} from the given objects
+	 */
+	@SafeVarargs
+	public static <T> List<T> toList(T... objects)
+	{
+		List<T> ret = new ArrayList<T>();
+
+		for (T t : objects)
+		{
+			ret.add(t);
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Basically just a wrapper for {@link Integer#parseInt(String)}
+	 * <p>
+	 * Catches the {@link NumberFormatException} and returns -1
+	 * 
+	 * @param s
+	 *        - String to attempt to parse into an Integer
+	 */
+	public static int parseInt(String s)
+	{
+		int ret = -1;
+
+		try
+		{
+			ret = Integer.parseInt(s);
+		}
+		catch (Exception e)
+		{
+			// Return -1, move on
+		}
+
+		return ret;
+	}
+
+	/**
+	 * Returns whether or not a String can be parsed as an Integer
+	 * 
+	 * @param string
+	 *        - String to check
+	 * @return Whether or not a String can be parsed as an Integer
+	 */
+	public static boolean isInteger(String s)
+	{
+		return parseInt(s) != -1;
+	}
 }
