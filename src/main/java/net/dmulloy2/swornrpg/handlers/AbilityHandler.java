@@ -434,11 +434,8 @@ public class AbilityHandler implements Reloadable
 				PlayerData data = plugin.getPlayerDataCache().getData(wait);
 				if (data.isFrenzyWaiting())
 				{
-					plugin.debug("Checking frenzy waiting for {0}", wait);
-					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > TimeUtil.toTicks(3))
+					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > 120L)
 					{
-						plugin.debug("(({0} - {1}) > 60L = true", System.currentTimeMillis(), data.getFrenzyReadyTime());
-
 						Player player = Util.matchPlayer(wait);
 						if (player != null)
 							sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
@@ -452,7 +449,7 @@ public class AbilityHandler implements Reloadable
 
 				if (data.isSuperPickaxeWaiting())
 				{
-					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > TimeUtil.toTicks(3))
+					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > 120L)
 					{
 						Player player = Util.matchPlayer(wait);
 						if (player != null)

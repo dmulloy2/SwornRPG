@@ -450,13 +450,14 @@ public class PlayerListener implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)
 	{
-		if (event.isCancelled())
+		Player player = event.getPlayer();
+		if (event.isCancelled() || player == null)
 			return;
 
-		Player player = event.getPlayer();
-		if (plugin.getPermissionHandler().hasPermission(player, Permission.RIDE))
+		if (! player.isInsideVehicle() && player.getPassenger() != null)
 		{
-			if (! player.isInsideVehicle() && player.isSneaking())
+			PlayerData data = plugin.getPlayerDataCache().getData(player);
+			if (data.isRideWaiting() && (System.currentTimeMillis() - data.getRideWaitingTime()) <= 200L)
 			{
 				Entity clicked = event.getRightClicked();
 				EntityType type = clicked.getType();
@@ -488,20 +489,16 @@ public class PlayerListener implements Listener, Reloadable
 					case WITHER:
 					case WOLF:
 					case ZOMBIE:
-					{
 						clicked.setPassenger(player);
 
 						String name = FormatUtil.getFriendlyName(type);
-						player.sendMessage(FormatUtil.format("&aYou are now riding {0} &e{1}", FormatUtil.getArticle(name), name));
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&aYou are now riding {0} &e{1}", FormatUtil.getArticle(name), name));
 						break;
-					}
-
 					case ENDER_DRAGON:
-					{
 						clicked.setPassenger(player);
-						player.sendMessage(FormatUtil.format("&aYou are a DragonTamer, &e{0}&a!", player.getName()));
-					}
-
+						player.sendMessage(plugin.getPrefix() + 
+								FormatUtil.format("&aYou are a DragonTamer, &e{0}&a!", player.getName()));
 					default:
 						break;
 				}

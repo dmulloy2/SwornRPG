@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public class CmdRide extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "ride";
-		this.requiredArgs.add("player");
+		this.optionalArgs.add("player");
 		this.description = "Get on a player's head";
 		this.permission = Permission.RIDE;
 
@@ -27,6 +28,16 @@ public class CmdRide extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		if (args.length == 0)
+		{
+			PlayerData data = getPlayerData(player);
+			data.setRideWaitingTime(System.currentTimeMillis());
+			data.setRideWaiting(true);
+
+			sendpMessage("&eClick on the desired entity to ride!");
+			return;
+		}
+
 		final Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 		{

@@ -62,6 +62,10 @@ public class PlayerData implements ConfigurationSerializable
 	// Used for ability cleanup
 	private transient String itemName;
 
+	// ---- Entity Fun ---- //
+	private transient long rideWaitingTime;
+	private transient boolean rideWaiting;
+
 	@Setter(AccessLevel.NONE)
 	private Map<String, Object> data = new HashMap<String, Object>();
 
