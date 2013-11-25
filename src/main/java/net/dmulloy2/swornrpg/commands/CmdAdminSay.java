@@ -1,6 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 /**
@@ -16,6 +17,7 @@ public class CmdAdminSay extends SwornRPGCommand
 		this.aliases.add("asay");
 		this.requiredArgs.add("message");
 		this.description = "Alternate admin say command";
+		this.permission = Permission.ADMINSAY;
 	}
 
 	@Override
