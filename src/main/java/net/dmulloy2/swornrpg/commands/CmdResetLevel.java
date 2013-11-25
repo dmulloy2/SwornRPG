@@ -33,6 +33,12 @@ public class CmdResetLevel extends SwornRPGCommand
 			return;
 
 		PlayerData data = getPlayerData(target);
+		if (data == null)
+		{
+			err(getMessage("player_not_found"), args[0]);
+			return;
+		}
+
 		data.setPlayerxp(0);
 		data.setLevel(0);
 		data.setTotalxp(0);

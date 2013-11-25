@@ -47,6 +47,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		this.aliases = new ArrayList<String>(2);
 	}
 
+	// ---- Execution ---- //
+
 	public abstract void perform();
 
 	@Override
@@ -97,10 +99,17 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return player != null;
 	}
 
-	private final boolean hasPermission()
+	protected final boolean hasPermission(Permission permission)
 	{
 		return plugin.getPermissionHandler().hasPermission(sender, permission);
 	}
+
+	private final boolean hasPermission()
+	{
+		return hasPermission(permission);
+	}
+
+	// ---- Messages ---- //
 
 	protected final void err(String msg, Object... args)
 	{
@@ -142,6 +151,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return plugin.getMessage(msg);
 	}
 
+	// ---- Help Related Stuff ---- //
+
 	public final String getName()
 	{
 		return name;
@@ -173,6 +184,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 
 		return FormatUtil.format(ret.toString());
 	}
+
+	// ---- Argument Manipulation ---- //
 
 	protected final boolean argMatchesAlias(String arg, String... aliases)
 	{
@@ -207,7 +220,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		}
 		catch (NumberFormatException ex)
 		{
-			if (msg) 
+			if (msg)
 				invalidArgs();
 			return -1;
 		}
@@ -229,7 +242,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 				target = Util.matchOfflinePlayer(args[arg]);
 				if (target == null)
 				{
-					err(plugin.getMessage("noplayer"));
+					err(getMessage("player_not_found"), args[arg]);
 					return null;
 				}
 			}
@@ -242,16 +255,11 @@ public abstract class SwornRPGCommand implements CommandExecutor
 			}
 			else
 			{
-				err(plugin.getMessage("console_level"));
+				err(getMessage("console_level"));
 				return null;
 			}
 		}
 
 		return target;
-	}
-
-	protected final boolean hasPermission(Permission permission)
-	{
-		return plugin.getPermissionHandler().hasPermission(sender, permission);
 	}
 }

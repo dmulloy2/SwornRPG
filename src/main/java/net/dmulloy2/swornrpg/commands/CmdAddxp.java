@@ -29,7 +29,7 @@ public class CmdAddxp extends SwornRPGCommand
 		Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 		{
-			err(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("player_not_found"), args[0]);
 			return;
 		}
 		

@@ -42,7 +42,7 @@ public class CmdMarry extends SwornRPGCommand
 		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
 		if (target == null)
 		{
-			err(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("player_not_found"), plugin.getProposal().get(sender.getName()));
 			return;
 		}
 		

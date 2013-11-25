@@ -30,10 +30,12 @@ public class CmdReload extends SwornRPGCommand implements Reloadable
 	@Override
 	public void reload()
 	{
+		long start = System.currentTimeMillis();
+
 		sendpMessage("&aReloading Configuration...");
 		
 		plugin.reload();
 		
-		sendpMessage("&aReload Complete!");
+		sendpMessage("&aReload Complete! (Took {0} ms)", System.currentTimeMillis() - start);
 	}
 }

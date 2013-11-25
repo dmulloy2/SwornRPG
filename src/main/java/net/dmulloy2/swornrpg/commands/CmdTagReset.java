@@ -56,7 +56,7 @@ public class CmdTagReset extends SwornRPGCommand
 			Player target = Util.matchPlayer(args[0]);
 			if (target == null)
 			{
-				err(getMessage("noplayer"));
+				err(getMessage("player_not_found"), args[0]);
 				return;
 			}
 

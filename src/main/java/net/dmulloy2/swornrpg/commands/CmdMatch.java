@@ -36,7 +36,5 @@ public class CmdMatch extends SwornRPGCommand
 		{
 			err(plugin.getMessage("match_failed"), args[0]);
 		}
-		
-		// TODO: Use player data files?
 	}
 }

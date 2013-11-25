@@ -32,10 +32,7 @@ public class CmdSpouse extends SwornRPGCommand
 
 		OfflinePlayer target = getTarget(0, hasPermission(Permission.SPOUSE_OTHERS));
 		if (target == null)
-		{
-			err(getMessage("player_not_found"), args[0]);
 			return;
-		}
 
 		PlayerData data = getPlayerData(target);
 		if (data == null)

@@ -68,7 +68,6 @@ public class PlayerListener implements Listener, Reloadable
 	private HashMap<String, ItemStack> bookMap;
 
 	private final SwornRPG plugin;
-
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;

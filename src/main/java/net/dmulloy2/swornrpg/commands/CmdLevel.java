@@ -25,11 +25,13 @@ public class CmdLevel extends SwornRPGCommand
 	public void perform()
 	{
 		OfflinePlayer target = getTarget(0, hasPermission(Permission.LEVEL_OTHERS));
+		if (target == null)
+			return;
 		
 		PlayerData data = getPlayerData(target);
 		if (data == null)
 		{
-			err(plugin.getMessage("noplayer"));
+			err(plugin.getMessage("player_not_found"), args[0]);
 			return;
 		}
 
