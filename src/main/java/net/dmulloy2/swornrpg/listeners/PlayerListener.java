@@ -263,13 +263,11 @@ public class PlayerListener implements Listener, Reloadable
 			data.setDeathCoordsEnabled(true);
 		}
 
-		// Conversion to cleaner DeathCoordsEnabled boolean
-
-		@SuppressWarnings("deprecation")
-		boolean deathBookDisabled = data.isDeathbookdisabled();
-		if (deathBookDisabled)
+		// Conversion to cleaner DeathCoordsEnabled
+		if (! data.isDeathCoordsUpdated())
 		{
-			data.setDeathCoordsEnabled(false);
+			data.setDeathCoordsEnabled(! data.isDeathbookdisabled());
+			data.setDeathCoordsUpdated(true);
 		}
 
 		/** Update Notification **/

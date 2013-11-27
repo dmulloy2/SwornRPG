@@ -26,8 +26,9 @@ public class PlayerData implements ConfigurationSerializable
 
 	private boolean deathCoordsEnabled;
 
-	@Deprecated
+	// TODO: Remove these
 	private boolean deathbookdisabled;
+	private boolean deathCoordsUpdated;
 
 	private transient long timeOfLastDeath;
 
