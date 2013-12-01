@@ -134,15 +134,14 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	/** Listeners, Stored for Reloading **/
 	private List<Listener> listeners;
 
+	/** Startup Exception (if applicable) **/
+	private @Getter Throwable startupException;
+
 	/** Maps **/
 	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
 	private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
 	private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
-
-	/** Failed Startup **/
-	private @Getter boolean startupFailed;
-	private @Getter Throwable startupException;
 
 	/** Update Checking **/
 	private @Getter Updater updater;
@@ -420,15 +419,18 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		}
 		catch (Throwable ex)
 		{
+			// Store for later
+			startupException = ex;
+
 			// Something happened when we tried to enable
-			outConsole(Level.SEVERE, Util.getUsefulStack(ex, "enabling SwornRPG"));
+			getLogger().severe(Util.getUsefulStack(startupException, "enabling SwornRPG"));
 
 			// Alert online OP's
 			for (Player player : getServer().getOnlinePlayers())
 			{
 				if (player.isOp())
 				{
-					player.sendMessage(prefix + FormatUtil.format("&cSwornRPG failed to load! Check the log file!"));
+					player.sendMessage(prefix + FormatUtil.format("&cSwornRPG failed to load! Exception: {0}", startupException));
 				}
 			}
 
@@ -441,7 +443,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					Player player = event.getPlayer();
 					if (player.isOp())
 					{
-						player.sendMessage(prefix + FormatUtil.format("&cSwornRPG failed to load! Check the log file!"));
+						player.sendMessage(prefix + FormatUtil.format("&cSwornRPG failed to load! Exception: {0}", startupException));
 					}
 				}
 			}, this);
