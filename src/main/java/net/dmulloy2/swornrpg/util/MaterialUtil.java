@@ -19,7 +19,7 @@ public class MaterialUtil
 	 */
 	public static org.bukkit.Material getMaterial(String string)
 	{
-		if (isInteger(string))
+		if (Util.isInteger(string))
 		{
 			return getMaterial(Integer.parseInt(string));
 		}
@@ -41,32 +41,10 @@ public class MaterialUtil
 		Material mat = Material.getMaterial(id);
 		if (mat != null)
 		{
-			return mat.getMaterial();
+			return mat.getBukkitMaterial();
 		}
 
 		return null;
-	}
-
-	/**
-	 * Returns whether or not a String can be parsed as an Integer
-	 * 
-	 * @param string
-	 *        - String to check
-	 * @return Whether or not a String can be parsed as an Integer
-	 */
-	public static boolean isInteger(String string)
-	{
-		int ret = -1;
-		try
-		{
-			ret = Integer.parseInt(string);
-		}
-		catch (Exception e)
-		{
-			//
-		}
-
-		return ret != -1;
 	}
 
 	/**
@@ -76,9 +54,15 @@ public class MaterialUtil
 	 *        - Bukkit material
 	 * @return Item ID (if applicable)
 	 */
-	public static int getItemId(org.bukkit.Material mat)
+	public static int getItemId(org.bukkit.Material bukkitMaterial)
 	{
-		return Material.getTypeId(mat);
+		Material mat = Material.getByBukkitMaterial(bukkitMaterial);
+		if (mat != null)
+		{
+			return mat.getId();
+		}
+
+		return 1; // Stone
 	}
 
 	/**

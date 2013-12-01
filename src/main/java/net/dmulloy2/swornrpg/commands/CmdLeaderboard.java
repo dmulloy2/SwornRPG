@@ -49,6 +49,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			sendpMessage(getMessage("leaderboard_wait"));
 			
 			leaderboard.clear();
+			updating = true;
 
 			new BuildLeaderboardThread();
 		}
@@ -140,8 +141,6 @@ public class CmdLeaderboard extends SwornRPGCommand
 		@Override
 		public void run()
 		{
-			updating = true;
-			
 			plugin.outConsole("Updating leaderboard...");
 
 			long start = System.currentTimeMillis();
@@ -168,7 +167,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			});
 
 			experienceMap.clear();
-			experienceMap = null;
+//			experienceMap = null;
 
 			int pos = 1;
 			for (Entry<String, Integer> entry : sortedEntries)
@@ -201,7 +200,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			}
 			
 			sortedEntries.clear();
-			sortedEntries = null;
+//			sortedEntries = null;
 
 			lastUpdateTime = System.currentTimeMillis();
 
