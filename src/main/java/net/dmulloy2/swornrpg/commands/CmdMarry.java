@@ -23,7 +23,7 @@ public class CmdMarry extends SwornRPGCommand
 
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -32,23 +32,23 @@ public class CmdMarry extends SwornRPGCommand
 			err(plugin.getMessage("command_disabled"));
 			return;
 		}
-		
+
 		if (! plugin.getProposal().containsKey(player.getName()))
 		{
 			err(plugin.getMessage("no_proposal"));
 			return;
 		}
-		
+
 		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
 		if (target == null)
 		{
 			err(plugin.getMessage("player_not_found"), plugin.getProposal().get(sender.getName()));
 			return;
 		}
-		
+
 		PlayerData data = getPlayerData(player);
 		data.setSpouse(target.getName());
-		
+
 		PlayerData data1 = getPlayerData(target);
 		data1.setSpouse(player.getName());
 

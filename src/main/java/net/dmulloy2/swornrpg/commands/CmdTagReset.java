@@ -29,8 +29,7 @@ public class CmdTagReset extends SwornRPGCommand
 	{
 		if (! plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
-			err(plugin.getMessage("no_tagapi"));
-			plugin.debug(plugin.getMessage("log_tagapi_null"));
+			err(plugin.getMessage("plugin_not_found"), "TagAPI");
 			return;
 		}
 
@@ -43,7 +42,7 @@ public class CmdTagReset extends SwornRPGCommand
 		{
 			if (! hasPermission(Permission.TAG_RESET_OTHERS))
 			{
-				err(getMessage("noperm"));
+				err(getMessage("insufficient_permissions"), getPermissionString(Permission.TAG_RESET_OTHERS));
 				return;
 			}
 

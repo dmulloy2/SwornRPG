@@ -35,14 +35,14 @@ public class CmdSitdown extends SwornRPGCommand
 
 		if (block == null)
 		{
-			err(getMessage("no_block"));
+			err(getMessage("chair_no_block"));
 			return;
 		}
 
 		String seat = FormatUtil.getFriendlyName(block.getType());
 		if (! seat.contains("Step") && ! seat.contains("Stair"))
 		{
-			err(getMessage("no_chair"));
+			err(getMessage("chair_not_chair"));
 			return;
 		}
 
@@ -52,11 +52,11 @@ public class CmdSitdown extends SwornRPGCommand
 		{
 			it.remove();
 
-			err(getMessage("sit_error"));
+			err(getMessage("chair_error"));
 			return;
 		}
 
-		sendpMessage(getMessage("now_sitting"), seat);
-		sendpMessage(getMessage("standup_command"));
+		sendpMessage(getMessage("chair_now_sitting"), seat);
+		sendpMessage(getMessage("chair_standup"), new CmdStandup(plugin).getUsageTemplate(false));
 	}
 }

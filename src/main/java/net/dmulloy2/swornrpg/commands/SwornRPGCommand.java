@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
@@ -67,7 +68,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 
 		if (mustBePlayer && ! isPlayer())
 		{
-			err(plugin.getMessage("mustbeplayer"));
+			err(plugin.getMessage("must_be_player"));
 			return;
 		}
 
@@ -79,7 +80,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 
 		if (! hasPermission())
 		{
-			err(plugin.getMessage("noperm"));
+			err(plugin.getMessage("insufficient_permissions"), getPermissionString());
+			plugin.getLogHandler().log(Level.WARNING, getMessage("log_denied_access"), sender.getName());
 			return;
 		}
 
@@ -89,7 +91,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		}
 		catch (Throwable e)
 		{
-			err("Error executing command: {0}", e.getMessage());
+			err(getMessage("execution_error"), e.getMessage());
 			plugin.getLogHandler().debug(Util.getUsefulStack(e, "executing command " + name));
 		}
 	}
@@ -98,6 +100,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	{
 		return player != null;
 	}
+
+	// ---- Permissions ---- //
 
 	protected final boolean hasPermission(Permission permission)
 	{
@@ -108,6 +112,16 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	{
 		return hasPermission(permission);
 	}
+	protected final String getPermissionString(Permission permission)
+	{
+		return plugin.getPermissionHandler().getPermissionString(permission);
+	}
+
+	private final String getPermissionString()
+	{
+		return getPermissionString(permission);
+	}
+
 
 	// ---- Messages ---- //
 
@@ -207,28 +221,14 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		catch (NumberFormatException ex)
 		{
 			if (msg)
-				invalidArgs();
-			return -1;
-		}
-	}
-
-	protected double argAsDouble(int arg, boolean msg)
-	{
-		try
-		{
-			return Double.valueOf(args[arg]);
-		}
-		catch (NumberFormatException ex)
-		{
-			if (msg)
-				invalidArgs();
+				err(getMessage("error_invalid_number"));
 			return -1;
 		}
 	}
 
 	protected final void invalidArgs()
 	{
-		err(plugin.getMessage("invalidargs") + " " + getUsageTemplate(false));
+		err(getMessage("invalid_arguments"), getUsageTemplate(false));
 	}
 
 	protected final OfflinePlayer getTarget(int arg, boolean others)

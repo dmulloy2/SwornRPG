@@ -34,7 +34,7 @@ public class CmdRide extends SwornRPGCommand
 			data.setRideWaitingTime(System.currentTimeMillis());
 			data.setRideWaiting(true);
 
-			sendpMessage("&eClick on the desired entity to ride!");
+			sendpMessage(getMessage("ride_entity"));
 			return;
 		}
 
@@ -45,16 +45,15 @@ public class CmdRide extends SwornRPGCommand
 			return;
 		}
 
-		// TODO: Move these to the messages.properties
 		if (target.getPassenger() != null)
 		{
-			err("Someone is already riding that person!");
+			err(getMessage("ride_vehicle"));
 			return;
 		}
 
 		if (target.getVehicle() != null)
 		{
-			err("That person is riding someone else!");
+			err(getMessage("ride_passenger"));
 			return;
 		}
 
@@ -67,7 +66,7 @@ public class CmdRide extends SwornRPGCommand
 			{
 				target.setPassenger(player);
 
-				sendpMessage(plugin.getMessage("now_riding"), target.getName());
+				sendpMessage(getMessage("ride_now_riding"), target.getName());
 			}
 		}.runTaskLater(plugin, 40L);
 	}

@@ -39,9 +39,8 @@ public class CmdStandup extends SwornRPGCommand
 			return;
 		}
 		
-		player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
-		
-//		player.leaveVehicle();
+//		player.teleport(vehicle.getLocation().add(0.5D, 1.0D, 0.5D));
+		player.teleport(vehicle.getLocation().add(0, 1.0D, 0));
 		
 		vehicle.remove();
 	}

@@ -41,7 +41,7 @@ public class CommandHandler implements CommandExecutor
 		}
 		else
 		{
-			plugin.outConsole(Level.WARNING, "Entry for command {0} is missing in plugin.yml", command.getName());
+			plugin.outConsole(Level.WARNING, plugin.getMessage("log_command_missing"), command.getName());
 		}
 	}
 

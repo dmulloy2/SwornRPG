@@ -23,6 +23,7 @@ public class CmdStaffList extends SwornRPGCommand
 		super(plugin);
 		this.name = "stafflist";
 		this.aliases.add("staff");
+		this.optionalArgs.add("group");
 		this.description = "List online staff";
 		this.permission = Permission.STAFFLIST;
 	}
@@ -30,6 +31,7 @@ public class CmdStaffList extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		// Calculate online staff
 		HashMap<String, List<String>> staffMap = new HashMap<String, List<String>>();
 
 		int total = 0;
@@ -68,8 +70,41 @@ public class CmdStaffList extends SwornRPGCommand
 		List<String> lines = new ArrayList<String>();
 
 		StringBuilder line = new StringBuilder();
-		line.append(FormatUtil.format("&3There are &e{0} &3out of a maximum &e{1} &3staff online", total, plugin.getServer().getMaxPlayers()));
+		line.append(FormatUtil.format(getMessage("stafflist_header"), total, plugin.getServer().getMaxPlayers()));
 		lines.add(line.toString());
+
+		// Specific Group
+
+		String group = "all";
+		if (args.length > 0)
+		{
+			group = args[0];
+		}
+
+		if (staffMap.containsKey(group))
+		{
+			line = new StringBuilder();
+			line.append("&3" + WordUtils.capitalize(group) + "&e: ");
+
+			for (String player : staffMap.get(group))
+			{
+				line.append("&e" + player + "&b, ");
+			}
+
+			if (line.lastIndexOf("&b, ") >= 0)
+			{
+				line.replace(line.lastIndexOf("&"), line.lastIndexOf(" "), "");
+			}
+
+			lines.add(line.toString());
+			
+			for (String string : lines)
+				sendMessage(string);
+
+			return;
+		}
+
+		// All online staff
 
 		for (Entry<String, List<String>> entry : staffMap.entrySet())
 		{

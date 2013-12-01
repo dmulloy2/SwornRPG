@@ -55,11 +55,11 @@ public class CmdSpouse extends SwornRPGCommand
 
 		if (spouse != null)
 		{
-			sendpMessage(getMessage("spouse_info"), name, spouse);
+			sendpMessage(getMessage("spouse_married"), name, spouse);
 		}
 		else
 		{
-			sendpMessage(getMessage("no_spouse"), name);
+			sendpMessage(getMessage("spouse_not_married"), name);
 		}
 	}
 }

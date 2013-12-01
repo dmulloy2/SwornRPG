@@ -52,7 +52,8 @@ public class AbilityHandler implements Reloadable
 		this.waiting = new ArrayList<String>();
 		this.reload(); // Load configuration
 
-		new CleanupTask().runTaskTimer(plugin, 2L, 1L);
+		// Run the clean up task every 20 ticks (1 second)
+		new CleanupTask().runTaskTimer(plugin, TimeUtil.toTicks(3), TimeUtil.toTicks(1));
 	}
 
 	// ---- Public Use Methods ---- //
@@ -176,7 +177,7 @@ public class AbilityHandler implements Reloadable
 
 				data.setItemName(inHand);
 				data.setFrenzyWaiting(true);
-				data.setFrenzyReadyTime(System.currentTimeMillis());
+				data.setFrenzyReadyTime(5); // 5 seconds
 
 				waiting.add(player.getName());
 			}
@@ -311,7 +312,7 @@ public class AbilityHandler implements Reloadable
 
 				data.setItemName(inHand);
 				data.setSuperPickaxeWaiting(true);
-				data.setSuperPickaxeReadyTime(System.currentTimeMillis());
+				data.setSuperPickaxeReadyTime(5); // 5 seconds
 
 				waiting.add(player.getName());
 			}
@@ -434,7 +435,8 @@ public class AbilityHandler implements Reloadable
 				PlayerData data = plugin.getPlayerDataCache().getData(wait);
 				if (data.isFrenzyWaiting())
 				{
-					if ((System.currentTimeMillis() - data.getFrenzyReadyTime()) > 120L)
+					data.setFrenzyReadyTime(data.getFrenzyReadyTime() - 1);
+					if (data.getFrenzyReadyTime() <= 0)
 					{
 						Player player = Util.matchPlayer(wait);
 						if (player != null)
@@ -449,7 +451,8 @@ public class AbilityHandler implements Reloadable
 
 				if (data.isSuperPickaxeWaiting())
 				{
-					if ((System.currentTimeMillis() - data.getSuperPickaxeReadyTime()) > 120L)
+					data.setSuperPickaxeReadyTime(data.getSuperPickaxeReadyTime() - 1);
+					if (data.getSuperPickaxeReadyTime() <= 0)
 					{
 						Player player = Util.matchPlayer(wait);
 						if (player != null)
