@@ -133,11 +133,11 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 	/** Maps **/
 	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
-    private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
-    private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
-    private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
+	private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
+	private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
+	private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
 
-    /** Update Checking **/
+	/** Update Checking **/
 	private @Getter Updater updater;
 
 	/** Global Prefix Variable **/
@@ -458,9 +458,9 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		logHandler.debug(string, objects);
 	}
     
-    /**
-     * Setup Vault Integration
-     */
+	/**
+	 * Setup Vault Integration
+	 */
 	private final void setupVaultIntegration() 
 	{
 		if (pluginManager.isPluginEnabled("Vault"))
@@ -501,7 +501,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		}
 	}
     
-    /** Get messages **/
+	/** Get messages **/
 	public final String getMessage(String string) 
 	{
 		try
