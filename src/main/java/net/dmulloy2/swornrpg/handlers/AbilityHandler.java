@@ -150,7 +150,7 @@ public class AbilityHandler implements Reloadable
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isFrenzyWaiting())
 		{
-			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.PHYSICAL)
+			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK)
 			{
 				if (data.isFrenzyEnabled())
 					return;
@@ -285,7 +285,7 @@ public class AbilityHandler implements Reloadable
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSuperPickaxeWaiting())
 		{
-			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_BLOCK)
+			if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK)
 			{
 				if (data.isSuperPickaxeEnabled())
 					return;
@@ -472,39 +472,31 @@ public class AbilityHandler implements Reloadable
 
 	public final long getFrenzyDuration(int level)
 	{
-		// return 20 * (frenzyDuration + (level * frenzyLevelMultiplier));
 		return TimeUtil.toTicks(frenzyDuration + (level * frenzyLevelMultiplier));
 	}
 
 	public final long getFrenzyCooldown(int level)
 	{
-		// return duration * frenzyCooldownMultiplier;
 		return getFrenzyDuration(level) * frenzyCooldownMultiplier;
 	}
 
 	public final long getSuperPickaxeDuration(int level)
 	{
-		// return 20 * (superPickaxeDuration + (level *
-		// superPickaxeLevelMultiplier));
 		return TimeUtil.toTicks(superPickaxeDuration + (level * superPickaxeLevelMultiplier));
 	}
 
 	public final long getSuperPickaxeCooldown(int level)
 	{
-		// return duration * superPickaxeCooldownMultiplier;
 		return getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier;
 	}
 
 	public final long getUnlimitedAmmoDuration(int level)
 	{
-		// return 20 * (unlimitedAmmoDuration + (level *
-		// unlimitedAmmoLevelMultiplier));
 		return TimeUtil.toTicks(unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
 	}
 
 	public final long getUnlimitedAmmoCooldown(int level)
 	{
-		// return duration * unlimitedAmmoCooldownMultiplier;
 		return getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier;
 	}
 
