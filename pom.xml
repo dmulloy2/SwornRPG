@@ -8,6 +8,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.number>LOCAL</project.build.number>
   </properties>
 
   <repositories>
@@ -32,6 +33,20 @@
       <url>http://ci.ess3.net/nexus/content/groups/public/</url>
     </repository>
   </repositories>
+
+  <profiles>
+    <profile>
+      <id>jenkins</id>
+      <activation>
+        <property>
+          <name>env.BUILD_NUMBER</name>
+        </property>
+      </activation>
+      <properties>
+        <project.build.number>${env.BUILD_NUMBER}</project.build.number>
+      </properties>
+    </profile>
+  </profiles>
   
   <build>
     <plugins> 
@@ -80,7 +95,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.1-SNAPSHOT</version>
+      <version>1.7.2-R0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
  	  <groupId>org.projectlombok</groupId>

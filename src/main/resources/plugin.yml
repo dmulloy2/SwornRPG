@@ -1,11 +1,9 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: "${project.version} (Build ${BUILD_NUMBER})"
+version: ${project.version} (Build ${project.build.number})
 author: dmulloy2
 description: The fully featured mcMMO Alternative
 softdepend: [TagAPI, Essentials, Factions, SwornNations, Vault]
-
-# Commands
 commands:
   abilities:
     description: Check SwornRPG ability levels
@@ -107,7 +105,6 @@ commands:
     description: Get off of a player's head
     usgae: /<command>
 
-# Permission Groupings
 permissions:
   srpg.admin:
     description: Gives access to features meant for server admins
@@ -170,8 +167,6 @@ permissions:
       srpg.cmd.superpickaxe: true
       srpg.cmd.unlimitedammo: true
       srpg.cmd.version: true
-
-# Individual Nodes
   srpg.cmd.abilities:
     description: Allows checking of individual abilities
     default: true
@@ -277,7 +272,6 @@ permissions:
   srpg.cmd.version:
     description: Allows access to '/srpg version'
     default: true
-  
   srpg.staff:
     description: Displays a player as staff in '/stafflist'
     default: false

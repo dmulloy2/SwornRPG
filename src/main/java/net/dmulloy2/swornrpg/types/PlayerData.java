@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
@@ -34,10 +32,9 @@ public class PlayerData implements ConfigurationSerializable
 
 	// ---- XP Stuff ---- //
 	private int playerxp;
-	private int oldlevel;
 	private int xpneeded;
-	private int level;
 	private int totalxp;
+	private int level;
 
 	private transient int concurrentHerbalism;
 
@@ -67,11 +64,9 @@ public class PlayerData implements ConfigurationSerializable
 	private transient long rideWaitingTime;
 	private transient boolean rideWaiting;
 
-	@Setter(AccessLevel.NONE)
-	private Map<String, Object> data = new HashMap<String, Object>();
-
 	public PlayerData()
 	{
+		//
 	}
 
 	public PlayerData(Map<String, Object> args)
@@ -96,22 +91,9 @@ public class PlayerData implements ConfigurationSerializable
 			}
 			catch (Exception e)
 			{
+				//
 			}
 		}
-	}
-
-	/**
-	 * Any data put into this map needs to be inherently serializable, either
-	 * using ConfigurationSerializable or being a java primitive.
-	 * 
-	 * @param key
-	 *        - Key to store the object under
-	 * @param object
-	 *        - Object to store.
-	 */
-	public void putData(String key, Object object)
-	{
-		data.put(key, object);
 	}
 
 	@Override
@@ -148,7 +130,7 @@ public class PlayerData implements ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Collection.class))
 				{
-					if (!((Collection) field.get(this)).isEmpty())
+					if (! ((Collection) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(String.class))
@@ -158,8 +140,7 @@ public class PlayerData implements ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Map.class))
 				{
-
-					if (!((Map) field.get(this)).isEmpty())
+					if (! ((Map) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else
@@ -169,25 +150,47 @@ public class PlayerData implements ConfigurationSerializable
 				}
 
 				field.setAccessible(accessible);
-
 			}
 			catch (Exception e)
 			{
+				//
 			}
 		}
 
 		return data;
 	}
 
-	// Special case, since this returning 0 
-	// results in an arithmatic exception
+	/**
+	 * Returns the xp needed to reach the next level
+	 * <p>
+	 * Special case: this cannot return 0
+	 */
 	public int getXpNeeded()
 	{
-		if (xpneeded == 0)
-		{
-			this.xpneeded = 100;
-		}
+		// Validate the data first
+		this.validate();
 
 		return xpneeded;
+	}
+
+	/**
+	 * Returns whether or not the data is valid
+	 */
+	public final boolean isValid()
+	{
+		return xpneeded >= 100;
+	}
+
+	/**
+	 * Validates the data
+	 */
+	public final void validate()
+	{
+		if (! isValid())
+		{
+			this.xpneeded = 100;
+			this.deathCoordsEnabled = true;
+			this.deathCoordsUpdated = true;
+		}
 	}
 }

@@ -122,22 +122,11 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return getPermissionString(permission);
 	}
 
-
 	// ---- Messages ---- //
 
 	protected final void err(String msg, Object... args)
 	{
 		sendMessage(getMessage("error") + FormatUtil.format(msg, args));
-	}
-
-	protected PlayerData getPlayerData(OfflinePlayer target)
-	{
-		return plugin.getPlayerDataCache().getData(target.getName());
-	}
-
-	protected PlayerData getPlayerData(String key)
-	{
-		return plugin.getPlayerDataCache().getData(key);
 	}
 
 	protected final void sendMessage(String msg, Object... args)
@@ -229,6 +218,16 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	protected final void invalidArgs()
 	{
 		err(getMessage("invalid_arguments"), getUsageTemplate(false));
+	}
+
+	protected PlayerData getPlayerData(OfflinePlayer target)
+	{
+		return plugin.getPlayerDataCache().getData(target.getName());
+	}
+
+	protected PlayerData getPlayerData(String key)
+	{
+		return plugin.getPlayerDataCache().getData(key);
 	}
 
 	protected final OfflinePlayer getTarget(int arg, boolean others)

@@ -4,8 +4,10 @@ import java.util.regex.Pattern;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -57,11 +59,12 @@ public class CmdTag extends SwornRPGCommand
 			}
 
 			String newTag = args[1] + target.getName();
+			String color = getFormattedColor(args[1]);
 
 			plugin.getTagHandler().addTagChange(target, newTag);
 
-			sendpMessage(plugin.getMessage("tag_changed_changer"), newTag);
-			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, newTag);
+			sendpMessage(plugin.getMessage("tag_changed_changer"), color);
+			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, color);
 		}
 		else if (args.length == 1)
 		{
@@ -72,11 +75,12 @@ public class CmdTag extends SwornRPGCommand
 			}
 
 			plugin.getTagHandler().addTagChange(player, args[0] + sender.getName());
-			sendpMessage(plugin.getMessage("tag_changed_self"), (args[0] + player.getName()));
+
+			sendpMessage(plugin.getMessage("tag_changed_self"), getFormattedColor(args[0]));
 		}
 	}
 
-	public boolean isValidTag(String tag)
+	private final boolean isValidTag(String tag)
 	{
 		if (tag.length() == 2)
 		{
@@ -87,5 +91,12 @@ public class CmdTag extends SwornRPGCommand
 		}
 
 		return false;
+	}
+
+	private final String getFormattedColor(String colorCode)
+	{
+		colorCode = colorCode.replaceAll("&", "");
+		ChatColor color = ChatColor.getByChar(colorCode);
+		return color + FormatUtil.getFriendlyName(color.name());
 	}
 }

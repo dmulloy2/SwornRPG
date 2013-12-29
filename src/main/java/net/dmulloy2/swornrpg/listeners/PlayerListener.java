@@ -261,6 +261,7 @@ public class PlayerListener implements Listener, Reloadable
 			data.setXpneeded(100);
 
 			data.setDeathCoordsEnabled(true);
+			data.setDeathCoordsUpdated(true);
 		}
 
 		// Conversion to cleaner DeathCoordsEnabled
@@ -269,6 +270,8 @@ public class PlayerListener implements Listener, Reloadable
 			data.setDeathCoordsEnabled(! data.isDeathbookdisabled());
 			data.setDeathCoordsUpdated(true);
 		}
+
+		data.validate();
 
 		/** Update Notification **/
 		if (checkForUpdates && plugin.getUpdater().isUpdateAvailable())
