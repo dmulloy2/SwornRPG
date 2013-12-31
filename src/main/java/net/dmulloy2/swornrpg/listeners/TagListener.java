@@ -28,8 +28,10 @@ public class TagListener implements Listener
     	if (plugin.getTagHandler().hasChangedTag(player))
     	{
     		PlayerData data = plugin.getPlayerDataCache().getData(player);
-    		
-    		event.setTag(FormatUtil.format(data.getTag()));
+    		if (data.getTag() != null)
+    		{
+    			event.setTag(FormatUtil.format(data.getTag()));
+    		}
     	}
     }
 }

@@ -3,12 +3,15 @@ package net.dmulloy2.swornrpg.types;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Getter;
+
 import org.bukkit.enchantments.Enchantment;
 
 /**
  * @author dmulloy2
  */
 
+@Getter
 public enum EnchantmentType 
 {
 	ARROW_DAMAGE("power"),
@@ -24,6 +27,8 @@ public enum EnchantmentType
 	KNOCKBACK("knockback"),
 	LOOT_BONUS_BLOCKS("fortune"),
 	LOOT_BONUS_MOBS("looting"),
+	LUCK("luck"),
+	LOOT("loot"),
 	OXYGEN("breathing"),
 	PROTECTION_ENVIRONMENTAL("prot"),
 	PROTECTION_EXPLOSIONS("blast"),
@@ -35,7 +40,7 @@ public enum EnchantmentType
 	WATER_WORKER("aqua");
 	
 	private String name;
-	EnchantmentType(String name)
+	private EnchantmentType(String name)
 	{
 		this.name = name;
 	}
@@ -77,10 +82,5 @@ public enum EnchantmentType
 		}		
 		
 		return result.toString();
-	}
-	
-	public String getName()
-	{
-		return name;
 	}
 }

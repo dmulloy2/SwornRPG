@@ -36,7 +36,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -71,9 +70,8 @@ public class PlayerListener implements Listener, Reloadable
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		this.reload();
-
 		this.bookMap = new HashMap<String, ItemStack>();
+		this.reload();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -364,9 +362,7 @@ public class PlayerListener implements Listener, Reloadable
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
-		int level = data.getLevel();
-		if (level <= 10)
-			level = 10;
+		int level = data.getLevel(10);
 
 		List<BlockDrop> drops = new ArrayList<BlockDrop>();
 		for (int i = 0; i < level; i++)
@@ -431,21 +427,21 @@ public class PlayerListener implements Listener, Reloadable
 		}
 	}
 
-	// TODO: Make sure this actually works
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
-	{
-		Player player = event.getPlayer();
-		if (player.isInsideVehicle())
-		{
-			Entity vehicle = player.getVehicle();
-			EntityType type = vehicle.getType();
-			if (type == EntityType.ARROW || type == EntityType.PLAYER)
-			{
-				event.setCancelled(true);
-			}
-		}
-	}
+//	This event isn't fired reliably, especially when shifting inside a vehicle
+//	@EventHandler(priority = EventPriority.HIGHEST)
+//	public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
+//	{
+//		Player player = event.getPlayer();
+//		if (player.isInsideVehicle())
+//		{
+//			Entity vehicle = player.getVehicle();
+//			EntityType type = vehicle.getType();
+//			if (type == EntityType.ARROW || type == EntityType.PLAYER)
+//			{
+//				event.setCancelled(true);
+//			}
+//		}
+//	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)

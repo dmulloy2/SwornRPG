@@ -210,12 +210,8 @@ public class EntityListener implements Listener, Reloadable
 			if (health + 1.0D <= 20.0D)
 			{
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
-				int level = data.getLevel();
-				if (level > 25)
-					level = 25;
-				if (level == 0)
-					level = 1;
 
+				int level = data.getLevel(25);
 				if (Util.random(75 / level) == 0)
 				{
 					player.setHealth(player.getHealth() + 1.0D);

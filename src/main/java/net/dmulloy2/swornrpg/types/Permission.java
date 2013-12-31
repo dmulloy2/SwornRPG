@@ -1,9 +1,12 @@
 package net.dmulloy2.swornrpg.types;
 
+import lombok.Getter;
+
 /**
  * @author dmulloy2
  */
 
+@Getter
 public enum Permission
 {
 	ABILITIES,
@@ -47,21 +50,16 @@ public enum Permission
 	;
 
 	private String node;
-
-	Permission(boolean command)
+	private Permission(boolean command)
 	{
 		this.node = toString().toLowerCase().replaceAll("_", ".");
 		
-		if (command) node = "cmd." + node;
+		if (command) 
+			node = "cmd." + node;
 	}
 
-	Permission()
+	private Permission()
 	{
 		this(true);
-	}
-	
-	public String getNode()
-	{
-		return node;
 	}
 }

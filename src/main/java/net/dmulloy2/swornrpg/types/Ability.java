@@ -1,20 +1,22 @@
 package net.dmulloy2.swornrpg.types;
 
+import lombok.Getter;
+
 import org.bukkit.Material;
 
 /**
  * @author dmulloy2
  */
 
+@Getter
 public enum Ability
 {
 	FRENZY(Material.IRON_SWORD, Material.DIAMOND_SWORD),
 	SUPER_PICKAXE(Material.IRON_PICKAXE, Material.DIAMOND_PICKAXE),
 	UNLIMITED_AMMO;
 
-	private Material[] materials;
-	
-	Ability(Material... materials)
+	private final Material[] materials;
+	private Ability(Material... materials)
 	{
 		this.materials = materials;
 	}

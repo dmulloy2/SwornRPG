@@ -14,7 +14,6 @@ import net.dmulloy2.swornrpg.util.Util;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -123,28 +122,21 @@ public class BlockListener implements Listener, Reloadable
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		BlockState blockState = block.getState();
-		MaterialData blockData = blockState.getData();
-
-		Material material = blockState.getType();
-		if (redemptionBlacklist.contains(material))
+		MaterialData materialData = block.getState().getData();
+		Material material = materialData.getItemType();
+		if (! material.isBlock() || redemptionBlacklist.contains(material))
 			return;
 
 		ItemStack itemStack = new ItemStack(material);
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		int level = data.getLevel();
-		if (level == 0)
-			level = 1;
-		if (level > 100)
-			level = 100;
 
-		int rand = Util.random(300 / level);
-		if (rand == 0)
+		int level = data.getLevel(100);
+		if (Util.random(300 / level) == 0)
 		{
-			if (blockData != null)
+			if (materialData != null)
 			{
-				itemStack.setData(blockData);
+				itemStack.setData(materialData);
 			}
 
 			player.getInventory().addItem(itemStack);

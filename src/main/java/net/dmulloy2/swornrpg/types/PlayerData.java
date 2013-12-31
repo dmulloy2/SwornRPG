@@ -161,9 +161,9 @@ public class PlayerData implements ConfigurationSerializable
 	}
 
 	/**
-	 * Returns the xp needed to reach the next level
+	 * Returns the xp needed to reach the next level.
 	 * <p>
-	 * Special case: this cannot return 0
+	 * Special case: this cannot return 0.
 	 */
 	public int getXpNeeded()
 	{
@@ -174,7 +174,7 @@ public class PlayerData implements ConfigurationSerializable
 	}
 
 	/**
-	 * Returns whether or not the data is valid
+	 * Returns whether or not the data is valid.
 	 */
 	public final boolean isValid()
 	{
@@ -182,7 +182,7 @@ public class PlayerData implements ConfigurationSerializable
 	}
 
 	/**
-	 * Validates the data
+	 * Validates the data.
 	 */
 	public final void validate()
 	{
@@ -192,5 +192,16 @@ public class PlayerData implements ConfigurationSerializable
 			this.deathCoordsEnabled = true;
 			this.deathCoordsUpdated = true;
 		}
+	}
+
+	/**
+	 * Returns the player's level. Will return from 1 to max.
+	 * 
+	 * @param max
+	 *        - Maximum level for this action
+	 */
+	public final int getLevel(int max)
+	{
+		return level > max ? max : level < 1 ? 1 : level;
 	}
 }

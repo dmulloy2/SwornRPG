@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.Crops;
+import org.bukkit.material.MaterialData;
 import org.bukkit.material.NetherWarts;
 
 /**
@@ -247,29 +248,33 @@ public class ExperienceListener implements Listener, Reloadable
 
 		/** Insta-Growth **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		int level = data.getLevel();
-		if (level == 0)
-			level = 1;
-		if (level > 150)
-			level = 150;
-		int rand = Util.random(200 - level);
-		if (rand == 0)
+
+		int level = data.getLevel(150);
+		if (Util.random(200 - level) == 0)
 		{
 			boolean message = false;
 			Material mat = blockState.getType();
-			if (mat == Material.NETHER_WARTS)
+			MaterialData dat = blockState.getData();
+			if (dat instanceof NetherWarts)
 			{
-				((NetherWarts) blockState.getData()).setState(NetherWartsState.RIPE);
+				((NetherWarts) dat).setState(NetherWartsState.RIPE);
 				blockState.update();
 				message = true;
 			}
-//			else if (mat == Material.CARROT || mat == Material.CROPS || mat == Material.POTATO)
-			else if (mat == Material.CROPS)
+			else if (dat instanceof Crops)
 			{
-				((Crops) blockState.getData()).setState(CropState.RIPE);
+				((Crops) dat).setState(CropState.RIPE);
 				blockState.update();
 				message = true;
 			}
+			else if (dat instanceof CocoaPlant)
+			{
+				((CocoaPlant) dat).setSize(CocoaPlantSize.LARGE);
+				blockState.update();
+				message = true;
+			}
+			// Special case, since logs and leaves are considered "Trees"
+			// TODO: Account for different species of trees
 			else if (mat == Material.SAPLING)
 			{
 				block.setType(Material.AIR);
@@ -288,7 +293,8 @@ public class ExperienceListener implements Listener, Reloadable
 				block.getWorld().generateTree(block.getLocation(), TreeType.BROWN_MUSHROOM);
 				message = true;
 			}
-			if (message == true)
+
+			if (message)
 			{
 				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("insta_growth")));
 			}
@@ -296,7 +302,7 @@ public class ExperienceListener implements Listener, Reloadable
 	}
 
 	/** Herbalism Check **/
-	public boolean herbalismNeeded(BlockState blockState)
+	private final boolean herbalismNeeded(BlockState blockState)
 	{
 		switch (blockState.getType())
 		{
@@ -305,9 +311,7 @@ public class ExperienceListener implements Listener, Reloadable
 			case PUMPKIN:
 				return true;
 
-//			case CARROT:
 			case CROPS:
-//			case POTATO:
 				return ((Crops) blockState.getData()).getState() == CropState.RIPE;
 
 			case NETHER_WARTS:
@@ -343,13 +347,9 @@ public class ExperienceListener implements Listener, Reloadable
 
 				/** Wolf/Ocelot's Pal **/
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
-				int level = data.getLevel();
-				if (level <= 0)
-					level = 1;
-				if (level >= 50)
-					level = 50;
-				int rand2 = Util.random(150 / level);
-				if (rand2 == 0)
+
+				int level = data.getLevel(50);
+				if (Util.random(150 / level) == 0)
 				{
 					if (event.getEntity() instanceof Wolf)
 					{
@@ -364,8 +364,7 @@ public class ExperienceListener implements Listener, Reloadable
 				}
 
 				/** Taming Bomb! **/
-				int rand1 = Util.random(150 / level);
-				if (rand1 == 0)
+				if (Util.random(150 / level) == 0)
 				{
 					boolean sendMessage = false;
 					List<Entity> entities = player.getNearbyEntities(10, 10, 10);
@@ -384,8 +383,10 @@ public class ExperienceListener implements Listener, Reloadable
 						}
 					}
 
-					if (sendMessage) player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format(plugin.getMessage("tame_bomb")));
+					if (sendMessage)
+					{
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("tame_bomb")));
+					}
 				}
 			}
 		}
@@ -405,13 +406,6 @@ public class ExperienceListener implements Listener, Reloadable
 		Player player = event.getEnchanter();
 		if (player == null)
 			return;
-		
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		int level = data.getLevel();
-		if (level == 0)
-			level = 1;
-		if (level > 30)
-			level = 30;
 
 		int xp = (cost / 2) + enchantingGain;
 

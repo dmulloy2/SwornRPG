@@ -305,7 +305,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 							}
 						}
 					}
-	//			}.runTaskTimer(this, 20L, 20L);
 				}.runTaskTimer(this, 2L, 1L);
 			}
 	
@@ -334,16 +333,12 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 							}
 						}
 					}
-	//			}.runTaskTimer(this, 20L, 20L);
 				}.runTaskTimer(this, 2L, 1L);
 			}
 	
 			/** SwornGuns Integration **/
 			if (pluginManager.isPluginEnabled("SwornGuns") && getConfig().getBoolean("unlimitedAmmo.enabled"))
 			{
-				// outConsole(getMessage("log_gun_found"));
-				// pluginManager.registerEvents(new SwornGunsListener(this), this);
-	
 				new BukkitRunnable()
 				{
 					@Override
@@ -366,7 +361,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 							}
 						}
 					}
-	//			}.runTaskTimer(this, 20L, 20L);
 				}.runTaskTimer(this, 2L, 1L);
 			}
 	

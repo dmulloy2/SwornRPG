@@ -1,5 +1,6 @@
 package net.dmulloy2.swornrpg.types;
 
+import lombok.Getter;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
 import org.bukkit.inventory.ItemStack;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
+@Getter
 public class BlockDrop
 {
 	private final ItemStack item;
@@ -18,17 +20,7 @@ public class BlockDrop
 		this.item = itemStack;
 		this.chance = chance;
 	}
-	
-	public ItemStack getItem()
-	{
-		return item;
-	}
-	
-	public int getChance()
-	{
-		return chance;
-	}
-	
+
 	@Override
 	public String toString()
 	{
