@@ -54,6 +54,7 @@ salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 
 #############################################
 
 # Interval in minutes (integer)
+# Safe to use - no longer lags the server
 autoSave:
   enabled: false
   interval: 120
@@ -493,15 +494,23 @@ redemptionEnabled: true
 # Blacklisted Materials for Building Redeem
 # Format: - material
 redemptionBlacklist:
-- fire
-- crops
-- potatoes
-- carrots
-- nether_warts
-- pumpkin_stem
-- melon_stem
-- beacon
 - diamond_block
+- emerald_block
 - iron_block
 - gold_block
+- diamond_ore
+- emerald_ore
+- iron_ore
+- gold_ore
+- obsidian
+- beacon
 - tnt
+- pumpkin_stem
+- melon_stem
+- nether_warts
+- potatoes
+- potato_item
+- carrots
+- carrot_item
+- crops
+- fire
