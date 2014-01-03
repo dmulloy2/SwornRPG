@@ -1,5 +1,6 @@
 package net.dmulloy2.swornrpg.commands;
 
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -20,7 +21,7 @@ public class CmdTag extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "tag";
-		this.requiredArgs.add("tag");
+		this.requiredArgs.add("color");
 		this.optionalArgs.add("player");
 		this.description = "Change the color above your head";
 		this.permission = Permission.TAG;
@@ -37,11 +38,24 @@ public class CmdTag extends SwornRPGCommand
 			return;
 		}
 
-		if (args.length == 2)
+		if (args.length == 1)
 		{
-			if (! hasPermission(Permission.TAG_OTHERS))
+			if (! isValidTag(args[0]))
 			{
-				sendMessage(plugin.getMessage("noperm"));
+				invalidArgs();
+				return;
+			}
+
+			plugin.getTagHandler().addTagChange(player, args[0] + sender.getName());
+
+			sendpMessage(plugin.getMessage("tag_changed_self"), getFormattedColor(args[0]));
+		}
+		else if (args.length == 2)
+		{
+			if (! hasPermission(Permission.TAG_OTHERS) && ! player.getName().equalsIgnoreCase(args[0]))
+			{
+				err(plugin.getMessage("insufficient_permissions"), getPermissionString(Permission.TAG_OTHERS));
+				plugin.getLogHandler().log(Level.WARNING, getMessage("log_denied_access"), sender.getName());
 				return;
 			}
 
@@ -63,31 +77,23 @@ public class CmdTag extends SwornRPGCommand
 
 			plugin.getTagHandler().addTagChange(target, newTag);
 
-			sendpMessage(plugin.getMessage("tag_changed_changer"), color);
+			sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName(), color);
 			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, color);
-		}
-		else if (args.length == 1)
-		{
-			if (! isValidTag(args[0]))
-			{
-				invalidArgs();
-				return;
-			}
-
-			plugin.getTagHandler().addTagChange(player, args[0] + sender.getName());
-
-			sendpMessage(plugin.getMessage("tag_changed_self"), getFormattedColor(args[0]));
 		}
 	}
 
 	private final boolean isValidTag(String tag)
 	{
-		if (tag.length() == 2)
+		if (tag.length() == 2 && tag.contains("&"))
 		{
 			if (tag.contains("&"))
 			{
-				return Pattern.matches("[a-zA-Z0-9]", tag.replaceAll("&", ""));
+				return Pattern.matches("[a-fA-F0-9]", tag.replaceAll("&", ""));
 			}
+		}
+		else if (tag.length() == 1)
+		{
+			return Pattern.matches("[a-fA-F0-9]", tag);
 		}
 
 		return false;

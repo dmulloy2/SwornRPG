@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
-import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
@@ -54,7 +53,6 @@ public class PlayerListener implements Listener, Reloadable
 {
 	private boolean salvagingEnabled;
 	private boolean deathCoordinateMessages;
-	private boolean checkForUpdates;
 	private boolean fishingEnabled;
 	private boolean fishDropsEnabled;
 	private boolean speedBoostEnabled;
@@ -270,18 +268,6 @@ public class PlayerListener implements Listener, Reloadable
 		}
 
 		data.validate();
-
-		/** Update Notification **/
-		if (checkForUpdates && plugin.getUpdater().isUpdateAvailable())
-		{
-			if (plugin.getPermissionHandler().hasPermission(player, Permission.UPDATE_NOTIFY))
-			{
-				player.sendMessage(plugin.getPrefix() + 
-						FormatUtil.format("&eVersion &a{0} &eis now available!", plugin.getUpdater().getLatestVersion()));
-				player.sendMessage(plugin.getPrefix() +
-						FormatUtil.format("&eGet it here:&a {0}", plugin.getUpdater().getPluginURL()));
-			}
-		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -507,7 +493,6 @@ public class PlayerListener implements Listener, Reloadable
 	{
 		this.salvagingEnabled = plugin.getConfig().getBoolean("salvaging");
 		this.deathCoordinateMessages = plugin.getConfig().getBoolean("deathCoordinateMessages");
-		this.checkForUpdates = plugin.getConfig().getBoolean("checkForUpdates");
 		this.fishingEnabled = plugin.getConfig().getBoolean("levelingMethods.fishing.enabled");
 		this.fishDropsEnabled = plugin.getConfig().getBoolean("fishDropsEnabled");
 		this.speedBoostEnabled = plugin.getConfig().getBoolean("speedBoost.enabled");

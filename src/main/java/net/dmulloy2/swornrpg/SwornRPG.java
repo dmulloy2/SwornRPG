@@ -74,7 +74,6 @@ import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.types.Reloadable;
-import net.dmulloy2.swornrpg.types.Updater;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.dmulloy2.swornrpg.util.TimeUtil;
@@ -143,9 +142,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
 	private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
 
-	/** Update Checking **/
-	private @Getter Updater updater;
-
 	/** Global Prefix Variable **/
 	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] ");
 
@@ -169,7 +165,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			permissionHandler = new PermissionHandler();
 			abilityHandler = new AbilityHandler(this);
 			commandHandler = new CommandHandler(this);
-			tagHandler = new TagHandler(this);
 	
 			/** Register Listeners **/
 			pluginManager = getServer().getPluginManager();
@@ -197,7 +192,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			}
 			else
 			{
-				if (! getConfig().isSet("checkForUpdates"))
+				if (! getConfig().isSet("disabledWorlds"))
 				{
 					conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
 	
@@ -259,7 +254,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			}
 	
 			/** Integration **/
-			tagHandler.load();
+			tagHandler = new TagHandler(this);
+
 			setupVaultIntegration();
 			setupEssentialsIntegration();
 	
@@ -362,14 +358,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						}
 					}
 				}.runTaskTimer(this, 2L, 1L);
-			}
-	
-			updater = new Updater(this);
-	
-			/** Update Checker **/
-			if (getConfig().getBoolean("checkForUpdates"))
-			{
-				updater.init();
 			}
 	
 			/** Online XP Gain **/

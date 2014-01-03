@@ -22,9 +22,6 @@
 # Extra output to console (boolean)
 debug: false
 
-# Automatic checking for updates (boolean)
-checkForUpdates: true
-
 # Marriage (boolean)
 marriage: true
 
