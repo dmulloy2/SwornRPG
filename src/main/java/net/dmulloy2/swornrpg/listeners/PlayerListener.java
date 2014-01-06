@@ -290,9 +290,13 @@ public class PlayerListener implements Listener, Reloadable
 	{
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
+		// Disable abilities
 		data.setFrenzyEnabled(false);
 		data.setSuperPickaxeEnabled(false);
 		data.setUnlimitedAmmoEnabled(false);
+
+		// Clear the previousLocation variable
+		data.setPreviousLocation(null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

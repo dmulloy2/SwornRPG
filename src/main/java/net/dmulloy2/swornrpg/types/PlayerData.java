@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import lombok.Data;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 /**
@@ -63,6 +64,9 @@ public class PlayerData implements ConfigurationSerializable
 	// ---- Entity Fun ---- //
 	private transient long rideWaitingTime;
 	private transient boolean rideWaiting;
+
+	// ---- Chairs ---- //
+	private transient Location previousLocation;
 
 	public PlayerData()
 	{

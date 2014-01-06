@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.types.PlayerData;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -26,6 +27,18 @@ public class CmdStandup extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		// Weird bug: if the arrow despawns, players will become "ghosts", this somewhat fixes it
+		// The previousLocation variable will only have a value if a player has recently sat
+		// It is always cleared when a player stands up or leaves/is kicked
+
+		PlayerData data = getPlayerData(player);
+		if (data.getPreviousLocation() != null)
+		{
+			player.teleport(data.getPreviousLocation());
+			data.setPreviousLocation(null);
+			return;
+		}
+
 		Entity vehicle = player.getVehicle();
 		if (vehicle == null || ! vehicle.isValid() || ! (vehicle instanceof Arrow))
 		{
@@ -33,7 +46,8 @@ public class CmdStandup extends SwornRPGCommand
 			return;
 		}
 
-		player.teleport(player.getLocation().add(0, 1.0D, 0));
+		player.teleport(data.getPreviousLocation());
+		data.setPreviousLocation(null);
 
 		vehicle.remove();
 	}
