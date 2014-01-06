@@ -46,7 +46,7 @@ public class CmdTag extends SwornRPGCommand
 				return;
 			}
 
-			plugin.getTagHandler().addTagChange(player, args[0] + sender.getName());
+			plugin.getTagHandler().setTag(player, args[0] + sender.getName());
 
 			sendpMessage(plugin.getMessage("tag_changed_self"), getFormattedColor(args[0]));
 		}
@@ -75,7 +75,7 @@ public class CmdTag extends SwornRPGCommand
 			String newTag = args[1] + target.getName();
 			String color = getFormattedColor(args[1]);
 
-			plugin.getTagHandler().addTagChange(target, newTag);
+			plugin.getTagHandler().setTag(target, newTag);
 
 			sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName(), color);
 			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, color);

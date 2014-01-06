@@ -35,7 +35,7 @@ public class CmdTagReset extends SwornRPGCommand
 
 		if (args.length == 0)
 		{
-			plugin.getTagHandler().removeTagChange(player);
+			plugin.getTagHandler().removeTag(player);
 			sendpMessage(plugin.getMessage("tag_reset_self"));
 		}
 		else if (args.length == 1)
@@ -59,7 +59,7 @@ public class CmdTagReset extends SwornRPGCommand
 				return;
 			}
 
-			plugin.getTagHandler().removeTagChange(target);
+			plugin.getTagHandler().removeTag(target);
 			sendpMessage(plugin.getMessage("tag_reset_resetter"), target.getName());
 			sendMessageTarget(plugin.getMessage("tag_reset_resetee"), target);
 		}
