@@ -477,7 +477,7 @@ public class AbilityHandler implements Reloadable
 
 	public final long getFrenzyCooldown(int level)
 	{
-		return getFrenzyDuration(level) * frenzyCooldownMultiplier;
+		return (getFrenzyDuration(level) * frenzyCooldownMultiplier) * 20;
 	}
 
 	public final long getSuperPickaxeDuration(int level)
@@ -487,7 +487,7 @@ public class AbilityHandler implements Reloadable
 
 	public final long getSuperPickaxeCooldown(int level)
 	{
-		return getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier;
+		return (getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier) * 20;
 	}
 
 	public final long getUnlimitedAmmoDuration(int level)
@@ -497,7 +497,7 @@ public class AbilityHandler implements Reloadable
 
 	public final long getUnlimitedAmmoCooldown(int level)
 	{
-		return getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier;
+		return (getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier) * 20;
 	}
 
 	@Override
