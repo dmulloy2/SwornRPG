@@ -177,7 +177,7 @@ public class AbilityHandler implements Reloadable
 
 				data.setItemName(inHand);
 				data.setFrenzyWaiting(true);
-				data.setFrenzyReadyTime(5); // 5 seconds
+				data.setFrenzyReadyTime(3); // 3 seconds
 
 				waiting.add(player.getName());
 			}
@@ -312,7 +312,7 @@ public class AbilityHandler implements Reloadable
 
 				data.setItemName(inHand);
 				data.setSuperPickaxeWaiting(true);
-				data.setSuperPickaxeReadyTime(5); // 5 seconds
+				data.setSuperPickaxeReadyTime(3); // 3 seconds
 
 				waiting.add(player.getName());
 			}
