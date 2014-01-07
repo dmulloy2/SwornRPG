@@ -105,11 +105,9 @@
       <version>2.13-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>com.massivecraft</groupId>
-      <artifactId>factions</artifactId>
-      <version>1.6.9.5</version>
-      <scope>system</scope>
-      <systemPath>${basedir}/lib/Factions.jar</systemPath>
+      <groupId>com.minesworn</groupId>
+      <artifactId>swornnations</artifactId>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>org.kitteh</groupId>
