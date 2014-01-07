@@ -12,7 +12,9 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -39,6 +41,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
+		if (updating)
+		{
+			err("Leaderboard is already updating!");
+			return;
+		}
+
 		if (leaderboard == null)
 		{
 			this.leaderboard = new ArrayList<String>();
@@ -54,11 +62,15 @@ public class CmdLeaderboard extends SwornRPGCommand
 			new BuildLeaderboardThread();
 		}
 
-		new DisplayLeaderboardThread();
+		new DisplayLeaderboardThread(player.getName());
 	}
 
-	public void displayLeaderboard()
+	public void displayLeaderboard(String playerName)
 	{
+		Player player = Util.matchPlayer(playerName);
+		if (player == null)
+			return;
+
 		int index = 1;
 
 		if (args.length > 0)
@@ -147,13 +159,19 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			Map<String, PlayerData> allData = plugin.getPlayerDataCache().getAllPlayerData();
 			Map<String, Integer> experienceMap = new HashMap<String, Integer>();
-			
+
 			for (Entry<String, PlayerData> entry : allData.entrySet())
 			{
-				if (entry.getValue().getTotalxp()  > 0)
+				if (entry.getValue().getTotalxp() > 0)
 				{
 					experienceMap.put(entry.getKey(), entry.getValue().getTotalxp());
 				}
+			}
+
+			if (experienceMap.isEmpty())
+			{
+				err("No players with XP found");
+				return;
 			}
 
 			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(experienceMap.entrySet());
@@ -166,41 +184,30 @@ public class CmdLeaderboard extends SwornRPGCommand
 				}
 			});
 
+			// Clear the map
 			experienceMap.clear();
-//			experienceMap = null;
 
 			int pos = 1;
 			for (Entry<String, Integer> entry : sortedEntries)
 			{
 				try
 				{
-//					Theres actually no reason to match the player first
-//					OfflinePlayer player = Util.matchOfflinePlayer(entry.getKey());
-//					if (player != null)
-//					{
-						PlayerData data = getPlayerData(entry.getKey());
-						if (data != null)
-						{
-							leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"),
-									pos, entry.getKey(), data.getLevel(), data.getTotalxp()));
-							pos++;
-						}
-						
-//						data = null;
-//					}
-//					
-//					player = null;
+					PlayerData data = getPlayerData(entry.getKey());
+					if (data != null)
+					{
+						leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"), pos, entry.getKey(), data.getLevel(),
+								data.getTotalxp()));
+						pos++;
+					}
 				}
-				catch (Exception e)
+				catch (Throwable ex)
 				{
-//					Swallow the exception, move on
-//					plugin.outConsole(Level.SEVERE, Util.getUsefulStack(e, "building leaderboard entry for " + entry.getKey()));
+					// Swallow the exception, move on
 					continue;
 				}
 			}
-			
+
 			sortedEntries.clear();
-//			sortedEntries = null;
 
 			lastUpdateTime = System.currentTimeMillis();
 
@@ -225,10 +232,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 	public class DisplayLeaderboardThread extends Thread
 	{
+		private String player;
 		private Thread thread;
-		public DisplayLeaderboardThread()
+		public DisplayLeaderboardThread(String player)
 		{
 			this.thread = new Thread(this, "SwornRPG-DisplayLeaderboard");
+			this.player = player;
+
+			this.thread.setPriority(1); // lowest priority
 			this.thread.start();
 		}
 
@@ -242,11 +253,11 @@ public class CmdLeaderboard extends SwornRPGCommand
 					sleep(500L);
 				}
 
-				displayLeaderboard();
+				displayLeaderboard(player);
 			}
-			catch (Exception e)
+			catch (Throwable ex)
 			{
-				err("Could not update leaderboard: {0}", e);
+				err("Could not update leaderboard: {0}", ex);
 			}
 		}
 	}
