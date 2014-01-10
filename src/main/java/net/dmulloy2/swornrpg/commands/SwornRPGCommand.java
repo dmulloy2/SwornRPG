@@ -10,10 +10,13 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -260,5 +263,23 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		}
 
 		return target;
+	}
+
+	protected final String getName(CommandSender sender)
+	{
+		if (sender instanceof BlockCommandSender)
+		{
+			BlockCommandSender commandBlock = (BlockCommandSender) sender;
+			Location location = commandBlock.getBlock().getLocation();
+			return FormatUtil.format("CommandBlock ({0}, {1}, {2}", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		}
+		else if (sender instanceof ConsoleCommandSender)
+		{
+			return "Console";
+		}
+		else
+		{
+			return sender.getName();
+		}
 	}
 }

@@ -4,8 +4,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
-import org.bukkit.entity.Player;
-
 /**
  * @author dmulloy2
  */
@@ -36,8 +34,7 @@ public class CmdHighCouncil extends SwornRPGCommand
 			message.deleteCharAt(message.lastIndexOf(" "));
 		}
 
-		String name = sender instanceof Player ? player.getName() : "Console";
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
-		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("council"), name, message.toString()), node);
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("council"), getName(sender), message.toString()), node);
 	}
 }
