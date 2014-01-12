@@ -134,7 +134,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 
 	protected final void sendMessage(String msg, Object... args)
 	{
-		sender.sendMessage(FormatUtil.format(msg, args));
+		sender.sendMessage(FormatUtil.format("&e" + msg, args));
 	}
 
 	protected final void sendpMessage(String msg, Object... args)
@@ -271,7 +271,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		{
 			BlockCommandSender commandBlock = (BlockCommandSender) sender;
 			Location location = commandBlock.getBlock().getLocation();
-			return FormatUtil.format("CommandBlock ({0}, {1}, {2}", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+			return FormatUtil.format("CommandBlock ({0}, {1}, {2})", location.getBlockX(), location.getBlockY(), location.getBlockZ());
 		}
 		else if (sender instanceof ConsoleCommandSender)
 		{
