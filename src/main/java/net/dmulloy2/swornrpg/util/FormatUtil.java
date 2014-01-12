@@ -4,8 +4,6 @@ import java.text.MessageFormat;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 
 /**
  * Util used for general formatting
@@ -31,27 +29,15 @@ public class FormatUtil
 	}
 
 	/**
-	 * Returns the "Friendly" name of a material
-	 * 
-	 * @param mat
-	 *        - Material to get the "friendly" name for
-	 * @return The "friendly" name for the given material
-	 */
-	public static String getFriendlyName(Material mat)
-	{
-		return getFriendlyName(mat.toString());
-	}
+	 * Returns the "Friendly" name of an {@link Enum} constant
 
-	/**
-	 * Returns the "Friendly" name of an entity
-	 * 
-	 * @param mat
-	 *        - Entity to get the "friendly" name for
-	 * @return The "friendly" name for the given entity
+	 * @param e
+	 *        - Constant to get the "friendly" name for
+	 * @return The "friendly" name for the given Enum constant
 	 */
-	public static String getFriendlyName(EntityType entityType)
+	public static String getFriendlyName(Enum<?> e)
 	{
-		return getFriendlyName(entityType.toString());
+		return getFriendlyName(e.toString());
 	}
 
 	/**
@@ -65,7 +51,7 @@ public class FormatUtil
 	{
 		String ret = string.toLowerCase();
 		ret = ret.replaceAll("_", " ");
-		return (WordUtils.capitalize(ret));
+		return WordUtils.capitalize(ret);
 	}
 
 	/**
@@ -73,16 +59,29 @@ public class FormatUtil
 	 * 
 	 * @param string
 	 *        - String to get the article for
-	 * @return The article that should go with the string
+	 * @return The proper article of a given string
 	 */
 	public static String getArticle(String string)
 	{
 		string = string.toLowerCase();
 		if (string.startsWith("a") || string.startsWith("e") || string.startsWith("i") || string.startsWith("o") || string.startsWith("u"))
-		{
 			return "an";
-		}
 
 		return "a";
+	}
+
+	/**
+	 * Returns the proper plural of a given string
+	 * 
+	 * @param string
+	 *        - String to get the plural for
+	 * @return The proper plural of a given string
+	 */
+	public static String getPlural(String string)
+	{
+		if (string.toLowerCase().endsWith("s"))
+			return string + "s";
+
+		return string;
 	}
 }

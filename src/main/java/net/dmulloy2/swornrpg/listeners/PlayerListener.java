@@ -13,7 +13,6 @@ import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -213,8 +212,8 @@ public class PlayerListener implements Listener, Reloadable
 				ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 				BookMeta meta = (BookMeta) book.getItemMeta();
 
-				meta.setTitle(ChatColor.RED + "DeathCoords");
-				meta.setAuthor(ChatColor.GOLD + "SwornRPG");
+				meta.setTitle(FormatUtil.format("&eDeath Coords"));
+				meta.setAuthor(FormatUtil.format("&bSwornRPG"));
 
 				List<String> pages = new ArrayList<String>();
 				pages.add(FormatUtil.format(plugin.getMessage("book_format"), player.getName(), x, y, z));
@@ -341,7 +340,7 @@ public class PlayerListener implements Listener, Reloadable
 		/** Fishing XP Gain **/
 		String message = plugin.getPrefix() + 
 				FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
-		plugin.getExperienceHandler().onXPGain(event.getPlayer(), fishingGain, message);
+		plugin.getExperienceHandler().handleXpGain(event.getPlayer(), fishingGain, message);
 
 		/** Fish Drops **/
 		if (! fishDropsEnabled)
@@ -479,12 +478,12 @@ public class PlayerListener implements Listener, Reloadable
 
 						String name = FormatUtil.getFriendlyName(type);
 						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&aYou are now riding {0} &e{1}", FormatUtil.getArticle(name), name));
+								FormatUtil.format("&eYou are now riding {0} &b{1}", FormatUtil.getArticle(name), name));
 						break;
 					case ENDER_DRAGON:
 						clicked.setPassenger(player);
 						player.sendMessage(plugin.getPrefix() + 
-								FormatUtil.format("&aYou are a DragonTamer, &e{0}&a!", player.getName()));
+								FormatUtil.format("&eYou are a Dragon Tamer, &b{0}&e!", player.getName()));
 					default:
 						break;
 				}

@@ -59,9 +59,11 @@ public class CmdLevel extends SwornRPGCommand
 		sendMessage(plugin.getMessage("level_info"), name, level, totalxp);
 		sendMessage(plugin.getMessage("level_xptonext"), name, xptonext, nextlevel);
 
+		StringBuilder bar = new StringBuilder();
+		bar.append("&e[");
+
 		int scale = 20;
 		int bars = Math.round(scale - ((xptonext * scale) / data.getXpNeeded()));
-		StringBuilder bar = new StringBuilder();
 		for (int i = 0; i < bars; i++)
 		{
 			bar.append("&b=");
@@ -73,6 +75,8 @@ public class CmdLevel extends SwornRPGCommand
 			bar.append("&e=");
 		}
 
-		sendMessage(plugin.getMessage("level_bar"), bar.toString());
+		bar.append("&e]");
+
+		sendMessage(bar.toString());
 	}
 }

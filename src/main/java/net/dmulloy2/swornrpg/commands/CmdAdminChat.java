@@ -35,6 +35,6 @@ public class CmdAdminChat extends SwornRPGCommand
 		}
 
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
-		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("achat"), getName(sender), message.toString()), node);
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("admin_chat"), getName(sender), message.toString()), node);
 	}
 }

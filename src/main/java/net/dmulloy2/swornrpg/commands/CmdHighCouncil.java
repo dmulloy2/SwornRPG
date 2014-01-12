@@ -35,6 +35,6 @@ public class CmdHighCouncil extends SwornRPGCommand
 		}
 
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
-		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("council"), getName(sender), message.toString()), node);
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("council_chat"), getName(sender), message.toString()), node);
 	}
 }

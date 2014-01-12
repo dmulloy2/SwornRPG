@@ -43,23 +43,21 @@ public class CmdSpouse extends SwornRPGCommand
 
 		String spouse = data.getSpouse();
 
-		String name;
+		String name = target.getName();
 		if (target.getName().equals(sender.getName()))
-		{
-			name = "You are";
-		}
-		else
-		{
-			name = target.getName() + " is";
-		}
+			name = "You";
+
+		String verb = "is";
+		if (target.getName().equals(sender.getName()))
+			verb = "are";
 
 		if (spouse != null)
 		{
-			sendpMessage(getMessage("spouse_married"), name, spouse);
+			sendpMessage(getMessage("spouse_married"), name, verb, spouse);
 		}
 		else
 		{
-			sendpMessage(getMessage("spouse_not_married"), name);
+			sendpMessage(getMessage("spouse_not_married"), name, verb);
 		}
 	}
 }

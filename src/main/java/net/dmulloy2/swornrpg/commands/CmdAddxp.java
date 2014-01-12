@@ -22,7 +22,7 @@ public class CmdAddxp extends SwornRPGCommand
 		this.description = "Manually give xp to a player";
 		this.permission = Permission.ADDXP;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -32,12 +32,13 @@ public class CmdAddxp extends SwornRPGCommand
 			err(plugin.getMessage("player_not_found"), args[0]);
 			return;
 		}
-		
+
 		int giveXP = argAsInt(1, true);
 		if (giveXP == -1)
 			return;
-		
-		plugin.getExperienceHandler().onXPGain(target, giveXP, "");
+
+		// FIXME: Possible issue: Multiple levelups not being counted
+		plugin.getExperienceHandler().handleXpGain(target, giveXP, "");
 
 		if (target.getName().equals(player.getName()))
 		{

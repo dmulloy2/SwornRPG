@@ -3,8 +3,6 @@ package net.dmulloy2.swornrpg.handlers;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.events.PlayerLevelupEvent;
-import net.dmulloy2.swornrpg.events.PlayerXpGainEvent;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.InventoryUtil;
@@ -30,25 +28,19 @@ public class ExperienceHandler
 	}
 
 	/**
-	 * Handles the gaining of XP for {@link Player}s
+	 * Handles xp gaining for players
 	 * 
 	 * @param player
 	 *        - {@link Player} who gained xp
-	 * @param xp
+	 * @param xpGained
 	 *        - Amount of xp gained
 	 * @param message
 	 *        - Message to be sent to the player
 	 */
-	public void onXPGain(Player player, int xp, String message)
+	public void handleXpGain(Player player, int xpGained, String message)
 	{
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
-			return;
-
-		PlayerXpGainEvent event = new PlayerXpGainEvent(player, xp, message);
-		plugin.getPluginManager().callEvent(event);
-
-		if (event.isCancelled())
 			return;
 
 		/** Send the Message **/
@@ -57,43 +49,26 @@ public class ExperienceHandler
 
 		/** Add the xp gained to their overall xp **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
-		int xpgained = event.getXpGained();
-		data.setPlayerxp(data.getPlayerxp() + xpgained);
-		data.setTotalxp(data.getTotalxp() + xpgained);
+		data.setPlayerxp(data.getPlayerxp() + xpGained);
+		data.setTotalxp(data.getTotalxp() + xpGained);
 
 		/** Levelup check **/
-		int currentXp = data.getPlayerxp();
-		int xpneeded = data.getXpNeeded();
-		int newlevel = xp / xpneeded;
-		int oldlevel = data.getLevel();
-
-		if ((currentXp - xpneeded) >= 0)
+		if (data.getXpNeeded() - data.getPlayerxp() <= 0)
 		{
-			/** If so, level up **/
-			onLevelup(player, oldlevel, newlevel);
+			handleLevelUp(player);
 		}
 	}
 
 	/**
-	 * Handles the leveling up of {@link Player}s
+	 * Handles leveling up for players
 	 * 
 	 * @param player
-	 *        - {@link Player} who leveled up
-	 * @param oldLevel
-	 *        - Old level
-	 * @param newLevel
-	 *        - New level
+	 *        - {@link Player} to level up
 	 */
-	public void onLevelup(Player player, int oldLevel, int newLevel)
+	public final void handleLevelUp(Player player)
 	{
 		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
-			return;
-
-		PlayerLevelupEvent event = new PlayerLevelupEvent(player, oldLevel, newLevel);
-		plugin.getPluginManager().callEvent(event);
-
-		if (event.isCancelled())
 			return;
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
@@ -175,5 +150,42 @@ public class ExperienceHandler
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_spick"), spick));
 		if (ammo > 0)
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_ammo"), ammo));
+	}
+
+	/**
+	 * Recalculates a player's statistics based upon the current xp gaining
+	 * algorithm. Currently not used and must be tweaked.
+	 * 
+	 * @param player
+	 *        - {@link Player} to recalculate stats for
+	 */
+	public final void recalculateStats(Player player)
+	{
+//		PlayerData data = plugin.getPlayerDataCache().getData(player);
+//		int totalXp = data.getTotalxp();
+//
+//		totalXp *= 4;
+//
+//		int level = 0;
+//		int xp = 0;
+//		int xpNeeded = 100;
+//
+//		while (true)
+//		{
+//			level++;
+//			totalXp -= xp;
+//			xp += xpNeeded;
+//			xpNeeded += (xpNeeded / 4);
+//
+//			if (totalXp <= 0)
+//			{
+//				break;
+//			}
+//		}
+//
+//		data.setLevel(level);
+//		data.setTotalxp(totalXp);
+//		data.setXpneeded(xpNeeded);
+//		data.setPlayerxp(0);
 	}
 }

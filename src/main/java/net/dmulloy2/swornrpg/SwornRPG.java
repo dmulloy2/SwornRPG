@@ -143,7 +143,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
 
 	/** Global Prefix Variable **/
-	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] ");
+	private @Getter String prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
+//	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] "); // Old Prefix
 
 	@Override
 	public void onEnable()
@@ -373,24 +374,15 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					{
 						for (Player player : getServer().getOnlinePlayers())
 						{
-							PlayerData data = playerDataCache.getData(player);
+							/** Add the xp gained to their overall xp **/
+							PlayerData data = playerDataCache.getData(player.getName());
 							data.setPlayerxp(data.getPlayerxp() + onlineXpGain);
-	
+							data.setTotalxp(data.getTotalxp() + onlineXpGain);
+
 							/** Levelup check **/
-							int xp = data.getPlayerxp();
-	
-							if (data.getXpNeeded() == 0)
-								data.setXpneeded(100);
-	
-							int xpneeded = data.getXpNeeded();
-	
-							int newlevel = xp / xpneeded;
-							int oldlevel = data.getLevel();
-	
-							if ((xp - xpneeded) >= 0)
+							if (data.getXpNeeded() - data.getPlayerxp() <= 0)
 							{
-								/** If so, call levelup event **/
-								experienceHandler.onLevelup(player, oldlevel, newlevel);
+								experienceHandler.handleLevelUp(player);
 							}
 						}
 					}
