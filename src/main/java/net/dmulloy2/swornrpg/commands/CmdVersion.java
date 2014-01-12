@@ -24,22 +24,7 @@ public class CmdVersion extends SwornRPGCommand
 	public void perform()
 	{
 		sendMessage(getMessage("version_header"));
-		
-		StringBuilder line = new StringBuilder();
-		line.append(getMessage("version_author") + " ");
-
-		for (String author : plugin.getDescription().getAuthors())
-		{
-			line.append("&e" + author + ", ");
-		}
-		
-		if (line.lastIndexOf(",") >= 0)
-		{
-			line.deleteCharAt(line.lastIndexOf(","));
-		}
-
-		sendMessage(line.toString());
-		
+		sendMessage(getMessage("version_author"), "dmulloy2");
 		sendMessage(getMessage("version_loaded"), plugin.getDescription().getFullName());
 		sendMessage(getMessage("version_download"));
 	}

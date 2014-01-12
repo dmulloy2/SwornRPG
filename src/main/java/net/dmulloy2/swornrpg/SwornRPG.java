@@ -374,16 +374,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					{
 						for (Player player : getServer().getOnlinePlayers())
 						{
-							/** Add the xp gained to their overall xp **/
-							PlayerData data = playerDataCache.getData(player.getName());
-							data.setPlayerxp(data.getPlayerxp() + onlineXpGain);
-							data.setTotalxp(data.getTotalxp() + onlineXpGain);
-
-							/** Levelup check **/
-							if (data.getXpNeeded() - data.getPlayerxp() <= 0)
-							{
-								experienceHandler.handleLevelUp(player);
-							}
+							/** This method no longer causes any noticable lag **/
+							experienceHandler.handleXpGain(player, onlineXpGain, "");
 						}
 					}
 				}.runTaskTimer(this, interval, interval);
