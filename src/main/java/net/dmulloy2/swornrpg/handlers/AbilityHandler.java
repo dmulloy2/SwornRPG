@@ -121,6 +121,13 @@ public class AbilityHandler implements Reloadable
 			return;
 		}
 
+		/** Cooldown Check **/
+		if (data.isFrenzyCooldownEnabled())
+		{
+			sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getFrenzyCooldownTime()));
+			return;
+		}
+
 		frenzy(player);
 	}
 
@@ -247,11 +254,18 @@ public class AbilityHandler implements Reloadable
 			return;
 		}
 
-		/** Check for Frenzy In Progress **/
+		/** Check for SuperPick in Progress **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSuperPickaxeEnabled())
 		{
 			sendpMessage(player, plugin.getMessage("ability_in_progress"), "Super Pickaxe");
+			return;
+		}
+
+		/** Cooldown Check **/
+		if (data.isSuperPickaxeCooldownEnabled())
+		{
+			sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getSuperPickaxeCooldownTime()));
 			return;
 		}
 
