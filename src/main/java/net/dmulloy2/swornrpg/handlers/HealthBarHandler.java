@@ -27,44 +27,25 @@ public class HealthBarHandler
 	public HealthBarHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-
 		this.setupScoreboard();
 	}
 
 	public void setupScoreboard()
 	{
-		if (checkEnabled())
+		unregister();
+		if (isEnabled())
 		{
-			unregisterAll();
-
 			generateTeams();
-
 			standardizeInvisibilities();
-
 			setupObjective();
 		}
 	}
 
-	public boolean checkEnabled()
+	// Currently bugged; do not use
+	public boolean isEnabled()
 	{
-		boolean isEnabled = plugin.getConfig().getBoolean("playerHealthBars.enabled", false);
-
-		if (! isEnabled)
-		{
-			Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
-
-			if (board.getObjective(DisplaySlot.BELOW_NAME) != null)
-			{
-				board.getObjective(DisplaySlot.BELOW_NAME).unregister();
-			}
-
-			if (board.getObjective("healthBar") != null)
-			{
-				board.getObjective("healthBar").unregister();
-			}
-		}
-
-		return isEnabled;
+//		return plugin.getConfig().getBoolean("playerHealthBars.enabled", false);
+		return false;
 	}
 
 	public void generateTeams()
@@ -89,7 +70,13 @@ public class HealthBarHandler
 		board.registerNewTeam("health10").setSuffix(green + h + h + h + h + h + h + h + h + h + h);
 	}
 
-	public void unregisterAll()
+	public final void unregister()
+	{
+		unregisterTeams();
+		unregisterObjectives();
+	}
+
+	private final void unregisterTeams()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -100,7 +87,22 @@ public class HealthBarHandler
 		}
 	}
 
-	public void standardizeInvisibilities()
+	private final void unregisterObjectives()
+	{
+		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
+
+		if (board.getObjective(DisplaySlot.BELOW_NAME) != null)
+		{
+			board.getObjective(DisplaySlot.BELOW_NAME).unregister();
+		}
+
+		if (board.getObjective("healthBar") != null)
+		{
+			board.getObjective("healthBar").unregister();
+		}
+	}
+
+	private final void standardizeInvisibilities()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -111,7 +113,7 @@ public class HealthBarHandler
 		}
 	}
 
-	public void setupObjective()
+	private final void setupObjective()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -129,7 +131,7 @@ public class HealthBarHandler
 		objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 	}
 
-	public void updateHealth(LivingEntity entity)
+	public final void updateHealth(LivingEntity entity)
 	{
 		if (entity instanceof Player)
 		{
@@ -141,9 +143,9 @@ public class HealthBarHandler
 		}
 	}
 
-	private void updatePlayerHealth(Player player)
+	private final void updatePlayerHealth(Player player)
 	{
-		if (checkEnabled())
+		if (isEnabled())
 		{
 			Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -172,8 +174,10 @@ public class HealthBarHandler
 		{
 			if (plugin.getConfig().getBoolean("mobHealthBars.enabled", true))
 			{
-				List<EntityType> blockedTypes = Arrays.asList(new EntityType[] { EntityType.VILLAGER, EntityType.ENDER_DRAGON,
-						EntityType.WITHER, EntityType.HORSE });
+				List<EntityType> blockedTypes = Arrays.asList(new EntityType[]
+				{
+						EntityType.VILLAGER, EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE
+				});
 
 				if (blockedTypes.contains(entity.getType()))
 				{

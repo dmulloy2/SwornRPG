@@ -442,7 +442,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	/** Clear Memory **/
 	private final void clearMemory()
 	{
-//		healthBarHandler.clear();
+		healthBarHandler.unregister();
 		
 		blockDropsMap.clear();
 		fishDropsMap.clear();
