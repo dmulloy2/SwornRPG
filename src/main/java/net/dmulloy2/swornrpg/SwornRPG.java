@@ -247,13 +247,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			commandHandler.registerCommand(new CmdTagReset(this));
 			commandHandler.registerCommand(new CmdUnride(this));
 			commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
-	
-			/** Handle Health if Reload **/
-			for (Player player : getServer().getOnlinePlayers())
-			{
-				healthBarHandler.updateHealth(player);
-			}
-	
+
 			/** Integration **/
 			tagHandler = new TagHandler(this);
 
@@ -537,6 +531,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		updateFishDrops();
 
 		abilityHandler.reload();
+		healthBarHandler.reload();
 	}
 
 	/**

@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -21,16 +23,18 @@ import org.bukkit.scoreboard.Team;
  * @author dmulloy2
  */
 
-public class HealthBarHandler
+public class HealthBarHandler implements Reloadable
 {
+	private final Scoreboard board;
 	private final SwornRPG plugin;
 	public HealthBarHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		this.setupScoreboard();
+		this.board = plugin.getServer().getScoreboardManager().getMainScoreboard();
+		this.reload();
 	}
 
-	public void setupScoreboard()
+	private final void setupScoreboard()
 	{
 		unregister();
 		if (isEnabled())
@@ -41,8 +45,39 @@ public class HealthBarHandler
 		}
 	}
 
+	public final void handleJoin(final Player player)
+	{
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				if (! isEnabled())
+				{
+					refreshBoard(player);
+					return;
+				}
+
+				updatePlayerHealth(player);
+			}
+		}.runTaskLater(plugin, 120L);
+	}
+
+	public final void refreshBoard(Player player)
+	{
+		player.setScoreboard(board);
+	}
+
+	public final void refreshBoard()
+	{
+		for (Player player : plugin.getServer().getOnlinePlayers())
+		{
+			refreshBoard(player);
+		}
+	}
+
 	// Currently bugged; do not use
-	public boolean isEnabled()
+	public final boolean isEnabled()
 	{
 //		return plugin.getConfig().getBoolean("playerHealthBars.enabled", false);
 		return false;
@@ -143,12 +178,18 @@ public class HealthBarHandler
 		}
 	}
 
+	public final void updatePlayerHealth()
+	{
+		for (Player player : plugin.getServer().getOnlinePlayers())
+		{
+			updatePlayerHealth(player);
+		}
+	}
+
 	private final void updatePlayerHealth(Player player)
 	{
 		if (isEnabled())
 		{
-			Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
-
 			if (board.getPlayerTeam(player) != null)
 			{
 				board.getPlayerTeam(player).removePlayer(player);
@@ -164,7 +205,7 @@ public class HealthBarHandler
 
 			board.getObjective(DisplaySlot.BELOW_NAME).getScore(player).setScore(teamNumber);
 
-			player.setScoreboard(board);
+			refreshBoard(player);
 		}
 	}
 
@@ -235,5 +276,13 @@ public class HealthBarHandler
 		{
 			plugin.debug(Util.getUsefulStack(e, "updating entity health bar"));
 		}
+	}
+
+	@Override
+	public void reload()
+	{
+		setupScoreboard();
+		updatePlayerHealth();
+		refreshBoard();
 	}
 }
