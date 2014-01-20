@@ -193,21 +193,21 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 			/** Check for PlayerData folder **/
 			File playersFile = new File(getDataFolder(), "players");
-			if (!playersFile.exists())
+			if (! playersFile.exists())
 			{
 				playersFile.mkdirs();
 			}
 
 			/** Configuration Stuff **/
 			File conf = new File(getDataFolder(), "config.yml");
-			if (!conf.exists())
+			if (! conf.exists())
 			{
 				outConsole(getMessage("log_config_create"));
 				saveDefaultConfig();
 			}
 			else
 			{
-				if (!getConfig().isSet("disabledWorlds"))
+				if (! getConfig().isSet("disabledWorlds"))
 				{
 					conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
 					outConsole(getMessage("log_config_outdated"));
@@ -431,34 +431,34 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	{
 		long start = System.currentTimeMillis();
 
+		/** Cancel tasks / services **/
+		getServer().getServicesManager().unregisterAll(this);
+		getServer().getScheduler().cancelTasks(this);
+
 		/** Save Data **/
 		playerDataCache.save();
 
 		/** Clear Memory **/
 		clearMemory();
 
-		/** Cancel tasks / services **/
-		getServer().getServicesManager().unregisterAll(this);
-		getServer().getScheduler().cancelTasks(this);
-
-		long finish = System.currentTimeMillis();
-
-		outConsole(getMessage("log_disabled"), getDescription().getFullName(), finish - start);
+		outConsole(getMessage("log_disabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
-	
-	/** Clear Memory **/
+
+	/**
+	 * Clears Liss and HashMaps
+	 */
 	private final void clearMemory()
 	{
 		healthBarHandler.unregister();
-		
+
 		blockDropsMap.clear();
 		fishDropsMap.clear();
-		
 		salvageRef.clear();
 		proposal.clear();
 	}
-	    
-	/** Console logging **/
+
+	// ---- Console Logging ---- //
+	
 	public final void outConsole(String string, Object... objects)
 	{
 		logHandler.log(string, objects);
@@ -473,6 +473,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	{
 		logHandler.debug(string, objects);
 	}
+
+	// ---- Integration ---- //
     
 	/**
 	 * Sets up Vault Integration
@@ -542,7 +544,12 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			factionsEnabled = true;
 	}
     
-	/** Get messages **/
+	/**
+	 * Attempts to get a message from the messages.properties
+	 * 
+	 * @param string
+	 *        - Message key
+	 */
 	public final String getMessage(String string) 
 	{
 		try
