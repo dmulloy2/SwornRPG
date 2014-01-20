@@ -458,44 +458,44 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	}
 
 	// ---- Console Logging ---- //
-	
+
 	public final void outConsole(String string, Object... objects)
 	{
 		logHandler.log(string, objects);
 	}
-	
+
 	public final void outConsole(Level level, String string, Object... objects)
 	{
 		logHandler.log(level, string, objects);
 	}
-	
+
 	public final void debug(String string, Object... objects)
 	{
 		logHandler.debug(string, objects);
 	}
 
 	// ---- Integration ---- //
-    
+
 	/**
 	 * Sets up Vault Integration
 	 */
-	private final void setupVaultIntegration() 
+	private final void setupVaultIntegration()
 	{
 		if (pluginManager.isPluginEnabled("Vault"))
 		{
 			RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-			if (economyProvider != null) 
+			if (economyProvider != null)
 			{
 				economy = economyProvider.getProvider();
 			}
-			
+
 			RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(Permission.class);
-			if (permissionProvider != null) 
+			if (permissionProvider != null)
 			{
 				permission = permissionProvider.getProvider();
 			}
 		}
-		
+
 		if (economy != null)
 		{
 			outConsole(getMessage("log_vault_success"), economy.getName());
@@ -505,7 +505,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			outConsole(getMessage("log_vault_failure"));
 		}
 	}
-	
+
 	/**
 	 * Sets up Essentials Integration
 	 */
@@ -541,29 +541,32 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		}
 
 		if (pluginManager.isPluginEnabled("SwornNations"))
+		{
 			factionsEnabled = true;
+			swornNationsEnabled = true;
+		}
 	}
-    
+
 	/**
 	 * Attempts to get a message from the messages.properties
 	 * 
 	 * @param string
 	 *        - Message key
 	 */
-	public final String getMessage(String string) 
+	public final String getMessage(String string)
 	{
 		try
 		{
 			return resourceHandler.getMessages().getString(string);
-		} 
-		catch (MissingResourceException ex) 
+		}
+		catch (MissingResourceException ex)
 		{
-			outConsole(Level.WARNING, getMessage("log_message_missing"),  string);
+			outConsole(Level.WARNING, getMessage("log_message_missing"), string);
 			return null;
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Reloads the Configuration
 	 */
 	@Override
@@ -604,11 +607,11 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			}
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Update salvage ref tables
 	 */
-	private final void updateSalvageRef() 
+	private final void updateSalvageRef()
 	{
 		String salvage = getConfig().getString("salvage");
 
@@ -616,20 +619,18 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		salvageRef.put("Gold", new HashMap<Material, Integer>());
 		salvageRef.put("Diamond", new HashMap<Material, Integer>());
 		String[] salvageArray = salvage.split("; ");
-		for (String s : salvageArray) 
+		for (String s : salvageArray)
 		{
 			String[] subset = s.split(", ");
-			
 			Material mat = MaterialUtil.getMaterial(subset[0]);
-			
 			if (mat != null)
 			{
 				salvageRef.get(subset[1]).put(mat, Integer.parseInt(subset[2]));
 			}
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Update Block Drops
 	 */
 	public final void updateBlockDrops()
@@ -647,7 +648,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			for (String value : values)
 			{
 				String[] ss = value.split(":");
-
 				Material type = MaterialUtil.getMaterial(ss[0]);
 				if (type == null)
 				{
@@ -673,33 +673,32 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			blockDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Update Fish Drops
 	 */
-	private final void updateFishDrops() 
+	private final void updateFishDrops()
 	{
 		fishDropsMap.clear();
-		
+
 		Map<String, Object> map = getConfig().getConfigurationSection("fishDropItems").getValues(true);
-		
-		for (Entry<String, Object> entry : map.entrySet()) 
+
+		for (Entry<String, Object> entry : map.entrySet())
 		{
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
 
 			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
-			for (String value : values) 
+			for (String value : values)
 			{
 				String[] ss = value.split(":");
-				
 				Material type = MaterialUtil.getMaterial(ss[0]);
 				if (type == null)
 				{
 					outConsole(Level.WARNING, getMessage("log_null_material"), ss[0], "fish drops");
 					continue;
 				}
-				
+
 				short data = 0;
 				int chance = 0;
 				if (ss.length == 3)
@@ -707,14 +706,14 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					data = Short.valueOf(ss[1]);
 					chance = Integer.valueOf(ss[2]);
 				}
-				else 
+				else
 				{
 					chance = Integer.valueOf(ss[1]);
 				}
-				
+
 				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 			}
-			
+
 			fishDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
 		}
 	}
@@ -727,27 +726,27 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		Location loc = player.getLocation();
 		World world = loc.getWorld();
 		int RADIUS = getConfig().getInt("campingRadius");
-		for (int dx = -RADIUS; dx <= RADIUS; dx++) 
+		for (int dx = -RADIUS; dx <= RADIUS; dx++)
 		{
-			for (int dy = -RADIUS; dy <= RADIUS; dy++) 
+			for (int dy = -RADIUS; dy <= RADIUS; dy++)
 			{
-				for (int dz = -RADIUS; dz <= RADIUS; dz++) 
+				for (int dz = -RADIUS; dz <= RADIUS; dz++)
 				{
 					Material mat = world.getBlockAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz).getType();
 					if (mat == Material.MOB_SPAWNER)
 					{
-						if (! isDisabledWorld(player)) 
+						if (! isDisabledWorld(player))
 							player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));
-						
+
 						return true;
 					}
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	// ---- Factions Checks ---- //
 
 	public final boolean checkFactions(Location location, boolean safeZoneCheck)
@@ -773,7 +772,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 		return false;
 	}
-	
+
 	private final boolean isSafeZone(Location location)
 	{
 		if (factionsEnabled)
@@ -787,7 +786,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 		return false;
 	}
-	
+
 	public final Player getKiller(Player killed)
 	{
 		Entity attacker = killed.getKiller();
@@ -804,14 +803,14 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		Player killer = null;
 		if (attacker != null)
 		{
-			if (attacker instanceof Player) 
+			if (attacker instanceof Player)
 			{
 				killer = (Player) attacker;
 			}
 			else if (attacker instanceof Projectile)
 			{
 				Entity shooter = ((Projectile) attacker).getShooter();
-				if (shooter instanceof Player) 
+				if (shooter instanceof Player)
 				{
 					killer = (Player) shooter;
 				}
@@ -822,22 +821,22 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	}
 
 	// ---- Disabled World Checks ---- //
-	
+
 	public boolean isDisabledWorld(Player player)
 	{
 		return isDisabledWorld(player.getWorld());
 	}
-	
+
 	public boolean isDisabledWorld(Entity entity)
 	{
 		return isDisabledWorld(entity.getWorld());
 	}
-	
+
 	public boolean isDisabledWorld(Block block)
 	{
 		return isDisabledWorld(block.getWorld());
 	}
-	
+
 	public boolean isDisabledWorld(World world)
 	{
 		return getConfig().getStringList("disabledWorlds").contains(world.getName());
