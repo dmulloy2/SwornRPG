@@ -111,11 +111,18 @@ import com.massivecraft.factions.Faction;
 
 public class SwornRPG extends JavaPlugin implements Reloadable
 {
-	/** Getters **/
+	/** Vault **/
 	private @Getter Economy economy;
 	private @Getter Permission permission;
 
+	/** Essentials **/
+	private @Getter boolean useEssentials;
 	private @Getter Essentials essentials;
+
+	/** Factions **/
+	private @Getter boolean factionsEnabled;
+	private @Getter boolean swornNationsEnabled;
+
 	private @Getter PluginManager pluginManager;
 	private @Getter PlayerDataCache playerDataCache;
 
@@ -137,14 +144,13 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	private @Getter Throwable startupException;
 
 	/** Maps **/
-	private @Getter HashMap<String, String> proposal = new HashMap<String, String>();
-	private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef = new HashMap<String, HashMap<Material, Integer>>();
-	private @Getter Map<Material, List<BlockDrop>> blockDropsMap = new HashMap<Material, List<BlockDrop>>();
-	private @Getter Map<Material, List<BlockDrop>> fishDropsMap = new HashMap<Material, List<BlockDrop>>();
+	private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef;
+	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
+	private @Getter Map<Material, List<BlockDrop>> fishDropsMap;
+	private @Getter HashMap<String, String> proposal;
 
 	/** Global Prefix Variable **/
-	private @Getter String prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
-//	private @Getter String prefix = FormatUtil.format("&6[SwornRPG] "); // Old Prefix
+	private @Getter String prefix;
 
 	@Override
 	public void onEnable()
@@ -152,73 +158,79 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		try
 		{
 			long start = System.currentTimeMillis();
-	
+
+			/** Initialize Variables **/
+			salvageRef = new HashMap<String, HashMap<Material, Integer>>();
+			blockDropsMap = new HashMap<Material, List<BlockDrop>>();
+			fishDropsMap = new HashMap<Material, List<BlockDrop>>();
+			proposal = new HashMap<String, String>();
+
+			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
+
 			/** Register LogHandler first **/
 			logHandler = new LogHandler(this);
-	
-			/** Save and load messages.properties**/
+
+			/** Save and load messages.properties **/
 			saveResource("messages.properties", true);
 			resourceHandler = new ResourceHandler(this, getClassLoader());
-	
+
 			/** Register Other Handlers **/
 			experienceHandler = new ExperienceHandler(this);
 			healthBarHandler = new HealthBarHandler(this);
 			permissionHandler = new PermissionHandler();
 			abilityHandler = new AbilityHandler(this);
 			commandHandler = new CommandHandler(this);
-	
+
 			/** Register Listeners **/
 			pluginManager = getServer().getPluginManager();
-	
+
 			listeners = new ArrayList<Listener>();
-	
+
 			registerListener(new PlayerListener(this));
 			registerListener(new EntityListener(this));
 			registerListener(new BlockListener(this));
 			registerListener(new ExperienceListener(this));
-	
+
 			/** Check for PlayerData folder **/
 			File playersFile = new File(getDataFolder(), "players");
-			if (! playersFile.exists())
+			if (!playersFile.exists())
 			{
 				playersFile.mkdirs();
 			}
-	
+
 			/** Configuration Stuff **/
 			File conf = new File(getDataFolder(), "config.yml");
-			if (! conf.exists())
+			if (!conf.exists())
 			{
 				outConsole(getMessage("log_config_create"));
 				saveDefaultConfig();
 			}
 			else
 			{
-				if (! getConfig().isSet("disabledWorlds"))
+				if (!getConfig().isSet("disabledWorlds"))
 				{
 					conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
-	
 					outConsole(getMessage("log_config_outdated"));
-	
 					saveDefaultConfig();
 				}
 			}
-	
+
 			reloadConfig();
-	
+
 			/** Update Block Tables **/
 			updateBlockDrops();
 			updateFishDrops();
-	
+
 			/** Salvaging **/
 			updateSalvageRef();
-	
+
 			/** Register Prefixed Commands **/
 			commandHandler.setCommandPrefix("srpg");
 			commandHandler.registerPrefixedCommand(new CmdHelp(this));
 			commandHandler.registerPrefixedCommand(new CmdLeaderboard(this));
 			commandHandler.registerPrefixedCommand(new CmdVersion(this));
 			commandHandler.registerPrefixedCommand(new CmdReload(this));
-	
+
 			/** Register Non-Prefixed Commands **/
 			commandHandler.registerCommand(new CmdAbilities(this));
 			commandHandler.registerCommand(new CmdAddxp(this));
@@ -252,15 +264,16 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			tagHandler = new TagHandler(this);
 
 			setupVaultIntegration();
+			setupFactionsIntegration();
 			setupEssentialsIntegration();
-	
+
 			playerDataCache = new PlayerDataCache(this);
-	
+
 			/** Deploy AutoSave Task **/
 			if (getConfig().getBoolean("autoSave.enabled"))
 			{
 				int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
-	
+
 				new BukkitRunnable()
 				{
 					@Override
@@ -270,7 +283,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					}
 				}.runTaskTimerAsynchronously(this, interval, interval);
 			}
-	
+
 			/** Frenzy Mode Cooldown **/
 			if (getConfig().getBoolean("frenzy.enabled"))
 			{
@@ -298,7 +311,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					}
 				}.runTaskTimer(this, 2L, 1L);
 			}
-	
+
 			/** Super Pickaxe Cooldown **/
 			if (getConfig().getBoolean("superPickaxe.enabled"))
 			{
@@ -326,7 +339,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					}
 				}.runTaskTimer(this, 2L, 1L);
 			}
-	
+
 			/** SwornGuns Integration **/
 			if (pluginManager.isPluginEnabled("SwornGuns") && getConfig().getBoolean("unlimitedAmmo.enabled"))
 			{
@@ -354,11 +367,11 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					}
 				}.runTaskTimer(this, 2L, 1L);
 			}
-	
+
 			/** Online XP Gain **/
 			final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
 			final long interval = TimeUtil.toTicks(60); // Minute
-	
+
 			if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 			{
 				new BukkitRunnable()
@@ -390,7 +403,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			{
 				if (player.isOp())
 				{
-					player.sendMessage(prefix + FormatUtil.format("&cSwornRPG failed to load! Exception: {0}", startupException));
+					player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", startupException));
 				}
 			}
 
@@ -403,7 +416,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					Player player = event.getPlayer();
 					if (player.isOp())
 					{
-						player.sendMessage(prefix + FormatUtil.format("&cSwornRPG failed to load! Exception: {0}", startupException));
+						player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", startupException));
 					}
 				}
 			}, this);
@@ -417,19 +430,19 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	public void onDisable()
 	{
 		long start = System.currentTimeMillis();
-		
+
 		/** Save Data **/
 		playerDataCache.save();
-		
+
 		/** Clear Memory **/
 		clearMemory();
 
 		/** Cancel tasks / services **/
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
-		
+
 		long finish = System.currentTimeMillis();
-		
+
 		outConsole(getMessage("log_disabled"), getDescription().getFullName(), finish - start);
 	}
 	
@@ -462,7 +475,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	}
     
 	/**
-	 * Setup Vault Integration
+	 * Sets up Vault Integration
 	 */
 	private final void setupVaultIntegration() 
 	{
@@ -492,16 +505,41 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	}
 	
 	/**
-	 * Setup Essentials Integration
+	 * Sets up Essentials Integration
 	 */
 	private final void setupEssentialsIntegration()
 	{
-		PluginManager pm = getServer().getPluginManager();
-		if (pm.isPluginEnabled("Essentials"))
+		try
 		{
-			Plugin plugin = pm.getPlugin("Essentials");
-			essentials = (Essentials) plugin;
+			PluginManager pm = getServer().getPluginManager();
+			if (pm.isPluginEnabled("Essentials"))
+			{
+				Plugin plugin = pm.getPlugin("Essentials");
+				essentials = (Essentials) plugin;
+				useEssentials = true;
+			}
 		}
+		catch (Throwable ex)
+		{
+			essentials = null;
+			useEssentials = false;
+		}
+	}
+
+	/**
+	 * Sets up Factions Integration
+	 */
+	private final void setupFactionsIntegration()
+	{
+		if (pluginManager.isPluginEnabled("Factions"))
+		{
+			Plugin pl = pluginManager.getPlugin("Factions");
+			String version = pl.getDescription().getVersion();
+			factionsEnabled = version.startsWith("1.6");
+		}
+
+		if (pluginManager.isPluginEnabled("SwornNations"))
+			factionsEnabled = true;
 	}
     
 	/** Get messages **/
@@ -717,20 +755,12 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 	private final boolean isWarZone(Location location)
 	{
-		if (pluginManager.isPluginEnabled("Factions"))
+		if (factionsEnabled)
 		{
-			Plugin pl = pluginManager.getPlugin("Factions");
-			String version = pl.getDescription().getVersion();
-			if (version.startsWith("1.6"))
-			{
-				Faction fac = Board.getFactionAt(new FLocation(location));
-				return fac.isWarZone();
-			}
-		}
+			Faction fac = Board.getFactionAt(new FLocation(location));
+			if (swornNationsEnabled)
+				fac = Board.getAbsoluteFactionAt(new FLocation(location));
 
-		if (pluginManager.isPluginEnabled("SwornNations"))
-		{
-			Faction fac = Board.getAbsoluteFactionAt(new FLocation(location));
 			return fac.isWarZone();
 		}
 
@@ -739,20 +769,12 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	
 	private final boolean isSafeZone(Location location)
 	{
-		if (pluginManager.isPluginEnabled("Factions"))
+		if (factionsEnabled)
 		{
-			Plugin pl = pluginManager.getPlugin("Factions");
-			String version = pl.getDescription().getVersion();
-			if (version.startsWith("1.6"))
-			{
-				Faction fac = Board.getFactionAt(new FLocation(location));
-				return fac.isSafeZone();
-			}
-		}
+			Faction fac = Board.getFactionAt(new FLocation(location));
+			if (swornNationsEnabled)
+				fac = Board.getAbsoluteFactionAt(new FLocation(location));
 
-		if (pluginManager.isPluginEnabled("SwornNations"))
-		{
-			Faction fac = Board.getAbsoluteFactionAt(new FLocation(location));
 			return fac.isSafeZone();
 		}
 

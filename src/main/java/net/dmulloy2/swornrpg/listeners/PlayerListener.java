@@ -439,7 +439,7 @@ public class PlayerListener implements Listener, Reloadable
 		if (event.isCancelled() || player == null)
 			return;
 
-		if (! player.isInsideVehicle() && player.getPassenger() != null)
+		if (! player.isInsideVehicle() && player.getPassenger() == null)
 		{
 			PlayerData data = plugin.getPlayerDataCache().getData(player);
 			if (data.isRideWaiting() && (System.currentTimeMillis() - data.getRideWaitingTime()) <= 200L)
