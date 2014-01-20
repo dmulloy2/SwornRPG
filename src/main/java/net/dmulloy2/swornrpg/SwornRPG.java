@@ -445,7 +445,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	}
 
 	/**
-	 * Clears Liss and HashMaps
+	 * Clears Lists and HashMaps
 	 */
 	private final void clearMemory()
 	{
