@@ -8,6 +8,7 @@ import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.swornrpg.util.InventoryUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
 import net.dmulloy2.swornrpg.util.Util;
 
@@ -122,24 +123,23 @@ public class BlockListener implements Listener, Reloadable
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		MaterialData materialData = block.getState().getData();
-		Material material = materialData.getItemType();
+		Material material = block.getType();
 		if (! material.isBlock() || redemptionBlacklist.contains(material))
 			return;
-
-		ItemStack itemStack = new ItemStack(material);
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
 		int level = data.getLevel(100);
 		if (Util.random(300 / level) == 0)
 		{
+			ItemStack itemStack = new ItemStack(material);
+			MaterialData materialData = block.getState().getData();
 			if (materialData != null)
 			{
 				itemStack.setData(materialData);
 			}
 
-			player.getInventory().addItem(itemStack);
+			InventoryUtil.addItems(player.getInventory(), itemStack);
 
 			String itemName = FormatUtil.getFriendlyName(itemStack.getType());
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
