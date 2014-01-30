@@ -22,6 +22,8 @@ public class ItemUtil
 
 	/**
 	 * Reads an ItemStack from configuration
+	 * <p>
+	 * The basic format is "[Type/ID]:[Data], [Amount], [Enchantment:Level...]"
 	 * 
 	 * @param string
 	 *        - String to read
@@ -60,7 +62,7 @@ public class ItemUtil
 
 					s = s.substring(s.indexOf(",") + 1);
 
-					if (!s.isEmpty())
+					if (! s.isEmpty())
 					{
 						if (s.contains(","))
 						{
@@ -106,7 +108,7 @@ public class ItemUtil
 				ret = new ItemStack(mat, amt, dat);
 			}
 
-			if (ret != null && !enchantments.isEmpty())
+			if (ret != null && ! enchantments.isEmpty())
 			{
 				ret.addUnsafeEnchantments(enchantments);
 			}
