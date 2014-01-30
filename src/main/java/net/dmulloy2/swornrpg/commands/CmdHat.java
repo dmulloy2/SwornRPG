@@ -40,7 +40,7 @@ public class CmdHat extends SwornRPGCommand
 			{
 				ItemStack air = new ItemStack(Material.AIR);
 				inv.setHelmet(air);
-				InventoryUtil.addItems(player.getInventory(), head);
+				InventoryUtil.giveItem(player, head);
 				sendpMessage(plugin.getMessage("hat_removed"));
 			}
 		}
@@ -60,7 +60,7 @@ public class CmdHat extends SwornRPGCommand
 					{
 						hand.setAmount(hand.getAmount() - 1);
 						inv.setHelmet(toHead);
-						InventoryUtil.addItems(player.getInventory(), head);
+						InventoryUtil.giveItem(player, head);
 						sendpMessage(plugin.getMessage("hat_success"));
 					}
 					else

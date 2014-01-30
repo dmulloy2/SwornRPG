@@ -128,7 +128,7 @@ public class ExperienceHandler
 					{
 						item.setAmount(item.getAmount() * level);
 
-						InventoryUtil.addItems(player.getInventory(), item);
+						InventoryUtil.giveItem(player, item);
 
 						String itemName = FormatUtil.getFriendlyName(item.getType());
 						player.sendMessage(plugin.getPrefix()

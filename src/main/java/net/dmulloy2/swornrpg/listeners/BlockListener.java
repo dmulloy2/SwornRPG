@@ -139,7 +139,7 @@ public class BlockListener implements Listener, Reloadable
 				itemStack.setData(materialData);
 			}
 
-			InventoryUtil.addItems(player.getInventory(), itemStack);
+			InventoryUtil.giveItem(player, itemStack);
 
 			String itemName = FormatUtil.getFriendlyName(itemStack.getType());
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));

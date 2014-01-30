@@ -1,99 +1,144 @@
-/**
- * Essentials - a bukkit plugin 
- * Copyright (C) 2011 Essentials Team
- * 
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package net.dmulloy2.swornrpg.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 /**
- * @author Essentials
+ * Util dealing with Inventories
+ * 
+ * @author dmulloy2
  */
 
 public class InventoryUtil
 {
-	private InventoryUtil()
+	private InventoryUtil() { }
+
+	/**
+	 * Returns whether or not a given inventory is empty
+	 * 
+	 * @param inventory
+	 *        - {@link Inventory} to check
+	 */
+	public static boolean isEmpty(Inventory inventory)
 	{
+		for (ItemStack stack : inventory.getContents())
+		{
+			if (stack != null && stack.getType() != Material.AIR)
+				return false;
+		}
+
+		if (inventory instanceof PlayerInventory)
+		{
+			PlayerInventory pInventory = (PlayerInventory) inventory;
+			if (pInventory.getHelmet() != null)
+				return false;
+
+			if (pInventory.getChestplate() != null)
+				return false;
+
+			if (pInventory.getLeggings() != null)
+				return false;
+
+			if (pInventory.getBoots() != null)
+				return false;
+		}
+
+		return true;
 	}
 
-	private static int firstPartial(final Inventory inventory, final ItemStack item, final int maxAmount)
+	/**
+	 * Whether or not a Player's inventory has room for a given item
+	 * 
+	 * @param item
+	 *        - {@link ItemStack} to attempt to add
+	 * @param player
+	 *        - Player whose inventory is being checked
+	 */
+	public static boolean hasRoom(ItemStack item, Player player)
 	{
-		if (item == null)
-		{
-			return -1;
-		}
-		final ItemStack[] stacks = inventory.getContents();
-		for (int i = 0; i < stacks.length; i++)
-		{
-			final ItemStack cItem = stacks[i];
-			if (cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
-			{
-				return i;
-			}
-		}
-		return -1;
-	}
+		int maxStackSize = (item.getMaxStackSize() == -1) ? player.getInventory().getMaxStackSize() : item.getMaxStackSize();
+		int amount = item.getAmount();
 
-	public static boolean addAllItems(final Inventory inventory, final ItemStack... items)
-	{
-		final Inventory fakeInventory = Bukkit.getServer().createInventory(null, inventory.getType());
-		fakeInventory.setContents(inventory.getContents());
-		if (addItems(fakeInventory, items).isEmpty())
+		for (ItemStack stack : player.getInventory().getContents())
 		{
-			addItems(inventory, items);
-			return true;
+			if (stack == null || stack.getType().equals(Material.AIR))
+				amount -= maxStackSize;
+			else if (stack.getType() == item.getType()
+					&& stack.getDurability() == item.getDurability()
+					&& (stack.getEnchantments().size() == 0 ? item.getEnchantments().size() == 0 : stack.getEnchantments().equals(
+							item.getEnchantments())))
+				amount -= maxStackSize - stack.getAmount();
+
+			if (amount <= 0)
+				return true;
 		}
+
 		return false;
 	}
 
-	public static Map<Integer, ItemStack> addItems(final Inventory inventory, final ItemStack... items)
+	/**
+	 * Gives a player an item
+	 * 
+	 * @param player
+	 *        - {@link Player} to give them item to
+	 * @param item
+	 *        - {@link ItemStack} to give the player
+	 * @return Leftovers, if any
+	 */
+	public static Map<Integer, ItemStack> giveItem(Player player, ItemStack item)
+	{
+		if (hasRoom(item, player))
+			return addItems(player.getInventory(), item);
+
+		return null;
+	}
+
+	/**
+	 * Gives a player items
+	 * 
+	 * @param player
+	 *        - {@link Player} to give them item to
+	 * @param items
+	 *        - Items to give the player
+	 * @return Leftovers, if any
+	 */
+	public static Map<Integer, ItemStack> giveItems(Player player, ItemStack... items)
+	{
+		return addItems(player.getInventory(), items);
+	}
+
+	// ---- Internal Methods ---- //
+
+	private static Map<Integer, ItemStack> addItems(Inventory inventory, ItemStack... items)
 	{
 		return addOversizedItems(inventory, 0, items);
 	}
 
-	public static Map<Integer, ItemStack> addOversizedItems(final Inventory inventory, final int oversizedStacks, final ItemStack... items)
+	private static Map<Integer, ItemStack> addOversizedItems(Inventory inventory, int oversizedStacks, ItemStack... items)
 	{
-		final Map<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
-
-		/**
-		 * TODO: some optimization - Create a 'firstPartial' with a 'fromIndex'
-		 * - Record the lastPartial per Material - Cache firstEmpty result
-		 */
-
-		// combine items
+		Map<Integer, ItemStack> leftover = new HashMap<Integer, ItemStack>();
 
 		ItemStack[] combined = new ItemStack[items.length];
 		for (int i = 0; i < items.length; i++)
 		{
 			if (items[i] == null || items[i].getAmount() < 1)
-			{
 				continue;
-			}
+
 			for (int j = 0; j < combined.length; j++)
 			{
 				if (combined[j] == null)
 				{
 					combined[j] = items[i].clone();
+					combined[j].setData(items[i].getData());
 					break;
 				}
+
 				if (combined[j].isSimilar(items[i]))
 				{
 					combined[j].setAmount(combined[j].getAmount() + items[i].getAmount());
@@ -104,23 +149,21 @@ public class InventoryUtil
 
 		for (int i = 0; i < combined.length; i++)
 		{
-			final ItemStack item = combined[i];
+			ItemStack item = combined[i];
 			if (item == null)
-			{
 				continue;
-			}
 
 			while (true)
 			{
 				// Do we already have a stack of it?
-				final int maxAmount = oversizedStacks > item.getType().getMaxStackSize() ? oversizedStacks : item.getType().getMaxStackSize();
-				final int firstPartial = firstPartial(inventory, item, maxAmount);
+				int maxAmount = oversizedStacks > item.getType().getMaxStackSize() ? oversizedStacks : item.getType().getMaxStackSize();
+				int firstPartial = firstPartial(inventory, item, maxAmount);
 
 				// Drat! no partial stack
 				if (firstPartial == -1)
 				{
 					// Find a free spot!
-					final int firstFree = inventory.firstEmpty();
+					int firstFree = inventory.firstEmpty();
 
 					if (firstFree == -1)
 					{
@@ -133,7 +176,8 @@ public class InventoryUtil
 						// More than a single stack!
 						if (item.getAmount() > maxAmount)
 						{
-							final ItemStack stack = item.clone();
+							ItemStack stack = item.clone();
+							stack.setData(item.getData());
 							stack.setAmount(maxAmount);
 							inventory.setItem(firstFree, stack);
 							item.setAmount(item.getAmount() - maxAmount);
@@ -150,10 +194,10 @@ public class InventoryUtil
 				{
 					// So, apparently it might only partially fit, well lets do
 					// just that
-					final ItemStack partialItem = inventory.getItem(firstPartial);
+					ItemStack partialItem = inventory.getItem(firstPartial);
 
-					final int amount = item.getAmount();
-					final int partialAmount = partialItem.getAmount();
+					int amount = item.getAmount();
+					int partialAmount = partialItem.getAmount();
 
 					// Check if it fully fits
 					if (amount + partialAmount <= maxAmount)
@@ -168,6 +212,23 @@ public class InventoryUtil
 				}
 			}
 		}
+
 		return leftover;
+	}
+
+	private static int firstPartial(Inventory inventory, ItemStack item, int maxAmount)
+	{
+		if (item == null)
+			return -1;
+
+		ItemStack[] stacks = inventory.getContents();
+		for (int i = 0; i < stacks.length; i++)
+		{
+			ItemStack cItem = stacks[i];
+			if (cItem != null && cItem.getAmount() < maxAmount && cItem.isSimilar(item))
+				return i;
+		}
+
+		return -1;
 	}
 }

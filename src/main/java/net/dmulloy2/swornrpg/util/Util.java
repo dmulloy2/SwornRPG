@@ -19,6 +19,8 @@ import org.bukkit.entity.Player;
 
 public class Util
 {
+	private Util() { }
+
 	/**
 	 * Gets the OfflinePlayer from a given string
 	 * 
@@ -232,41 +234,5 @@ public class Util
 		}
 
 		return ret;
-	}
-
-	/**
-	 * Basically just a wrapper for {@link Integer#parseInt(String)}
-	 * <p>
-	 * Catches the {@link NumberFormatException} and returns -1
-	 * 
-	 * @param s
-	 *        - String to attempt to parse into an Integer
-	 */
-	public static int parseInt(String s)
-	{
-		int ret = -1;
-
-		try
-		{
-			ret = Integer.parseInt(s);
-		}
-		catch (Exception e)
-		{
-			// Return -1, move on
-		}
-
-		return ret;
-	}
-
-	/**
-	 * Returns whether or not a String can be parsed as an Integer
-	 * 
-	 * @param string
-	 *        - String to check
-	 * @return Whether or not a String can be parsed as an Integer
-	 */
-	public static boolean isInteger(String s)
-	{
-		return parseInt(s) != -1;
 	}
 }

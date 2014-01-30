@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemUtil
 {
+	private ItemUtil() { }
+
 	/**
 	 * Reads an ItemStack from configuration
 	 * 
@@ -30,12 +32,12 @@ public class ItemUtil
 		try
 		{
 			Material mat = null;
-	
+
 			int amt = 0;
 			short dat = 0;
-	
+
 			Map<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
-	
+
 			string = string.replaceAll(" ", "");
 			if (string.contains(","))
 			{
@@ -43,22 +45,22 @@ public class ItemUtil
 				if (s.contains(":"))
 				{
 					mat = MaterialUtil.getMaterial(s.substring(0, s.indexOf(":")));
-	
+
 					dat = Short.parseShort(s.substring(s.indexOf(":") + 1));
 				}
 				else
 				{
 					mat = MaterialUtil.getMaterial(s);
 				}
-	
+
 				s = string.substring(string.indexOf(",") + 1);
 				if (s.contains(","))
 				{
 					amt = Integer.parseInt(s.substring(0, s.indexOf(",")));
-	
+
 					s = s.substring(s.indexOf(",") + 1);
-	
-					if (! s.isEmpty())
+
+					if (!s.isEmpty())
 					{
 						if (s.contains(","))
 						{
@@ -69,7 +71,7 @@ public class ItemUtil
 								{
 									Enchantment enchant = EnchantmentType.toEnchantment(ench.substring(0, ench.indexOf(":")));
 									int level = Integer.parseInt(ench.substring(ench.indexOf(":") + 1));
-	
+
 									if (enchant != null && level > 0)
 									{
 										enchantments.put(enchant, level);
@@ -83,7 +85,7 @@ public class ItemUtil
 							{
 								Enchantment enchant = EnchantmentType.toEnchantment(s.substring(0, s.indexOf(":")));
 								int level = Integer.parseInt(s.substring(s.indexOf(":") + 1));
-	
+
 								if (enchant != null && level > 0)
 								{
 									enchantments.put(enchant, level);
@@ -97,23 +99,23 @@ public class ItemUtil
 					amt = Integer.parseInt(s);
 				}
 			}
-	
+
 			ItemStack ret = null;
 			if (mat != null && amt > 0)
 			{
 				ret = new ItemStack(mat, amt, dat);
 			}
-	
+
 			if (ret != null && !enchantments.isEmpty())
 			{
 				ret.addUnsafeEnchantments(enchantments);
 			}
-	
+
 			return ret;
 		}
 		catch (Exception e)
 		{
-			// If the ItemStack could not be read, 
+			// If the ItemStack could not be read,
 			// don't stall the enabling of the plugin
 			return null;
 		}
@@ -151,7 +153,7 @@ public class ItemUtil
 	public static String getEnchantments(ItemStack stack)
 	{
 		StringBuilder ret = new StringBuilder();
-		if (! stack.getEnchantments().isEmpty())
+		if (!stack.getEnchantments().isEmpty())
 		{
 			ret.append("(");
 			for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())

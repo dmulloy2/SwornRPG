@@ -13,6 +13,8 @@ import org.bukkit.ChatColor;
 
 public class FormatUtil
 {
+	private FormatUtil() { }
+
 	/**
 	 * Formats a given string and its object
 	 * 
@@ -30,7 +32,7 @@ public class FormatUtil
 
 	/**
 	 * Returns the "Friendly" name of an {@link Enum} constant
-
+	 * 
 	 * @param e
 	 *        - Constant to get the "friendly" name for
 	 * @return The "friendly" name for the given Enum constant

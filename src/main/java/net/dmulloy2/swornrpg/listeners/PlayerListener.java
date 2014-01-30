@@ -147,7 +147,7 @@ public class PlayerListener implements Listener, Reloadable
 						give = Material.DIAMOND;
 
 					ItemStack salvaged = new ItemStack(give, (int) amt);
-					InventoryUtil.addItems(inv, salvaged);
+					InventoryUtil.giveItem(player, salvaged);
 					event.setCancelled(true);
 				}
 				else
@@ -236,7 +236,7 @@ public class PlayerListener implements Listener, Reloadable
 		Player player = event.getPlayer();
 		if (bookMap.containsKey(player.getName()))
 		{
-			InventoryUtil.addItems(player.getInventory(), bookMap.get(player.getName()));
+			InventoryUtil.giveItem(player, bookMap.get(player.getName()));
 			bookMap.remove(player.getName());
 		}
 
