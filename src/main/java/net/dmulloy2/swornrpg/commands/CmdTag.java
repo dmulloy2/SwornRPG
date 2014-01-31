@@ -40,15 +40,18 @@ public class CmdTag extends SwornRPGCommand
 
 		if (args.length == 1)
 		{
-			if (! isValidTag(args[0]))
+			String color = args[0];
+			if (! isValidTag(color))
 			{
 				invalidArgs();
 				return;
 			}
 
-			plugin.getTagHandler().setTag(player, args[0] + sender.getName());
+			if (! color.startsWith("&")) color = "&" + color;
 
-			sendpMessage(plugin.getMessage("tag_changed_self"), getFormattedColor(args[0]));
+			plugin.getTagHandler().setTag(player, color + sender.getName());
+
+			sendpMessage(plugin.getMessage("tag_changed_self"), getFormattedColor(color));
 		}
 		else if (args.length == 2)
 		{
@@ -59,7 +62,8 @@ public class CmdTag extends SwornRPGCommand
 				return;
 			}
 
-			if (! isValidTag(args[1]))
+			String color = args[1];
+			if (! isValidTag(color))
 			{
 				invalidArgs();
 				return;
@@ -72,13 +76,14 @@ public class CmdTag extends SwornRPGCommand
 				return;
 			}
 
+			if (! color.startsWith("&")) color = "&" + color;
+
 			String newTag = args[1] + target.getName();
-			String color = getFormattedColor(args[1]);
 
 			plugin.getTagHandler().setTag(target, newTag);
 
-			sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName(), color);
-			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, color);
+			sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName(), getFormattedColor(color));
+			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, getFormattedColor(color));
 		}
 	}
 
