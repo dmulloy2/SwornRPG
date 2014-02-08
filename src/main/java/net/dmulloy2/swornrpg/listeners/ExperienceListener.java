@@ -13,6 +13,7 @@ import org.bukkit.CropState;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NetherWartsState;
+import org.bukkit.TreeSpecies;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -38,11 +39,13 @@ import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.Crops;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.NetherWarts;
+import org.bukkit.material.Tree;
 
 /**
  * @author dmulloy2
  */
 
+// TODO: Move these events to their specific listeners, per convention
 public class ExperienceListener implements Listener, Reloadable
 {
 	private boolean playerKillsEnabled;
@@ -140,9 +143,15 @@ public class ExperienceListener implements Listener, Reloadable
 			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
 
 			/** XP gain calculation **/
-			List<String> tier3 = Arrays.asList(new String[] { "wither", "ender dragon" });
-			List<String> tier2 = Arrays.asList(new String[] { "creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider",
-					"ghast", "magma cube", "witch", "slime" });
+			List<String> tier3 = Arrays.asList(new String[]
+			{
+					"wither", "ender dragon"
+			});
+
+			List<String> tier2 = Arrays.asList(new String[]
+			{
+					"creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime"
+			});
 			
 			int killxp = mobKillsGain;
 			if (tier3.contains(mobname.toLowerCase()))
@@ -166,6 +175,8 @@ public class ExperienceListener implements Listener, Reloadable
 	}
 
 	/** Rewards XP on Minecraft xp levelup **/
+	// TODO: Maybe some optimization here?
+	// According to some timings, this can cause some lag
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 	{
@@ -173,8 +184,12 @@ public class ExperienceListener implements Listener, Reloadable
 		if (! mcXpEnabled)
 			return;
 
-		/** Warzone Check **/
+		/** GameMode Check **/
 		Player player = event.getPlayer();
+		if (player.getGameMode() != GameMode.SURVIVAL)
+			return;
+
+		/** Factions Check **/
 		if (plugin.checkFactions(player, true))
 			return;
 
@@ -212,8 +227,7 @@ public class ExperienceListener implements Listener, Reloadable
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		int concurrentHerbalism = data.getConcurrentHerbalism();
 
-		BlockState blockState = event.getBlock().getState();
-		if (herbalismNeeded(blockState))
+		if (herbalismNeeded(event.getBlock()))
 		{
 			if (concurrentHerbalism >= 10)
 			{
@@ -244,15 +258,17 @@ public class ExperienceListener implements Listener, Reloadable
 			return;
 
 		Block block = event.getBlock();
-		BlockState blockState = block.getState();
+		if (! isGrowable(block))
+			return;
 
-		/** Insta-Growth **/
+		/** Instant Growth **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
 		int level = data.getLevel(150);
 		if (Util.random(200 - level) == 0)
 		{
 			boolean message = false;
+			BlockState blockState = block.getState();
 			Material mat = blockState.getType();
 			MaterialData dat = blockState.getData();
 			if (dat instanceof NetherWarts)
@@ -273,12 +289,35 @@ public class ExperienceListener implements Listener, Reloadable
 				blockState.update();
 				message = true;
 			}
-			// Special case, since logs and leaves are considered "Trees"
-			// TODO: Account for different species of trees
 			else if (mat == Material.SAPLING)
 			{
+				Tree tree = (Tree) block.getState().getData();
+				TreeSpecies species = tree.getSpecies();
+				TreeType type = TreeType.TREE;
+				switch (species)
+				{
+					case ACACIA:
+						type = TreeType.ACACIA;
+						break;
+					case BIRCH:
+						type = TreeType.BIRCH;
+						break;
+					case DARK_OAK:
+						type = TreeType.DARK_OAK;
+						break;
+					case GENERIC:
+						type = TreeType.TREE;
+						break;
+					case JUNGLE:
+						type = TreeType.JUNGLE;
+						break;
+					case REDWOOD:
+						type = TreeType.REDWOOD;
+						break;
+				}
+
 				block.setType(Material.AIR);
-				block.getWorld().generateTree(block.getLocation(), TreeType.TREE);
+				block.getWorld().generateTree(block.getLocation(), type);
 				message = true;
 			}
 			else if (mat == Material.RED_MUSHROOM)
@@ -301,9 +340,16 @@ public class ExperienceListener implements Listener, Reloadable
 		}
 	}
 
-	/** Herbalism Check **/
-	private final boolean herbalismNeeded(BlockState blockState)
+	/**
+	 * Returns whether or not a given {@link Block} is ripe or otherwise
+	 * farmable
+	 * 
+	 * @param block
+	 *        - {@link Block} to check
+	 */
+	private final boolean herbalismNeeded(Block block)
 	{
+		BlockState blockState = block.getState();
 		switch (blockState.getType())
 		{
 			case CACTUS:
@@ -323,6 +369,24 @@ public class ExperienceListener implements Listener, Reloadable
 			default:
 				return false;
 		}
+	}
+
+	/**
+	 * Returns whether or not a given {@link Block} can be grown
+	 * 
+	 * @param block
+	 *        - {@link Block} to check
+	 */
+	private final boolean isGrowable(Block block)
+	{
+		BlockState state = block.getState();
+		Material material = block.getType();
+		MaterialData data = state.getData();
+
+		if (data instanceof NetherWarts || data instanceof Crops || data instanceof CocoaPlant)
+			return true;
+
+		return material == Material.SAPLING || material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM;
 	}
 
 	/** Taming XP Gain **/

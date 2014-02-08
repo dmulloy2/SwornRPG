@@ -32,8 +32,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -259,6 +257,7 @@ public class PlayerListener implements Listener, Reloadable
 			data.setDeathCoordsUpdated(true);
 		}
 
+		// TODO: Implement version checking for data files
 		// Conversion to cleaner DeathCoordsEnabled
 		if (! data.isDeathCoordsUpdated())
 		{
@@ -296,24 +295,6 @@ public class PlayerListener implements Listener, Reloadable
 
 		// Clear the previousLocation variable
 		data.setPreviousLocation(null);
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerTeleport(PlayerTeleportEvent event)
-	{
-		if (event.getCause() != TeleportCause.COMMAND)
-			return;
-
-		Player player = event.getPlayer();
-		if (player.getVehicle() != null)
-		{
-			player.leaveVehicle();
-		}
-
-		if (player.getPassenger() != null)
-		{
-			player.eject();
-		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -415,22 +396,6 @@ public class PlayerListener implements Listener, Reloadable
 			}
 		}
 	}
-
-//	This event isn't fired reliably, especially when shifting inside a vehicle
-//	@EventHandler(priority = EventPriority.HIGHEST)
-//	public void onPlayerToggleSneak(PlayerToggleSneakEvent event)
-//	{
-//		Player player = event.getPlayer();
-//		if (player.isInsideVehicle())
-//		{
-//			Entity vehicle = player.getVehicle();
-//			EntityType type = vehicle.getType();
-//			if (type == EntityType.ARROW || type == EntityType.PLAYER)
-//			{
-//				event.setCancelled(true);
-//			}
-//		}
-//	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)

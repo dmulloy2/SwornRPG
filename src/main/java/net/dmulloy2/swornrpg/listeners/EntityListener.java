@@ -59,59 +59,65 @@ public class EntityListener implements Listener, Reloadable
 		if (event.getDamage() <= 0 || event.isCancelled())
 			return;
 
-		Entity att = event.getDamager();
+		Entity damager = event.getDamager();
 		Entity defender = event.getEntity();
 
-		if (plugin.isDisabledWorld(att))
+		if (plugin.isDisabledWorld(damager))
 			return;
 
-		if (att instanceof Arrow)
+		if (damager instanceof Arrow)
 		{
 			if (arrowFireEnabled)
 			{
 				if (Util.random(arrowFireOdds) == 0)
 				{
-					defender.setFireTicks(128);
-					if (((Arrow) att).getShooter() instanceof Player)
-						((Player) ((Arrow) att).getShooter())
-								.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
+					defender.setFireTicks(5 * 20);
 					if (defender instanceof Player)
-						((Player) defender).sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
+					{
+						((Player) defender).sendMessage(plugin.getPrefix() +
+								FormatUtil.format(plugin.getMessage("fire_damage")));
+					}
+
+					Arrow arrow = (Arrow) damager;
+					if (arrow.getShooter() instanceof Player)
+					{
+						((Player) arrow.getShooter()).sendMessage(plugin.getPrefix() +
+								FormatUtil.format(plugin.getMessage("fire_damage")));
+					}
+
 				}
 			}
 		}
-		else if (att instanceof Player)
+		else if (damager instanceof Player)
 		{
-			Player p = (Player) att;
-			ItemStack inHand = p.getItemInHand();
-			
+			Player player = (Player) damager;
+			ItemStack inHand = player.getItemInHand();
+
 			/** Confusion **/
 			if (inHand == null || inHand.getType() == Material.AIR)
 			{
 				if (confusionEnabled)
 				{
-					int rand = Util.random(20);
-					if (rand == 0)
+					if (Util.random(20) == 0)
 					{
 						if (defender instanceof Player)
 						{
-							((Player) defender).addPotionEffect(
-									new PotionEffect(PotionEffectType.CONFUSION, confusionDuration, confusionStrength));
+							((Player) defender).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, confusionDuration,
+									confusionStrength));
 						}
 					}
 				}
 			}
-			
-			String gun = FormatUtil.getFriendlyName(inHand.getType());
 
 			/** Axe Blowback **/
-			if (gun.toLowerCase().contains("axe"))
+			String type = FormatUtil.getFriendlyName(inHand.getType());
+			if (type.toLowerCase().contains("axe"))
 			{
 				if (axeKnockbackEnabled)
 				{
 					if (Util.random(axeKnockbackOdds) == 0)
 					{
-						double distance = Util.pointDistance(att.getLocation(), defender.getLocation());
+						double distance = Util.pointDistance(damager.getLocation(), defender.getLocation());
 						double mult = 0.75D;
 						if (distance < 10.0D)
 							mult = 0.25D;
@@ -124,7 +130,7 @@ public class EntityListener implements Listener, Reloadable
 						if (distance < 2.0D)
 							mult = 1.125D;
 
-						Vector v = defender.getLocation().add(0.0D, 0.875D, 0.0D).subtract(att.getLocation()).toVector();
+						Vector v = defender.getLocation().add(0.0D, 0.875D, 0.0D).subtract(defender.getLocation()).toVector();
 						Vector v2 = new Vector(v.getX() * mult, v.getY() * mult, v.getZ() * mult);
 						if (v2.getY() > 1.0D)
 							v2.setY(1.0D);
@@ -134,9 +140,8 @@ public class EntityListener implements Listener, Reloadable
 						String defenderName;
 						if (defender instanceof Player)
 						{
-							((Player) defender).sendMessage(plugin.getPrefix()
-									+ FormatUtil.format(plugin.getMessage("axe_blowbackee"), p.getName(), gun));
-
+							((Player) defender).sendMessage(plugin.getPrefix() +
+									FormatUtil.format(plugin.getMessage("axe_blowbackee"), player.getName(), type));
 							defenderName = ((Player) defender).getName();
 						}
 						else
@@ -144,64 +149,43 @@ public class EntityListener implements Listener, Reloadable
 							defenderName = FormatUtil.getFriendlyName(defender.getType());
 						}
 
-						p.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("axe_blowbacker"), defenderName, gun));
+						player.sendMessage(plugin.getPrefix() +
+								FormatUtil.format(plugin.getMessage("axe_blowbacker"), defenderName, type));
 					}
 				}
 			}
 		}
 	}
 
-	/** Graceful Roll / Health bar **/
+	/** Graceful Roll **/
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageLowest(EntityDamageEvent event)
 	{
-		if (event.isCancelled() || event.getDamage() <= 0)
+		if (event.isCancelled() || event.getDamage() <= 0 || ! gracefulRollEnabled)
+			return;
+
+		if (event.getCause() != DamageCause.FALL)
 			return;
 
 		Entity entity = event.getEntity();
+		if (plugin.isDisabledWorld(entity))
+			return;
+
 		if (entity instanceof Player)
 		{
-			Player player = (Player) entity;
-
-			/** Graceful Roll **/
-			if (event.getCause() == DamageCause.FALL)
+			if (Util.random(gracefulRollOdds) == 0)
 			{
-				if (! gracefulRollEnabled)
-					return;
-
-				if (Util.random(gracefulRollOdds) == 0)
-				{
-					event.setDamage(0);
-					player.sendMessage(FormatUtil.format(plugin.getPrefix() + plugin.getMessage("graceful_roll")));
-				}
+				event.setDamage(0);
+				((Player) entity).sendMessage(plugin.getPrefix() + 
+						FormatUtil.format(plugin.getMessage("graceful_roll")));
 			}
 		}
-
-		/** Health Bar **/
-		if (entity instanceof LivingEntity)
-		{
-			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
-		}
 	}
 
-	/** Mob Health (Regain) **/
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEntityRegainHealth(EntityRegainHealthEvent event)
-	{
-		if (event.isCancelled() || event.getAmount() <= 0.0D)
-			return;
-		
-		Entity entity = event.getEntity();
-		if (entity instanceof LivingEntity)
-		{
-			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
-		}
-	}
-
+	/** Succor **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		/** Succor **/
 		Entity killer = event.getEntity().getKiller();
 		if (killer instanceof Player)
 		{
@@ -220,22 +204,8 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	/** Mob Health (Spawn) **/
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onCreatureSpawn(CreatureSpawnEvent event)
-	{
-		if (! event.isCancelled())
-		{
-			Entity entity = event.getEntity();
-			if (entity instanceof LivingEntity)
-			{
-				plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
-			}
-		}
-	}
-
 	/** Insta-Kill **/
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
 		if (event.isCancelled() || event.getDamage() <= 0 || ! instaKillEnabled)
@@ -269,6 +239,50 @@ public class EntityListener implements Listener, Reloadable
 					}
 				}
 			}
+		}
+	}
+
+	// ---- Mob Health ---- //
+
+	/** Mob Health (Spawn) **/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onCreatureSpawn(CreatureSpawnEvent event)
+	{
+		if (event.isCancelled())
+			return;
+
+		Entity entity = event.getEntity();
+		if (entity instanceof LivingEntity)
+		{
+			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
+		}
+	}
+
+	/** Mob Health (Damage) **/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamageMonitor(EntityDamageEvent event)
+	{
+		if (event.isCancelled() || event.getDamage() <= 0.0D)
+			return;
+
+		Entity entity = event.getEntity();
+		if (entity instanceof LivingEntity)
+		{
+			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
+		}
+	}
+
+	/** Mob Health (Regain) **/
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityRegainHealth(EntityRegainHealthEvent event)
+	{
+		if (event.isCancelled() || event.getAmount() <= 0.0D)
+			return;
+		
+		Entity entity = event.getEntity();
+		if (entity instanceof LivingEntity)
+		{
+			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
 		}
 	}
 

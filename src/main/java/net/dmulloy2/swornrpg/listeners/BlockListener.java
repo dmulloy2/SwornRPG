@@ -84,6 +84,7 @@ public class BlockListener implements Listener, Reloadable
 	}
 
 	/** Iron Door Protection **/
+	// TODO: Is this even a useful feature?
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakHighest(BlockBreakEvent event)
 	{
@@ -109,6 +110,7 @@ public class BlockListener implements Listener, Reloadable
 		}
 	}
 
+	/** Block Redemption **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{

@@ -76,6 +76,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.types.Reloadable;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 import net.dmulloy2.swornrpg.util.MaterialUtil;
+import net.dmulloy2.swornrpg.util.NumberUtil;
 import net.dmulloy2.swornrpg.util.TimeUtil;
 import net.dmulloy2.swornrpg.util.Util;
 import net.milkbowl.vault.economy.Economy;
@@ -145,10 +146,10 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	private @Getter Throwable startupException;
 
 	/** Maps **/
-	private @Getter HashMap<String, HashMap<Material, Integer>> salvageRef;
+	private @Getter Map<String, HashMap<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Material, List<BlockDrop>> fishDropsMap;
-	private @Getter HashMap<String, String> proposal;
+	private @Getter Map<String, String> proposal;
 
 	/** Global Prefix Variable **/
 	private @Getter String prefix;
@@ -624,9 +625,10 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		{
 			String[] subset = s.split(", ");
 			Material mat = MaterialUtil.getMaterial(subset[0]);
-			if (mat != null)
+			int amt = NumberUtil.toInt(subset[2]);
+			if (mat != null && amt != -1)
 			{
-				salvageRef.get(subset[1]).put(mat, Integer.parseInt(subset[2]));
+				salvageRef.get(subset[1]).put(mat, amt);
 			}
 		}
 	}
@@ -660,15 +662,18 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 				int chance = 0;
 				if (ss.length == 3)
 				{
-					data = Short.valueOf(ss[1]);
-					chance = Integer.valueOf(ss[2]);
+					data = NumberUtil.toShort(ss[1]);
+					chance = NumberUtil.toInt(ss[2]);
 				}
 				else
 				{
-					chance = Integer.valueOf(ss[1]);
+					chance = NumberUtil.toInt(ss[1]);
 				}
 
-				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+				if (type != null && data != -1 && chance != -1)
+				{
+					blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+				}
 			}
 
 			blockDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
@@ -704,15 +709,18 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 				int chance = 0;
 				if (ss.length == 3)
 				{
-					data = Short.valueOf(ss[1]);
-					chance = Integer.valueOf(ss[2]);
+					data = NumberUtil.toShort(ss[1]);
+					chance = NumberUtil.toInt(ss[2]);
 				}
 				else
 				{
-					chance = Integer.valueOf(ss[1]);
+					chance = NumberUtil.toInt(ss[1]);
 				}
 
-				blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+				if (type != null && data != -1 && chance != -1)
+				{
+					blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+				}
 			}
 
 			fishDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
