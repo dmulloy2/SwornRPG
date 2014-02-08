@@ -87,7 +87,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -819,10 +818,9 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			else if (attacker instanceof Projectile)
 			{
 				Projectile proj = (Projectile) attacker;
-				LivingEntity shooter = (LivingEntity) proj.getShooter();
-				if (shooter instanceof Player)
+				if (proj.getShooter() instanceof Player)
 				{
-					killer = (Player) shooter;
+					killer = (Player) proj.getShooter();
 				}
 			}
 		}
