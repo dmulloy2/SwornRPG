@@ -33,12 +33,8 @@ public class TagHandler
 
 		if (plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
-			plugin.outConsole(plugin.getMessage("log_tag_found"));
+			plugin.outConsole(plugin.getMessage("log_integration_tagapi"));
 			registerEvents();
-		}
-		else
-		{
-			plugin.outConsole(plugin.getMessage("log_tag_notfound"));
 		}
 	}
 

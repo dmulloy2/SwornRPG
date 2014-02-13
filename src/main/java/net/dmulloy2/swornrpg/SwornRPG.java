@@ -499,11 +499,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 		if (economy != null)
 		{
-			outConsole(getMessage("log_vault_success"), economy.getName());
-		}
-		else
-		{
-			outConsole(getMessage("log_vault_failure"));
+			outConsole(getMessage("log_integration_vault"), economy.getName());
 		}
 	}
 
@@ -527,6 +523,11 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			essentials = null;
 			useEssentials = false;
 		}
+
+		if (useEssentials)
+		{
+			outConsole(getMessage("log_integration_essentials"));
+		}
 	}
 
 	/**
@@ -545,6 +546,11 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		{
 			factionsEnabled = true;
 			swornNationsEnabled = true;
+		}
+
+		if (factionsEnabled)
+		{
+			outConsole(getMessage("log_integration_factions"));
 		}
 	}
 
