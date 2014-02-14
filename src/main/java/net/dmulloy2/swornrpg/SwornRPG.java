@@ -141,9 +141,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	/** Listeners, Stored for Reloading **/
 	private List<Listener> listeners;
 
-	/** Startup Exception (if applicable) **/
-	private @Getter Throwable startupException;
-
 	/** Maps **/
 	private @Getter Map<String, HashMap<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
@@ -391,20 +388,17 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 			outConsole(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 		}
-		catch (Throwable ex)
+		catch (final Throwable ex)
 		{
-			// Store for later
-			startupException = ex;
-
 			// Something happened when we tried to enable
-			getLogger().severe(Util.getUsefulStack(startupException, "enabling SwornRPG"));
+			getLogger().severe(Util.getUsefulStack(ex, "enabling SwornRPG"));
 
 			// Alert online OP's
 			for (Player player : getServer().getOnlinePlayers())
 			{
 				if (player.isOp())
 				{
-					player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", startupException));
+					player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", ex));
 				}
 			}
 
@@ -417,7 +411,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					Player player = event.getPlayer();
 					if (player.isOp())
 					{
-						player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", startupException));
+						player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", ex));
 					}
 				}
 			}, this);
