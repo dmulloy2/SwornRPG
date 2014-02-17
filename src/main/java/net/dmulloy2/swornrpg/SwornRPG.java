@@ -745,7 +745,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					{
 						if (! isDisabledWorld(player))
 							player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));
-
 						return true;
 					}
 				}
