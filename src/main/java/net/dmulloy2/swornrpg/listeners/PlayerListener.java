@@ -29,7 +29,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -271,21 +270,7 @@ public class PlayerListener implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		onPlayerDisconnect(event.getPlayer());
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerKick(PlayerKickEvent event)
-	{
-		if (! event.isCancelled())
-		{
-			onPlayerDisconnect(event.getPlayer());
-		}
-	}
-
-	/** Basic stuff needed when a player leaves **/
-	public void onPlayerDisconnect(Player player)
-	{
+		Player player = event.getPlayer();
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
 		// Disable abilities
@@ -294,7 +279,11 @@ public class PlayerListener implements Listener, Reloadable
 		data.setUnlimitedAmmoEnabled(false);
 
 		// Clear the previousLocation variable
-		data.setPreviousLocation(null);
+		if (data.getPreviousLocation() != null)
+		{
+			player.teleport(data.getPreviousLocation());
+			data.setPreviousLocation(null);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -20,10 +20,10 @@ public class CmdStandup extends SwornRPGCommand
 		this.aliases.add("stand");
 		this.description = "Get out of your chair";
 		this.permission = Permission.STANDUP;
-		
+
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -46,9 +46,7 @@ public class CmdStandup extends SwornRPGCommand
 			return;
 		}
 
-		player.teleport(data.getPreviousLocation());
-		data.setPreviousLocation(null);
-
+		player.leaveVehicle();
 		vehicle.remove();
 	}
 }

@@ -49,7 +49,7 @@ public class CmdSitdown extends SwornRPGCommand
 		PlayerData data = getPlayerData(player);
 		data.setPreviousLocation(player.getLocation().clone());
 
-		Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0f, 0f);
+		Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0F, 0F);
 		if (! it.setPassenger(player))
 		{
 			it.remove();

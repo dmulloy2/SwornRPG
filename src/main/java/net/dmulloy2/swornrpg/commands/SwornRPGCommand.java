@@ -94,8 +94,8 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		}
 		catch (Throwable e)
 		{
-			err(getMessage("execution_error"), e.getMessage());
-			plugin.getLogHandler().debug(Util.getUsefulStack(e, "executing command " + name));
+			err(getMessage("execution_error"), e.getClass().getName(), e.getMessage());
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(e, "executing command " + name));
 		}
 	}
 
