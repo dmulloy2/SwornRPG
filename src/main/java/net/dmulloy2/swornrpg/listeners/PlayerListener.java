@@ -273,8 +273,7 @@ public class PlayerListener implements Listener, Reloadable
 		if (Double.isNaN(location.getX()) || Double.isNaN(location.getY()) || Double.isNaN(location.getZ()))
 		{
 			player.teleport(player.getWorld().getSpawnLocation());
-			plugin.getLogHandler().log(Level.WARNING, "Corrected invalid location ({0}) for {1}", Util.locationToString(location),
-					player.getName());
+			plugin.getLogHandler().log(Level.INFO, "Corrected invalid position for {0}", player.getName());
 		}
 	}
 
