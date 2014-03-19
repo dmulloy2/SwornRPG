@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.listeners;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
@@ -29,6 +30,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
@@ -265,6 +267,15 @@ public class PlayerListener implements Listener, Reloadable
 		}
 
 		data.validate();
+
+		// Check for NaN
+		Location location = player.getLocation();
+		if (Double.isNaN(location.getX()) || Double.isNaN(location.getY()) || Double.isNaN(location.getZ()))
+		{
+			player.teleport(player.getWorld().getSpawnLocation());
+			plugin.getLogHandler().log(Level.WARNING, "Corrected invalid location ({0}) for {1}", Util.locationToString(location),
+					player.getName());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -283,6 +294,50 @@ public class PlayerListener implements Listener, Reloadable
 		{
 			player.teleport(data.getPreviousLocation());
 			data.setPreviousLocation(null);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerKick(PlayerKickEvent event)
+	{
+		if (event.isCancelled())
+			return;
+
+		Player player = event.getPlayer();
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+
+		// Clear the previousLocation variable
+		if (data.getPreviousLocation() != null)
+		{
+			player.teleport(data.getPreviousLocation());
+			data.setPreviousLocation(null);
+		}
+
+		// Attempts to correct invalid positioning with chairs. This works by
+		// first checking if the kick was invalid, then attempting to teleport
+		// the player to spawn. This only works on Spigot, since the messages in
+		// CraftBukkit are "Nope!" (which can be for multiple things)
+		if (event.getReason().equals("NaN in position (Hacking?)"))
+		{
+			Location location = player.getLocation();
+			if (! Double.isNaN(location.getX()) && ! Double.isNaN(location.getY()) && ! Double.isNaN(location.getZ()))
+			{
+				plugin.getLogHandler().log("Blocked invalid kick for {0}", player.getName());
+				event.setCancelled(true);
+				return;
+			}
+
+			// Attempt to correct the position
+			player.teleport(player.getWorld().getSpawnLocation());
+
+			// Were we successful?
+			location = player.getLocation();
+			if (! Double.isNaN(location.getX()) && ! Double.isNaN(location.getY()) && ! Double.isNaN(location.getZ()))
+			{
+				plugin.getLogHandler().log("Corrected invalid position for {0}", player.getName());
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 
