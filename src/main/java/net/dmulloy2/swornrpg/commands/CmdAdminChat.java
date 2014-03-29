@@ -23,18 +23,9 @@ public class CmdAdminChat extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		StringBuilder message = new StringBuilder();
-		for (String arg : args)
-		{
-			message.append(arg + " ");
-		}
-
-		if (message.lastIndexOf(" ") >= 0)
-		{
-			message.deleteCharAt(message.lastIndexOf(" "));
-		}
-
+		String name = getName(sender);
+		String message = FormatUtil.join(" ", args);
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
-		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("admin_chat"), getName(sender), message.toString()), node);
+		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("admin_chat"), name, message), node);
 	}
 }

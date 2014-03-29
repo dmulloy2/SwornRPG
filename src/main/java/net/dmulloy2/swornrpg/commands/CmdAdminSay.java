@@ -23,17 +23,7 @@ public class CmdAdminSay extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		StringBuilder message = new StringBuilder();
-		for (String arg : args)
-		{
-			message.append(arg + " ");
-		}
-
-		if (message.lastIndexOf(" ") >= 0)
-		{
-			message.deleteCharAt(message.lastIndexOf(" "));
-		}
-
-		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("admin_say"), message.toString()));
+		String message = FormatUtil.join(" ", args);
+		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("admin_say"), message));
 	}
 }

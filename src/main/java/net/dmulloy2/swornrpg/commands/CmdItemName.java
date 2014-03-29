@@ -36,16 +36,7 @@ public class CmdItemName extends SwornRPGCommand
 	    	return;
 	    }
 
-	    StringBuilder name = new StringBuilder();
-	    for (String arg : args)
-	    {
-	    	name.append(arg + " ");
-	    }
-	    
-	    if (name.lastIndexOf(" ") >= 0)
-	    {
-	    	name.deleteCharAt(name.lastIndexOf(" "));
-	    }
+		String name = FormatUtil.join(" ", args);
 
 	    ItemMeta meta = hand.getItemMeta();
 	    meta.setDisplayName(FormatUtil.format(name.toString()));

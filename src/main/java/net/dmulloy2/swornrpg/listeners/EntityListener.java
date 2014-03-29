@@ -117,7 +117,7 @@ public class EntityListener implements Listener, Reloadable
 				{
 					if (Util.random(axeKnockbackOdds) == 0)
 					{
-						double distance = Util.pointDistance(damager.getLocation(), defender.getLocation());
+						double distance = damager.getLocation().distance(defender.getLocation());
 						double mult = 0.75D;
 						if (distance < 10.0D)
 							mult = 0.25D;

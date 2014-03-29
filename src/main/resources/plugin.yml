@@ -58,6 +58,10 @@ commands:
     description: Match a string with the closest player
     usage: /<command> <string>
     aliases: [matchplayer]
+  meta:
+    description: Modify an item's item meta
+    usage: /<command> <type> <args>
+    aliases: [itemmeta]
   propose:
     description: Propose marriage to a player
     usage: /<command> <player>

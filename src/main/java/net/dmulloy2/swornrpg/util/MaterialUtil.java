@@ -2,6 +2,8 @@ package net.dmulloy2.swornrpg.util;
 
 import net.dmulloy2.swornrpg.types.Material;
 
+import org.bukkit.Bukkit;
+
 /**
  * Util dealing with the loss of item id's
  * 
@@ -27,8 +29,29 @@ public class MaterialUtil
 		}
 		else
 		{
-			return org.bukkit.Material.matchMaterial(string);
+			return matchMaterial(string);
 		}
+	}
+
+	@SuppressWarnings("deprecation")
+	private static org.bukkit.Material matchMaterial(String string)
+	{
+		org.bukkit.Material material = null;
+
+		try
+		{
+			material = org.bukkit.Material.matchMaterial(string);
+		} catch (Throwable ex) { }
+
+		if (material == null)
+		{
+			try
+			{
+				material = Bukkit.getUnsafe().getMaterialFromInternalName(string);
+			} catch (Throwable ex) { }
+		}
+
+		return material;
 	}
 
 	/**
