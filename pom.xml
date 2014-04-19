@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.dmulloy2</groupId>
   <artifactId>swornrpg</artifactId>
-  <version>3.0</version>
+  <version>3.1.1-SNAPSHOT</version>
   <name>SwornRPG</name>
   
   <properties>
@@ -91,7 +91,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.7.5-R0.1-SNAPSHOT</version>
+      <version>1.7.8-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
  	  <groupId>org.projectlombok</groupId>
