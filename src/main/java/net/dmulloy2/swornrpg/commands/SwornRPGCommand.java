@@ -51,9 +51,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		this.aliases = new ArrayList<String>(2);
 	}
 
-	// ---- Execution ---- //
-
-	public abstract void perform();
+	// ---- Execution
 
 	@Override
 	public final boolean onCommand(CommandSender sender, Command command, String label, String[] args)
@@ -104,12 +102,14 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		this.player = null;
 	}
 
+	public abstract void perform();
+
 	protected final boolean isPlayer()
 	{
 		return player != null;
 	}
 
-	// ---- Permissions ---- //
+	// ---- Permissions
 
 	protected final boolean hasPermission(Permission permission)
 	{
@@ -130,7 +130,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return getPermissionString(permission);
 	}
 
-	// ---- Messages ---- //
+	// ---- Messaging
 
 	protected final void err(String msg, Object... args)
 	{
@@ -162,7 +162,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return plugin.getMessage(msg);
 	}
 
-	// ---- Help Related Stuff ---- //
+	// ---- Help
 
 	public final String getName()
 	{
@@ -196,7 +196,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		return FormatUtil.format(ret.toString());
 	}
 
-	// ---- Argument Manipulation ---- //
+	// ---- Argument Manipulation
 
 	protected final boolean argMatchesAlias(String arg, String... aliases)
 	{
@@ -228,9 +228,11 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		err(getMessage("invalid_arguments"), getUsageTemplate(false));
 	}
 
+	// ---- Player Management
+
 	protected PlayerData getPlayerData(OfflinePlayer target)
 	{
-		return plugin.getPlayerDataCache().getData(target.getName());
+		return plugin.getPlayerDataCache().getData(target);
 	}
 
 	protected PlayerData getPlayerData(String key)

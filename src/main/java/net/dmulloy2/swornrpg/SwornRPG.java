@@ -277,7 +277,9 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 					@Override
 					public void run()
 					{
+						// Save and cleanup
 						playerDataCache.save();
+						playerDataCache.cleanupData();
 					}
 				}.runTaskTimerAsynchronously(this, interval, interval);
 			}

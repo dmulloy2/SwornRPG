@@ -158,13 +158,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 			long start = System.currentTimeMillis();
 
 			Map<String, PlayerData> allData = plugin.getPlayerDataCache().getAllPlayerData();
-			Map<String, Integer> experienceMap = new HashMap<String, Integer>();
+			Map<PlayerData, Integer> experienceMap = new HashMap<PlayerData, Integer>();
 
 			for (Entry<String, PlayerData> entry : allData.entrySet())
 			{
-				if (entry.getValue().getTotalxp() > 0)
+				PlayerData value = entry.getValue();
+				if (value.getTotalxp() > 0)
 				{
-					experienceMap.put(entry.getKey(), entry.getValue().getTotalxp());
+					experienceMap.put(value, value.getTotalxp());
 				}
 			}
 
@@ -174,11 +175,11 @@ public class CmdLeaderboard extends SwornRPGCommand
 				return;
 			}
 
-			List<Entry<String, Integer>> sortedEntries = new ArrayList<Entry<String, Integer>>(experienceMap.entrySet());
-			Collections.sort(sortedEntries, new Comparator<Entry<String, Integer>>()
+			List<Entry<PlayerData, Integer>> sortedEntries = new ArrayList<Entry<PlayerData, Integer>>(experienceMap.entrySet());
+			Collections.sort(sortedEntries, new Comparator<Entry<PlayerData, Integer>>()
 			{
 				@Override
-				public int compare(final Entry<String, Integer> entry1, final Entry<String, Integer> entry2)
+				public int compare(Entry<PlayerData, Integer> entry1, Entry<PlayerData, Integer> entry2)
 				{
 					return -entry1.getValue().compareTo(entry2.getValue());
 				}
@@ -188,17 +189,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 			experienceMap.clear();
 
 			int pos = 1;
-			for (Entry<String, Integer> entry : sortedEntries)
+			for (Entry<PlayerData, Integer> entry : sortedEntries)
 			{
 				try
 				{
-					PlayerData data = getPlayerData(entry.getKey());
-					if (data != null)
-					{
-						leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"), pos, entry.getKey(), data.getLevel(),
-								data.getTotalxp()));
-						pos++;
-					}
+					PlayerData data = entry.getKey();
+					leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"), pos, data.getLastKnownBy(), data.getLevel(),
+							data.getTotalxp()));
+					pos++;
 				}
 				catch (Throwable ex)
 				{
@@ -215,8 +213,8 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
 
-			// Save the data, but don't cleanup
-			plugin.getPlayerDataCache().save(false);
+			// Save the data
+			plugin.getPlayerDataCache().save();
 
 			// Clean up the data sync
 			new BukkitRunnable()

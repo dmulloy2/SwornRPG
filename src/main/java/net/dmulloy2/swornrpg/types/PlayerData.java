@@ -19,19 +19,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 @Data
 public class PlayerData implements ConfigurationSerializable
 {
-	// ---- Misc --- //
-	private String spouse;
-	private String tag;
-
-	private boolean deathCoordsEnabled;
-
-	// TODO: Remove these
-	private boolean deathbookdisabled;
-	private boolean deathCoordsUpdated;
-
-	private transient long timeOfLastDeath;
-
-	// ---- XP Stuff ---- //
+	// ---- Experience
 	private int playerxp;
 	private int xpneeded;
 	private int totalxp;
@@ -39,7 +27,7 @@ public class PlayerData implements ConfigurationSerializable
 
 	private transient int concurrentHerbalism;
 
-	// ---- Abilities ---- //
+	// ---- Abilities
 	private transient boolean frenzyEnabled;
 	private transient boolean superPickaxeEnabled;
 	private transient boolean unlimitedAmmoEnabled;
@@ -58,15 +46,24 @@ public class PlayerData implements ConfigurationSerializable
 	private transient long frenzyReadyTime;
 	private transient long superPickaxeReadyTime;
 
-	// Used for ability cleanup
 	private transient String itemName;
 
-	// ---- Entity Fun ---- //
+	// ---- Entity Fun
 	private transient long rideWaitingTime;
 	private transient boolean rideWaiting;
 
-	// ---- Chairs ---- //
+	// ---- Chairs
 	private transient Location previousLocation;
+
+	// ---- Miscellaneous
+	private String tag;
+	private String spouse;
+	private boolean deathCoordsEnabled;
+	private transient long timeOfLastDeath;
+
+	// ---- UUID Stuff
+	private String lastKnownBy;
+	private String uniqueId;
 
 	public PlayerData()
 	{
@@ -172,30 +169,10 @@ public class PlayerData implements ConfigurationSerializable
 	public int getXpNeeded()
 	{
 		// Validate the data first
-		this.validate();
+		if (xpneeded < 100)
+			xpneeded = 100;
 
 		return xpneeded;
-	}
-
-	/**
-	 * Returns whether or not the data is valid.
-	 */
-	public final boolean isValid()
-	{
-		return xpneeded >= 100;
-	}
-
-	/**
-	 * Validates the data.
-	 */
-	public final void validate()
-	{
-		if (! isValid())
-		{
-			this.xpneeded = 100;
-			this.deathCoordsEnabled = true;
-			this.deathCoordsUpdated = true;
-		}
 	}
 
 	/**
