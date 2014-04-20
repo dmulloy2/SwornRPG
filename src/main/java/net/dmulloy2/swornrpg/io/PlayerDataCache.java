@@ -64,9 +64,13 @@ public class PlayerDataCache
 		return value;
 	}
 
-	public PlayerData getData(final OfflinePlayer player)
+	public PlayerData getData(Player player)
 	{
-		return getData(player.getName());
+		PlayerData data = getData(player.getName());
+		if (data == null)
+			data = newData(player);
+
+		return data;
 	}
 
 	public Map<String, PlayerData> getAllLoadedPlayerData()
@@ -110,7 +114,14 @@ public class PlayerDataCache
 
 	public PlayerData newData(final String key)
 	{
+		// Construct
 		PlayerData value = new PlayerData();
+
+		// Default values
+		value.setDeathCoordsEnabled(true);
+		value.setXpneeded(100);
+
+		// Add and return
 		addData(key, value);
 		return value;
 	}
@@ -143,10 +154,7 @@ public class PlayerDataCache
 
 		try
 		{
-			synchronized (file)
-			{
-				return FileSerialization.load(new File(folder, getFileName(key)), PlayerData.class);
-			}
+			return FileSerialization.load(file, PlayerData.class);
 		}
 		catch (Exception e)
 		{
@@ -155,37 +163,34 @@ public class PlayerDataCache
 		}
 	}
 
-	// Alias for save
 	public void save()
-	{
-		save(true);
-	}
-
-	public void save(boolean cleanup)
 	{
 		plugin.outConsole("Saving {0} to disk...", folderName);
 		long start = System.currentTimeMillis();
 		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet())
 		{
 			File file = new File(folder, getFileName(entry.getKey()));
-
-			synchronized (file)
-			{
-				FileSerialization.save(entry.getValue(), new File(folder, getFileName(entry.getKey())));
-			}
+			FileSerialization.save(entry.getValue(), file);
 		}
 
+		plugin.outConsole("Players saved! [{0} ms]", System.currentTimeMillis() - start);
+	}
+
+	public void save(boolean cleanup)
+	{
+		save();
 		if (cleanup)
 			cleanupData();
-
-		plugin.outConsole("Players saved! [{0} ms]", (System.currentTimeMillis() - start));
 	}
 
 	private boolean isFileAlreadyLoaded(final String fileName, final Map<String, PlayerData> map)
 	{
 		for (String key : map.keySet())
+		{
 			if (key.equals(fileName))
 				return true;
+		}
+
 		return false;
 	}
 

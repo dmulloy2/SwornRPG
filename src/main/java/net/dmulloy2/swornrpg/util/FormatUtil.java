@@ -4,6 +4,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 
+import net.dmulloy2.swornrpg.types.StringJoiner;
+
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 
@@ -121,21 +123,11 @@ public class FormatUtil
 	 * @param args
 	 *        - Strings to join together
 	 * @return Multiple strings joined together with the given glue.
+	 * @see {@link StringJoiner}
 	 */
 	public static String join(String glue, String... args)
 	{
-		StringBuilder ret = new StringBuilder();
-		for (String arg : args)
-		{
-			ret.append(arg + glue);
-		}
-
-		if (ret.lastIndexOf(glue) >= 0)
-		{
-			ret.delete(ret.lastIndexOf(glue), ret.length());
-		}
-
-		return ret.toString();
+		return new StringJoiner(glue).appendAll(args).toString();
 	}
 
 	/**

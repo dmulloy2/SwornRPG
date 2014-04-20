@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.types.StringJoiner;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -170,23 +171,29 @@ public class Util
 	 */
 	public static String getUsefulStack(Throwable e, String circumstance)
 	{
-		StringBuilder ret = new StringBuilder();
-		ret.append("Encountered an exception while " + circumstance + ":" + '\n');
-		ret.append(e.getClass().getName() + ": " + e.getMessage() + '\n');
-		ret.append("Affected classes: " + '\n');
+		StringJoiner joiner = new StringJoiner("\n");
+		joiner.append("Encountered an exception while " + circumstance + ": " + e.getClass().getName() + ": " + e.getMessage());
+		joiner.append("Affected classes:");
 
 		for (StackTraceElement ste : e.getStackTrace())
 		{
 			if (ste.getClassName().contains(SwornRPG.class.getPackage().getName()))
-				ret.append('\t' + ste.toString() + '\n');
+				joiner.append("\t" + ste.toString());
 		}
 
-		if (ret.lastIndexOf("\n") >= 0)
+		while (e.getCause() != null)
 		{
-			ret.replace(ret.lastIndexOf("\n"), ret.length(), "");
+			e = e.getCause();
+			joiner.append("Caused by: " + e.getClass().getName() + ": " + e.getMessage());
+			joiner.append("Affected classes:");
+			for (StackTraceElement ste : e.getStackTrace())
+			{
+				if (ste.getClassName().contains(SwornRPG.class.getPackage().getName()))
+					joiner.append("\t" + ste.toString());
+			}
 		}
 
-		return ret.toString();
+		return joiner.toString();
 	}
 
 	/**

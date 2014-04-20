@@ -245,30 +245,8 @@ public class PlayerListener implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		Player player = event.getPlayer();
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		if (data == null)
-		{
-			plugin.debug(plugin.getMessage("log_new_data"), player.getName());
-
-			data = plugin.getPlayerDataCache().newData(player);
-			data.setXpneeded(100);
-
-			data.setDeathCoordsEnabled(true);
-			data.setDeathCoordsUpdated(true);
-		}
-
-		// TODO: Implement version checking for data files
-		// Conversion to cleaner DeathCoordsEnabled
-		if (! data.isDeathCoordsUpdated())
-		{
-			data.setDeathCoordsEnabled(! data.isDeathbookdisabled());
-			data.setDeathCoordsUpdated(true);
-		}
-
-		data.validate();
-
 		// Check for NaN
+		Player player = event.getPlayer();
 		Location location = player.getLocation();
 		if (Double.isNaN(location.getX()) || Double.isNaN(location.getY()) || Double.isNaN(location.getZ()))
 		{

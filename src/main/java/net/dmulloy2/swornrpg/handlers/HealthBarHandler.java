@@ -30,7 +30,7 @@ public class HealthBarHandler implements Reloadable
 	public HealthBarHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		this.board = plugin.getServer().getScoreboardManager().getMainScoreboard();
+		this.board = plugin.getServer().getScoreboardManager().getNewScoreboard();
 		this.reload();
 	}
 
@@ -92,17 +92,17 @@ public class HealthBarHandler implements Reloadable
 		ChatColor yellow = ChatColor.YELLOW;
 		ChatColor green = ChatColor.GREEN;
 
-		board.registerNewTeam("health0").setSuffix("");
-		board.registerNewTeam("health1").setSuffix(red + h);
-		board.registerNewTeam("health2").setSuffix(red + h + h);
-		board.registerNewTeam("health3").setSuffix(red + h + h + h);
-		board.registerNewTeam("health4").setSuffix(yellow + h + h + h + h);
-		board.registerNewTeam("health5").setSuffix(yellow + h + h + h + h + h);
-		board.registerNewTeam("health6").setSuffix(yellow + h + h + h + h + h + h);
-		board.registerNewTeam("health7").setSuffix(yellow + h + h + h + h + h + h + h);
-		board.registerNewTeam("health8").setSuffix(green + h + h + h + h + h + h + h + h);
-		board.registerNewTeam("health9").setSuffix(green + h + h + h + h + h + h + h + h + h);
-		board.registerNewTeam("health10").setSuffix(green + h + h + h + h + h + h + h + h + h + h);
+		board.registerNewTeam("health0").setDisplayName("");
+		board.registerNewTeam("health1").setDisplayName(red + h);
+		board.registerNewTeam("health2").setDisplayName(red + h + h);
+		board.registerNewTeam("health3").setDisplayName(red + h + h + h);
+		board.registerNewTeam("health4").setDisplayName(yellow + h + h + h + h);
+		board.registerNewTeam("health5").setDisplayName(yellow + h + h + h + h + h);
+		board.registerNewTeam("health6").setDisplayName(yellow + h + h + h + h + h + h);
+		board.registerNewTeam("health7").setDisplayName(yellow + h + h + h + h + h + h + h);
+		board.registerNewTeam("health8").setDisplayName(green + h + h + h + h + h + h + h + h);
+		board.registerNewTeam("health9").setDisplayName(green + h + h + h + h + h + h + h + h + h);
+		board.registerNewTeam("health10").setDisplayName(green + h + h + h + h + h + h + h + h + h + h);
 	}
 
 	public final void unregister()
@@ -260,7 +260,7 @@ public class HealthBarHandler implements Reloadable
 				ChatColor color = null;
 				if (hearts >= 8) // health 8, 9, or full
 					color = ChatColor.GREEN;
-				else if (hearts <= 7 && health > 3) // health 4, 5, 6, or 7
+				else if (health >= 4 && hearts <= 7) // health 4, 5, 6, or 7
 					color = ChatColor.YELLOW;
 				else if (hearts <= 3) // health 1, 2, or 3
 					color = ChatColor.RED;
