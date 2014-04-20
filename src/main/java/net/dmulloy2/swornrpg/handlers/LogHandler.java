@@ -2,20 +2,19 @@ package net.dmulloy2.swornrpg.handlers;
 
 import java.util.logging.Level;
 
-import net.dmulloy2.swornrpg.SwornRPG;
+import lombok.AllArgsConstructor;
 import net.dmulloy2.swornrpg.util.FormatUtil;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class LogHandler
 {
-	private final SwornRPG plugin;
-	public LogHandler(SwornRPG plugin) 
-	{
-		this.plugin = plugin;
-	}
+	private final JavaPlugin plugin;
 
 	public final void log(Level level, String msg, Object... objects)
 	{

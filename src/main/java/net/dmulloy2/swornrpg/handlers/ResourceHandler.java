@@ -5,6 +5,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import lombok.Getter;
 import net.dmulloy2.swornrpg.io.FileResourceLoader;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author dmulloy2
  */
 
+@Getter
 public class ResourceHandler
 {
 	private ResourceBundle messages;
@@ -26,10 +28,5 @@ public class ResourceHandler
 		{
 			plugin.getLogger().log(Level.SEVERE, "Could not find resource bundle: messages.properties");
 		}
-	}
-	
-	public final ResourceBundle getMessages() 
-	{
-		return messages;
 	}
 }

@@ -175,7 +175,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			/** Register Other Handlers **/
 			experienceHandler = new ExperienceHandler(this);
 			healthBarHandler = new HealthBarHandler(this);
-			permissionHandler = new PermissionHandler();
+			permissionHandler = new PermissionHandler("srpg");
 			abilityHandler = new AbilityHandler(this);
 			commandHandler = new CommandHandler(this);
 

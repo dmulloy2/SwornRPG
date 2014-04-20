@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.dmulloy2.swornrpg.util.Util;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -34,8 +36,7 @@ public class FileSerialization
 		}
 		catch (Exception ex)
 		{
-			System.err.println("[SwornRPG] Exception ocurred while attempting to save file: " + file.getName());
-			ex.printStackTrace();
+			System.err.println(Util.getUsefulStack(ex, "saving file " + file.getName()));
 		}
 	}
 
@@ -44,7 +45,7 @@ public class FileSerialization
 	{
 		try
 		{
-			if (!file.exists())
+			if (! file.exists())
 				return null;
 
 			FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
@@ -54,26 +55,7 @@ public class FileSerialization
 		}
 		catch (Exception ex)
 		{
-			// The file is most likely corrupt
-			System.err.println("[SwornRPG] Could not load file: " + file.getName());
-			System.out.println("[SwornRPG] Attempting to rename file!");
-
-			// Attempt to rename it to <filename>.dat_bad
-			File newFile = new File(file.getParentFile(), file.getName() + "_bad");
-			if (file.renameTo(newFile))
-			{
-				System.out.println("[SwornRPG] Renamed bad file to: " + newFile.getName());
-			}
-			else
-			{
-				System.err.println("[SwornRPG] Could not rename bad file!");
-			}
-
-			// Delete the file regardless of whether or not it could be renamed.
-			// Every instance i have seen this, the file was just a bunch of
-			// null characters.
-			file.delete();
-
+			System.err.println(Util.getUsefulStack(ex, "loading file " + file.getName()));
 			return null;
 		}
 	}

@@ -4,6 +4,7 @@ import net.dmulloy2.swornrpg.types.Permission;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author dmulloy2
@@ -11,28 +12,35 @@ import org.bukkit.entity.Player;
 
 public class PermissionHandler
 {
-	public PermissionHandler()
+	private final String prefix;
+	public PermissionHandler(String prefix)
 	{
+		this.prefix = prefix + ".";
 	}
 
-	public boolean hasPermission(CommandSender sender, Permission permission) 
+	public PermissionHandler(JavaPlugin plugin)
 	{
-		return (permission == null) ? true : hasPermission(sender, getPermissionString(permission));
+		this(plugin.getName());
 	}
 
-	public boolean hasPermission(CommandSender sender, String permission) 
+	public final boolean hasPermission(CommandSender sender, Permission permission) 
+	{
+		return permission == null || hasPermission(sender, getPermissionString(permission));
+	}
+
+	public final boolean hasPermission(CommandSender sender, String permission) 
 	{
 		if (sender instanceof Player) 
 		{
-			Player p = (Player) sender;
-			return (p.hasPermission(permission) || p.isOp());
+			Player player = (Player) sender;
+			return player.hasPermission(permission) || player.isOp();
 		}
 
 		return true;
 	}
 
-	public String getPermissionString(Permission permission) 
+	public final String getPermissionString(Permission permission) 
 	{
-		return "srpg." + permission.getNode().toLowerCase();
+		return prefix + permission.getNode().toLowerCase();
 	}
 }
