@@ -186,6 +186,7 @@ public class HealthBarHandler implements Reloadable
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private final void updatePlayerHealth(Player player)
 	{
 		if (isEnabled())
