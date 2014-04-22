@@ -53,14 +53,14 @@ public class CmdHat extends SwornRPGCommand
 				{
 					PlayerInventory inv = player.getInventory();
 					ItemStack head = inv.getHelmet();
-					ItemStack itm = player.getItemInHand();
-					ItemStack toHead = itm.clone();
+					ItemStack toHead = hand.clone();
 					toHead.setAmount(1);
 					if (hand.getAmount() > 1)
 					{
 						hand.setAmount(hand.getAmount() - 1);
 						inv.setHelmet(toHead);
-						InventoryUtil.giveItem(player, head);
+						if (head != null)
+							InventoryUtil.giveItem(player, head);
 						sendpMessage(plugin.getMessage("hat_success"));
 					}
 					else
