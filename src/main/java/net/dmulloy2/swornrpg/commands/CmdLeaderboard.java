@@ -84,12 +84,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		if (index > pageCount)
 		{
-			err(getMessage("error_no_page_with_index"), args[0]);
+			player.sendMessage(FormatUtil.format("&cError: &4" + getMessage("error_no_page_with_index"), args[0]));
 			return;
 		}
 
 		for (String s : getPage(index))
-			sendMessage(s);
+			player.sendMessage(FormatUtil.format(s));
 	}
 
 	private int linesPerPage = 10;
@@ -142,12 +142,11 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 	public class BuildLeaderboardThread extends Thread
 	{
-		private Thread thread;
 		public BuildLeaderboardThread()
 		{
-			this.thread = new Thread(this, "SwornRPG-BuildLeaderboard");
-			this.thread.setPriority(1); // lowest priority
-			this.thread.start();
+			super("SwornRPG-BuildLeaderboard");
+			this.setPriority(MIN_PRIORITY);
+			this.start();
 		}
 
 		@Override
@@ -216,7 +215,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			// Save the data
 			plugin.getPlayerDataCache().save();
 
-			// Clean up the data sync
+			// Clean up the data
 			new BukkitRunnable()
 			{
 				@Override
@@ -230,15 +229,13 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 	public class DisplayLeaderboardThread extends Thread
 	{
-		private String player;
-		private Thread thread;
-		public DisplayLeaderboardThread(String player)
+		private String playerName;
+		public DisplayLeaderboardThread(String playerName)
 		{
-			this.thread = new Thread(this, "SwornRPG-DisplayLeaderboard");
-			this.player = player;
-
-			this.thread.setPriority(1); // lowest priority
-			this.thread.start();
+			super("SwornRPG-DisplayLeaderboard");
+			this.setPriority(MIN_PRIORITY);
+			this.playerName = playerName;
+			this.start();
 		}
 
 		@Override
@@ -251,7 +248,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 					sleep(500L);
 				}
 
-				displayLeaderboard(player);
+				displayLeaderboard(playerName);
 			}
 			catch (Throwable ex)
 			{
