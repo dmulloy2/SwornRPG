@@ -33,27 +33,21 @@ public class CmdMarry extends SwornRPGCommand
 			return;
 		}
 
-		if (! plugin.getProposal().containsKey(player.getName()))
-		{
-			err(plugin.getMessage("no_proposal"));
-			return;
-		}
+		PlayerData data = getPlayerData(player);
 
-		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
+		Player target = Util.matchPlayer(args[0]);
 		if (target == null)
 		{
-			err(plugin.getMessage("player_not_found"), plugin.getProposal().get(sender.getName()));
+			err(getMessage("player_not_found"), args[0]);
 			return;
 		}
 
-		PlayerData data = getPlayerData(player);
 		data.setSpouse(target.getName());
 
 		PlayerData data1 = getPlayerData(target);
 		data1.setSpouse(player.getName());
 
 		sendMessageAll(plugin.getMessage("marry"), player.getName(), target.getName());
-		plugin.getProposal().remove(player.getName());
-		plugin.getProposal().remove(target.getName());
+		data.getProposals().remove(target.getName());
 	}
 }

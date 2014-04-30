@@ -152,7 +152,7 @@ public abstract class SwornRPGCommand implements CommandExecutor
 		plugin.getServer().broadcastMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 
-	protected final void sendMessageTarget(String msg, Player target, Object... args)
+	protected final void sendMessageTarget(Player target, String msg, Object... args)
 	{
 		target.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
@@ -233,11 +233,6 @@ public abstract class SwornRPGCommand implements CommandExecutor
 	protected PlayerData getPlayerData(OfflinePlayer target)
 	{
 		return plugin.getPlayerDataCache().getData(target);
-	}
-
-	protected PlayerData getPlayerData(String key)
-	{
-		return plugin.getPlayerDataCache().getData(key);
 	}
 
 	protected final OfflinePlayer getTarget(int arg, boolean others)

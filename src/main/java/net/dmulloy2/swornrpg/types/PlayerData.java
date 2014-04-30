@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -57,9 +59,12 @@ public class PlayerData implements ConfigurationSerializable
 
 	// ---- Miscellaneous
 	private String tag;
-	private String spouse;
 	private boolean deathCoordsEnabled;
 	private transient long timeOfLastDeath;
+
+	// ---- Marriage
+	private String spouse;
+	private transient Set<String> proposals = new HashSet<String>();
 
 	// ---- UUID Stuff
 	private String lastKnownBy;

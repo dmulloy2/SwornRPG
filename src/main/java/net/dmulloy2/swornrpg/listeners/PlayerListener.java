@@ -174,7 +174,7 @@ public class PlayerListener implements Listener, Reloadable
 		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isDeathCoordsEnabled())
 		{
 			Essentials ess = plugin.getEssentials();

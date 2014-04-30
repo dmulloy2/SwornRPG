@@ -5,7 +5,7 @@ import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 /**
  * @author dmulloy2
@@ -19,30 +19,42 @@ public class CmdDivorce extends SwornRPGCommand
 		this.name = "divorce";
 		this.description = "Divorce your spouse";
 		this.permission = Permission.DIVORCE;
-
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
 		PlayerData data = getPlayerData(player);
-		String targetp = data.getSpouse();
-		if (targetp == null)
+
+		String spouse = data.getSpouse();
+		if (spouse == null)
 		{
 			err(plugin.getMessage("not_married"));
 			return;
 		}
 
-		PlayerData data1 = plugin.getPlayerDataCache().getData(targetp);
-		data.setSpouse(null);
-		data1.setSpouse(null);
-		sendpMessage(plugin.getMessage("divorce_plaintiff"), targetp);
-		sendMessageAll(plugin.getMessage("divorce_broadcast"), sender.getName(), targetp);
-		Player target = Util.matchPlayer(targetp);
-		if (target != null)
+		OfflinePlayer target = Util.matchOfflinePlayer(spouse);
+		if (target == null)
 		{
-			sendMessageTarget(plugin.getMessage("divorce_defendant"), target);
+			sendpMessage(plugin.getMessage("divorce_plaintiff"), spouse);
+			data.setSpouse(null);
+			return;
+		}
+
+		PlayerData targetData = getPlayerData(target);
+		if (targetData == null)
+		{
+			sendpMessage(plugin.getMessage("divorce_plaintiff"), spouse);
+			data.setSpouse(null);
+			return;
+		}
+
+		sendMessageAll(plugin.getMessage("divorce_broadcast"), player.getName(), spouse);
+		targetData.setSpouse(null);
+		if (target.isOnline())
+		{
+			sendMessageTarget(target.getPlayer(), plugin.getMessage("divorce_defendant"));
 		}
 	}
 }

@@ -44,6 +44,9 @@ public class PlayerDataCache
 
 	// ---- Data Getters
 
+	/**
+	 * @deprecated Should only be used for internal purposes
+	 */
 	public final PlayerData getData(String key)
 	{
 		// Check cache first

@@ -145,7 +145,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	private @Getter Map<String, HashMap<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Material, List<BlockDrop>> fishDropsMap;
-	private @Getter Map<String, String> proposal;
 
 	/** Global Prefix Variable **/
 	private @Getter String prefix;
@@ -161,7 +160,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			salvageRef = new HashMap<String, HashMap<Material, Integer>>();
 			blockDropsMap = new HashMap<Material, List<BlockDrop>>();
 			fishDropsMap = new HashMap<Material, List<BlockDrop>>();
-			proposal = new HashMap<String, String>();
 
 			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
 
@@ -296,7 +294,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						{
 							if (player != null && player.isOnline())
 							{
-								PlayerData data = playerDataCache.getData(player.getName());
+								PlayerData data = playerDataCache.getData(player);
 								if (data.isFrenzyCooldownEnabled())
 								{
 									data.setFrenzyCooldownTime(data.getFrenzyCooldownTime() - 1);
@@ -324,7 +322,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						{
 							if (player != null && player.isOnline())
 							{
-								PlayerData data = playerDataCache.getData(player.getName());
+								PlayerData data = playerDataCache.getData(player);
 								if (data.isSuperPickaxeCooldownEnabled())
 								{
 									data.setSuperPickaxeCooldownTime(data.getSuperPickaxeCooldownTime() - 1);
@@ -352,7 +350,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 						{
 							if (player != null && player.isOnline())
 							{
-								PlayerData data = playerDataCache.getData(player.getName());
+								PlayerData data = playerDataCache.getData(player);
 								if (data.isUnlimitedAmmoCooldownEnabled())
 								{
 									data.setUnlimitedAmmoCooldownTime(data.getUnlimitedAmmoCooldownTime() - 1);
@@ -442,7 +440,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	}
 
 	/**
-	 * Clears Lists and HashMaps
+	 * Clears Lists and Maps
 	 */
 	private final void clearMemory()
 	{
@@ -451,7 +449,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 		blockDropsMap.clear();
 		fishDropsMap.clear();
 		salvageRef.clear();
-		proposal.clear();
 	}
 
 	// ---- Console Logging ---- //

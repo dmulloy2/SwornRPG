@@ -47,7 +47,7 @@ public class CmdAddxp extends SwornRPGCommand
 		else
 		{
 			sendpMessage(plugin.getMessage("addxp_give"), giveXP, target.getName());
-			sendMessageTarget(plugin.getMessage("addxp_given"), target, giveXP);
+			sendMessageTarget(target, plugin.getMessage("addxp_given"), giveXP);
 		}
 	}
 }

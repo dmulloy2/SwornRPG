@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
+import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.Util;
 
 import org.bukkit.entity.Player;
@@ -16,39 +17,61 @@ public class CmdDeny extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "deny";
-		this.aliases.add("reject");
+		this.optionalArgs.add("player");
 		this.description = "Deny a player's proposal";
 		this.permission = Permission.DENY;
-
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
 		if (! plugin.getConfig().getBoolean("marriage"))
 		{
-			err(plugin.getMessage("command_disabled"));
+			err(getMessage("command_disabled"));
 			return;
 		}
-		
-		if (! plugin.getProposal().containsKey(player.getName()))
+
+		PlayerData data = getPlayerData(player);
+		if (data.getProposals().isEmpty())
 		{
-			err(plugin.getMessage("no_proposal"));
+			err(getMessage("no_proposal"));
 			return;
 		}
 
-		Player target = Util.matchPlayer(plugin.getProposal().get(sender.getName()));
-		if (target == null)
+		if (args.length == 0)
 		{
-			err(plugin.getMessage("player_not_found"), plugin.getProposal().get(sender.getName()));
-			return;
+			for (String reject : data.getProposals())
+			{
+				data.getProposals().remove(reject);
+
+				Player target = Util.matchPlayer(reject);
+				if (target != null)
+				{
+					sendMessageTarget(target, getMessage("deny_rejcted"), player.getName());
+				}
+			}
+
+			sendpMessage(getMessage("deny_sender"), "all");
 		}
+		else
+		{
+			String reject = args[0];
+			if (! data.getProposals().contains(reject))
+			{
+				err(getMessage("no_proposal"));
+				return;
+			}
 
-		plugin.getProposal().remove(sender.getName());
-		plugin.getProposal().remove(target.getName());
+			data.getProposals().remove(reject);
 
-		sendpMessage(plugin.getMessage("deny_sender"), target.getName());
-		sendMessageTarget(plugin.getMessage("deny_rejcted"), target, sender.getName());
+			Player target = Util.matchPlayer(reject);
+			if (target != null)
+			{
+				sendMessageTarget(target, getMessage("deny_rejcted"), player.getName());
+			}
+
+			sendpMessage(getMessage("deny_sender"), target.getName() + "''s proposal");
+		}
 	}
 }

@@ -5,7 +5,6 @@ import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -47,7 +46,7 @@ public class CmdResetLevel extends SwornRPGCommand
 		sendpMessage(getMessage("level_reset_resetter"), target.getName());
 		if (target.isOnline())
 		{
-			sendMessageTarget(getMessage("level_reset_reset"), (Player) target);
+			sendMessageTarget(target.getPlayer(), getMessage("level_reset_reset"));
 		}
 	}
 }

@@ -46,12 +46,6 @@ public class CmdTagReset extends SwornRPGCommand
 				return;
 			}
 
-			if (args[0].length() > 16)
-			{
-				err(plugin.getMessage("username_too_large"));
-				return;
-			}
-
 			Player target = Util.matchPlayer(args[0]);
 			if (target == null)
 			{
@@ -61,7 +55,7 @@ public class CmdTagReset extends SwornRPGCommand
 
 			plugin.getTagHandler().removeTag(target);
 			sendpMessage(plugin.getMessage("tag_reset_resetter"), target.getName());
-			sendMessageTarget(plugin.getMessage("tag_reset_resetee"), target);
+			sendMessageTarget(target, plugin.getMessage("tag_reset_resetee"));
 		}
 	}
 }

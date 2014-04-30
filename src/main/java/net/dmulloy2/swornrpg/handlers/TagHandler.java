@@ -1,19 +1,14 @@
 package net.dmulloy2.swornrpg.handlers;
 
-import java.io.File;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.kitteh.tag.AsyncPlayerReceiveNameTagEvent;
 import org.kitteh.tag.TagAPI;
 
@@ -29,7 +24,6 @@ public class TagHandler
 	public TagHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		this.convert();
 
 		if (plugin.getPluginManager().isPluginEnabled("TagAPI"))
 		{
@@ -71,7 +65,8 @@ public class TagHandler
 	/**
 	 * Returns whether or not a player has a custom tag
 	 * 
-	 * @param player - {@link Player} to check
+	 * @param player
+	 *        - {@link Player} to check
 	 */
 	public final boolean hasTag(Player player)
 	{
@@ -96,88 +91,51 @@ public class TagHandler
 		}
 	}
 
-	/**
-	 * Converts tags to the new format
-	 */
-	private final void convert()
+	@SuppressWarnings("deprecation")
+	public class DeprecatedTagListener implements Listener
 	{
-		final File tagsFile = new File(plugin.getDataFolder(), "tags.yml");
-		if (tagsFile.exists())
+		private final SwornRPG plugin;
+		public DeprecatedTagListener(SwornRPG plugin)
 		{
-			new BukkitRunnable()
+			this.plugin = plugin;
+		}
+
+		@EventHandler
+		public void onPlayerReceiveNametag(org.kitteh.tag.PlayerReceiveNameTagEvent event)
+		{
+			Player player = event.getNamedPlayer();
+			if (plugin.getTagHandler().hasTag(player))
 			{
-				@Override
-				public void run()
+				PlayerData data = plugin.getPlayerDataCache().getData(player);
+				if (data.getTag() != null)
 				{
-					long start = System.currentTimeMillis();
-
-					plugin.outConsole("Running Tag conversion task...");
-
-					YamlConfiguration fc = YamlConfiguration.loadConfiguration(tagsFile);
-
-					Map<String, Object> tags = fc.getConfigurationSection("tags").getValues(true);
-
-					for (Entry<String, Object> entry : tags.entrySet())
-					{
-						PlayerData data = plugin.getPlayerDataCache().getData(entry.getKey());
-						if (data != null)
-						{
-							data.setTag((String) entry.getValue());
-						}
-					}
-
-					tagsFile.delete();
-
-					plugin.outConsole("Tag conversion task complete! [{0}ms]", System.currentTimeMillis() - start);
+					event.setTag(FormatUtil.format(data.getTag()));
 				}
-			}.runTaskLater(plugin, 20L);
+			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public class DeprecatedTagListener implements Listener 
+	public class TagListener implements Listener
 	{
-	   	private final SwornRPG plugin;
-	    public DeprecatedTagListener(SwornRPG plugin) 
-	    {
-	        this.plugin = plugin;
-	    }
+		private final SwornRPG plugin;
+
+		public TagListener(SwornRPG plugin)
+		{
+			this.plugin = plugin;
+		}
 
 		@EventHandler
-	    public void onPlayerReceiveNametag(org.kitteh.tag.PlayerReceiveNameTagEvent event) 
-	    {
-	    	Player player = event.getNamedPlayer();
-	    	if (plugin.getTagHandler().hasTag(player))
-	    	{
-	    		PlayerData data = plugin.getPlayerDataCache().getData(player);
-	    		if (data.getTag() != null)
-	    		{
-	    			event.setTag(FormatUtil.format(data.getTag()));
-	    		}
-	    	}
-	    }
-	}
-
-	public class TagListener implements Listener 
-	{
-	   	private final SwornRPG plugin;
-	    public TagListener(SwornRPG plugin) 
-	    {
-	        this.plugin = plugin;
-	    }
-
-		@EventHandler
-	    public void onPlayerReceiveNametag(AsyncPlayerReceiveNameTagEvent event) 
-	    {
-	    	Player player = event.getNamedPlayer();
-	    	if (plugin.getTagHandler().hasTag(player))
-	    	{
-	    		PlayerData data = plugin.getPlayerDataCache().getData(player);
-	    		if (data.getTag() != null)
-	    		{
-	    			event.setTag(FormatUtil.format(data.getTag()));
-	    		}
-	    	}
-	    }
+		public void onPlayerReceiveNametag(AsyncPlayerReceiveNameTagEvent event)
+		{
+			Player player = event.getNamedPlayer();
+			if (plugin.getTagHandler().hasTag(player))
+			{
+				PlayerData data = plugin.getPlayerDataCache().getData(player);
+				if (data.getTag() != null)
+				{
+					event.setTag(FormatUtil.format(data.getTag()));
+				}
+			}
+		}
 	}
 }

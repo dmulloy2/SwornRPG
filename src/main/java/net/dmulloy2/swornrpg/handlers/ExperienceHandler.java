@@ -48,7 +48,7 @@ public class ExperienceHandler
 			player.sendMessage(message);
 
 		/** Add the xp gained to their overall xp **/
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		data.setPlayerxp(data.getPlayerxp() + xpGained);
 		data.setTotalxp(data.getTotalxp() + xpGained);
 
@@ -71,7 +71,7 @@ public class ExperienceHandler
 		if (plugin.isDisabledWorld(player))
 			return;
 
-		PlayerData data = plugin.getPlayerDataCache().getData(player.getName());
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
 		/** Prior Skill Data **/
 		int oldFrenzy = TimeUtil.toSeconds(plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()));

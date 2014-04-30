@@ -25,7 +25,6 @@ public class CmdTag extends SwornRPGCommand
 		this.optionalArgs.add("player");
 		this.description = "Change the color above your head";
 		this.permission = Permission.TAG;
-
 		this.mustBePlayer = true;
 	}
 
@@ -47,7 +46,8 @@ public class CmdTag extends SwornRPGCommand
 				return;
 			}
 
-			if (! color.startsWith("&")) color = "&" + color;
+			if (! color.startsWith("&"))
+				color = "&" + color;
 
 			plugin.getTagHandler().setTag(player, color + sender.getName());
 
@@ -76,14 +76,20 @@ public class CmdTag extends SwornRPGCommand
 				return;
 			}
 
-			if (! color.startsWith("&")) color = "&" + color;
+			if (! color.startsWith("&"))
+				color = "&" + color;
 
 			String newTag = args[1] + target.getName();
+			if (newTag.length() > 16)
+			{
+				err(getMessage("username_too_large"));
+				return;
+			}
 
 			plugin.getTagHandler().setTag(target, newTag);
 
 			sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName(), getFormattedColor(color));
-			sendMessageTarget(plugin.getMessage("tag_changed_changed"), target, getFormattedColor(color));
+			sendMessageTarget(target, plugin.getMessage("tag_changed_changed"), getFormattedColor(color));
 		}
 	}
 

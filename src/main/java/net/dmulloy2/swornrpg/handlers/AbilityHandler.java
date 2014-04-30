@@ -46,6 +46,7 @@ public class AbilityHandler implements Reloadable
 	private List<String> waiting;
 
 	private final SwornRPG plugin;
+
 	public AbilityHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
@@ -188,6 +189,12 @@ public class AbilityHandler implements Reloadable
 		}
 	}
 
+	// TODO: Make this configurable
+	private final String[] frenzyTypes = new String[]
+	{
+			"SPEED", "INCREASE_DAMAGE", "REGENERATION", "JUMP", "FIRE_RESISTANCE", "DAMAGE_RESISTANCE"
+	};
+
 	private final void frenzy(final Player player)
 	{
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -202,9 +209,7 @@ public class AbilityHandler implements Reloadable
 		waiting.remove(player.getName());
 
 		List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-
-		String[] types = new String[] { "SPEED", "INCREASE_DAMAGE", "REGENERATION", "JUMP", "FIRE_RESISTANCE", "DAMAGE_RESISTANCE" };
-		for (String type : types)
+		for (String type : frenzyTypes)
 		{
 			potionEffects.add(new PotionEffect(PotionEffectType.getByName(type), (int) duration, 1));
 		}
@@ -444,15 +449,20 @@ public class AbilityHandler implements Reloadable
 		{
 			for (String wait : Util.newList(waiting))
 			{
-				PlayerData data = plugin.getPlayerDataCache().getData(wait);
+				Player player = Util.matchPlayer(wait);
+				if (player == null || ! player.isOnline())
+				{
+					waiting.remove(wait);
+					continue;
+				}
+
+				PlayerData data = plugin.getPlayerDataCache().getData(player);
 				if (data.isFrenzyWaiting())
 				{
 					data.setFrenzyReadyTime(data.getFrenzyReadyTime() - 1);
 					if (data.getFrenzyReadyTime() <= 0)
 					{
-						Player player = Util.matchPlayer(wait);
-						if (player != null)
-							sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
+						sendpMessage(player, plugin.getMessage("ability_lower"), data.getItemName());
 
 						data.setFrenzyWaiting(false);
 						data.setItemName(null);
@@ -466,9 +476,7 @@ public class AbilityHandler implements Reloadable
 					data.setSuperPickaxeReadyTime(data.getSuperPickaxeReadyTime() - 1);
 					if (data.getSuperPickaxeReadyTime() <= 0)
 					{
-						Player player = Util.matchPlayer(wait);
-						if (player != null)
-							sendpMessage(player, "&eYou lower your &a{0}&e!", data.getItemName());
+						sendpMessage(player, plugin.getMessage("ability_lower"), data.getItemName());
 
 						data.setSuperPickaxeWaiting(false);
 						data.setItemName(null);
@@ -480,7 +488,7 @@ public class AbilityHandler implements Reloadable
 		}
 	}
 
-	// ---- Calculations ---- //
+	// ---- Calculations
 
 	public final long getFrenzyDuration(int level)
 	{
@@ -489,7 +497,7 @@ public class AbilityHandler implements Reloadable
 
 	public final long getFrenzyCooldown(int level)
 	{
-		return (getFrenzyDuration(level) * frenzyCooldownMultiplier) * 20;
+		return TimeUtil.toTicks(getFrenzyDuration(level) * frenzyCooldownMultiplier);
 	}
 
 	public final long getSuperPickaxeDuration(int level)
@@ -499,7 +507,7 @@ public class AbilityHandler implements Reloadable
 
 	public final long getSuperPickaxeCooldown(int level)
 	{
-		return (getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier) * 20;
+		return TimeUtil.toTicks(getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier);
 	}
 
 	public final long getUnlimitedAmmoDuration(int level)
@@ -509,7 +517,7 @@ public class AbilityHandler implements Reloadable
 
 	public final long getUnlimitedAmmoCooldown(int level)
 	{
-		return (getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier) * 20;
+		return TimeUtil.toTicks(getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier);
 	}
 
 	@Override
