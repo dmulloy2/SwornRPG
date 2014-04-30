@@ -46,7 +46,6 @@ public class AbilityHandler implements Reloadable
 	private List<String> waiting;
 
 	private final SwornRPG plugin;
-
 	public AbilityHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
@@ -89,7 +88,7 @@ public class AbilityHandler implements Reloadable
 		}
 	}
 
-	// ---- Internal Methods ---- //
+	// ---- Internal Methods
 
 	private final void activateFrenzy(Player player)
 	{
