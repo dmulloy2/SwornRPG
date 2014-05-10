@@ -23,6 +23,7 @@ import org.bukkit.scoreboard.Team;
  * @author dmulloy2
  */
 
+// TODO Make this actually function
 public class HealthBarHandler implements Reloadable
 {
 	private final Scoreboard board;

@@ -34,7 +34,7 @@ public class FormatUtil
 		try
 		{
 			format = MessageFormat.format(format, objects);
-		} catch (Exception e) { }
+		} catch (Throwable ex) { }
 
 		return ChatColor.translateAlternateColorCodes('&', format);
 	}
@@ -61,7 +61,7 @@ public class FormatUtil
 			{
 				return o.getClass().getSimpleName();
 			}
-		} catch (Exception e) { }
+		} catch (Throwable ex) { }
 
 		return getFriendlyName(o.toString());
 	}

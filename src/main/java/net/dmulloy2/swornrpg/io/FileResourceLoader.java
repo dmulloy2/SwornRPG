@@ -2,9 +2,7 @@ package net.dmulloy2.swornrpg.io;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,11 +29,7 @@ public class FileResourceLoader extends ClassLoader
 			try
 			{
 				return file.toURI().toURL();
-			}
-			catch (MalformedURLException ex)
-			{
-				// Do nothing...
-			}
+			} catch (Throwable ex) { }
 		}
 
 		return super.getResource(string);
@@ -50,11 +44,7 @@ public class FileResourceLoader extends ClassLoader
 			try
 			{
 				return new FileInputStream(file);
-			}
-			catch (FileNotFoundException ex)
-			{
-				// Do nothing...
-			}
+			} catch (Throwable ex) { }
 		}
 
 		return super.getResourceAsStream(string);

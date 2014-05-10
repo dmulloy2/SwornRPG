@@ -28,10 +28,10 @@ public class PlayerDataCache
 	private final File folder;
 	private final String extension = ".dat";
 	private final String folderName = "players";
-	private final SwornRPG plugin;
 
 	private final ConcurrentMap<String, PlayerData> cache;
 
+	private final SwornRPG plugin;
 	public PlayerDataCache(SwornRPG plugin)
 	{
 		this.folder = new File(plugin.getDataFolder(), folderName);

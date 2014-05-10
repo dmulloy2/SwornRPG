@@ -113,7 +113,7 @@ public class InventoryUtil
 		return addItems(player.getInventory(), items);
 	}
 
-	// ---- Internal Methods ---- //
+	// ---- Internal Methods
 
 	private static Map<Integer, ItemStack> addItems(Inventory inventory, ItemStack... items)
 	{

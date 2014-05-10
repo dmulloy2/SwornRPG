@@ -1,8 +1,11 @@
 package net.dmulloy2.swornrpg.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Map.Entry;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.StringJoiner;
@@ -232,7 +235,95 @@ public class Util
 		return ret;
 	}
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * Filters duplicate entries from a {@link Map} according to the original
+	 * map.
+
+	 * @param map
+	 *        - {@link Map} to filter
+	 * @param original
+	 *        - Original map
+	 * @return Filtered map
+	 */
+	public static <K, V> Map<K, V> filterDuplicateEntries(Map<K,V> map, Map<K, V> original)
+	{
+		for (Entry<K, V> entry : new HashMap<K, V>(map).entrySet())
+		{
+			K key = entry.getKey();
+			if (original.containsKey(key))
+			{
+				V val = entry.getValue();
+				V def = original.get(key);
+				if (val.equals(def))
+				{
+					map.remove(key);
+				}
+			}
+		}
+
+		return map;
+	}
+
+	/**
+	 * Checks if a field is declared in a given {@link Class}
+	 * 
+	 * @param clazz
+	 *        - Class object
+	 * @param name
+	 *        - Name of variable
+	 * @return Whether or not the field is declared
+	 */
+	public static boolean isDeclaredField(Class<?> clazz, String name)
+	{
+		try
+		{
+			clazz.getDeclaredField(name);
+			return true;
+		} catch (Throwable ex) { }
+		return false;
+	}
+
+	/**
+	 * Parses a given {@link Object} (preferably a {@link String}) and returns a
+	 * boolean value.
+	 * 
+	 * @param object
+	 *        - Object to parse
+	 * @return Boolean value from the given object. Defaults to
+	 *         <code>false</code>
+	 */
+	public static boolean toBoolean(Object object)
+	{
+		if (object instanceof Boolean)
+		{
+			return ((Boolean) object).booleanValue();
+		}
+
+		if (object instanceof String)
+		{
+			String str = (String) object;
+			return str.startsWith("y") || str.startsWith("t") || str.startsWith("on") || str.startsWith("+") || str.startsWith("1");
+		}
+
+		try
+		{
+			return Boolean.parseBoolean(object.toString());
+		} catch (Exception e) { }
+		return false;
+	}
+
+	/**
+	 * Sets a {@link Block}'s {@link MaterialData}. Exists because Bukkit's
+	 * BlockState API sucks.
+	 * <p>
+	 * This method is deprecated and is not guaranteed to work.
+	 * 
+	 * @param block
+	 *        - Block to set data of
+	 * @param data
+	 *        - Data to set
+	 * @deprecated {@link Block#setData(byte)} is deprecated
+	 */
 	public static void setData(Block block, MaterialData data)
 	{
 		block.setData(data.getData());

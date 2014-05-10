@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.handlers;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornrpg.util.FormatUtil;
@@ -19,13 +20,10 @@ import org.bukkit.inventory.ItemStack;
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class ExperienceHandler
 {
 	private final SwornRPG plugin;
-	public ExperienceHandler(SwornRPG plugin)
-	{
-		this.plugin = plugin;
-	}
 
 	/**
 	 * Handles xp gaining for players

@@ -82,24 +82,18 @@ public class TagHandler
 		try
 		{
 			Class.forName("org.kitteh.tag.AsyncPlayerReceiveNameTagEvent");
-			plugin.getPluginManager().registerEvents(new TagListener(plugin), plugin);
+			plugin.getPluginManager().registerEvents(new TagListener(), plugin);
 		}
 		catch (ClassNotFoundException e)
 		{
 			plugin.getLogHandler().log(Level.WARNING, "Detected an outdated TagAPI version, defaulting to deprecated event.");
-			plugin.getServer().getPluginManager().registerEvents(new DeprecatedTagListener(plugin), plugin);
+			plugin.getServer().getPluginManager().registerEvents(new DeprecatedTagListener(), plugin);
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	public class DeprecatedTagListener implements Listener
 	{
-		private final SwornRPG plugin;
-		public DeprecatedTagListener(SwornRPG plugin)
-		{
-			this.plugin = plugin;
-		}
-
 		@EventHandler
 		public void onPlayerReceiveNametag(org.kitteh.tag.PlayerReceiveNameTagEvent event)
 		{
@@ -117,13 +111,6 @@ public class TagHandler
 
 	public class TagListener implements Listener
 	{
-		private final SwornRPG plugin;
-
-		public TagListener(SwornRPG plugin)
-		{
-			this.plugin = plugin;
-		}
-
 		@EventHandler
 		public void onPlayerReceiveNametag(AsyncPlayerReceiveNameTagEvent event)
 		{

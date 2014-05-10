@@ -47,7 +47,10 @@ public class MaterialUtil
 		{
 			try
 			{
-				material = Bukkit.getUnsafe().getMaterialFromInternalName(string);
+				// This method never returns null, but if a result is not found, it returns AIR
+				org.bukkit.Material internal = Bukkit.getUnsafe().getMaterialFromInternalName(string);
+				if (internal != org.bukkit.Material.AIR)
+					material = internal;
 			} catch (Throwable ex) { }
 		}
 
@@ -87,7 +90,7 @@ public class MaterialUtil
 			return mat.getId();
 		}
 
-		return 1; // Stone
+		return -1; // Result not found
 	}
 
 	/**

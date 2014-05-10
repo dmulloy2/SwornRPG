@@ -104,6 +104,7 @@ public final class TimeUtil
 				return Integer.parseInt(m.group(1)) * 1000;
 			}
 		}
+
 		throw new Exception("badtime");
 	}
 

@@ -114,13 +114,8 @@ public class ItemUtil
 			}
 
 			return ret;
-		}
-		catch (Exception e)
-		{
-			// If the ItemStack could not be read,
-			// don't stall the enabling of the plugin
-			return null;
-		}
+		} catch (Throwable ex) { }
+		return null;
 	}
 
 	/**
@@ -155,7 +150,7 @@ public class ItemUtil
 	public static String getEnchantments(ItemStack stack)
 	{
 		StringBuilder ret = new StringBuilder();
-		if (!stack.getEnchantments().isEmpty())
+		if (! stack.getEnchantments().isEmpty())
 		{
 			ret.append("(");
 			for (Entry<Enchantment, Integer> enchantment : stack.getEnchantments().entrySet())
