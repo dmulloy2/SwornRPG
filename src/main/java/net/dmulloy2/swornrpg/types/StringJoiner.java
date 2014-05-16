@@ -3,15 +3,15 @@
  */
 package net.dmulloy2.swornrpg.types;
 
-
 /**
  * @author dmulloy2
  */
 
 public class StringJoiner
 {
-	private final String glue;
+	private String glue;
 	private StringBuilder builder;
+
 	public StringJoiner(String glue)
 	{
 		this.glue = glue;
@@ -21,6 +21,16 @@ public class StringJoiner
 	public final StringJoiner append(final String string)
 	{
 		builder.append(string + glue);
+		return this;
+	}
+
+	public final StringJoiner appendAll(final Iterable<String> strings)
+	{
+		for (String string : strings)
+		{
+			append(string);
+		}
+
 		return this;
 	}
 
@@ -47,6 +57,12 @@ public class StringJoiner
 	public final StringJoiner newString()
 	{
 		this.builder = new StringBuilder();
+		return this;
+	}
+
+	public final StringJoiner setGlue(final String glue)
+	{
+		this.glue = glue;
 		return this;
 	}
 
