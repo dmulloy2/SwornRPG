@@ -68,12 +68,8 @@ public class PlayerData implements ConfigurationSerializable
 
 	// ---- UUID Stuff
 	private String lastKnownBy;
-	private String uniqueId;
 
-	public PlayerData()
-	{
-		//
-	}
+	public PlayerData() { }
 
 	public PlayerData(Map<String, Object> args)
 	{
@@ -94,11 +90,7 @@ public class PlayerData implements ConfigurationSerializable
 						field.setAccessible(accessible);
 					}
 				}
-			}
-			catch (Exception e)
-			{
-				//
-			}
+			} catch (Throwable ex) { }
 		}
 	}
 
@@ -156,11 +148,7 @@ public class PlayerData implements ConfigurationSerializable
 				}
 
 				field.setAccessible(accessible);
-			}
-			catch (Exception e)
-			{
-				//
-			}
+			} catch (Throwable ex) { }
 		}
 
 		return data;
