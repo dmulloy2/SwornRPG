@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.UUID;
 
+import lombok.NonNull;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.StringJoiner;
 
@@ -29,69 +31,71 @@ public class Util
 	private Util() { }
 
 	/**
-	 * Gets the Player from a given name
+	 * Gets the Player from a given name or {@link UUID}
 	 * 
-	 * @param name
-	 *        - Player name or partial name
-	 * @return Player from the given name, null if none exists
-	 * @see {@link org.bukkit.Server#matchPlayer(String)}
+	 * @param identifier
+	 *        - Player name or UUID
+	 * @return Player from the given name or UUID, null if none exists
+	 * @see {@link Bukkit#getPlayer(UUID)}
+	 * @see {@link Bukkit#matchPlayer(String)}
 	 */
-	public static Player matchPlayer(String name)
+	public static Player matchPlayer(@NonNull String identifier)
 	{
-		List<Player> players = Bukkit.matchPlayer(name);
+		// Get by UUID first
+		if (identifier.length() == 36)
+			return Bukkit.getPlayer(UUID.fromString(identifier));
 
-		if (players.size() >= 1)
+		// Then attempt to match
+		List<Player> players = Bukkit.matchPlayer(identifier);
+		if (! players.isEmpty())
 			return players.get(0);
 
 		return null;
 	}
 
 	/**
-	 * Gets the OfflinePlayer from a given name
+	 * Gets the OfflinePlayer from a given name or {@link UUID}
+	 * <p>
+	 * Use of this method is discouraged as it is potentially blocking
 	 * 
-	 * @param name
-	 *        - Player name or partial name
-	 * @return OfflinePlayer from the given name, null if none exists
+	 * @param identifier
+	 *        - Player name or UUID
+	 * @return OfflinePlayer from the given name or UUID, null if none exists
+	 * @see {@link Util#matchPlayer(String)}
+	 * @see {@link Bukkit#getOfflinePlayer(UUID)}
+	 * @see {@link Bukkit#getOfflinePlayer(String)}
 	 */
-	public static OfflinePlayer matchOfflinePlayer(String name)
+	@SuppressWarnings("deprecation") // Bukkit#getOfflinePlayer(String)
+	public static OfflinePlayer matchOfflinePlayer(@NonNull String identifier)
 	{
-		Player player = matchPlayer(name);
+		// Check online players first
+		Player player = matchPlayer(identifier);
 		if (player != null)
 			return player;
 
-		for (OfflinePlayer o : Bukkit.getOfflinePlayers())
-		{
-			if (o.getName().equalsIgnoreCase(name))
-				return o;
-		}
+		// Then check UUID
+		if (identifier.length() == 36)
+			return Bukkit.getOfflinePlayer(UUID.fromString(identifier));
+
+		OfflinePlayer op = Bukkit.getOfflinePlayer(identifier);
+		if (op.hasPlayedBefore())
+			return op;
 
 		return null;
 	}
 
 	/**
-	 * Returns whether or not a player is banned
+	 * Whether or not a player is banned
 	 * 
-	 * @param p
-	 *        - OfflinePlayer to check for banned status
+	 * @param identifier
+	 *        - Player name or UUID
 	 * @return Whether or not the player is banned
 	 */
-	public static boolean isBanned(OfflinePlayer p)
-	{
-		return isBanned(p.getName());
-	}
-
-	/**
-	 * Returns whether or not a player is banned
-	 * 
-	 * @param p
-	 *        - Player name to check for banned status
-	 * @return Whether or not the player is banned
-	 */
-	public static boolean isBanned(String p)
+	public static boolean isBanned(String identifier)
 	{
 		for (OfflinePlayer banned : Bukkit.getBannedPlayers())
 		{
-			if (banned.getName().equalsIgnoreCase(p))
+			if (banned.getUniqueId().toString().equals(identifier) || banned.getName().equalsIgnoreCase(identifier))
 				return true;
 		}
 
