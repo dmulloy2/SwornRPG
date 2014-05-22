@@ -43,7 +43,6 @@ import net.dmulloy2.swornrpg.commands.CmdItemName;
 import net.dmulloy2.swornrpg.commands.CmdLeaderboard;
 import net.dmulloy2.swornrpg.commands.CmdLevel;
 import net.dmulloy2.swornrpg.commands.CmdMarry;
-import net.dmulloy2.swornrpg.commands.CmdMatch;
 import net.dmulloy2.swornrpg.commands.CmdPropose;
 import net.dmulloy2.swornrpg.commands.CmdReload;
 import net.dmulloy2.swornrpg.commands.CmdResetLevel;
@@ -242,7 +241,6 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			commandHandler.registerCommand(new CmdItemName(this));
 			commandHandler.registerCommand(new CmdLevel(this));
 			commandHandler.registerCommand(new CmdMarry(this));
-			commandHandler.registerCommand(new CmdMatch(this));
 			commandHandler.registerCommand(new CmdPropose(this));
 			commandHandler.registerCommand(new CmdResetLevel(this));
 			commandHandler.registerCommand(new CmdRide(this));

@@ -27,7 +27,6 @@ public enum Permission
 	LEVEL_OTHERS,
 	LEVEL_RESET,
 	MARRY,
-	MATCH,
 	META,
 	PROPOSE,
 	RELOAD,

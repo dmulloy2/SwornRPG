@@ -54,10 +54,6 @@ commands:
   marry:
     description: Marry another player
     usage: /<command> <player>
-  match:
-    description: Match a string with the closest player
-    usage: /<command> <string>
-    aliases: [matchplayer]
   meta:
     description: Modify an item's item meta
     usage: /<command> <type> <args>
