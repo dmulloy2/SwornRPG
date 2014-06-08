@@ -143,7 +143,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	/** Maps **/
 	private @Getter Map<String, HashMap<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
-	private @Getter Map<Material, List<BlockDrop>> fishDropsMap;
+	private @Getter Map<Integer, List<BlockDrop>> fishDropsMap;
 
 	/** Global Prefix Variable **/
 	private @Getter String prefix;
@@ -158,7 +158,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			/** Initialize Variables **/
 			salvageRef = new HashMap<String, HashMap<Material, Integer>>();
 			blockDropsMap = new HashMap<Material, List<BlockDrop>>();
-			fishDropsMap = new HashMap<Material, List<BlockDrop>>();
+			fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
 
 			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
 
@@ -640,6 +640,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 		for (Entry<String, Object> entry : map.entrySet())
 		{
+			String key = entry.getKey();
+			
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
 
@@ -672,7 +674,8 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 				}
 			}
 
-			blockDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
+			Material material = key.equals("*") ? Material.AIR : MaterialUtil.getMaterial(key);
+			blockDropsMap.put(material, blockDrops);
 		}
 	}
 
@@ -690,7 +693,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
 
-			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
+			List<BlockDrop> fishDrops = new ArrayList<BlockDrop>();
 			for (String value : values)
 			{
 				String[] ss = value.split(":");
@@ -715,11 +718,11 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 
 				if (type != null && data != -1 && chance != -1)
 				{
-					blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+					fishDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
 				}
 			}
 
-			fishDropsMap.put(MaterialUtil.getMaterial(entry.getKey()), blockDrops);
+			fishDropsMap.put(NumberUtil.toInt(entry.getKey()), fishDrops);
 		}
 	}
 

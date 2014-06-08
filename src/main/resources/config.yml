@@ -241,200 +241,191 @@ blockDropsEnabled: true
 
 # Items Dropped
 # Format: 
-#  [blockId]:
-#    - "rewardId:chance out of 100"
+#  <blockId>:
+#    - "<material>[:data]:<chance>"
+# Chance is 1 out of <chance>
 blockDropItems:
-  0:
-    - "2258:10000"
-    - "2259:10000"
-    - "2260:10000"
-    - "2261:10000"
-    - "2262:10000"
-    - "2263:10000"
-    - "2264:10000"
-    - "2265:10000"
-    - "2266:10000"  
-    - "2267:10000"
-    - "46:1000"
-    - "49:1000"
-    - "264:1000"
-    - "384:5000"
-    - "388:5000"
-    - "399:50000"
-    - "266:1000"
-    - "265:1000"
-    - "406:200"
-    - "154:1000"
-    - "404:1000"  
-  82:
-    - "341:20"
-    - "287:20"
-    - "318:20"
-    - "30:100"
-  2:
-    - "361:30"
-    - "392:30"
-    - "391:30"
-  1:
-    - "15:75"
-    - "263:25"
-    - "21:100"
-    - "14:200"
-  17:
-    - "338:20"
-    - "32:200"
-    - "127:100"
-  4:
-    - "389:20"
-    - "48:20"
-    - "67:50"
-    - "145:200"
-    - "386:100"
-  121:
-    - "116:150"
-    - "394:25"
-    - "388:500"
-    - "368:25"
-  35:
-    - "30:100"
-    - "287:15"
-  102:
-    - "102:2"
-  20:
-    - "102:10"
-    - "20:2"
-    - "374:100"
-  5:
-    - "280:10"
-    - "65:20"
-    - "85:50"
-    - "53:10"
-  87:
-    - "385:15"
-    - "372:25"
-    - "112:10"
-    - "153:50"
-  88:
-    - "378:100"
-    - "372:25"
-    - "331:25"
-    - "397:300"
-  24:
-    - "28:15"
-    - "12:15"
-    - "390:30"
-  12:
-    - "338:15"
-    - "349:15"
-    - "295:30"
-  18:
-    - "106:15"
-    - "111:15"
-    - "127:200"
-  3:
-    - "392:30"
-    - "391:30"
-    - "357:30"
-    - "395:100"
-    - "330:100"
-  13:
-    - "289:15"
-    - "352:10"
-    - "87:50"
-  6:
-    - "352:150"
-    - "18:25"
-    - "32:500"
-    - "280:25"
-  31:
-    - "361:150"
-    - "31:5"
-    - "362:150"
-    - "30:25"
-  32:
-    - "361:150"
-    - "32:5"
-    - "362:150"
-    - "30:25"
-  37:
-    - "18:25"
-    - "371:150"
-    - "39:25"
-  38:
-    - "18:25"
-    - "372:150"
-    - "40:25"
-  39:
-    - "99:10"
-    - "372:150"
-    - "37:25"
-  40:
-    - "100:10"
-    - "372:150"
-    - "38:25"
-  59:
-    - "293:1000"
-    - "295:5"
-    - "392:150"
-    - "297:25"
-  59:
-    - "293:1000"
-    - "295:5"
-    - "392:150"
-    - "297:25"
-  81:
-    - "382:500"
-    - "262:15"
-    - "267:1000"
-    - "373:25"
-  83:
-    - "368:1000"
-    - "353:15"
-    - "362:150"
-    - "18:25"
-  86:
-    - "400:200"
-    - "91:15"
-    - "348:150"
-    - "361:25"
-  91:
-    - "51:1000"
-    - "50:5"
-    - "377:150"
-    - "86:25"
-  106:
-    - "370:500"
-    - "287:10"
-    - "18:50"
-    - "295:25"
-  110:
-    - "384:1000"
-    - "39:3"
-    - "372:25"
-    - "40:3"
-  111:
-    - "106:5"
-    - "349:150"
-    - "361:25"
-  115:
-    - "369:250"
-    - "372:5"
-    - "370:250"
-    - "40:25"
-  127:
-    - "354:1000"
-    - "353:10"
-    - "351:150"
-  141:
-    - "396:1000"
-    - "391:5"
-    - "398:150"
-    - "141:100"
-  142:
-    - "142:100"
-    - "392:5"
-    - "394:50"
-    - "393:25"
+  "*":
+    - "TNT:1000"
+    - "OBSIDIAN:1000"
+    - "DIAMOND:1000"
+    - "EXP_BOTTLE:5000"
+    - "EMERALD:5000"
+    - "NETHER_STAR:50000"
+    - "GOLD_INGOT:1000"
+    - "IRON_INGOT:1000"
+    - "QUARTZ:200"
+    - "HOPPER:1000"
+    - "REDSTONE_COMPARATOR:1000"  
+  "CLAY":
+    - "SLIME_BALL:20"
+    - "STRING:20"
+    - "FLINT:20"
+    - "WEB:100"
+  "GRASS":
+    - "PUMPKIN_SEEDS:30"
+    - "POTATO_ITEM:30"
+    - "CARROT_ITEM:30"
+  "STONE":
+    - "IRON_ORE:75"
+    - "COAL:25"
+    - "LAPIS_ORE:100"
+    - "GOLD_ORE:200"
+  "LOG":
+    - "SUGAR_CANE:20"
+    - "DEAD_BUSH:200"
+    - "COCOA:100"
+  "COBBLESTONE":
+    - "ITEM_FRAME:20"
+    - "MOSSY_COBBLESTONE:20"
+    - "COBBLESTONE_STAIRS:50"
+    - "ANVIL:200"
+    - "BOOK_AND_QUILL:100"
+  "ENDER_STONE":
+    - "ENCHANTMENT_TABLE:150"
+    - "POISONOUS_POTATO:25"
+    - "EMERALD:500"
+    - "ENDER_PEARL:25"
+  "WOOL":
+    - "WEB:100"
+    - "STRING:15"
+  "THIN_GLASS":
+    - "THIN_GLASS:2"
+  "GLASS":
+    - "THIN_GLASS:10"
+    - "GLASS:2"
+    - "GLASS_BOTTLE:100"
+  "WOOD":
+    - "STICK:10"
+    - "LADDER:20"
+    - "FENCE:50"
+    - "WOOD_STAIRS:10"
+  "NETHERRACK":
+    - "FIREBALL:15"
+    - "NETHER_STALK:25"
+    - "NETHER_BRICK:10"
+    - "QUARTZ_ORE:50"
+  "SOUL_SAND":
+    - "MAGMA_CREAM:100"
+    - "NETHER_STALK:25"
+    - "REDSTONE:25"
+    - "SKULL_ITEM:300"
+  "SANDSTONE":
+    - "DETECTOR_RAIL:15"
+    - "SAND:15"
+    - "FLOWER_POT_ITEM:30"
+  "SAND":
+    - "SUGAR_CANE:15"
+    - "RAW_FISH:15"
+    - "SEEDS:30"
+  "LEAVES":
+    - "VINE:15"
+    - "WATER_LILY:15"
+    - "COCOA:200"
+  "DIRT":
+    - "POTATO_ITEM:30"
+    - "CARROT_ITEM:30"
+    - "COOKIE:30"
+    - "EMPTY_MAP:100"
+    - "IRON_DOOR:100"
+  "GRAVEL":
+    - "SULPHUR:15"
+    - "BONE:10"
+    - "NETHERRACK:50"
+  "SAPLING":
+    - "BONE:150"
+    - "LEAVES:25"
+    - "DEAD_BUSH:500"
+    - "STICK:25"
+  "LONG_GRASS":
+    - "PUMPKIN_SEEDS:150"
+    - "LONG_GRASS:5"
+    - "MELON_SEEDS:150"
+    - "WEB:25"
+  "DEAD_BUSH":
+    - "PUMPKIN_SEEDS:150"
+    - "DEAD_BUSH:5"
+    - "MELON_SEEDS:150"
+    - "WEB:25"
+  "YELLOW_FLOWER":
+    - "LEAVES:25"
+    - "GOLD_NUGGET:150"
+    - "BROWN_MUSHROOM:25"
+  "RED_ROSE":
+    - "LEAVES:25"
+    - "NETHER_STALK:150"
+    - "RED_MUSHROOM:25"
+  "BROWN_MUSHROOM":
+    - "HUGE_MUSHROOM_1:10"
+    - "NETHER_STALK:150"
+    - "YELLOW_FLOWER:25"
+  "RED_MUSHROOM":
+    - "HUGE_MUSHROOM_2:10"
+    - "NETHER_STALK:150"
+    - "RED_ROSE:25"
+  "CROPS":
+    - "DIAMOND_HOE:1000"
+    - "SEEDS:5"
+    - "POTATO_ITEM:150"
+    - "BREAD:25"
+  "CROPS":
+    - "DIAMOND_HOE:1000"
+    - "SEEDS:5"
+    - "POTATO_ITEM:150"
+    - "BREAD:25"
+  "CACTUS":
+    - "SPECKLED_MELON:500"
+    - "ARROW:15"
+    - "IRON_SWORD:1000"
+    - "POTION:25"
+  "SUGAR_CANE_BLOCK":
+    - "ENDER_PEARL:1000"
+    - "SUGAR:15"
+    - "MELON_SEEDS:150"
+    - "LEAVES:25"
+  "PUMPKIN":
+    - "PUMPKIN_PIE:200"
+    - "JACK_O_LANTERN:15"
+    - "GLOWSTONE_DUST:150"
+    - "PUMPKIN_SEEDS:25"
+  "JACK_O_LANTERN":
+    - "FIRE:1000"
+    - "TORCH:5"
+    - "BLAZE_POWDER:150"
+    - "PUMPKIN:25"
+  "VINE":
+    - "GHAST_TEAR:500"
+    - "STRING:10"
+    - "LEAVES:50"
+    - "SEEDS:25"
+  "MYCEL":
+    - "EXP_BOTTLE:1000"
+    - "BROWN_MUSHROOM:3"
+    - "NETHER_STALK:25"
+    - "RED_MUSHROOM:3"
+  "WATER_LILY":
+    - "VINE:5"
+    - "RAW_FISH:150"
+    - "PUMPKIN_SEEDS:25"
+  "NETHER_WARTS":
+    - "BLAZE_ROD:250"
+    - "NETHER_STALK:5"
+    - "GHAST_TEAR:250"
+    - "RED_MUSHROOM:25"
+  "COCOA":
+    - "CAKE:1000"
+    - "SUGAR:10"
+    - "INK_SACK:150"
+  "CARROT":
+    - "GOLDEN_CARROT:1000"
+    - "CARROT_ITEM:5"
+    - "CARROT_STICK:150"
+    - "CARROT:100"
+  "POTATO":
+    - "POTATO:100"
+    - "POTATO_ITEM:5"
+    - "POISONOUS_POTATO:50"
+    - "BAKED_POTATO:25"
 
 #############################################
 #+-----------------------------------------+#
@@ -446,39 +437,41 @@ blockDropItems:
 fishDropsEnabled: true
 
 # Done based on level (up to 10)
+
 # Items Dropped
 # Format: 
-#  [level]:
-#    - "rewardId:chance out of 100"
+#  <level>:
+#    - "<material>[:data]:<chance>"
+# Chance is 1 out of <chance>
 fishDropItems:
-  0:
-    - "301:10"
-    - "268:5"
-  1:
-    - "269:5"
-    - "346:10"
-  2:
-    - "270:15"
-    - "298:5"
-  3:
-    - "300:5"
-    - "271:5"
-  4:
-    - "290:5"
-    - "291:15"
-  5:
-    - "273:10"
-    - "275:5"
-  6:
-    - "277:15"
-    - "279:15"
-  7:
-    - "276:10"
-    - "278:10"
-  8:
-    - "57:1"
-    - "42:1"
-    
+  "0":
+    - "LEATHER_BOOTS:10"
+    - "WOOD_SWORD:5"
+  "1":
+    - "WOOD_SPADE:5"
+    - "FISHING_ROD:10"
+  "2":
+    - "WOOD_PICKAXE:15"
+    - "LEATHER_HELMET:5"
+  "3":
+    - "LEATHER_LEGGINGS:5"
+    - "WOOD_AXE:5"
+  "4":
+    - "WOOD_HOE:5"
+    - "STONE_HOE:15"
+  "5":
+    - "STONE_SPADE:10"
+    - "STONE_AXE:5"
+  "6":
+    - "DIAMOND_SPADE:15"
+    - "DIAMOND_AXE:15"
+  "7":
+    - "DIAMOND_SWORD:10"
+    - "DIAMOND_PICKAXE:10"
+  "8":
+    - "DIAMOND_BLOCK:1"
+    - "IRON_BLOCK:1"
+
 #############################################
 #+-----------------------------------------+#
 #|           Block Redemption              |#
