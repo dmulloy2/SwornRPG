@@ -34,13 +34,7 @@ public class PlayerData implements ConfigurationSerializable
 	private transient boolean superPickaxeEnabled;
 	private transient boolean unlimitedAmmoEnabled;
 
-	private boolean frenzyCooldownEnabled;
-	private boolean superPickaxeCooldownEnabled;
-	private boolean unlimitedAmmoCooldownEnabled;
-
-	private long frenzyCooldownTime;
-	private long superPickaxeCooldownTime;
-	private long unlimitedAmmoCooldownTime;
+	private Map<String, Long> cooldowns = new HashMap<>();
 
 	private transient boolean frenzyWaiting;
 	private transient boolean superPickaxeWaiting;
@@ -64,7 +58,7 @@ public class PlayerData implements ConfigurationSerializable
 
 	// ---- Marriage
 	private String spouse;
-	private transient Set<String> proposals = new HashSet<String>();
+	private transient Set<String> proposals = new HashSet<>();
 
 	// ---- UUID Stuff
 	private String lastKnownBy;

@@ -282,89 +282,45 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 				}.runTaskTimerAsynchronously(this, interval, interval);
 			}
 
-			/** Frenzy Mode Cooldown **/
-			if (getConfig().getBoolean("frenzy.enabled"))
+			/** Cooldowns **/
+			new BukkitRunnable()
 			{
-				new BukkitRunnable()
+				@Override
+				public void run()
 				{
-					@Override
-					public void run()
+					for (Player player : getServer().getOnlinePlayers())
 					{
-						for (Player player : getServer().getOnlinePlayers())
-						{
-							if (player != null && player.isOnline())
-							{
-								PlayerData data = playerDataCache.getData(player);
-								if (data.isFrenzyCooldownEnabled())
-								{
-									data.setFrenzyCooldownTime(data.getFrenzyCooldownTime() - 1);
-									if (data.getFrenzyCooldownTime() <= 0)
-									{
-										data.setFrenzyCooldownEnabled(false);
-										player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), "Frenzy"));
-									}
-								}
-							}
-						}
-					}
-				}.runTaskTimer(this, 2L, 1L);
-			}
+						PlayerData data = playerDataCache.getData(player);
 
-			/** Super Pickaxe Cooldown **/
-			if (getConfig().getBoolean("superPickaxe.enabled"))
-			{
-				new BukkitRunnable()
-				{
-					@Override
-					public void run()
-					{
-						for (Player player : getServer().getOnlinePlayers())
+						try
 						{
-							if (player != null && player.isOnline())
+							Map<String, Long> cooldowns = data.getCooldowns();
+							if (! cooldowns.isEmpty())
 							{
-								PlayerData data = playerDataCache.getData(player);
-								if (data.isSuperPickaxeCooldownEnabled())
+								for (Entry<String, Long> entry : cooldowns.entrySet())
 								{
-									data.setSuperPickaxeCooldownTime(data.getSuperPickaxeCooldownTime() - 1);
-									if (data.getSuperPickaxeCooldownTime() <= 0)
+									String key = entry.getKey();
+									long remaining = entry.getValue() - 1;
+									if (remaining <= 0)
 									{
-										data.setSuperPickaxeCooldownEnabled(false);
-										player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), "Super Pickaxe"));
+										cooldowns.remove(key);
+										player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), key));
+									}
+									else
+									{
+										cooldowns.put(entry.getKey(), remaining);
 									}
 								}
 							}
 						}
-					}
-				}.runTaskTimer(this, 2L, 1L);
-			}
-
-			/** SwornGuns Integration **/
-			if (pluginManager.isPluginEnabled("SwornGuns") && getConfig().getBoolean("unlimitedAmmo.enabled"))
-			{
-				new BukkitRunnable()
-				{
-					@Override
-					public void run()
-					{
-						for (Player player : getServer().getOnlinePlayers())
+						catch (Throwable ex)
 						{
-							if (player != null && player.isOnline())
-							{
-								PlayerData data = playerDataCache.getData(player);
-								if (data.isUnlimitedAmmoCooldownEnabled())
-								{
-									data.setUnlimitedAmmoCooldownTime(data.getUnlimitedAmmoCooldownTime() - 1);
-									if (data.getUnlimitedAmmoCooldownTime() <= 0)
-									{
-										data.setUnlimitedAmmoCooldownEnabled(false);
-										player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), "Unlimited Ammo"));
-									}
-								}
-							}
+							data.setCooldowns(new HashMap<String, Long>());
+							logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "ticking cooldown for " + data.getLastKnownBy()));
 						}
 					}
-				}.runTaskTimer(this, 2L, 1L);
-			}
+				}
+			}.runTaskTimerAsynchronously(this, 2L, 1L);
 
 			/** Online XP Gain **/
 			final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");

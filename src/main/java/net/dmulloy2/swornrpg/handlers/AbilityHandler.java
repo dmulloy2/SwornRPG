@@ -122,9 +122,9 @@ public class AbilityHandler implements Reloadable
 		}
 
 		/** Cooldown Check **/
-		if (data.isFrenzyCooldownEnabled())
+		if (data.getCooldowns().containsKey("frenzy"))
 		{
-			sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getFrenzyCooldownTime()));
+			sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("frenzy")));
 			return;
 		}
 
@@ -170,9 +170,9 @@ public class AbilityHandler implements Reloadable
 				if (data.isFrenzyEnabled())
 					return;
 
-				if (data.isFrenzyCooldownEnabled())
+				if (data.getCooldowns().containsKey("frenzy"))
 				{
-					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getFrenzyCooldownTime()));
+					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("frenzy")));
 					return;
 				}
 
@@ -227,8 +227,7 @@ public class AbilityHandler implements Reloadable
 				sendpMessage(player, plugin.getMessage("frenzy_wearoff"), TimeUtil.toSeconds(cooldown));
 
 				data.setFrenzyEnabled(false);
-				data.setFrenzyCooldownEnabled(true);
-				data.setFrenzyCooldownTime(cooldown);
+				data.getCooldowns().put("frenzy", cooldown);
 
 				plugin.debug(plugin.getMessage("log_frenzy_cooldown"), player.getName(), TimeUtil.toSeconds(cooldown));
 			}
@@ -267,9 +266,9 @@ public class AbilityHandler implements Reloadable
 		}
 
 		/** Cooldown Check **/
-		if (data.isSuperPickaxeCooldownEnabled())
+		if (data.getCooldowns().containsKey("superpick"))
 		{
-			sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getSuperPickaxeCooldownTime()));
+			sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
 			return;
 		}
 
@@ -315,9 +314,10 @@ public class AbilityHandler implements Reloadable
 				if (data.isSuperPickaxeEnabled())
 					return;
 
-				if (data.isSuperPickaxeCooldownEnabled())
+				if (data.getCooldowns().containsKey("superpick"))
 				{
-					sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getSuperPickaxeCooldownTime()));
+					sendpMessage(player, plugin.getMessage("superpick_cooldown"), 
+							TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
 					return;
 				}
 
@@ -361,8 +361,7 @@ public class AbilityHandler implements Reloadable
 				player.removePotionEffect(PotionEffectType.FAST_DIGGING);
 
 				data.setSuperPickaxeEnabled(false);
-				data.setSuperPickaxeCooldownEnabled(true);
-				data.setSuperPickaxeCooldownTime(getSuperPickaxeCooldown(level));
+				data.getCooldowns().put("superpick", cooldown);
 
 				plugin.debug(plugin.getMessage("log_superpick_cooldown"), player.getName(), TimeUtil.toSeconds(cooldown));
 			}
@@ -402,9 +401,9 @@ public class AbilityHandler implements Reloadable
 		}
 
 		/** Cooldown Check **/
-		if (data.isUnlimitedAmmoCooldownEnabled())
+		if (data.getCooldowns().containsKey("ammo"))
 		{
-			sendpMessage(player, plugin.getMessage("ammo_cooldown"), TimeUtil.toSeconds(data.getUnlimitedAmmoCooldownTime()));
+			sendpMessage(player, plugin.getMessage("ammo_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("ammo")));
 			return;
 		}
 
@@ -426,8 +425,7 @@ public class AbilityHandler implements Reloadable
 				sendpMessage(player, plugin.getMessage("ammo_nolonger_unlimited"), TimeUtil.toSeconds(cooldown));
 
 				data.setUnlimitedAmmoEnabled(false);
-				data.setUnlimitedAmmoCooldownEnabled(true);
-				data.setUnlimitedAmmoCooldownTime(cooldown);
+				data.getCooldowns().put("ammo", cooldown);
 
 				plugin.debug(plugin.getMessage("log_ammo_cooldown"), player.getName(), TimeUtil.toSeconds(cooldown));
 			}
