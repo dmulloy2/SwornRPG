@@ -44,20 +44,19 @@ commands:
     description: Talk in high council chat
     usage: /<command> <message>
     aliases: [hc]
-  itemname:
-    description: Set the name of your in-hand item
-    usage: /<command> <name>
-    aliases: [iname]
   level:
     description: Check a player's level
     usage: /<command> [player]
+  lore:
+    description: Set the lore of your in-hand item
+    usage: /<command> <lore>
   marry:
     description: Marry another player
     usage: /<command> <player>
-  meta:
-    description: Modify an item's item meta
-    usage: /<command> <type> <args>
-    aliases: [itemmeta]
+  name:
+    description: Set the name of your in-hand item
+    usage: /<command> <name>
+    aliases: [iname]
   propose:
     description: Propose marriage to a player
     usage: /<command> <player>
@@ -114,8 +113,9 @@ permissions:
       srpg.cmd.addxp: true
       srpg.cmd.adminsay: true
       srpg.cmd.highcouncil: true
-      srpg.cmd.itemname: true
       srpg.cmd.level.reset: true
+      srpg.cmd.lore: true
+      srpg.cmd.name: true
       srpg.cmd.reload: true
       srpg.cmd.tag: true
       srpg.cmd.tag.others: true
@@ -132,7 +132,6 @@ permissions:
     default: false
     children:
       srpg.guard: true
-      srpg.cmd.match: true
       srpg.cmd.ride: true
       srpg.cmd.unride: true
   srpg.guard:
@@ -203,9 +202,6 @@ permissions:
   srpg.cmd.highcouncil:
     description: Allows access to high council chat
     default: false
-  srpg.cmd.itemname:
-    description: Allows access to '/itemname'
-    default: false
   srpg.cmd.leaderboard:
     description: Allows access to '/srpg lb'
     default: true
@@ -218,12 +214,15 @@ permissions:
   srpg.cmd.level.reset:
     description: Allows access to '/resetlevel'
     default: false
+  srpg.cmd.lore:
+    description: Allows access to '/lore'
+    default: false
   srpg.cmd.marry:
     description: Allows access to '/marry'
     default: true
-  srpg.cmd.match:
-    description: Allows access to '/match'
-    default: true
+  srpg.cmd.name:
+    description: Allows access to '/name'
+    default: false
   srpg.cmd.propose:
     description: Allows access to '/propose'
     default: true
