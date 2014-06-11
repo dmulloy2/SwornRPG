@@ -72,7 +72,7 @@ public class BlockListener implements Listener, Reloadable
 
 			if (plugin.getBlockDropsMap().containsKey(Material.AIR))
 			{
-				for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(0))
+				for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(Material.AIR))
 				{
 					if (Util.random(blockDrop.getChance()) == 0)
 					{
