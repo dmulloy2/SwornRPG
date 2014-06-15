@@ -3,7 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -48,7 +48,7 @@ public class CmdDeny extends SwornRPGCommand
 				Player target = Util.matchPlayer(reject);
 				if (target != null)
 				{
-					sendMessageTarget(target, getMessage("deny_rejcted"), player.getName());
+					sendpMessage(target, getMessage("deny_rejcted"), player.getName());
 				}
 			}
 
@@ -68,7 +68,7 @@ public class CmdDeny extends SwornRPGCommand
 			Player target = Util.matchPlayer(reject);
 			if (target != null)
 			{
-				sendMessageTarget(target, getMessage("deny_rejcted"), player.getName());
+				sendpMessage(target, getMessage("deny_rejcted"), player.getName());
 			}
 
 			sendpMessage(getMessage("deny_sender"), target.getName() + "''s proposal");

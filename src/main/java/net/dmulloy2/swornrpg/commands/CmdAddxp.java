@@ -2,7 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -47,7 +47,7 @@ public class CmdAddxp extends SwornRPGCommand
 		else
 		{
 			sendpMessage(plugin.getMessage("addxp_give"), giveXP, target.getName());
-			sendMessageTarget(target, plugin.getMessage("addxp_given"), giveXP);
+			sendpMessage(target, plugin.getMessage("addxp_given"), giveXP);
 		}
 	}
 }

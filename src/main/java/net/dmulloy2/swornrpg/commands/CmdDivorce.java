@@ -3,7 +3,8 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.OfflinePlayer;
 
@@ -50,11 +51,11 @@ public class CmdDivorce extends SwornRPGCommand
 			return;
 		}
 
-		sendMessageAll(plugin.getMessage("divorce_broadcast"), player.getName(), spouse);
+		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("divorce_broadcast"), player.getName(), spouse));
 		targetData.setSpouse(null);
 		if (target.isOnline())
 		{
-			sendMessageTarget(target.getPlayer(), plugin.getMessage("divorce_defendant"));
+			sendpMessage(target.getPlayer(), plugin.getMessage("divorce_defendant"));
 		}
 	}
 }

@@ -3,7 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -63,7 +63,7 @@ public class CmdPropose extends SwornRPGCommand
 		{
 			data1.getProposals().add(player.getName());
 			sendpMessage(getMessage("you_have_proposed"), targetp);
-			sendMessageTarget(target, getMessage("send_marriage_request"), sender.getName());
+			sendpMessage(target, getMessage("send_marriage_request"), sender.getName());
 		}
 	}
 }

@@ -4,8 +4,8 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.handlers.AbilityHandler;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.TimeUtil;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.TimeUtil;
 
 import org.bukkit.OfflinePlayer;
 

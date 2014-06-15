@@ -2,7 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornrpg.util.InventoryUtil;
+import net.dmulloy2.util.InventoryUtil;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

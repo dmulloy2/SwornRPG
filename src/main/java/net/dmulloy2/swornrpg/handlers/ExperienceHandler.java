@@ -5,10 +5,10 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.InventoryUtil;
-import net.dmulloy2.swornrpg.util.ItemUtil;
-import net.dmulloy2.swornrpg.util.TimeUtil;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.InventoryUtil;
+import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.util.TimeUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;

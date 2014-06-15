@@ -3,7 +3,8 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -47,7 +48,7 @@ public class CmdMarry extends SwornRPGCommand
 		PlayerData data1 = getPlayerData(target);
 		data1.setSpouse(player.getName());
 
-		sendMessageAll(plugin.getMessage("marry"), player.getName(), target.getName());
+		plugin.getServer().broadcastMessage(FormatUtil.format(getMessage("marry"), player.getName(), target.getName()));
 		data.getProposals().remove(target.getName());
 	}
 }

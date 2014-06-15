@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -89,7 +89,7 @@ public class CmdTag extends SwornRPGCommand
 			plugin.getTagHandler().setTag(target, newTag);
 
 			sendpMessage(plugin.getMessage("tag_changed_changer"), target.getName(), getFormattedColor(color));
-			sendMessageTarget(target, plugin.getMessage("tag_changed_changed"), getFormattedColor(color));
+			sendpMessage(target, plugin.getMessage("tag_changed_changed"), getFormattedColor(color));
 		}
 	}
 

@@ -27,6 +27,12 @@ import java.util.MissingResourceException;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import net.dmulloy2.SwornPlugin;
+import net.dmulloy2.commands.CmdHelp;
+import net.dmulloy2.handlers.CommandHandler;
+import net.dmulloy2.handlers.LogHandler;
+import net.dmulloy2.handlers.PermissionHandler;
+import net.dmulloy2.handlers.ResourceHandler;
 import net.dmulloy2.swornrpg.commands.CmdAbilities;
 import net.dmulloy2.swornrpg.commands.CmdAddxp;
 import net.dmulloy2.swornrpg.commands.CmdAdminChat;
@@ -37,7 +43,6 @@ import net.dmulloy2.swornrpg.commands.CmdDivorce;
 import net.dmulloy2.swornrpg.commands.CmdEject;
 import net.dmulloy2.swornrpg.commands.CmdFrenzy;
 import net.dmulloy2.swornrpg.commands.CmdHat;
-import net.dmulloy2.swornrpg.commands.CmdHelp;
 import net.dmulloy2.swornrpg.commands.CmdHighCouncil;
 import net.dmulloy2.swornrpg.commands.CmdLeaderboard;
 import net.dmulloy2.swornrpg.commands.CmdLevel;
@@ -59,12 +64,8 @@ import net.dmulloy2.swornrpg.commands.CmdUnlimitedAmmo;
 import net.dmulloy2.swornrpg.commands.CmdUnride;
 import net.dmulloy2.swornrpg.commands.CmdVersion;
 import net.dmulloy2.swornrpg.handlers.AbilityHandler;
-import net.dmulloy2.swornrpg.handlers.CommandHandler;
 import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
 import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
-import net.dmulloy2.swornrpg.handlers.LogHandler;
-import net.dmulloy2.swornrpg.handlers.PermissionHandler;
-import net.dmulloy2.swornrpg.handlers.ResourceHandler;
 import net.dmulloy2.swornrpg.handlers.TagHandler;
 import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
@@ -73,12 +74,12 @@ import net.dmulloy2.swornrpg.listeners.ExperienceListener;
 import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.types.Reloadable;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.MaterialUtil;
-import net.dmulloy2.swornrpg.util.NumberUtil;
-import net.dmulloy2.swornrpg.util.TimeUtil;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.MaterialUtil;
+import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.util.TimeUtil;
+import net.dmulloy2.util.Util;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -98,7 +99,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.Essentials;
@@ -110,7 +110,7 @@ import com.massivecraft.factions.Faction;
  * @author dmulloy2
  */
 
-public class SwornRPG extends JavaPlugin implements Reloadable
+public class SwornRPG extends SwornPlugin implements Reloadable
 {
 	/** Vault **/
 	private @Getter Economy economy;
@@ -128,11 +128,7 @@ public class SwornRPG extends JavaPlugin implements Reloadable
 	private @Getter PlayerDataCache playerDataCache;
 
 	/** Handlers **/
-	private @Getter PermissionHandler permissionHandler;
-	private @Getter CommandHandler commandHandler;
 	private @Getter ResourceHandler resourceHandler;
-	private @Getter LogHandler logHandler;
-
 	private @Getter AbilityHandler abilityHandler;
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;

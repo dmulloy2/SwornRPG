@@ -3,7 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;

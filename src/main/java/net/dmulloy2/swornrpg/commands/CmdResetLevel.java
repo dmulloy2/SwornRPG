@@ -46,7 +46,7 @@ public class CmdResetLevel extends SwornRPGCommand
 		sendpMessage(getMessage("level_reset_resetter"), target.getName());
 		if (target.isOnline())
 		{
-			sendMessageTarget(target.getPlayer(), getMessage("level_reset_reset"));
+			sendpMessage(target.getPlayer(), getMessage("level_reset_reset"));
 		}
 	}
 }

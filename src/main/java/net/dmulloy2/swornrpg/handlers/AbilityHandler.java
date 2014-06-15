@@ -7,10 +7,10 @@ import lombok.Getter;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornrpg.types.Reloadable;
-import net.dmulloy2.swornrpg.util.FormatUtil;
-import net.dmulloy2.swornrpg.util.TimeUtil;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.TimeUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;

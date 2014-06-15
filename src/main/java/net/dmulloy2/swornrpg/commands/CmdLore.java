@@ -8,7 +8,7 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornrpg.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

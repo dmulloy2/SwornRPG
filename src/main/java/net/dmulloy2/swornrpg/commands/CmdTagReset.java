@@ -2,7 +2,7 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornrpg.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 
@@ -55,7 +55,7 @@ public class CmdTagReset extends SwornRPGCommand
 
 			plugin.getTagHandler().removeTag(target);
 			sendpMessage(plugin.getMessage("tag_reset_resetter"), target.getName());
-			sendMessageTarget(target, plugin.getMessage("tag_reset_resetee"));
+			sendpMessage(target, plugin.getMessage("tag_reset_resetee"));
 		}
 	}
 }

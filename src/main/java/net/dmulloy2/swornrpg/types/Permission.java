@@ -1,13 +1,14 @@
 package net.dmulloy2.swornrpg.types;
 
 import lombok.Getter;
+import net.dmulloy2.types.IPermission;
 
 /**
  * @author dmulloy2
  */
 
 @Getter
-public enum Permission
+public enum Permission implements IPermission
 {
 	ABILITIES,
 	ABILITIES_OTHERS,
