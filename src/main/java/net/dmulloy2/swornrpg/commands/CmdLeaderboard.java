@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
@@ -62,7 +63,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			new BuildLeaderboardThread();
 		}
 
-		new DisplayLeaderboardThread(player.getName());
+		new DisplayLeaderboardThread(sender.getName());
 	}
 
 	public void displayLeaderboard(String playerName)
@@ -84,12 +85,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		if (index > pageCount)
 		{
-			player.sendMessage(FormatUtil.format("&cError: &4" + getMessage("error_no_page_with_index"), args[0]));
+			sendMessage(player, "&cError: &4" + getMessage("error_no_page_with_index"), args[0]);
 			return;
 		}
 
 		for (String s : getPage(index))
-			player.sendMessage(FormatUtil.format(s));
+			sendMessage(player, s);
 	}
 
 	private int linesPerPage = 10;
@@ -252,7 +253,11 @@ public class CmdLeaderboard extends SwornRPGCommand
 			}
 			catch (Throwable ex)
 			{
-				err("Could not update leaderboard: {0}", ex);
+				Player player = Util.matchPlayer(playerName);
+				if (player != null)
+					sendMessage(player, "&cError: &4Failed to update leaderboard: &c{0}", ex);
+
+				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "updating leaderboard"));
 			}
 		}
 	}
