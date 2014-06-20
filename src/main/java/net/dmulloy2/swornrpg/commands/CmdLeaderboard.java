@@ -35,7 +35,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		this.aliases.add("top");
 		this.description = "Display experience leaderboard";
 		this.permission = Permission.LEADERBOARD;
-
+		this.mustBePlayer = true;
 		this.usesPrefix = true;
 	}
 
@@ -50,23 +50,20 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		if (leaderboard == null)
 		{
-			this.leaderboard = new ArrayList<String>();
+			this.leaderboard = new ArrayList<>();
 		}
 
-		if ((System.currentTimeMillis() - lastUpdateTime) > 600000L || leaderboard.isEmpty())
+		if (System.currentTimeMillis() - lastUpdateTime > 600000L)
 		{
-			sendpMessage(getMessage("leaderboard_wait"));
-			
-			leaderboard.clear();
-			updating = true;
-
+			sendMessage(plugin.getMessage("leaderboard_wait"));
+			this.updating = true;
 			new BuildLeaderboardThread();
 		}
 
-		new DisplayLeaderboardThread(sender.getName());
+		new DisplayLeaderboardThread(sender.getName(), args);
 	}
 
-	public void displayLeaderboard(String playerName)
+	public void displayLeaderboard(String playerName, String[] args)
 	{
 		Player player = Util.matchPlayer(playerName);
 		if (player == null)
@@ -188,27 +185,20 @@ public class CmdLeaderboard extends SwornRPGCommand
 			// Clear the map
 			experienceMap.clear();
 
-			int pos = 1;
-			for (Entry<PlayerData, Integer> entry : sortedEntries)
+			String format = getMessage("leaderboard_format");
+
+			for (int i = 0; i < sortedEntries.size(); i++)
 			{
 				try
 				{
-					PlayerData data = entry.getKey();
-					leaderboard.add(FormatUtil.format(getMessage("leaderboard_format"), pos, data.getLastKnownBy(), data.getLevel(),
-							data.getTotalxp()));
-					pos++;
-				}
-				catch (Throwable ex)
-				{
-					// Swallow the exception, move on
-					continue;
-				}
+					PlayerData data = sortedEntries.get(i).getKey();
+					leaderboard.add(FormatUtil.format(format, i + 1, data.getLastKnownBy(), data.getLevel(), data.getTotalxp()));
+				} catch (Throwable ex) { }
 			}
 
 			sortedEntries.clear();
 
 			lastUpdateTime = System.currentTimeMillis();
-
 			updating = false;
 
 			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
@@ -230,12 +220,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 	public class DisplayLeaderboardThread extends Thread
 	{
-		private String playerName;
-		public DisplayLeaderboardThread(String playerName)
+		private final String[] args;
+		private final String playerName;
+		public DisplayLeaderboardThread(String playerName, String[] args)
 		{
 			super("SwornRPG-DisplayLeaderboard");
 			this.setPriority(MIN_PRIORITY);
 			this.playerName = playerName;
+			this.args = args;
 			this.start();
 		}
 
@@ -249,7 +241,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 					sleep(500L);
 				}
 
-				displayLeaderboard(playerName);
+				displayLeaderboard(playerName, args);
 			}
 			catch (Throwable ex)
 			{
