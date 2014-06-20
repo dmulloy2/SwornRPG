@@ -192,7 +192,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 				try
 				{
 					PlayerData data = sortedEntries.get(i).getKey();
-					leaderboard.add(FormatUtil.format(format, i + 1, data.getLastKnownBy(), data.getLevel(), data.getTotalxp()));
+
+					String space = "";
+					String name = data.getLastKnownBy();
+					for (int ii = name.length(); ii < 19; ii++)
+						space = space + " ";
+					name = name + space;
+
+					leaderboard.add(FormatUtil.format(format, i + 1, name, data.getLevel(), data.getTotalxp()));
 				} catch (Throwable ex) { }
 			}
 
