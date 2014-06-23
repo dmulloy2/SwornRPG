@@ -1,11 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.dmulloy2</groupId>
   <artifactId>swornrpg</artifactId>
   <version>3.2-SNAPSHOT</version>
   <name>SwornRPG</name>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.number>LOCAL</project.build.number>
@@ -43,9 +43,9 @@
       </properties>
     </profile>
   </profiles>
-  
+
   <build>
-    <plugins> 
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -68,28 +68,28 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-shade-plugin</artifactId>
-		<version>1.4</version>
-		<executions>
-		  <execution>
-		    <phase>package</phase>
-			<goals>
-			  <goal>shade</goal>
-			</goals>
-			<configuration>
-			  <artifactSet>
-			    <includes>
-			      <include>net.dmulloy2:swornapi*</include>
-			    </includes>
-			  </artifactSet>
-		    </configuration>
-		  </execution>
-	    </executions>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>net.dmulloy2:swornapi*</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <resources>
       <resource>
-  	    <targetPath>.</targetPath>
+        <targetPath>.</targetPath>
         <directory>${basedir}/src/main/resources/</directory>
         <filtering>true</filtering>
         <includes>
@@ -106,7 +106,7 @@
       </resource>
     </resources>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>net.dmulloy2</groupId>
@@ -114,7 +114,7 @@
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
- 	  <groupId>org.projectlombok</groupId>
+      <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>0.12.0</version>
       <scope>provided</scope>
@@ -137,7 +137,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.31</version>
+      <version>1.4.1</version>
     </dependency>
   </dependencies>
 </project>

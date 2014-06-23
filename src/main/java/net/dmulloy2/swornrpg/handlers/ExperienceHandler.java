@@ -111,7 +111,7 @@ public class ExperienceHandler
 			{
 				int money = level * plugin.getConfig().getInt("levelingRewards.money");
 
-				economy.depositPlayer(player.getName(), money);
+				economy.depositPlayer(player, money);
 
 				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
 			}
