@@ -21,10 +21,6 @@
       <url>http://ci.minesworn.com/plugin/repository/everything/</url>
     </repository>
     <repository>
-      <id>kitteh-repo</id>
-      <url>http://repo.kitteh.org/content/repositories/public/</url>
-    </repository>
-    <repository>
       <id>essentials-repo</id>
       <url>http://repo.ess3.net/content/repositories/public/</url>
     </repository>
