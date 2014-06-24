@@ -58,15 +58,13 @@ import net.dmulloy2.swornrpg.commands.CmdSpouse;
 import net.dmulloy2.swornrpg.commands.CmdStaffList;
 import net.dmulloy2.swornrpg.commands.CmdStandup;
 import net.dmulloy2.swornrpg.commands.CmdSuperPickaxe;
-import net.dmulloy2.swornrpg.commands.CmdTag;
-import net.dmulloy2.swornrpg.commands.CmdTagReset;
 import net.dmulloy2.swornrpg.commands.CmdUnlimitedAmmo;
 import net.dmulloy2.swornrpg.commands.CmdUnride;
 import net.dmulloy2.swornrpg.commands.CmdVersion;
 import net.dmulloy2.swornrpg.handlers.AbilityHandler;
 import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
 import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
-import net.dmulloy2.swornrpg.handlers.TagHandler;
+import net.dmulloy2.swornrpg.handlers.VaultHandler;
 import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
@@ -80,8 +78,6 @@ import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -98,7 +94,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.earth2me.essentials.Essentials;
@@ -112,10 +107,6 @@ import com.massivecraft.factions.Faction;
 
 public class SwornRPG extends SwornPlugin implements Reloadable
 {
-	/** Vault **/
-	private @Getter Economy economy;
-	private @Getter Permission permission;
-
 	/** Essentials **/
 	private @Getter boolean useEssentials;
 	private @Getter Essentials essentials;
@@ -128,11 +119,11 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private @Getter PlayerDataCache playerDataCache;
 
 	/** Handlers **/
-	private @Getter ResourceHandler resourceHandler;
-	private @Getter AbilityHandler abilityHandler;
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;
-	private @Getter TagHandler tagHandler;
+	private @Getter ResourceHandler resourceHandler;
+	private @Getter AbilityHandler abilityHandler;
+	private @Getter VaultHandler vaultHandler;
 
 	/** Listeners, Stored for Reloading **/
 	private List<Listener> listeners;
@@ -247,15 +238,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			commandHandler.registerCommand(new CmdStaffList(this));
 			commandHandler.registerCommand(new CmdStandup(this));
 			commandHandler.registerCommand(new CmdSuperPickaxe(this));
-			commandHandler.registerCommand(new CmdTag(this));
-			commandHandler.registerCommand(new CmdTagReset(this));
 			commandHandler.registerCommand(new CmdUnride(this));
 			commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
 
 			/** Integration **/
-			tagHandler = new TagHandler(this);
+			vaultHandler = new VaultHandler(this);
 
-			setupVaultIntegration();
 			setupFactionsIntegration();
 			setupEssentialsIntegration();
 
@@ -420,33 +408,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		logHandler.debug(string, objects);
 	}
 
-	// ---- Integration ---- //
-
-	/**
-	 * Sets up Vault Integration
-	 */
-	private final void setupVaultIntegration()
-	{
-		if (pluginManager.isPluginEnabled("Vault"))
-		{
-			RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-			if (economyProvider != null)
-			{
-				economy = economyProvider.getProvider();
-			}
-
-			RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(Permission.class);
-			if (permissionProvider != null)
-			{
-				permission = permissionProvider.getProvider();
-			}
-		}
-
-		if (economy != null)
-		{
-			outConsole(getMessage("log_integration_vault"), economy.getName());
-		}
-	}
+	// ---- Integration
 
 	/**
 	 * Sets up Essentials Integration

@@ -9,7 +9,6 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.TimeUtil;
-import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -106,14 +105,15 @@ public class ExperienceHandler
 		/** Rewards **/
 		if (plugin.getConfig().getBoolean("levelingRewards.enabled"))
 		{
-			Economy economy = plugin.getEconomy();
-			if (economy != null)
+			VaultHandler handler = plugin.getVaultHandler();
+			if (handler.getEconomy() != null)
 			{
 				int money = level * plugin.getConfig().getInt("levelingRewards.money");
 
-				economy.depositPlayer(player, money);
+				handler.depositPlayer(player, money);
 
-				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), economy.format(money)));
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"),
+						handler.getEconomy().format(money)));
 			}
 
 			List<String> configItems = plugin.getConfig().getStringList("levelingRewards.items");

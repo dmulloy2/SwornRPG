@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -32,7 +33,7 @@ public class CmdStaffList extends SwornRPGCommand
 	public void perform()
 	{
 		// Calculate online staff
-		HashMap<String, List<String>> staffMap = new HashMap<String, List<String>>();
+		Map<String, List<String>> staffMap = new HashMap<String, List<String>>();
 
 		int total = 0;
 
@@ -40,9 +41,10 @@ public class CmdStaffList extends SwornRPGCommand
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.STAFF))
 			{
-				if (plugin.getPermission() != null)
+				net.milkbowl.vault.permission.Permission permission = plugin.getVaultHandler().getPermission();
+				if (permission != null)
 				{
-					String group = plugin.getPermission().getPrimaryGroup(player);
+					String group = permission.getPrimaryGroup(player);
 					if (group != null)
 					{
 						if (! staffMap.containsKey(group))
