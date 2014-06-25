@@ -4,7 +4,7 @@
 package net.dmulloy2.swornrpg.integration;
 
 import lombok.Getter;
-import net.dmulloy2.handlers.IntegrationHandler;
+import net.dmulloy2.integration.IntegrationHandler;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;

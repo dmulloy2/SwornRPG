@@ -3,7 +3,7 @@
  */
 package net.dmulloy2.swornrpg.integration;
 
-import net.dmulloy2.handlers.IntegrationHandler;
+import net.dmulloy2.integration.IntegrationHandler;
 import net.dmulloy2.swornrpg.SwornRPG;
 
 import org.bukkit.Location;
