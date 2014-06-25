@@ -51,7 +51,7 @@ public class BlockListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getPlayer();
-		if (plugin.checkFactions(player, true))
+		if (plugin.getFactionsHandler().checkFactions(player, true))
 			return;
 
 		if (player.getGameMode() == GameMode.CREATIVE)

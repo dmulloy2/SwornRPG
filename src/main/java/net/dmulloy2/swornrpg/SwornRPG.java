@@ -64,7 +64,9 @@ import net.dmulloy2.swornrpg.commands.CmdVersion;
 import net.dmulloy2.swornrpg.handlers.AbilityHandler;
 import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
 import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
-import net.dmulloy2.swornrpg.handlers.VaultHandler;
+import net.dmulloy2.swornrpg.integration.EssentialsHandler;
+import net.dmulloy2.swornrpg.integration.FactionsHandler;
+import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
@@ -92,14 +94,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.earth2me.essentials.Essentials;
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
 
 /**
  * @author dmulloy2
@@ -107,22 +103,17 @@ import com.massivecraft.factions.Faction;
 
 public class SwornRPG extends SwornPlugin implements Reloadable
 {
-	/** Essentials **/
-	private @Getter boolean useEssentials;
-	private @Getter Essentials essentials;
-
-	/** Factions **/
-	private @Getter boolean factionsEnabled;
-	private @Getter boolean swornNationsEnabled;
-
-	private @Getter PluginManager pluginManager;
-	private @Getter PlayerDataCache playerDataCache;
-
 	/** Handlers **/
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter AbilityHandler abilityHandler;
+
+	private @Getter PlayerDataCache playerDataCache;
+
+	/** Integration **/
+	private @Getter EssentialsHandler essentialsHandler;
+	private @Getter FactionsHandler factionsHandler;
 	private @Getter VaultHandler vaultHandler;
 
 	/** Listeners, Stored for Reloading **/
@@ -165,10 +156,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			commandHandler = new CommandHandler(this);
 
 			/** Register Listeners **/
-			pluginManager = getServer().getPluginManager();
-
 			listeners = new ArrayList<Listener>();
-
 			registerListener(new PlayerListener(this));
 			registerListener(new EntityListener(this));
 			registerListener(new BlockListener(this));
@@ -243,9 +231,8 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 			/** Integration **/
 			vaultHandler = new VaultHandler(this);
-
-			setupFactionsIntegration();
-			setupEssentialsIntegration();
+			factionsHandler = new FactionsHandler(this);
+			essentialsHandler = new EssentialsHandler(this);
 
 			playerDataCache = new PlayerDataCache(this);
 
@@ -343,7 +330,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			}
 
 			// If an OP joins, alert them as well
-			pluginManager.registerEvents(new Listener()
+			getPluginManager().registerEvents(new Listener()
 			{
 				@EventHandler
 				public void onPlayerJoin(PlayerJoinEvent event)
@@ -391,7 +378,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		salvageRef.clear();
 	}
 
-	// ---- Console Logging ---- //
+	// ---- Console Logging
 
 	public final void outConsole(String string, Object... objects)
 	{
@@ -406,59 +393,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	public final void debug(String string, Object... objects)
 	{
 		logHandler.debug(string, objects);
-	}
-
-	// ---- Integration
-
-	/**
-	 * Sets up Essentials Integration
-	 */
-	private final void setupEssentialsIntegration()
-	{
-		try
-		{
-			PluginManager pm = getServer().getPluginManager();
-			if (pm.isPluginEnabled("Essentials"))
-			{
-				Plugin plugin = pm.getPlugin("Essentials");
-				essentials = (Essentials) plugin;
-				useEssentials = true;
-			}
-		}
-		catch (Throwable ex)
-		{
-			essentials = null;
-			useEssentials = false;
-		}
-
-		if (useEssentials)
-		{
-			outConsole(getMessage("log_integration_essentials"));
-		}
-	}
-
-	/**
-	 * Sets up Factions Integration
-	 */
-	private final void setupFactionsIntegration()
-	{
-		if (pluginManager.isPluginEnabled("Factions"))
-		{
-			Plugin pl = pluginManager.getPlugin("Factions");
-			String version = pl.getDescription().getVersion();
-			factionsEnabled = version.startsWith("1.6");
-		}
-
-		if (pluginManager.isPluginEnabled("SwornNations"))
-		{
-			factionsEnabled = true;
-			swornNationsEnabled = true;
-		}
-
-		if (factionsEnabled)
-		{
-			outConsole(getMessage("log_integration_factions"));
-		}
 	}
 
 	/**
@@ -505,7 +439,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private final void registerListener(Listener listener)
 	{
 		listeners.add(listener);
-		pluginManager.registerEvents(listener, this);
+		getPluginManager().registerEvents(listener, this);
+	}
+
+	public final PluginManager getPluginManager()
+	{
+		return getServer().getPluginManager();
 	}
 
 	/**
@@ -670,46 +609,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		return false;
 	}
 
-	// ---- Factions Checks ---- //
-
-	public final boolean checkFactions(Location location, boolean safeZoneCheck)
-	{
-		return safeZoneCheck ? isSafeZone(location) || isWarZone(location) : isWarZone(location);
-	}
-
-	public final boolean checkFactions(Player player, boolean safeZoneCheck)
-	{
-		return checkFactions(player.getLocation(), safeZoneCheck);
-	}
-
-	private final boolean isWarZone(Location location)
-	{
-		if (factionsEnabled)
-		{
-			Faction fac = Board.getFactionAt(new FLocation(location));
-			if (swornNationsEnabled)
-				fac = Board.getAbsoluteFactionAt(new FLocation(location));
-
-			return fac.isWarZone();
-		}
-
-		return false;
-	}
-
-	private final boolean isSafeZone(Location location)
-	{
-		if (factionsEnabled)
-		{
-			Faction fac = Board.getFactionAt(new FLocation(location));
-			if (swornNationsEnabled)
-				fac = Board.getAbsoluteFactionAt(new FLocation(location));
-
-			return fac.isSafeZone();
-		}
-
-		return false;
-	}
-
 	public final Player getKiller(Player killed)
 	{
 		Entity attacker = killed.getKiller();
@@ -743,7 +642,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		return killer;
 	}
 
-	// ---- Disabled World Checks ---- //
+	// ---- Disabled World Checks
 
 	public boolean isDisabledWorld(Player player)
 	{

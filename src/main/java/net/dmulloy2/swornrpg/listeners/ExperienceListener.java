@@ -86,7 +86,8 @@ public class ExperienceListener implements Listener, Reloadable
 		if (killer != null)
 		{
 			/** Warzone Checks **/
-			if (plugin.checkFactions(killer, false) || plugin.checkFactions(killed, false))
+			if (plugin.getFactionsHandler().checkFactions(killer, false)
+					|| plugin.getFactionsHandler().checkFactions(killed, false))
 				return;
 
 			/** Suicide Check **/
@@ -133,7 +134,7 @@ public class ExperienceListener implements Listener, Reloadable
 		if (killer != null)
 		{
 			/** Warzone and Safezone check **/
-			if (plugin.checkFactions(killer, true))
+			if (plugin.getFactionsHandler().checkFactions(killer, true))
 				return;
 
 			/** Camping Check **/
@@ -190,7 +191,7 @@ public class ExperienceListener implements Listener, Reloadable
 			return;
 
 		/** Factions Check **/
-		if (plugin.checkFactions(player, true))
+		if (plugin.getFactionsHandler().checkFactions(player, true))
 			return;
 
 		/** Camping Check **/

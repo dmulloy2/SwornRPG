@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.integration.EssentialsHandler;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
@@ -40,7 +41,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
 /**
@@ -166,7 +166,7 @@ public class PlayerListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getEntity();
-		if (plugin.checkFactions(player, true))
+		if (plugin.getFactionsHandler().checkFactions(player, true))
 			return;
 
 		Location loc = player.getLocation();
@@ -177,10 +177,10 @@ public class PlayerListener implements Listener, Reloadable
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isDeathCoordsEnabled())
 		{
-			Essentials ess = plugin.getEssentials();
-			if (ess != null)
+			EssentialsHandler handler = plugin.getEssentialsHandler();
+			if (handler.isEnabled())
 			{
-				User user = ess.getUser(player);
+				User user = handler.getEssentials().getUser(player);
 				
 				Player killer = plugin.getKiller(player);
 				if (killer != null)
@@ -398,7 +398,7 @@ public class PlayerListener implements Listener, Reloadable
 		if (plugin.isDisabledWorld(player))
 			return;
 
-		if (plugin.checkFactions(player, false))
+		if (plugin.getFactionsHandler().checkFactions(player, false))
 			return;
 
 		if (player.isSneaking())

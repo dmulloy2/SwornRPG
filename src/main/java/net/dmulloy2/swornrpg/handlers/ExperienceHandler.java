@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
