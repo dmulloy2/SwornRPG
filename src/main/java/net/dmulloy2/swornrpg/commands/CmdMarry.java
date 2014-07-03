@@ -35,6 +35,11 @@ public class CmdMarry extends SwornRPGCommand
 		}
 
 		PlayerData data = getPlayerData(player);
+		if (! data.getProposals().contains(args[0]))
+		{
+			err("&c{0} &4hasn''t proposed!", args[0]);
+			return;
+		}
 
 		Player target = Util.matchPlayer(args[0]);
 		if (target == null)
