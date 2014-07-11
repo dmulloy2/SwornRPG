@@ -112,7 +112,7 @@ levelingMethods:
     xpgain: 5
   # Minute of online time
   onlineTime:
-    enabled: true
+    enabled: false
     xpgain: 1
   # Taming
   taming:
@@ -130,6 +130,11 @@ levelingMethods:
   enchanting:
     enabled: true
     xpgain: 5
+
+# Maximum level
+# Input - integer
+# Set to -1 to disable
+levelCap: -1
 
 #############################################
 #+-----------------------------------------+#
@@ -224,7 +229,7 @@ axeKnockback:
   odds: 8
 
 # Iron Door protection (boolean)
-ironDoorProtection: true
+ironDoorProtection: false
 
 # Death Coordinate Messages (boolean)
 deathCoordinateMessages: true

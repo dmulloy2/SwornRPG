@@ -2,8 +2,7 @@ package net.dmulloy2.swornrpg.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import org.bukkit.inventory.ItemStack;
+import net.dmulloy2.types.MyMaterial;
 
 /**
  * @author dmulloy2
@@ -13,6 +12,6 @@ import org.bukkit.inventory.ItemStack;
 @AllArgsConstructor
 public class BlockDrop
 {
-	private final ItemStack item;
+	private final MyMaterial material;
 	private final int chance;
 }

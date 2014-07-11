@@ -1,11 +1,12 @@
 package net.dmulloy2.swornrpg.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.ItemUtil;
@@ -16,24 +17,30 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Handles the gaining of xp
- * 
+ *
  * @author dmulloy2
  */
 
-@AllArgsConstructor
-public class ExperienceHandler
+public class ExperienceHandler implements Reloadable
 {
+	private List<ItemStack> rewardItems;
+	private boolean rewardsEnabled;
+	private double rewardMoney;
+	private int levelCap;
+
 	private final SwornRPG plugin;
+	public ExperienceHandler(SwornRPG plugin)
+	{
+		this.plugin = plugin;
+		this.reload();
+	}
 
 	/**
 	 * Handles xp gaining for players
-	 * 
-	 * @param player
-	 *        - {@link Player} who gained xp
-	 * @param xpGained
-	 *        - Amount of xp gained
-	 * @param message
-	 *        - Message to be sent to the player
+	 *
+	 * @param player {@link Player} who gained xp
+	 * @param xpGained Amount of xp gained
+	 * @param message Message to be sent to the player
 	 */
 	public void handleXpGain(Player player, int xpGained, String message)
 	{
@@ -59,9 +66,8 @@ public class ExperienceHandler
 
 	/**
 	 * Handles leveling up for players
-	 * 
-	 * @param player
-	 *        - {@link Player} to level up
+	 *
+	 * @param player {@link Player} to level up
 	 */
 	public final void handleLevelUp(Player player)
 	{
@@ -77,7 +83,7 @@ public class ExperienceHandler
 		int oldUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
 		/** Prepare data for the next level **/
-		if (data.getLevel() < 250)
+		if (levelCap == -1 || data.getLevel() < levelCap)
 		{
 			data.setLevel(data.getLevel() + 1);
 			data.setXpneeded(data.getXpNeeded() + (data.getXpNeeded() / 4));
@@ -92,7 +98,7 @@ public class ExperienceHandler
 
 		/** Send messages **/
 		int level = data.getLevel();
-		if (level == 250)
+		if (levelCap != -1 && level >= levelCap)
 		{
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("level_cap")));
 		}
@@ -104,12 +110,12 @@ public class ExperienceHandler
 		plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
 
 		/** Rewards **/
-		if (plugin.getConfig().getBoolean("levelingRewards.enabled"))
+		if (rewardsEnabled)
 		{
 			VaultHandler handler = plugin.getVaultHandler();
 			if (handler.getEconomy() != null)
 			{
-				int money = level * plugin.getConfig().getInt("levelingRewards.money");
+				double money = rewardMoney * level;
 
 				handler.depositPlayer(player, money);
 
@@ -117,22 +123,17 @@ public class ExperienceHandler
 						handler.getEconomy().format(money)));
 			}
 
-			List<String> configItems = plugin.getConfig().getStringList("levelingRewards.items");
-			if (! configItems.isEmpty())
+			if (! rewardItems.isEmpty())
 			{
-				for (String configItem : configItems)
+				for (ItemStack item : rewardItems)
 				{
-					ItemStack item = ItemUtil.readItem(configItem);
-					if (item != null)
-					{
-						item.setAmount(item.getAmount() * level);
+					item = item.clone();
+					item.setAmount(item.getAmount() * level);
 
-						InventoryUtil.giveItem(player, item);
+					InventoryUtil.giveItem(player, item);
 
-						String itemName = FormatUtil.getFriendlyName(item.getType());
-						player.sendMessage(plugin.getPrefix()
-								+ FormatUtil.format(plugin.getMessage("levelup_items"), item.getAmount(), itemName));
-					}
+					String itemName = FormatUtil.getFriendlyName(item.getType());
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_items"), item.getAmount(), itemName));
 				}
 			}
 		}
@@ -154,9 +155,8 @@ public class ExperienceHandler
 	/**
 	 * Recalculates a player's statistics based upon the current xp gaining
 	 * algorithm. Currently not used and must be tweaked.
-	 * 
-	 * @param player
-	 *        - {@link Player} to recalculate stats for
+	 *
+	 * @param player {@link Player} to recalculate stats for
 	 */
 	public final void recalculateStats(Player player)
 	{
@@ -186,5 +186,21 @@ public class ExperienceHandler
 //		data.setTotalxp(totalXp);
 //		data.setXpneeded(xpNeeded);
 //		data.setPlayerxp(0);
+	}
+
+	@Override
+	public void reload()
+	{
+		this.rewardItems = new ArrayList<>();
+		for (String reward : plugin.getConfig().getStringList("levelingRewards.items"))
+		{
+			ItemStack item = ItemUtil.readItem(reward);
+			if (item != null)
+				rewardItems.add(item);
+		}
+
+		this.rewardsEnabled = plugin.getConfig().getBoolean("levelingRewards.enabled");
+		this.rewardMoney = plugin.getConfig().getDouble("levelingRewards.money");
+		this.levelCap = plugin.getConfig().getInt("levelCap", -1);
 	}
 }

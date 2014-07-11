@@ -1,17 +1,17 @@
 /**
- * SwornRPG - a bukkit plugin 
+ * SwornRPG - a bukkit plugin
  * Copyright (C) 2013 - 2014 dmulloy2
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -74,6 +74,7 @@ import net.dmulloy2.swornrpg.listeners.ExperienceListener;
 import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.MaterialUtil;
@@ -93,7 +94,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -120,7 +120,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private List<Listener> listeners;
 
 	/** Maps **/
-	private @Getter Map<String, HashMap<Material, Integer>> salvageRef;
+	private @Getter Map<String, Map<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Integer, List<BlockDrop>> fishDropsMap;
 
@@ -134,15 +134,15 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		{
 			long start = System.currentTimeMillis();
 
-			/** Initialize Variables **/
-			salvageRef = new HashMap<String, HashMap<Material, Integer>>();
-			blockDropsMap = new HashMap<Material, List<BlockDrop>>();
-			fishDropsMap = new HashMap<Integer, List<BlockDrop>>();
-
-			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
-
 			/** Register LogHandler first **/
 			logHandler = new LogHandler(this);
+
+			/** Initialize Variables **/
+			salvageRef = new HashMap<>();
+			blockDropsMap = new HashMap<>();
+			fishDropsMap = new HashMap<>();
+
+			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
 
 			/** Save and load messages.properties **/
 			saveResource("messages.properties", true);
@@ -397,7 +397,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 	/**
 	 * Attempts to get a message from the messages.properties
-	 * 
+	 *
 	 * @param string
 	 *        - Message key
 	 */
@@ -410,7 +410,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		catch (MissingResourceException ex)
 		{
 			outConsole(Level.WARNING, getMessage("log_message_missing"), string);
-			return null;
+			return FormatUtil.format("(Missing message key \"{0}\")", string);
 		}
 	}
 
@@ -428,14 +428,9 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 		abilityHandler.reload();
 		healthBarHandler.reload();
+		experienceHandler.reload();
 	}
 
-	/**
-	 * Registers a {@link Listener}
-	 * 
-	 * @param listener
-	 *        - Listener to register
-	 */
 	private final void registerListener(Listener listener)
 	{
 		listeners.add(listener);
@@ -447,9 +442,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		return getServer().getPluginManager();
 	}
 
-	/**
-	 * Reloads the configuration settings of the listeners
-	 */
 	private final void reloadListeners()
 	{
 		for (Listener listener : listeners)
@@ -461,9 +453,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		}
 	}
 
-	/**
-	 * Update salvage ref tables
-	 */
 	private final void updateSalvageRef()
 	{
 		String salvage = getConfig().getString("salvage");
@@ -496,7 +485,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		for (Entry<String, Object> entry : map.entrySet())
 		{
 			String key = entry.getKey();
-			
+
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
 
@@ -511,7 +500,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					continue;
 				}
 
-				short data = 0;
+				short data = -1;
 				int chance = 0;
 				if (ss.length == 3)
 				{
@@ -523,9 +512,14 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					chance = NumberUtil.toInt(ss[1]);
 				}
 
-				if (type != null && data != -1 && chance != -1)
+				if (type != null && chance > 0)
 				{
-					blockDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+					boolean ignoreData = data == -1;
+					if (data < 0)
+						data = 0;
+
+					MyMaterial material = new MyMaterial(type, data, ignoreData);
+					blockDrops.add(new BlockDrop(material, chance));
 				}
 			}
 
@@ -559,7 +553,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					continue;
 				}
 
-				short data = 0;
+				short data = -1;
 				int chance = 0;
 				if (ss.length == 3)
 				{
@@ -571,9 +565,14 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					chance = NumberUtil.toInt(ss[1]);
 				}
 
-				if (type != null && data != -1 && chance != -1)
+				if (type != null && chance != -1)
 				{
-					fishDrops.add(new BlockDrop(new ItemStack(type, 1, data), chance));
+					boolean ignoreData = data == -1;
+					if (data < 0)
+						data = 0;
+
+					MyMaterial material = new MyMaterial(type, data, ignoreData);
+					fishDrops.add(new BlockDrop(material, chance));
 				}
 			}
 

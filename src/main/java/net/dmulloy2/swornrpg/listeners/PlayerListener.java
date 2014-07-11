@@ -127,7 +127,7 @@ public class PlayerListener implements Listener, Reloadable
 						plural = "s";
 
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					player.sendMessage(plugin.getPrefix() + 
+					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format(plugin.getMessage("salvage_success"),
 									article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
 
@@ -152,7 +152,7 @@ public class PlayerListener implements Listener, Reloadable
 				else
 				{
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					player.sendMessage(plugin.getPrefix() + 
+					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format(plugin.getMessage("not_salvagable"), itemName, blockType.toLowerCase()));
 				}
 			}
@@ -181,15 +181,15 @@ public class PlayerListener implements Listener, Reloadable
 			if (handler.isEnabled())
 			{
 				User user = handler.getEssentials().getUser(player);
-				
+
 				Player killer = plugin.getKiller(player);
 				if (killer != null)
 				{
-					String mail = FormatUtil.format(plugin.getMessage("mail_pvp_format"), 
+					String mail = FormatUtil.format(plugin.getMessage("mail_pvp_format"),
 							killer.getName(), x, y, z, loc.getWorld().getName(), TimeUtil.getLongDateCurr());
 					user.addMail(mail);
-					
-					player.sendMessage(plugin.getPrefix() + 
+
+					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
@@ -197,11 +197,11 @@ public class PlayerListener implements Listener, Reloadable
 				{
 					String world = player.getWorld().getName();
 
-					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"), 
+					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"),
 							x, y, z, world, TimeUtil.getLongDateCurr());
 					user.addMail(mail);
 
-					player.sendMessage(plugin.getPrefix() + 
+					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
@@ -340,7 +340,7 @@ public class PlayerListener implements Listener, Reloadable
 			return;
 
 		/** Fishing XP Gain **/
-		String message = plugin.getPrefix() + 
+		String message = plugin.getPrefix() +
 				FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
 		plugin.getExperienceHandler().handleXpGain(event.getPlayer(), fishingGain, message);
 
@@ -362,7 +362,7 @@ public class PlayerListener implements Listener, Reloadable
 			{
 				for (BlockDrop fishDrop : plugin.getFishDropsMap().get(i))
 				{
-					if (fishDrop.getItem() == null)
+					if (fishDrop.getMaterial() == null)
 						continue;
 
 					if (Util.random(fishDrop.getChance()) == 0)
@@ -379,9 +379,9 @@ public class PlayerListener implements Listener, Reloadable
 			BlockDrop fishDrop = drops.get(rand);
 			if (fishDrop != null)
 			{
-				caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getItem());
+				caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getMaterial().newItemStack(1));
 
-				String name = FormatUtil.getFriendlyName(fishDrop.getItem().getType());
+				String name = fishDrop.getMaterial().getName();
 				String article = FormatUtil.getArticle(name);
 				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
 			}
@@ -412,7 +412,7 @@ public class PlayerListener implements Listener, Reloadable
 			if (Util.random(speedBoostOdds) == 0)
 			{
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedBoostDuration, speedBoostStrength));
-				player.sendMessage(plugin.getPrefix() + 
+				player.sendMessage(plugin.getPrefix() +
 						FormatUtil.format(plugin.getMessage("speed_boost")));
 			}
 		}
@@ -463,12 +463,12 @@ public class PlayerListener implements Listener, Reloadable
 						clicked.setPassenger(player);
 
 						String name = FormatUtil.getFriendlyName(type);
-						player.sendMessage(plugin.getPrefix() + 
+						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&eYou are now riding {0} &b{1}", FormatUtil.getArticle(name), name));
 						break;
 					case ENDER_DRAGON:
 						clicked.setPassenger(player);
-						player.sendMessage(plugin.getPrefix() + 
+						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&eYou are a Dragon Tamer, &b{0}&e!", player.getName()));
 					default:
 						break;

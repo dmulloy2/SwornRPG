@@ -33,9 +33,9 @@ public class BlockListener implements Listener, Reloadable
 	private boolean blockDropsEnabled;
 	private boolean ironDoorProtection;
 	private boolean redemptionEnabled;
-	
+
 	private List<Material> redemptionBlacklist;
-	
+
 	private final SwornRPG plugin;
 	public BlockListener(SwornRPG plugin)
 	{
@@ -66,7 +66,7 @@ public class BlockListener implements Listener, Reloadable
 			{
 				if (Util.random(blockDrop.getChance()) == 0)
 				{
-					block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getItem());
+					block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getMaterial().newItemStack(1));
 				}
 			}
 
@@ -76,7 +76,7 @@ public class BlockListener implements Listener, Reloadable
 				{
 					if (Util.random(blockDrop.getChance()) == 0)
 					{
-						block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getItem());
+						block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getMaterial().newItemStack(1));
 					}
 				}
 			}
@@ -84,7 +84,6 @@ public class BlockListener implements Listener, Reloadable
 	}
 
 	/** Iron Door Protection **/
-	// TODO: Is this even a useful feature?
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakHighest(BlockBreakEvent event)
 	{
@@ -98,12 +97,12 @@ public class BlockListener implements Listener, Reloadable
 		Block block = event.getBlock();
 		if (plugin.isDisabledWorld(block))
 			return;
-		
+
 		if (block.getType() == Material.IRON_DOOR_BLOCK)
 		{
 			event.setCancelled(true);
 
-			player.sendMessage(plugin.getPrefix() + 
+			player.sendMessage(plugin.getPrefix() +
 					FormatUtil.format(plugin.getMessage("iron_door_protect")));
 
 			plugin.debug(plugin.getMessage("log_irondoor_protect"), player.getName(), Util.locationToString(block.getLocation()));
@@ -154,9 +153,9 @@ public class BlockListener implements Listener, Reloadable
 		this.blockDropsEnabled = plugin.getConfig().getBoolean("blockDropsEnabled");
 		this.ironDoorProtection = plugin.getConfig().getBoolean("ironDoorProtection");
 		this.redemptionEnabled = plugin.getConfig().getBoolean("redemptionEnabled");
-		
+
 		this.redemptionBlacklist = new ArrayList<Material>();
-		
+
 		for (String s : plugin.getConfig().getStringList("redemptionBlacklist"))
 		{
 			Material mat = MaterialUtil.getMaterial(s);
