@@ -2,6 +2,7 @@ package net.dmulloy2.swornrpg.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.integration.VaultHandler;
@@ -11,6 +12,7 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.ItemUtil;
 import net.dmulloy2.util.TimeUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -194,9 +196,16 @@ public class ExperienceHandler implements Reloadable
 		this.rewardItems = new ArrayList<>();
 		for (String reward : plugin.getConfig().getStringList("levelingRewards.items"))
 		{
-			ItemStack item = ItemUtil.readItem(reward);
-			if (item != null)
-				rewardItems.add(item);
+			try
+			{
+				ItemStack item = ItemUtil.readItem(reward);
+				if (item != null)
+					rewardItems.add(item);
+			}
+			catch (Throwable ex)
+			{
+				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing reward \"" + reward + "\""));
+			}
 		}
 
 		this.rewardsEnabled = plugin.getConfig().getBoolean("levelingRewards.enabled");
