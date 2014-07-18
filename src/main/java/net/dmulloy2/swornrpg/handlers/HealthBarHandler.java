@@ -19,7 +19,7 @@ import org.bukkit.scoreboard.Team;
 
 /**
  * Handles player and mob health bars
- * 
+ *
  * @author dmulloy2
  */
 
@@ -71,7 +71,7 @@ public class HealthBarHandler implements Reloadable
 
 	public final void refreshBoard()
 	{
-		for (Player player : plugin.getServer().getOnlinePlayers())
+		for (Player player : Util.getOnlinePlayers())
 		{
 			refreshBoard(player);
 		}
@@ -181,7 +181,7 @@ public class HealthBarHandler implements Reloadable
 
 	public final void updatePlayerHealth()
 	{
-		for (Player player : plugin.getServer().getOnlinePlayers())
+		for (Player player : Util.getOnlinePlayers())
 		{
 			updatePlayerHealth(player);
 		}
@@ -274,9 +274,9 @@ public class HealthBarHandler implements Reloadable
 				entity.setCustomName(color + displayName);
 			}
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.debug(Util.getUsefulStack(e, "updating entity health bar"));
+			plugin.debug(Util.getUsefulStack(ex, "updating entity health bar"));
 		}
 	}
 
