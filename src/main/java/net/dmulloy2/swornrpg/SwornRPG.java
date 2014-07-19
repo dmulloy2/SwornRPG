@@ -259,7 +259,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 				@Override
 				public void run()
 				{
-					for (Player player : getServer().getOnlinePlayers())
+					for (Player player : Util.getOnlinePlayers())
 					{
 						PlayerData data = playerDataCache.getData(player);
 
@@ -304,7 +304,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					@Override
 					public void run()
 					{
-						for (Player player : getServer().getOnlinePlayers())
+						for (Player player : Util.getOnlinePlayers())
 						{
 							/** This method no longer causes any noticable lag **/
 							experienceHandler.handleXpGain(player, onlineXpGain, "");
@@ -321,7 +321,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			getLogger().severe(Util.getUsefulStack(ex, "enabling SwornRPG"));
 
 			// Alert online OP's
-			for (Player player : getServer().getOnlinePlayers())
+			for (Player player : Util.getOnlinePlayers())
 			{
 				if (player.isOp())
 				{

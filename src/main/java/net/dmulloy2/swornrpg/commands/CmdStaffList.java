@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
@@ -33,11 +34,11 @@ public class CmdStaffList extends SwornRPGCommand
 	public void perform()
 	{
 		// Calculate online staff
-		Map<String, List<String>> staffMap = new HashMap<String, List<String>>();
+		Map<String, List<String>> staffMap = new HashMap<>();
 
 		int total = 0;
 
-		for (Player player : plugin.getServer().getOnlinePlayers())
+		for (Player player : Util.getOnlinePlayers())
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.STAFF))
 			{
@@ -99,7 +100,7 @@ public class CmdStaffList extends SwornRPGCommand
 			}
 
 			lines.add(line.toString());
-			
+
 			for (String string : lines)
 				sendMessage(string);
 
