@@ -24,8 +24,8 @@ public class CmdVersion extends SwornRPGCommand
 	public void perform()
 	{
 		sendMessage(getMessage("version_header"));
-		sendMessage(getMessage("version_author"), "dmulloy2");
-		sendMessage(getMessage("version_loaded"), plugin.getDescription().getFullName());
-		sendMessage(getMessage("version_download"));
+		sendMessage(getMessage("version_version"), plugin.getDescription().getVersion());
+		sendMessage(getMessage("version_author"));
+		sendMessage(getMessage("version_issues"));
 	}
 }
