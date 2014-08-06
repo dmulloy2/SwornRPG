@@ -358,7 +358,8 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		getServer().getScheduler().cancelTasks(this);
 
 		/** Save Data **/
-		playerDataCache.save();
+		if (playerDataCache != null)
+			playerDataCache.save();
 
 		/** Clear Memory **/
 		clearMemory();
@@ -371,11 +372,11 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	 */
 	private final void clearMemory()
 	{
-		healthBarHandler.unregister();
+//		healthBarHandler.unregister();
 
-		blockDropsMap.clear();
-		fishDropsMap.clear();
-		salvageRef.clear();
+		blockDropsMap = null;
+		fishDropsMap = null;
+		salvageRef = null;
 	}
 
 	// ---- Console Logging
@@ -455,21 +456,35 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 	private final void updateSalvageRef()
 	{
-		String salvage = getConfig().getString("salvage");
-
-		salvageRef.put("Iron", new HashMap<Material, Integer>());
-		salvageRef.put("Gold", new HashMap<Material, Integer>());
-		salvageRef.put("Diamond", new HashMap<Material, Integer>());
-		String[] salvageArray = salvage.split("; ");
-		for (String s : salvageArray)
+		try
 		{
-			String[] subset = s.split(", ");
-			Material mat = MaterialUtil.getMaterial(subset[0]);
-			int amt = NumberUtil.toInt(subset[2]);
-			if (mat != null && amt != -1)
+			String salvage = getConfig().getString("salvage");
+
+			salvageRef.put("iron", new HashMap<Material, Integer>());
+			salvageRef.put("gold", new HashMap<Material, Integer>());
+			salvageRef.put("diamond", new HashMap<Material, Integer>());
+			String[] salvageArray = salvage.split("; ");
+			for (String s : salvageArray)
 			{
-				salvageRef.get(subset[1]).put(mat, amt);
+				String[] subset = s.split(", ");
+				Material mat = MaterialUtil.getMaterial(subset[0]);
+				int amt = NumberUtil.toInt(subset[2]);
+				if (mat != null && amt != - 1)
+				{
+					String type = subset[1].toLowerCase();
+					if (! salvageRef.containsKey(type))
+					{
+						logHandler.log("Invalid salvage type \"{0}\"", type);
+						continue;
+					}
+
+					salvageRef.get(type).put(mat, amt);
+				}
 			}
+		}
+		catch (Throwable ex)
+		{
+			logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "updating salvaging"));
 		}
 	}
 
@@ -496,7 +511,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 				Material type = MaterialUtil.getMaterial(ss[0]);
 				if (type == null)
 				{
-					outConsole(Level.WARNING, getMessage("log_null_material"), ss[0], "block drops");
+					logHandler.log(Level.WARNING, getMessage("log_null_material"), ss[0], "block drops");
 					continue;
 				}
 
@@ -549,7 +564,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 				Material type = MaterialUtil.getMaterial(ss[0]);
 				if (type == null)
 				{
-					outConsole(Level.WARNING, getMessage("log_null_material"), ss[0], "fish drops");
+					logHandler.log(Level.WARNING, getMessage("log_null_material"), ss[0], "fish drops");
 					continue;
 				}
 
