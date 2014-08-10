@@ -209,12 +209,22 @@ public class PlayerDataCache
 
 	private final void convertToUUID()
 	{
+		File updated = new File(folder, ".updated");
+		if (updated.exists())
+			return;
+
 		long start = System.currentTimeMillis();
 		plugin.getLogHandler().log("Checking for unconverted files");
 
 		Map<String, PlayerData> data = getUnconvertedData();
 		if (data.isEmpty())
+		{
+			try
+			{
+				updated.createNewFile();
+			} catch (Throwable ex) { }
 			return;
+		}
 
 		plugin.getLogHandler().log("Converting {0} files!", data.size());
 
