@@ -111,8 +111,8 @@ public class PlayerListener implements Listener, Reloadable
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
 				double amt = 0.0D;
 
-				if (plugin.getSalvageRef().get(blockType).containsKey(type))
-					amt = Math.round(plugin.getSalvageRef().get(blockType).get(type) * mult);
+				if (plugin.getSalvageRef().get(blockType.toLowerCase()).containsKey(type))
+					amt = Math.round(plugin.getSalvageRef().get(blockType.toLowerCase()).get(type) * mult);
 
 				if (amt > 0.0D)
 				{

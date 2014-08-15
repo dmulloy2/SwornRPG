@@ -399,8 +399,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	/**
 	 * Attempts to get a message from the messages.properties
 	 *
-	 * @param string
-	 *        - Message key
+	 * @param string Message key
 	 */
 	public final String getMessage(String string)
 	{
@@ -469,7 +468,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 				String[] subset = s.split(", ");
 				Material mat = MaterialUtil.getMaterial(subset[0]);
 				int amt = NumberUtil.toInt(subset[2]);
-				if (mat != null && amt != - 1)
+				if (mat != null && amt != -1)
 				{
 					String type = subset[1].toLowerCase();
 					if (! salvageRef.containsKey(type))
