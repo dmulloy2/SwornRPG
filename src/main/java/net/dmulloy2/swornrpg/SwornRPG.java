@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.MissingResourceException;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -144,9 +143,11 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
 
-			/** Save and load messages.properties **/
-			saveResource("messages.properties", true);
-			resourceHandler = new ResourceHandler(this, getClassLoader());
+			File messages = new File(getDataFolder(), "messages.properties");
+			if (messages.exists())
+				messages.delete();
+
+			resourceHandler = new ResourceHandler(this);
 
 			/** Register Other Handlers **/
 			experienceHandler = new ExperienceHandler(this);
@@ -372,7 +373,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	 */
 	private final void clearMemory()
 	{
-//		healthBarHandler.unregister();
+		// healthBarHandler.unregister();
 
 		blockDropsMap = null;
 		fishDropsMap = null;
@@ -403,15 +404,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	 */
 	public final String getMessage(String string)
 	{
-		try
-		{
-			return resourceHandler.getMessages().getString(string);
-		}
-		catch (MissingResourceException ex)
-		{
-			outConsole(Level.WARNING, getMessage("log_message_missing"), string);
-			return FormatUtil.format("(Missing message key \"{0}\")", string);
-		}
+		return resourceHandler.getMessage(string);
 	}
 
 	/**
@@ -672,8 +665,13 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		return isDisabledWorld(block.getWorld());
 	}
 
+	private List<String> disabledWorlds;
+
 	public boolean isDisabledWorld(World world)
 	{
-		return getConfig().getStringList("disabledWorlds").contains(world.getName());
+		if (disabledWorlds == null)
+			disabledWorlds = getConfig().getStringList("disabledWorlds");
+
+		return disabledWorlds.contains(world.getName());
 	}
 }
