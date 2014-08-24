@@ -51,11 +51,11 @@ public class CmdDivorce extends SwornRPGCommand
 			return;
 		}
 
-		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("divorce_broadcast"), player.getName(), spouse));
+		data.setSpouse(null);
 		targetData.setSpouse(null);
 		if (target.isOnline())
-		{
 			sendpMessage(target.getPlayer(), plugin.getMessage("divorce_defendant"));
-		}
+
+		plugin.getServer().broadcastMessage(FormatUtil.format(plugin.getMessage("divorce_broadcast"), player.getName(), spouse));
 	}
 }
