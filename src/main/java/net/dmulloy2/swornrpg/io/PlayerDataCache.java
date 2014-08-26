@@ -17,12 +17,12 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import net.dmulloy2.io.FileSerialization;
+import net.dmulloy2.io.IOUtil;
 import net.dmulloy2.io.UUIDFetcher;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Versioning;
 import net.dmulloy2.types.Versioning.Version;
-import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.OfflinePlayer;
@@ -199,7 +199,7 @@ public class PlayerDataCache
 
 		for (File file : files)
 		{
-			String fileName = FormatUtil.trimFileExtension(file, extension);
+			String fileName = IOUtil.trimFileExtension(file, extension);
 			if (! isFileLoaded(fileName))
 				data.put(fileName, loadData(fileName));
 		}
@@ -310,7 +310,7 @@ public class PlayerDataCache
 
 		for (File file : files)
 		{
-			String fileName = FormatUtil.trimFileExtension(file, extension);
+			String fileName = IOUtil.trimFileExtension(file, extension);
 			PlayerData loaded = loadData(fileName);
 			loaded.setLastKnownBy(fileName);
 			data.put(fileName, loaded);
