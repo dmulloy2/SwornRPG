@@ -1,6 +1,5 @@
 package net.dmulloy2.swornrpg.listeners;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -153,14 +152,6 @@ public class BlockListener implements Listener, Reloadable
 		this.blockDropsEnabled = plugin.getConfig().getBoolean("blockDropsEnabled");
 		this.ironDoorProtection = plugin.getConfig().getBoolean("ironDoorProtection");
 		this.redemptionEnabled = plugin.getConfig().getBoolean("redemptionEnabled");
-
-		this.redemptionBlacklist = new ArrayList<Material>();
-
-		for (String s : plugin.getConfig().getStringList("redemptionBlacklist"))
-		{
-			Material mat = MaterialUtil.getMaterial(s);
-			if (mat != null)
-				redemptionBlacklist.add(mat);
-		}
+		this.redemptionBlacklist = MaterialUtil.fromStrings(plugin.getConfig().getStringList("redemptionBlacklist"));
 	}
 }

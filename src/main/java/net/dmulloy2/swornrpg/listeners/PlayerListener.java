@@ -3,6 +3,7 @@ package net.dmulloy2.swornrpg.listeners;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -60,13 +61,13 @@ public class PlayerListener implements Listener, Reloadable
 	private int speedBoostDuration;
 	private int speedBoostStrength;
 
-	private HashMap<String, ItemStack> bookMap;
+	private Map<String, ItemStack> bookMap;
 
 	private final SwornRPG plugin;
 	public PlayerListener(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		this.bookMap = new HashMap<String, ItemStack>();
+		this.bookMap = new HashMap<>();
 		this.reload();
 	}
 

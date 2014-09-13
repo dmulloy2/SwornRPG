@@ -37,9 +37,9 @@ public class HealthBarHandler implements Reloadable
 
 	private final void setupScoreboard()
 	{
-		unregister();
 		if (isEnabled())
 		{
+			unregister();
 			generateTeams();
 			standardizeInvisibilities();
 			setupObjective();
