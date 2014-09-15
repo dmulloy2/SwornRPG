@@ -17,7 +17,7 @@ public class CmdDeny extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "deny";
-		this.optionalArgs.add("player");
+		this.addOptionalArg("player");
 		this.description = "Deny a player's proposal";
 		this.permission = Permission.DENY;
 		this.mustBePlayer = true;

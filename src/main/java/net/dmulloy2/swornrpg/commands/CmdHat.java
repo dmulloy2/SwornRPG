@@ -18,7 +18,7 @@ public class CmdHat extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "hat";
-		this.optionalArgs.add("remove");
+		this.addOptionalArg("remove");
 		this.description = "Put the block in your hand on your head!";
 		this.permission = Permission.HAT;
 

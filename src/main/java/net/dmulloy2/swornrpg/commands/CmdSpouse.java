@@ -16,7 +16,7 @@ public class CmdSpouse extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "spouse";
-		this.optionalArgs.add("player");
+		this.addOptionalArg("player");
 		this.description = "Check a player's spouse";
 		this.permission = Permission.SPOUSE;
 	}

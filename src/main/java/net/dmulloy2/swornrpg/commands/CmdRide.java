@@ -18,7 +18,7 @@ public class CmdRide extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "ride";
-		this.optionalArgs.add("player");
+		this.addOptionalArg("player");
 		this.description = "Get on a player's head";
 		this.permission = Permission.RIDE;
 

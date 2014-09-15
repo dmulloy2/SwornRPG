@@ -15,7 +15,7 @@ public class CmdAdminSay extends SwornRPGCommand
 		super(plugin);
 		this.name = "adminsay";
 		this.aliases.add("asay");
-		this.requiredArgs.add("message");
+		this.addRequiredArg("message");
 		this.description = "Alternate admin say command";
 		this.permission = Permission.ADMINSAY;
 	}

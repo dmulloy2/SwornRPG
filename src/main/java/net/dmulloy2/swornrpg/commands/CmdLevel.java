@@ -17,7 +17,7 @@ public class CmdLevel extends SwornRPGCommand
 		super(plugin);
 		this.name = "level";
 		this.description = "Check a player's level";
-		this.optionalArgs.add("player");
+		this.addOptionalArg("player");
 		this.permission = Permission.LEVEL;
 	}
 	

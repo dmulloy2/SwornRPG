@@ -22,7 +22,7 @@ public class CmdName extends SwornRPGCommand
 		super(plugin);
 		this.name = "name";
 		this.aliases.add("iname");
-		this.requiredArgs.add("name");
+		this.addRequiredArg("name");
 		this.description = "Set the name of your in-hand item";
 		this.permission = Permission.NAME;
 		this.mustBePlayer = true;

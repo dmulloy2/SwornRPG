@@ -20,7 +20,7 @@ public class CmdAbilities extends SwornRPGCommand
 		super(plugin);
 		this.name = "abilities";
 		this.aliases.add("skills");
-		this.optionalArgs.add("player");
+		this.addOptionalArg("player");
 		this.description = "Check SwornRPG ability levels";
 		this.permission = Permission.ABILITIES;
 	}

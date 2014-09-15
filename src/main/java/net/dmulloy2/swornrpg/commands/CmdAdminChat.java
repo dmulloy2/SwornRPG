@@ -15,7 +15,7 @@ public class CmdAdminChat extends SwornRPGCommand
 		super(plugin);
 		this.name = "a";
 		this.aliases.add("adminchat");
-		this.requiredArgs.add("message");
+		this.addRequiredArg("message");
 		this.description = "Talk in admin-only chat";
 		this.permission = Permission.ADMINCHAT;
 	}

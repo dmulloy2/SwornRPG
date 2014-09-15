@@ -24,7 +24,7 @@ public class CmdLore extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "lore";
-		this.requiredArgs.add("lore");
+		this.addRequiredArg("lore");
 		this.description = "Set the lore of your in-hand item";
 		this.permission = Permission.LORE;
 		this.mustBePlayer = true;

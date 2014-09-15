@@ -18,7 +18,7 @@ public class CmdMarry extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "marry";
-		this.requiredArgs.add("player");
+		this.addRequiredArg("player");
 		this.description = "Marry another player";
 		this.permission = Permission.MARRY;
 

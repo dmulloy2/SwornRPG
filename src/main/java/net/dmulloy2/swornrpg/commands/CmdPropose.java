@@ -17,7 +17,7 @@ public class CmdPropose extends SwornRPGCommand
 	{
 		super(plugin);
 		this.name = "propose";
-		this.requiredArgs.add("player");
+		this.addRequiredArg("player");
 		this.description = "Propose marriage to a player";
 		this.permission = Permission.PROPOSE;
 
