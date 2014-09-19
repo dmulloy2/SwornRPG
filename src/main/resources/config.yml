@@ -25,7 +25,8 @@ debug: false
 # Marriage (boolean)
 marriage: true
 
-# MobSpawner Camping Radius (integer)
+# Mob Spawner Camping Radius (integer)
+# Set to -1 to disable
 campingRadius: 32
 
 # Worlds SwornRPG is disabled in (world)
@@ -50,10 +51,10 @@ salvage: "306, Iron, 5; 307, Iron, 8; 308, Iron, 7; 309, Iron, 4; 310, Diamond, 
 #+------------------------------------------+#
 ##############################################
 
-# Interval in minutes (integer)
-# Safe to use - no longer lags the server
+# Enabled (boolean)
+# Interval (integer) - interval, in minutes
 autoSave:
-  enabled: false
+  enabled: true
   interval: 120
 
 #############################################
@@ -233,7 +234,6 @@ ironDoorProtection: false
 
 # Death Coordinate Messages (boolean)
 deathCoordinateMessages: true
-
  
 #############################################
 #+-----------------------------------------+#

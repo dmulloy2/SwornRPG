@@ -592,14 +592,18 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	 */
 	public final boolean checkCamper(Player player)
 	{
+		int radius = getConfig().getInt("campingRadius");
+		if (radius <= 0)
+			return false;
+
 		Location loc = player.getLocation();
 		World world = loc.getWorld();
-		int RADIUS = getConfig().getInt("campingRadius");
-		for (int dx = -RADIUS; dx <= RADIUS; dx++)
+
+		for (int dx = -radius; dx <= radius; dx++)
 		{
-			for (int dy = -RADIUS; dy <= RADIUS; dy++)
+			for (int dy = -radius; dy <= radius; dy++)
 			{
-				for (int dz = -RADIUS; dz <= RADIUS; dz++)
+				for (int dz = -radius; dz <= radius; dz++)
 				{
 					Material mat = world.getBlockAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz).getType();
 					if (mat == Material.MOB_SPAWNER)
