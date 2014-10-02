@@ -115,6 +115,7 @@ levelingMethods:
   onlineTime:
     enabled: false
     xpgain: 1
+    async: false
   # Taming
   taming:
     enabled: true

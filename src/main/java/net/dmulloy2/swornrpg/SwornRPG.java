@@ -242,7 +242,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			{
 				int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
 
-				new BukkitRunnable()
+				class AutoSaveTask extends BukkitRunnable
 				{
 					@Override
 					public void run()
@@ -251,11 +251,13 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 						playerDataCache.save();
 						playerDataCache.cleanupData();
 					}
-				}.runTaskTimerAsynchronously(this, interval, interval);
+				}
+
+				new AutoSaveTask().runTaskTimerAsynchronously(this, interval, interval);
 			}
 
 			/** Cooldowns **/
-			new BukkitRunnable()
+			class CooldownTickTask extends BukkitRunnable
 			{
 				@Override
 				public void run()
@@ -292,7 +294,9 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 						}
 					}
 				}
-			}.runTaskTimerAsynchronously(this, 2L, 1L);
+			}
+
+			new CooldownTickTask().runTaskTimerAsynchronously(this, 2L, 1L);
 
 			/** Online XP Gain **/
 			final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
@@ -300,18 +304,22 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 			if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
 			{
-				new BukkitRunnable()
+				class OnlineTimeTask extends BukkitRunnable
 				{
 					@Override
 					public void run()
 					{
 						for (Player player : Util.getOnlinePlayers())
 						{
-							/** This method no longer causes any noticable lag **/
 							experienceHandler.handleXpGain(player, onlineXpGain, "");
 						}
 					}
-				}.runTaskTimer(this, interval, interval);
+				}
+
+				if (getConfig().getBoolean("levelingMethods.onlineTime.async", false))
+					new OnlineTimeTask().runTaskTimerAsynchronously(this, interval, interval);
+				else
+					new OnlineTimeTask().runTaskTimer(this, interval, interval);
 			}
 
 			outConsole(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
@@ -321,13 +329,11 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			// Something happened when we tried to enable
 			getLogger().severe(Util.getUsefulStack(ex, "enabling SwornRPG"));
 
-			// Alert online OP's
+			// Alert online OPs
 			for (Player player : Util.getOnlinePlayers())
 			{
 				if (player.isOp())
-				{
 					player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", ex));
-				}
 			}
 
 			// If an OP joins, alert them as well
@@ -338,9 +344,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 				{
 					Player player = event.getPlayer();
 					if (player.isOp())
-					{
 						player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", ex));
-					}
 				}
 			}, this);
 
@@ -368,15 +372,13 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		outConsole(getMessage("log_disabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
-	/**
-	 * Clears Lists and Maps
-	 */
 	private final void clearMemory()
 	{
-		// healthBarHandler.unregister();
-
+		blockDropsMap.clear();
 		blockDropsMap = null;
+		fishDropsMap.clear();
 		fishDropsMap = null;
+		salvageRef.clear();
 		salvageRef = null;
 	}
 
@@ -413,6 +415,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	@Override
 	public final void reload()
 	{
+		clearMemory();
 		reloadConfig();
 		reloadListeners();
 		updateSalvageRef();
