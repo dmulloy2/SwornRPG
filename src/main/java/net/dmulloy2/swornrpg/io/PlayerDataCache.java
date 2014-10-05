@@ -140,7 +140,7 @@ public class PlayerDataCache
 		}
 		catch (Throwable ex)
 		{
-			plugin.outConsole(Level.WARNING, "Failed to load player data for {0}!", key);
+			plugin.log(Level.WARNING, "Failed to load player data for {0}!", key);
 			return null;
 		}
 	}
@@ -148,7 +148,7 @@ public class PlayerDataCache
 	public final void save()
 	{
 		long start = System.currentTimeMillis();
-		plugin.outConsole("Saving {0} to disk...", folderName);
+		plugin.log("Saving {0} to disk...", folderName);
 
 		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet())
 		{
@@ -156,7 +156,7 @@ public class PlayerDataCache
 			FileSerialization.save(entry.getValue(), file);
 		}
 
-		plugin.outConsole("Players saved! [{0} ms]", System.currentTimeMillis() - start);
+		plugin.log("Players saved! [{0} ms]", System.currentTimeMillis() - start);
 	}
 
 	public final void cleanupData()

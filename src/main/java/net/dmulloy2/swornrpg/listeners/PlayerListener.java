@@ -132,7 +132,7 @@ public class PlayerListener implements Listener, Reloadable
 							FormatUtil.format(plugin.getMessage("salvage_success"),
 									article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
 
-					plugin.outConsole(plugin.getMessage("log_salvage"), player.getName(), itemName, amt, blockType.toLowerCase(),
+					plugin.log(plugin.getMessage("log_salvage"), player.getName(), itemName, amt, blockType.toLowerCase(),
 							materialExtension, plural);
 
 					PlayerInventory inv = player.getInventory();

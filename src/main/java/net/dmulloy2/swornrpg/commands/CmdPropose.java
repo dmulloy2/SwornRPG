@@ -23,7 +23,7 @@ public class CmdPropose extends SwornRPGCommand
 
 		this.mustBePlayer = true;
 	}
-	
+
 	@Override
 	public void perform()
 	{
@@ -32,7 +32,7 @@ public class CmdPropose extends SwornRPGCommand
 			err(getMessage("command_disabled"));
 			return;
 		}
-		
+
 		PlayerData data = getPlayerData(player);
 		Player target = Util.matchPlayer(args[0]);
 		if (target == null)
@@ -40,7 +40,7 @@ public class CmdPropose extends SwornRPGCommand
 			err(getMessage("player_not_found"), args[0]);
 			return;
 		}
-		
+
 		String targetp = target.getName();
 		PlayerData data1 = getPlayerData(target);
 		if (data.getSpouse() != null)
@@ -57,7 +57,7 @@ public class CmdPropose extends SwornRPGCommand
 		}
 		else if (data1.getProposals().contains(player.getName()))
 		{
-			err(getMessage("already_proposed"));
+			err(getMessage("already_proposed"), targetp);
 		}
 		else
 		{

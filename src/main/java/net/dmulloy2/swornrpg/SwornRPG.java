@@ -174,7 +174,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			File conf = new File(getDataFolder(), "config.yml");
 			if (! conf.exists())
 			{
-				outConsole(getMessage("log_config_create"));
+				log(getMessage("log_config_create"));
 				saveDefaultConfig();
 			}
 			else
@@ -182,7 +182,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 				if (! getConfig().isSet("disabledWorlds"))
 				{
 					conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
-					outConsole(getMessage("log_config_outdated"));
+					log(getMessage("log_config_outdated"));
 					saveDefaultConfig();
 				}
 			}
@@ -322,7 +322,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					new OnlineTimeTask().runTaskTimer(this, interval, interval);
 			}
 
-			outConsole(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
+			log(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 		}
 		catch (final Throwable ex)
 		{
@@ -369,7 +369,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		/** Clear Memory **/
 		clearMemory();
 
-		outConsole(getMessage("log_disabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
+		log(getMessage("log_disabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	private final void clearMemory()
@@ -384,12 +384,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 	// ---- Console Logging
 
-	public final void outConsole(String string, Object... objects)
+	public final void log(String string, Object... objects)
 	{
 		logHandler.log(string, objects);
 	}
 
-	public final void outConsole(Level level, String string, Object... objects)
+	public final void log(Level level, String string, Object... objects)
 	{
 		logHandler.log(level, string, objects);
 	}
@@ -400,7 +400,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Attempts to get a message from the messages.properties
+	 * Attempts to get a message from the messages.properties.
 	 *
 	 * @param string Message key
 	 */
@@ -410,7 +410,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Reloads the Configuration
+	 * Reloads the Configuration.
 	 */
 	@Override
 	public final void reload()

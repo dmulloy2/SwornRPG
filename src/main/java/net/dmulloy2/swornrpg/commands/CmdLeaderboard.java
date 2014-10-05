@@ -150,7 +150,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		@Override
 		public void run()
 		{
-			plugin.outConsole("Updating leaderboard...");
+			plugin.log("Updating leaderboard...");
 
 			long start = System.currentTimeMillis();
 
@@ -208,7 +208,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			lastUpdateTime = System.currentTimeMillis();
 			updating = false;
 
-			plugin.outConsole("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
+			plugin.log("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
 
 			// Save the data
 			plugin.getPlayerDataCache().save();
