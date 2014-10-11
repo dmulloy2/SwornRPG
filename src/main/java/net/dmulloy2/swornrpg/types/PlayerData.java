@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -76,11 +77,8 @@ public class PlayerData implements ConfigurationSerializable
 					if (field.getName().equals(entry.getKey()))
 					{
 						boolean accessible = field.isAccessible();
-
 						field.setAccessible(true);
-
 						field.set(this, entry.getValue());
-
 						field.setAccessible(accessible);
 					}
 				}
@@ -89,10 +87,9 @@ public class PlayerData implements ConfigurationSerializable
 	}
 
 	@Override
-	@SuppressWarnings("rawtypes")
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new LinkedHashMap<>();
 
 		for (Field field : getClass().getDeclaredFields())
 		{
@@ -122,7 +119,7 @@ public class PlayerData implements ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Collection.class))
 				{
-					if (! ((Collection) field.get(this)).isEmpty())
+					if (! ((Collection<?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(String.class))
@@ -132,7 +129,7 @@ public class PlayerData implements ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(Map.class))
 				{
-					if (! ((Map) field.get(this)).isEmpty())
+					if (! ((Map<?, ?>) field.get(this)).isEmpty())
 						data.put(field.getName(), field.get(this));
 				}
 				else
@@ -164,7 +161,7 @@ public class PlayerData implements ConfigurationSerializable
 
 	/**
 	 * Returns the player's level. Will return from 1 to max.
-	 * 
+	 *
 	 * @param max
 	 *        - Maximum level for this action
 	 */

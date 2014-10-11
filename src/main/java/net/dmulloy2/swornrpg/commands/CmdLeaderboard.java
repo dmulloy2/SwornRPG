@@ -15,7 +15,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -63,10 +63,10 @@ public class CmdLeaderboard extends SwornRPGCommand
 		new DisplayLeaderboardThread(sender.getName(), args);
 	}
 
-	public void displayLeaderboard(String playerName, String[] args)
+	public void displayLeaderboard(String senderName, String[] args)
 	{
-		Player player = Util.matchPlayer(playerName);
-		if (player == null)
+		CommandSender sender = getSender(senderName);
+		if (sender == null)
 			return;
 
 		int index = 1;
@@ -82,12 +82,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		if (index > pageCount)
 		{
-			sendMessage(player, "&cError: &4" + getMessage("error_no_page_with_index"), args[0]);
+			sendMessage(sender, "&cError: &4" + getMessage("error_no_page_with_index"), args[0]);
 			return;
 		}
 
 		for (String s : getPage(index))
-			sendMessage(player, s);
+			sendMessage(sender, s);
 	}
 
 	private int linesPerPage = 10;
@@ -121,7 +121,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		return lines;
 	}
-	
+
 	public String getHeader(int index)
 	{
 		return FormatUtil.format(getMessage("leaderboard_header"), index, getPageCount());
@@ -155,15 +155,13 @@ public class CmdLeaderboard extends SwornRPGCommand
 			long start = System.currentTimeMillis();
 
 			Map<String, PlayerData> allData = plugin.getPlayerDataCache().getAllPlayerData();
-			Map<PlayerData, Integer> experienceMap = new HashMap<PlayerData, Integer>();
+			Map<PlayerData, Integer> experienceMap = new HashMap<>();
 
 			for (Entry<String, PlayerData> entry : allData.entrySet())
 			{
 				PlayerData value = entry.getValue();
 				if (value.getTotalxp() > 0)
-				{
 					experienceMap.put(value, value.getTotalxp());
-				}
 			}
 
 			if (experienceMap.isEmpty())
@@ -172,7 +170,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 				return;
 			}
 
-			List<Entry<PlayerData, Integer>> sortedEntries = new ArrayList<Entry<PlayerData, Integer>>(experienceMap.entrySet());
+			List<Entry<PlayerData, Integer>> sortedEntries = new ArrayList<>(experienceMap.entrySet());
 			Collections.sort(sortedEntries, new Comparator<Entry<PlayerData, Integer>>()
 			{
 				@Override
@@ -184,6 +182,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			// Clear the map
 			experienceMap.clear();
+			experienceMap = null;
 
 			String format = getMessage("leaderboard_format");
 
@@ -203,7 +202,9 @@ public class CmdLeaderboard extends SwornRPGCommand
 				} catch (Throwable ex) { }
 			}
 
+			// Clear the entries
 			sortedEntries.clear();
+			sortedEntries = null;
 
 			lastUpdateTime = System.currentTimeMillis();
 			updating = false;
@@ -228,12 +229,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 	public class DisplayLeaderboardThread extends Thread
 	{
 		private final String[] args;
-		private final String playerName;
-		public DisplayLeaderboardThread(String playerName, String[] args)
+		private final String senderName;
+		public DisplayLeaderboardThread(String senderName, String[] args)
 		{
 			super("SwornRPG-DisplayLeaderboard");
 			this.setPriority(MIN_PRIORITY);
-			this.playerName = playerName;
+			this.senderName = senderName;
 			this.args = args;
 			this.start();
 		}
@@ -248,16 +249,24 @@ public class CmdLeaderboard extends SwornRPGCommand
 					sleep(500L);
 				}
 
-				displayLeaderboard(playerName, args);
+				displayLeaderboard(senderName, args);
 			}
 			catch (Throwable ex)
 			{
-				Player player = Util.matchPlayer(playerName);
-				if (player != null)
-					sendMessage(player, "&cError: &4Failed to update leaderboard: &c{0}", ex);
+				CommandSender sender = getSender(senderName);
+				if (sender != null)
+					sendMessage(sender, "&cError: &4Failed to update leaderboard: &c{0}", ex);
 
 				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "updating leaderboard"));
 			}
 		}
+	}
+
+	private final CommandSender getSender(String name)
+	{
+		if (name.equalsIgnoreCase("CONSOLE"))
+			return plugin.getServer().getConsoleSender();
+		else
+			return Util.matchPlayer(name);
 	}
 }
