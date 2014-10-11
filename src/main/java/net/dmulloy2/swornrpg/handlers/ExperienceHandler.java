@@ -1,19 +1,15 @@
 package net.dmulloy2.swornrpg.handlers;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.types.ItemParser;
 import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.types.Transformation;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.TimeUtil;
-import net.dmulloy2.util.Util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -194,24 +190,7 @@ public class ExperienceHandler implements Reloadable
 	@Override
 	public void reload()
 	{
-		List<String> strings = plugin.getConfig().getStringList("levelingRewards.items");
-		this.rewardItems = ListUtil.transform(strings, new Transformation<String, ItemStack>()
-		{
-			@Override
-			public ItemStack transform(String string)
-			{
-				try
-				{
-					return ItemUtil.readItem(string);
-				}
-				catch (Throwable ex)
-				{
-					plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "parsing reward \"" + string + "\""));
-					return null;
-				}
-			}
-		});
-
+		this.rewardItems = ItemParser.parse(plugin, plugin.getConfig().getStringList("levelingRewards.items"));
 		this.rewardsEnabled = plugin.getConfig().getBoolean("levelingRewards.enabled");
 		this.rewardMoney = plugin.getConfig().getDouble("levelingRewards.money");
 		this.levelCap = plugin.getConfig().getInt("levelCap", -1);
