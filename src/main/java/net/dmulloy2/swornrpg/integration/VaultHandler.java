@@ -7,6 +7,7 @@ import lombok.Getter;
 import net.dmulloy2.integration.IntegrationHandler;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class VaultHandler extends IntegrationHandler
 	private @Getter boolean enabled;
 	private @Getter Economy economy;
 	private @Getter Permission permission;
-	
+
 	private final SwornRPG plugin;
 	public VaultHandler(SwornRPG plugin)
 	{
@@ -69,19 +70,39 @@ public class VaultHandler extends IntegrationHandler
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	public final boolean hasAccount(String name)
+	{
+		return economy != null ? economy.hasAccount(name) : false;
+	}
+
+	@SuppressWarnings("deprecation")
+	public final boolean has(String name, double amount)
+	{
+		return economy != null ? economy.has(name, amount) : false;
+	}
+
 	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final void depositPlayer(Player player, double amount)
+	public final EconomyResponse depositPlayer(Player player, double amount)
 	{
 		if (economy != null)
 		{
 			try
 			{
-				economy.depositPlayer(player, amount);
+				return economy.depositPlayer(player, amount);
 			}
 			catch (Throwable ex)
 			{
-				economy.depositPlayer(player.getName(), amount);
+				return economy.depositPlayer(player.getName(), amount);
 			}
 		}
+
+		return null;
+	}
+
+	@SuppressWarnings("deprecation")
+	public final EconomyResponse withdraw(String name, double amount)
+	{
+		return economy != null ? economy.withdrawPlayer(name, amount) : null;
 	}
 }

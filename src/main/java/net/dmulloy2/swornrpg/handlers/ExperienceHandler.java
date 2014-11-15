@@ -24,6 +24,7 @@ public class ExperienceHandler implements Reloadable
 {
 	private List<ItemStack> rewardItems;
 	private boolean rewardsEnabled;
+	private String serverAccount;
 	private double rewardMoney;
 	private int levelCap;
 
@@ -112,14 +113,9 @@ public class ExperienceHandler implements Reloadable
 		if (rewardsEnabled)
 		{
 			VaultHandler handler = plugin.getVaultHandler();
-			if (handler.getEconomy() != null)
+			if (handler.isEnabled())
 			{
-				double money = rewardMoney * level;
-
-				handler.depositPlayer(player, money);
-
-				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"),
-						handler.getEconomy().format(money)));
+				giveLevelupCash(player, level);
 			}
 
 			if (! rewardItems.isEmpty())
@@ -149,6 +145,32 @@ public class ExperienceHandler implements Reloadable
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_spick"), spick));
 		if (ammo > 0)
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_ammo"), ammo));
+	}
+
+	private final void giveLevelupCash(Player player, int level)
+	{
+		double money = rewardMoney * level;
+
+		VaultHandler handler = plugin.getVaultHandler();
+		if (! serverAccount.isEmpty())
+		{
+			if (handler.hasAccount(serverAccount))
+			{
+				if (handler.has(serverAccount, money))
+				{
+					handler.withdraw(serverAccount, money);
+					plugin.getLogHandler().log("{0} withdrawn from account {1} for {2}.", money, serverAccount, player.getName());
+				}
+				else
+				{
+					player.sendMessage(FormatUtil.format("&cError: &4The server account does not have enough money!"));
+					return;
+				}
+			}
+		}
+
+		handler.depositPlayer(player, money);
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), handler.getEconomy().format(money)));
 	}
 
 	/**
@@ -191,6 +213,7 @@ public class ExperienceHandler implements Reloadable
 	public void reload()
 	{
 		this.rewardItems = ItemParser.parse(plugin, plugin.getConfig().getStringList("levelingRewards.items"));
+		this.serverAccount = plugin.getConfig().getString("levelingRewards.serverAccount", "");
 		this.rewardsEnabled = plugin.getConfig().getBoolean("levelingRewards.enabled");
 		this.rewardMoney = plugin.getConfig().getDouble("levelingRewards.money");
 		this.levelCap = plugin.getConfig().getInt("levelCap", -1);
