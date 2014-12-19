@@ -1,9 +1,10 @@
 name: SwornRPG
 main: net.dmulloy2.swornrpg.SwornRPG
-version: ${project.version} (Build ${project.build.number})
+#version: ${project.version} (Build ${project.build.number})
+version: ${project.version}
 author: dmulloy2
 description: The fully featured mcMMO Alternative
-softdepend: [TagAPI, Essentials, Factions, SwornNations, Vault]
+softdepend: [Essentials, Factions, SwornNations, Vault]
 commands:
   abilities:
     description: Check SwornRPG ability levels
