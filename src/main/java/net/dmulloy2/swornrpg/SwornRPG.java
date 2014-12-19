@@ -382,9 +382,20 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 	private final void setupIntegration()
 	{
-		essentialsHandler = new EssentialsHandler(this);
-		swornNationsHandler = new SwornNationsHandler(this);
-		vaultHandler = new VaultHandler(this);
+		try
+		{
+			essentialsHandler = new EssentialsHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			swornNationsHandler = new SwornNationsHandler(this);
+		} catch (Throwable ex) { }
+
+		try
+		{
+			vaultHandler = new VaultHandler(this);
+		} catch (Throwable ex) { }
 	}
 
 	public final boolean isEssentialsHandler()
