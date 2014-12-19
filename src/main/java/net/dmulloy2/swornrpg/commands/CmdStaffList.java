@@ -42,10 +42,9 @@ public class CmdStaffList extends SwornRPGCommand
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.STAFF))
 			{
-				net.milkbowl.vault.permission.Permission permission = plugin.getVaultHandler().getPermission();
-				if (permission != null)
+				if (plugin.isVaultEnabled())
 				{
-					String group = permission.getPrimaryGroup(player);
+					String group = plugin.getVaultHandler().getGroup(player);
 					if (group != null)
 					{
 						if (! staffMap.containsKey(group))

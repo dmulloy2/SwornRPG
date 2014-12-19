@@ -64,7 +64,7 @@ import net.dmulloy2.swornrpg.handlers.AbilityHandler;
 import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
 import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
 import net.dmulloy2.swornrpg.integration.EssentialsHandler;
-import net.dmulloy2.swornrpg.integration.FactionsHandler;
+import net.dmulloy2.swornrpg.integration.SwornNationsHandler;
 import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
@@ -111,8 +111,8 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private @Getter PlayerDataCache playerDataCache;
 
 	/** Integration **/
+	private @Getter SwornNationsHandler swornNationsHandler;
 	private @Getter EssentialsHandler essentialsHandler;
-	private @Getter FactionsHandler factionsHandler;
 	private @Getter VaultHandler vaultHandler;
 
 	/** Listeners, Stored for Reloading **/
@@ -231,9 +231,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
 
 			/** Integration **/
-			vaultHandler = new VaultHandler(this);
-			factionsHandler = new FactionsHandler(this);
-			essentialsHandler = new EssentialsHandler(this);
+			setupIntegration();
 
 			playerDataCache = new PlayerDataCache(this);
 
@@ -380,6 +378,28 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		fishDropsMap = null;
 		salvageRef.clear();
 		salvageRef = null;
+	}
+
+	private final void setupIntegration()
+	{
+		essentialsHandler = new EssentialsHandler(this);
+		swornNationsHandler = new SwornNationsHandler(this);
+		vaultHandler = new VaultHandler(this);
+	}
+
+	public final boolean isEssentialsHandler()
+	{
+		return essentialsHandler != null && essentialsHandler.isEnabled();
+	}
+
+	public final boolean isSwornNationsEnabled()
+	{
+		return swornNationsHandler != null && swornNationsHandler.isEnabled();
+	}
+
+	public final boolean isVaultEnabled()
+	{
+		return vaultHandler != null && vaultHandler.isEnabled();
 	}
 
 	// ---- Console Logging

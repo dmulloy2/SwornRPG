@@ -3,15 +3,16 @@
  */
 package net.dmulloy2.swornrpg.integration;
 
-import lombok.Getter;
-import net.dmulloy2.integration.IntegrationHandler;
+import java.util.logging.Level;
+
+import net.dmulloy2.integration.DependencyProvider;
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.util.Util;
+import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicesManager;
 
@@ -19,90 +20,93 @@ import org.bukkit.plugin.ServicesManager;
  * @author dmulloy2
  */
 
-public class VaultHandler extends IntegrationHandler
+@SuppressWarnings("deprecation")
+public class VaultHandler extends DependencyProvider<Vault>
 {
-	private @Getter boolean enabled;
-	private @Getter Economy economy;
-	private @Getter Permission permission;
+	private Economy economy;
+	private Permission permission;
 
-	private final SwornRPG plugin;
 	public VaultHandler(SwornRPG plugin)
 	{
-		this.plugin = plugin;
-		this.setup();
+		super(plugin, "Vault");
 	}
 
 	@Override
-	public final void setup()
+	public void onEnable()
 	{
+		if (! isEnabled())
+			return;
+
 		try
 		{
-			PluginManager pm = plugin.getPluginManager();
-			if (pm.getPlugin("Vault") != null)
-			{
-				ServicesManager sm = plugin.getServer().getServicesManager();
-				RegisteredServiceProvider<Economy> economyProvider = sm.getRegistration(Economy.class);
-				if (economyProvider != null)
-				{
-					economy = economyProvider.getProvider();
-					if (economy != null)
-					{
-						plugin.getLogHandler().log(plugin.getMessage("log_vault_economy"), economy.getName());
-					}
-				}
+			ServicesManager sm = handler.getServer().getServicesManager();
+			RegisteredServiceProvider<Economy> economyProvider = sm.getRegistration(Economy.class);
+			if (economyProvider != null)
+				economy = economyProvider.getProvider();
 
-				RegisteredServiceProvider<Permission> permissionProvider = sm.getRegistration(Permission.class);
-				if (permissionProvider != null)
-				{
-					permission = permissionProvider.getProvider();
-					if (permission != null)
-					{
-						plugin.getLogHandler().log(plugin.getMessage("log_vault_permissions"), permission.getName());
-					}
-				}
-
-				enabled = true;
-			}
+			RegisteredServiceProvider<Permission> permissionProvider = sm.getRegistration(Permission.class);
+			if (permissionProvider != null)
+				permission = permissionProvider.getProvider();
 		}
 		catch (Throwable ex)
 		{
-			enabled = false;
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "onEnable("));
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public final boolean hasAccount(String name)
 	{
+		if (! isEnabled())
+			return false;
+
 		return economy != null ? economy.hasAccount(name) : false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public final boolean has(String name, double amount)
 	{
+		if (! isEnabled())
+			return false;
+
 		return economy != null ? economy.has(name, amount) : false;
 	}
 
-	@SuppressWarnings("deprecation") // Backwards Compatibility
-	public final EconomyResponse depositPlayer(Player player, double amount)
+	public final boolean depositPlayer(Player player, double amount)
 	{
-		if (economy != null)
+		if (! isEnabled() && economy != null)
+			return false;
+
+		try
 		{
-			try
-			{
-				return economy.depositPlayer(player, amount);
-			}
-			catch (Throwable ex)
-			{
-				return economy.depositPlayer(player.getName(), amount);
-			}
+			return economy.depositPlayer(player, amount).transactionSuccess();
+		}
+		catch (Throwable ex)
+		{
+			return economy.depositPlayer(player.getName(), amount).transactionSuccess();
 		}
 
-		return null;
 	}
 
-	@SuppressWarnings("deprecation")
-	public final EconomyResponse withdraw(String name, double amount)
+	public final boolean withdraw(String name, double amount)
 	{
-		return economy != null ? economy.withdrawPlayer(name, amount) : null;
+		if (! isEnabled())
+			return false;
+
+		return economy != null ? economy.withdrawPlayer(name, amount).transactionSuccess() : false;
+	}
+
+	public final String format(double amount)
+	{
+		if (! isEnabled())
+			return Double.toString(amount);
+
+		return economy != null ? economy.format(amount) : Double.toString(amount);
+	}
+
+	public final String getGroup(Player player)
+	{
+		if (! isEnabled())
+			return null;
+
+		return permission != null ? permission.getPrimaryGroup(player) : null;
 	}
 }

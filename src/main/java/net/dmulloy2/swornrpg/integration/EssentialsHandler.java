@@ -3,47 +3,45 @@
  */
 package net.dmulloy2.swornrpg.integration;
 
-import lombok.Getter;
-import net.dmulloy2.integration.IntegrationHandler;
-import net.dmulloy2.swornrpg.SwornRPG;
+import java.util.logging.Level;
 
-import org.bukkit.plugin.PluginManager;
+import net.dmulloy2.integration.DependencyProvider;
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.util.Util;
+
+import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 
 /**
  * @author dmulloy2
  */
 
-public class EssentialsHandler extends IntegrationHandler
+public class EssentialsHandler extends DependencyProvider<Essentials>
 {
-	private @Getter boolean enabled;
-	private @Getter Essentials essentials;
-
-	private final SwornRPG plugin;
 	public EssentialsHandler(SwornRPG plugin)
 	{
-		this.plugin = plugin;
-		this.setup();
+		super(plugin, "Essentials");
 	}
 
-	@Override
-	public void setup()
+	public final boolean sendMail(Player player, String mail)
 	{
+		if (! isEnabled())
+			return false;
+
 		try
 		{
-			PluginManager pm = plugin.getServer().getPluginManager();
-			if (pm.getPlugin("Essentials") != null)
-			{
-				essentials = (Essentials) pm.getPlugin("Essentials");
-				enabled = true;
-
-				plugin.getLogHandler().log(plugin.getMessage("log_integration_essentials"));
-			}
+			User user = getDependency().getUser(player);
+			user.addMail(mail);
+			return true;
 		}
 		catch (Throwable ex)
 		{
-			enabled = false;
+			handler.getLogHandler().debug(Level.WARNING,
+					Util.getUsefulStack(ex, String.format("sendMail(%s, %s)", player.getName(), mail)));
 		}
+
+		return false;
 	}
 }

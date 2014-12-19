@@ -149,6 +149,9 @@ public class ExperienceHandler implements Reloadable
 
 	private final void giveLevelupCash(Player player, int level)
 	{
+		if (! plugin.isVaultEnabled())
+			return;
+
 		double money = rewardMoney * level;
 
 		VaultHandler handler = plugin.getVaultHandler();
@@ -170,7 +173,7 @@ public class ExperienceHandler implements Reloadable
 		}
 
 		handler.depositPlayer(player, money);
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), handler.getEconomy().format(money)));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), handler.format(money)));
 	}
 
 	/**
@@ -181,32 +184,32 @@ public class ExperienceHandler implements Reloadable
 	 */
 	public final void recalculateStats(Player player)
 	{
-//		PlayerData data = plugin.getPlayerDataCache().getData(player);
-//		int totalXp = data.getTotalxp();
-//
-//		totalXp *= 4;
-//
-//		int level = 0;
-//		int xp = 0;
-//		int xpNeeded = 100;
-//
-//		while (true)
-//		{
-//			level++;
-//			totalXp -= xp;
-//			xp += xpNeeded;
-//			xpNeeded += (xpNeeded / 4);
-//
-//			if (totalXp <= 0)
-//			{
-//				break;
-//			}
-//		}
-//
-//		data.setLevel(level);
-//		data.setTotalxp(totalXp);
-//		data.setXpneeded(xpNeeded);
-//		data.setPlayerxp(0);
+		/* PlayerData data = plugin.getPlayerDataCache().getData(player);
+		int totalXp = data.getTotalxp();
+
+		totalXp *= 4;
+
+		int level = 0;
+		int xp = 0;
+		int xpNeeded = 100;
+
+		while (true)
+		{
+			level++;
+			totalXp -= xp;
+			xp += xpNeeded;
+			xpNeeded += (xpNeeded / 4);
+
+			if (totalXp <= 0)
+			{
+				break;
+			}
+		}
+
+		data.setLevel(level);
+		data.setTotalxp(totalXp);
+		data.setXpneeded(xpNeeded);
+		data.setPlayerxp(0); */
 	}
 
 	@Override

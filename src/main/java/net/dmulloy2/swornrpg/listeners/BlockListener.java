@@ -50,7 +50,7 @@ public class BlockListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getPlayer();
-		if (plugin.getFactionsHandler().checkFactions(player, true))
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().checkFactions(player, true))
 			return;
 
 		if (player.getGameMode() == GameMode.CREATIVE)

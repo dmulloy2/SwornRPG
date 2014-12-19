@@ -82,12 +82,11 @@ public class ExperienceListener implements Listener, Reloadable
 
 		/** Figure out the killer **/
 		Player killer = plugin.getKiller(killed);
-
 		if (killer != null)
 		{
-			/** Warzone Checks **/
-			if (plugin.getFactionsHandler().checkFactions(killer, false)
-					|| plugin.getFactionsHandler().checkFactions(killed, false))
+			/** Factions Checks **/
+			if (plugin.isSwornNationsEnabled() && (plugin.getSwornNationsHandler().checkFactions(killer, false)
+					|| plugin.getSwornNationsHandler().checkFactions(killed, false)))
 				return;
 
 			/** Suicide Check **/
@@ -101,13 +100,13 @@ public class ExperienceListener implements Listener, Reloadable
 			data.setTimeOfLastDeath(System.currentTimeMillis());
 
 			/** Killer Xp Gain **/
-			String message = plugin.getPrefix() + 
+			String message = plugin.getPrefix() +
 					FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killerXpGain, killed.getName());
 			plugin.getExperienceHandler().handleXpGain(killer, killerXpGain, message);
 
 			/** Killed Xp Loss **/
 			int msgxp = Math.abs(-killedXpLoss);
-			message = plugin.getPrefix() + 
+			message = plugin.getPrefix() +
 					FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killer.getName());
 			plugin.getExperienceHandler().handleXpGain(killed, -killedXpLoss, message);
 
@@ -134,7 +133,7 @@ public class ExperienceListener implements Listener, Reloadable
 		if (killer != null)
 		{
 			/** Warzone and Safezone check **/
-			if (plugin.getFactionsHandler().checkFactions(killer, true))
+			if (plugin.getSwornNationsHandler().checkFactions(killer, true))
 				return;
 
 			/** Camping Check **/
@@ -166,7 +165,7 @@ public class ExperienceListener implements Listener, Reloadable
 
 			/** Message **/
 			String article = FormatUtil.getArticle(mobname);
-			String message = plugin.getPrefix() 
+			String message = plugin.getPrefix()
 					+ FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname);
 
 			plugin.getExperienceHandler().handleXpGain(killer, killxp, message);
@@ -191,7 +190,7 @@ public class ExperienceListener implements Listener, Reloadable
 			return;
 
 		/** Factions Check **/
-		if (plugin.getFactionsHandler().checkFactions(player, true))
+		if (plugin.getSwornNationsHandler().checkFactions(player, true))
 			return;
 
 		/** Camping Check **/
@@ -204,7 +203,7 @@ public class ExperienceListener implements Listener, Reloadable
 		if (newlevel - oldlevel != 1)
 			return;
 
-		String message = plugin.getPrefix() + 
+		String message = plugin.getPrefix() +
 				FormatUtil.format(plugin.getMessage("mc_xp_gain"), mcXpGain);
 		plugin.getExperienceHandler().handleXpGain(player, mcXpGain, message);
 
@@ -406,7 +405,7 @@ public class ExperienceListener implements Listener, Reloadable
 				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
 				String article = FormatUtil.getArticle(mobname);
 
-				String message = plugin.getPrefix() + 
+				String message = plugin.getPrefix() +
 						FormatUtil.format(plugin.getMessage("taming_gain"), tamingGain, article, mobname);
 				plugin.getExperienceHandler().handleXpGain(player, tamingGain, message);
 

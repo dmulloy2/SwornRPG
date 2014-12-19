@@ -42,8 +42,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.earth2me.essentials.User;
-
 /**
  * @author dmulloy2
  */
@@ -167,7 +165,7 @@ public class PlayerListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getEntity();
-		if (plugin.getFactionsHandler().checkFactions(player, true))
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().checkFactions(player, true))
 			return;
 
 		Location loc = player.getLocation();
@@ -179,16 +177,14 @@ public class PlayerListener implements Listener, Reloadable
 		if (data.isDeathCoordsEnabled())
 		{
 			EssentialsHandler handler = plugin.getEssentialsHandler();
-			if (handler.isEnabled())
+			if (handler != null && handler.isEnabled())
 			{
-				User user = handler.getEssentials().getUser(player);
-
 				Player killer = plugin.getKiller(player);
 				if (killer != null)
 				{
 					String mail = FormatUtil.format(plugin.getMessage("mail_pvp_format"),
 							killer.getName(), x, y, z, loc.getWorld().getName(), TimeUtil.getLongDateCurr());
-					user.addMail(mail);
+					handler.sendMail(player, mail);
 
 					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format(plugin.getMessage("death_coords_mail")));
@@ -200,7 +196,7 @@ public class PlayerListener implements Listener, Reloadable
 
 					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"),
 							x, y, z, world, TimeUtil.getLongDateCurr());
-					user.addMail(mail);
+					handler.sendMail(player, mail);
 
 					player.sendMessage(plugin.getPrefix() +
 							FormatUtil.format(plugin.getMessage("death_coords_mail")));
@@ -399,13 +395,10 @@ public class PlayerListener implements Listener, Reloadable
 		if (plugin.isDisabledWorld(player))
 			return;
 
-		if (plugin.getFactionsHandler().checkFactions(player, false))
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().checkFactions(player, false))
 			return;
 
-		if (player.isSneaking())
-			return;
-
-		if (player.getGameMode() != GameMode.SURVIVAL)
+		if (player.isSneaking() || player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
 		if (player.isSprinting())
