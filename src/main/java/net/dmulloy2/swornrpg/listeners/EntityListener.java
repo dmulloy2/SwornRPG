@@ -37,14 +37,14 @@ public class EntityListener implements Listener, Reloadable
 	private boolean confusionEnabled;
 	private boolean gracefulRollEnabled;
 	private boolean instaKillEnabled;
-	
+
 	private int arrowFireOdds;
 	private int axeKnockbackOdds;
 	private int confusionDuration;
 	private int confusionStrength;
 	private int gracefulRollOdds;
 	private int instaKillOdds;
-	
+
 	private final SwornRPG plugin;
 	public EntityListener(SwornRPG plugin)
 	{
@@ -60,7 +60,6 @@ public class EntityListener implements Listener, Reloadable
 			return;
 
 		Entity damager = event.getDamager();
-		Entity defender = event.getEntity();
 
 		if (plugin.isDisabledWorld(damager))
 			return;
@@ -71,20 +70,21 @@ public class EntityListener implements Listener, Reloadable
 			{
 				if (Util.random(arrowFireOdds) == 0)
 				{
+					Entity defender = event.getEntity();
 					defender.setFireTicks(5 * 20);
+
 					if (defender instanceof Player)
 					{
-						((Player) defender).sendMessage(plugin.getPrefix() +
-								FormatUtil.format(plugin.getMessage("fire_damage")));
+						Player player = (Player) defender;
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
 					}
 
 					Arrow arrow = (Arrow) damager;
 					if (arrow.getShooter() instanceof Player)
 					{
-						((Player) arrow.getShooter()).sendMessage(plugin.getPrefix() +
-								FormatUtil.format(plugin.getMessage("fire_damage")));
+						Player player = (Player) arrow.getShooter();
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
 					}
-
 				}
 			}
 		}
@@ -100,10 +100,11 @@ public class EntityListener implements Listener, Reloadable
 				{
 					if (Util.random(20) == 0)
 					{
+						Entity defender = event.getEntity();
 						if (defender instanceof Player)
 						{
-							((Player) defender).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, confusionDuration,
-									confusionStrength));
+							Player confused = (Player) defender;
+							confused.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, confusionDuration, confusionStrength));
 						}
 					}
 				}
@@ -117,6 +118,7 @@ public class EntityListener implements Listener, Reloadable
 				{
 					if (Util.random(axeKnockbackOdds) == 0)
 					{
+						Entity defender = event.getEntity();
 						double distance = damager.getLocation().distance(defender.getLocation());
 						double mult = 0.75D;
 						if (distance < 10.0D)
@@ -140,9 +142,10 @@ public class EntityListener implements Listener, Reloadable
 						String defenderName;
 						if (defender instanceof Player)
 						{
-							((Player) defender).sendMessage(plugin.getPrefix() +
+							Player blownBack = (Player) defender;
+							blownBack.sendMessage(plugin.getPrefix() +
 									FormatUtil.format(plugin.getMessage("axe_blowbackee"), player.getName(), type));
-							defenderName = ((Player) defender).getName();
+							defenderName = blownBack.getName();
 						}
 						else
 						{
@@ -176,8 +179,8 @@ public class EntityListener implements Listener, Reloadable
 			if (Util.random(gracefulRollOdds) == 0)
 			{
 				event.setDamage(0);
-				((Player) entity).sendMessage(plugin.getPrefix() +
-						FormatUtil.format(plugin.getMessage("graceful_roll")));
+				Player player = (Player) entity;
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("graceful_roll")));
 			}
 		}
 	}
@@ -210,7 +213,7 @@ public class EntityListener implements Listener, Reloadable
 	{
 		if (event.isCancelled() || event.getDamage() <= 0 || ! instaKillEnabled)
 			return;
-		
+
 		Entity damaged = event.getEntity();
 		if (plugin.isDisabledWorld(damaged))
 			return;
@@ -227,13 +230,12 @@ public class EntityListener implements Listener, Reloadable
 				if (damaged instanceof LivingEntity)
 				{
 					LivingEntity lentity = (LivingEntity) damaged;
-					
+
 					if (lentity.getMaxHealth() < 100.0D)
 					{
 						if (Util.random(instaKillOdds) == 0)
 						{
 							lentity.setHealth(0.0D);
-	
 							player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("insta_kill")));
 						}
 					}
@@ -242,7 +244,7 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	// ---- Mob Health ---- //
+	// ---- Mob Health
 
 	/** Mob Health (Spawn) **/
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -278,7 +280,7 @@ public class EntityListener implements Listener, Reloadable
 	{
 		if (event.isCancelled() || event.getAmount() <= 0.0D)
 			return;
-		
+
 		Entity entity = event.getEntity();
 		if (entity instanceof LivingEntity)
 		{
@@ -294,7 +296,7 @@ public class EntityListener implements Listener, Reloadable
 		this.confusionEnabled = plugin.getConfig().getBoolean("confusion.enabled");
 		this.gracefulRollEnabled = plugin.getConfig().getBoolean("gracefulRoll.enabled");
 		this.instaKillEnabled = plugin.getConfig().getBoolean("instaKill.enabled");
-		
+
 		this.arrowFireOdds = plugin.getConfig().getInt("arrowFire.odds");
 		this.axeKnockbackOdds = plugin.getConfig().getInt("axeKnockback.odds");
 		this.confusionDuration = plugin.getConfig().getInt("confusion.duration");
