@@ -130,8 +130,9 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	{
 		long start = System.currentTimeMillis();
 
-		// Register log handler first
+		// Register log and resource handlers
 		logHandler = new LogHandler(this);
+		resourceHandler = new ResourceHandler(this);
 
 		// Initialize variables
 		salvageRef = new HashMap<>();
@@ -166,7 +167,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		permissionHandler = new PermissionHandler("srpg");
 		experienceHandler = new ExperienceHandler(this);
 		healthBarHandler = new HealthBarHandler(this);
-		resourceHandler = new ResourceHandler(this);
 		abilityHandler = new AbilityHandler(this);
 		commandHandler = new CommandHandler(this);
 

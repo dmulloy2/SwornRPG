@@ -66,6 +66,7 @@ autoSave:
 # Duration (in seconds) = baseduration + (levelmultiplier x level)
 # Cooldown (in seconds) = duration x cooldownmultiplier
 # Inputs: enabled - boolean, rest - integer
+# Effects: list of PotionEffectTypes
 
 # Frenzy Mode
 frenzy:
@@ -81,7 +82,7 @@ frenzy:
     - FIRE_RESISTANCE
     - DAMAGE_RESISTANCE
 
-# SuperPickaxe
+# Super Pickaxe
 superPickaxe:
   enabled: true
   baseDuration: 10
@@ -254,7 +255,7 @@ blockDropsEnabled: true
 
 # Items Dropped
 # Format: 
-#  <blockId>:
+#  <blockType>:
 #    - "<material>[:data]:<chance>"
 # Chance is 1 out of <chance>
 blockDropItems:
@@ -494,7 +495,7 @@ fishDropItems:
 # Block Redemption Enabled (boolean)
 redemptionEnabled: true
 
-# Blacklisted Materials for Building Redeem
+# Blacklisted Materials for Block Redemption
 # Format: - material
 redemptionBlacklist:
 - diamond_block
