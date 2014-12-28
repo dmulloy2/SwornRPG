@@ -50,7 +50,7 @@ public class VaultHandler extends DependencyProvider<Vault>
 		}
 		catch (Throwable ex)
 		{
-			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "onEnable("));
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "onEnable()"));
 		}
 	}
 
@@ -79,11 +79,16 @@ public class VaultHandler extends DependencyProvider<Vault>
 		{
 			return economy.depositPlayer(player, amount).transactionSuccess();
 		}
-		catch (Throwable ex)
+		catch (NoSuchMethodError ex)
 		{
 			return economy.depositPlayer(player.getName(), amount).transactionSuccess();
 		}
+		catch (Throwable ex)
+		{
+			handler.getLogHandler().debug(Level.WARNING, Util.getUsefulStack(ex, "depositPlayer({0}, {1})", player.getName(), amount));
+		}
 
+		return false;
 	}
 
 	public final boolean withdraw(String name, double amount)
