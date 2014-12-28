@@ -176,7 +176,7 @@ public class EntityListener implements Listener, Reloadable
 			if (Util.random(gracefulRollOdds) == 0)
 			{
 				event.setDamage(0);
-				((Player) entity).sendMessage(plugin.getPrefix() + 
+				((Player) entity).sendMessage(plugin.getPrefix() +
 						FormatUtil.format(plugin.getMessage("graceful_roll")));
 			}
 		}
@@ -191,7 +191,7 @@ public class EntityListener implements Listener, Reloadable
 		{
 			Player player = (Player) killer;
 			double health = player.getHealth();
-			if (health + 1.0D <= 20.0D)
+			if (health + 1.0D <= player.getMaxHealth())
 			{
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
 
