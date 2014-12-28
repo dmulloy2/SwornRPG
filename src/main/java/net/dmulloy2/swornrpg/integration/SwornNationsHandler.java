@@ -25,12 +25,12 @@ public class SwornNationsHandler extends DependencyProvider<SwornNations>
 		super(plugin, "SwornNations");
 	}
 
-	public final boolean checkFactions(Player player, boolean safeZoneCheck)
+	public final boolean isApplicable(Player player, boolean safeZoneCheck)
 	{
-		return checkFactions(player.getLocation(), safeZoneCheck);
+		return isApplicable(player.getLocation(), safeZoneCheck);
 	}
 
-	public final boolean checkFactions(Location location, boolean safeZoneCheck)
+	public final boolean isApplicable(Location location, boolean safeZoneCheck)
 	{
 		return safeZoneCheck ? isSafeZone(location) || isWarZone(location) : isWarZone(location);
 	}

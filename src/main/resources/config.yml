@@ -73,6 +73,13 @@ frenzy:
   baseDuration: 5
   levelMultiplier: 1
   cooldownMultiplier: 10
+  effects:
+    - SPEED
+    - INCREASE_DAMAGE
+    - REGENERATION
+    - JUMP
+    - FIRE_RESISTANCE
+    - DAMAGE_RESISTANCE
 
 # SuperPickaxe
 superPickaxe:

@@ -85,8 +85,8 @@ public class ExperienceListener implements Listener, Reloadable
 		if (killer != null)
 		{
 			/** Factions Checks **/
-			if (plugin.isSwornNationsEnabled() && (plugin.getSwornNationsHandler().checkFactions(killer, false)
-					|| plugin.getSwornNationsHandler().checkFactions(killed, false)))
+			if (plugin.isSwornNationsEnabled() && (plugin.getSwornNationsHandler().isApplicable(killer, false)
+					|| plugin.getSwornNationsHandler().isApplicable(killed, false)))
 				return;
 
 			/** Suicide Check **/
@@ -133,11 +133,11 @@ public class ExperienceListener implements Listener, Reloadable
 		if (killer != null)
 		{
 			/** Warzone and Safezone check **/
-			if (plugin.getSwornNationsHandler().checkFactions(killer, true))
+			if (plugin.getSwornNationsHandler().isApplicable(killer, true))
 				return;
 
 			/** Camping Check **/
-			if (plugin.checkCamper(killer))
+			if (plugin.isCamping(killer))
 				return;
 
 			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
@@ -190,11 +190,11 @@ public class ExperienceListener implements Listener, Reloadable
 			return;
 
 		/** Factions Check **/
-		if (plugin.getSwornNationsHandler().checkFactions(player, true))
+		if (plugin.getSwornNationsHandler().isApplicable(player, true))
 			return;
 
 		/** Camping Check **/
-		if (plugin.checkCamper(player))
+		if (plugin.isCamping(player))
 			return;
 
 		/** Define Stuff **/

@@ -42,7 +42,6 @@ public class BlockListener implements Listener, Reloadable
 		this.reload(); // Load configuration
 	}
 
-	/** Block Drops **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreakMonitor(BlockBreakEvent event)
 	{
@@ -50,15 +49,16 @@ public class BlockListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getPlayer();
-		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().checkFactions(player, true))
+		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
-		if (player.getGameMode() == GameMode.CREATIVE)
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(player, true))
 			return;
 
 		Block block = event.getBlock();
 		Material type = block.getType();
 
+		// Block drops
 		if (plugin.getBlockDropsMap().containsKey(type))
 		{
 			for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(type))
@@ -82,7 +82,6 @@ public class BlockListener implements Listener, Reloadable
 		}
 	}
 
-	/** Iron Door Protection **/
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreakHighest(BlockBreakEvent event)
 	{
@@ -97,30 +96,28 @@ public class BlockListener implements Listener, Reloadable
 		if (plugin.isDisabledWorld(block))
 			return;
 
+		// Iron door protection
 		if (block.getType() == Material.IRON_DOOR_BLOCK)
 		{
 			event.setCancelled(true);
 
-			player.sendMessage(plugin.getPrefix() +
-					FormatUtil.format(plugin.getMessage("iron_door_protect")));
-
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("iron_door_protect")));
 			plugin.debug(plugin.getMessage("log_irondoor_protect"), player.getName(), Util.locationToString(block.getLocation()));
 		}
 	}
 
-	/** Block Redemption **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		if (event.isCancelled() || ! redemptionEnabled)
 			return;
 
-		Block block = event.getBlock();
-		if (plugin.isDisabledWorld(block))
-			return;
-
 		Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.CREATIVE)
+			return;
+
+		Block block = event.getBlock();
+		if (plugin.isDisabledWorld(block))
 			return;
 
 		Material material = block.getType();
@@ -129,15 +126,14 @@ public class BlockListener implements Listener, Reloadable
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
+		// Block redemption
 		int level = data.getLevel(100);
 		if (Util.random(300 / level) == 0)
 		{
 			ItemStack itemStack = new ItemStack(material);
 			MaterialData materialData = block.getState().getData();
 			if (materialData != null)
-			{
 				itemStack.setData(materialData);
-			}
 
 			InventoryUtil.giveItem(player, itemStack);
 

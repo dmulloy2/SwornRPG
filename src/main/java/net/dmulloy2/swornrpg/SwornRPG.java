@@ -88,11 +88,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -102,253 +100,215 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class SwornRPG extends SwornPlugin implements Reloadable
 {
-	/** Handlers **/
+	// Handlers
 	private @Getter ExperienceHandler experienceHandler;
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter AbilityHandler abilityHandler;
 
+	// Data cache
 	private @Getter PlayerDataCache playerDataCache;
 
-	/** Integration **/
+	// Integration
 	private @Getter SwornNationsHandler swornNationsHandler;
 	private @Getter EssentialsHandler essentialsHandler;
 	private @Getter VaultHandler vaultHandler;
 
-	/** Listeners, Stored for Reloading **/
-	private List<Listener> listeners;
-
-	/** Maps **/
+	// Maps
 	private @Getter Map<String, Map<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Integer, List<BlockDrop>> fishDropsMap;
 
-	/** Global Prefix Variable **/
-	private @Getter String prefix;
+	// Listeners, for reloading
+	private List<Listener> listeners;
+
+	// Global prefix
+	private final @Getter String prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
 
 	@Override
 	public void onEnable()
 	{
-		try
+		long start = System.currentTimeMillis();
+
+		// Register log handler first
+		logHandler = new LogHandler(this);
+
+		// Initialize variables
+		salvageRef = new HashMap<>();
+		blockDropsMap = new HashMap<>();
+		fishDropsMap = new HashMap<>();
+
+		// Configuration
+		File conf = new File(getDataFolder(), "config.yml");
+		if (! conf.exists())
 		{
-			long start = System.currentTimeMillis();
-
-			/** Register LogHandler first **/
-			logHandler = new LogHandler(this);
-
-			/** Initialize Variables **/
-			salvageRef = new HashMap<>();
-			blockDropsMap = new HashMap<>();
-			fishDropsMap = new HashMap<>();
-
-			prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
-
-			File messages = new File(getDataFolder(), "messages.properties");
-			if (messages.exists())
-				messages.delete();
-
-			resourceHandler = new ResourceHandler(this);
-
-			/** Register Other Handlers **/
-			experienceHandler = new ExperienceHandler(this);
-			healthBarHandler = new HealthBarHandler(this);
-			permissionHandler = new PermissionHandler("srpg");
-			abilityHandler = new AbilityHandler(this);
-			commandHandler = new CommandHandler(this);
-
-			/** Register Listeners **/
-			listeners = new ArrayList<Listener>();
-			registerListener(new PlayerListener(this));
-			registerListener(new EntityListener(this));
-			registerListener(new BlockListener(this));
-			registerListener(new ExperienceListener(this));
-
-			/** Check for PlayerData folder **/
-			File playersFile = new File(getDataFolder(), "players");
-			if (! playersFile.exists())
+			log(getMessage("log_config_create"));
+			saveDefaultConfig();
+		}
+		else
+		{
+			if (! getConfig().isSet("disabledWorlds"))
 			{
-				playersFile.mkdirs();
-			}
-
-			/** Configuration Stuff **/
-			File conf = new File(getDataFolder(), "config.yml");
-			if (! conf.exists())
-			{
-				log(getMessage("log_config_create"));
+				conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
+				log(getMessage("log_config_outdated"));
 				saveDefaultConfig();
 			}
-			else
+		}
+
+		reloadConfig();
+
+		// Delete legacy messages file
+		File messages = new File(getDataFolder(), "messages.properties");
+		if (messages.exists())
+			messages.delete();
+
+		// Register the other handlers
+		permissionHandler = new PermissionHandler("srpg");
+		experienceHandler = new ExperienceHandler(this);
+		healthBarHandler = new HealthBarHandler(this);
+		resourceHandler = new ResourceHandler(this);
+		abilityHandler = new AbilityHandler(this);
+		commandHandler = new CommandHandler(this);
+
+		// Update block maps
+		updateBlockDrops();
+		updateFishDrops();
+
+		// Salvaging
+		updateSalvageRef();
+
+		// Register prefixed commands
+		commandHandler.setCommandPrefix("srpg");
+		commandHandler.registerPrefixedCommand(new CmdHelp(this));
+		commandHandler.registerPrefixedCommand(new CmdLeaderboard(this));
+		commandHandler.registerPrefixedCommand(new CmdVersion(this));
+		commandHandler.registerPrefixedCommand(new CmdReload(this));
+
+		// Register non-prefixed commands
+		commandHandler.registerCommand(new CmdAbilities(this));
+		commandHandler.registerCommand(new CmdAddxp(this));
+		commandHandler.registerCommand(new CmdAdminChat(this));
+		commandHandler.registerCommand(new CmdAdminSay(this));
+		commandHandler.registerCommand(new CmdCoordsToggle(this));
+		commandHandler.registerCommand(new CmdDeny(this));
+		commandHandler.registerCommand(new CmdDivorce(this));
+		commandHandler.registerCommand(new CmdEject(this));
+		commandHandler.registerCommand(new CmdFrenzy(this));
+		commandHandler.registerCommand(new CmdHat(this));
+		commandHandler.registerCommand(new CmdHighCouncil(this));
+		commandHandler.registerCommand(new CmdLevel(this));
+		commandHandler.registerCommand(new CmdLore(this));
+		commandHandler.registerCommand(new CmdMarry(this));
+		commandHandler.registerCommand(new CmdName(this));
+		commandHandler.registerCommand(new CmdPropose(this));
+		commandHandler.registerCommand(new CmdResetLevel(this));
+		commandHandler.registerCommand(new CmdRide(this));
+		commandHandler.registerCommand(new CmdSitdown(this));
+		commandHandler.registerCommand(new CmdSpouse(this));
+		commandHandler.registerCommand(new CmdStaffList(this));
+		commandHandler.registerCommand(new CmdStandup(this));
+		commandHandler.registerCommand(new CmdSuperPickaxe(this));
+		commandHandler.registerCommand(new CmdUnride(this));
+		commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
+
+		// Register listeners
+		listeners = new ArrayList<Listener>();
+		registerListener(new PlayerListener(this));
+		registerListener(new EntityListener(this));
+		registerListener(new BlockListener(this));
+		registerListener(new ExperienceListener(this));
+
+		// Integration
+		setupIntegration();
+
+		playerDataCache = new PlayerDataCache(this);
+
+		// Deploy auto save task
+		if (getConfig().getBoolean("autoSave.enabled"))
+		{
+			int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
+
+			class AutoSaveTask extends BukkitRunnable
 			{
-				if (! getConfig().isSet("disabledWorlds"))
+				@Override
+				public void run()
 				{
-					conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
-					log(getMessage("log_config_outdated"));
-					saveDefaultConfig();
+					// Save and cleanup
+					playerDataCache.save();
+					playerDataCache.cleanupData();
 				}
 			}
 
-			reloadConfig();
+			new AutoSaveTask().runTaskTimerAsynchronously(this, interval, interval);
+		}
 
-			/** Update Block Tables **/
-			updateBlockDrops();
-			updateFishDrops();
-
-			/** Salvaging **/
-			updateSalvageRef();
-
-			/** Register Prefixed Commands **/
-			commandHandler.setCommandPrefix("srpg");
-			commandHandler.registerPrefixedCommand(new CmdHelp(this));
-			commandHandler.registerPrefixedCommand(new CmdLeaderboard(this));
-			commandHandler.registerPrefixedCommand(new CmdVersion(this));
-			commandHandler.registerPrefixedCommand(new CmdReload(this));
-
-			/** Register Non-Prefixed Commands **/
-			commandHandler.registerCommand(new CmdAbilities(this));
-			commandHandler.registerCommand(new CmdAddxp(this));
-			commandHandler.registerCommand(new CmdAdminChat(this));
-			commandHandler.registerCommand(new CmdAdminSay(this));
-			commandHandler.registerCommand(new CmdCoordsToggle(this));
-			commandHandler.registerCommand(new CmdDeny(this));
-			commandHandler.registerCommand(new CmdDivorce(this));
-			commandHandler.registerCommand(new CmdEject(this));
-			commandHandler.registerCommand(new CmdFrenzy(this));
-			commandHandler.registerCommand(new CmdHat(this));
-			commandHandler.registerCommand(new CmdHighCouncil(this));
-			commandHandler.registerCommand(new CmdLevel(this));
-			commandHandler.registerCommand(new CmdLore(this));
-			commandHandler.registerCommand(new CmdMarry(this));
-			commandHandler.registerCommand(new CmdName(this));
-			commandHandler.registerCommand(new CmdPropose(this));
-			commandHandler.registerCommand(new CmdResetLevel(this));
-			commandHandler.registerCommand(new CmdRide(this));
-			commandHandler.registerCommand(new CmdSitdown(this));
-			commandHandler.registerCommand(new CmdSpouse(this));
-			commandHandler.registerCommand(new CmdStaffList(this));
-			commandHandler.registerCommand(new CmdStandup(this));
-			commandHandler.registerCommand(new CmdSuperPickaxe(this));
-			commandHandler.registerCommand(new CmdUnride(this));
-			commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
-
-			/** Integration **/
-			setupIntegration();
-
-			playerDataCache = new PlayerDataCache(this);
-
-			/** Deploy AutoSave Task **/
-			if (getConfig().getBoolean("autoSave.enabled"))
+		// Cooldowns
+		class CooldownTickTask extends BukkitRunnable
+		{
+			@Override
+			public void run()
 			{
-				int interval = 20 * 60 * getConfig().getInt("autoSave.interval");
-
-				class AutoSaveTask extends BukkitRunnable
+				for (Player player : Util.getOnlinePlayers())
 				{
-					@Override
-					public void run()
+					PlayerData data = playerDataCache.getData(player);
+
+					try
 					{
-						// Save and cleanup
-						playerDataCache.save();
-						playerDataCache.cleanupData();
+						Map<String, Long> cooldowns = data.getCooldowns();
+						if (! cooldowns.isEmpty())
+						{
+							for (Entry<String, Long> entry : cooldowns.entrySet())
+							{
+								String key = entry.getKey();
+								long remaining = entry.getValue() - 1;
+								if (remaining <= 0)
+								{
+									cooldowns.remove(key);
+									player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), key));
+								}
+								else
+								{
+									cooldowns.put(entry.getKey(), remaining);
+								}
+							}
+						}
+					}
+					catch (Throwable ex)
+					{
+						data.setCooldowns(new HashMap<String, Long>());
+						logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "ticking cooldown for " + data.getLastKnownBy()));
 					}
 				}
-
-				new AutoSaveTask().runTaskTimerAsynchronously(this, interval, interval);
 			}
+		}
 
-			/** Cooldowns **/
-			class CooldownTickTask extends BukkitRunnable
+		new CooldownTickTask().runTaskTimerAsynchronously(this, 2L, 1L);
+
+		// Online xp gain
+		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
+		{
+			final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
+			final long interval = TimeUtil.toTicks(60); // Minute
+
+			class OnlineTimeTask extends BukkitRunnable
 			{
 				@Override
 				public void run()
 				{
 					for (Player player : Util.getOnlinePlayers())
 					{
-						PlayerData data = playerDataCache.getData(player);
-
-						try
-						{
-							Map<String, Long> cooldowns = data.getCooldowns();
-							if (! cooldowns.isEmpty())
-							{
-								for (Entry<String, Long> entry : cooldowns.entrySet())
-								{
-									String key = entry.getKey();
-									long remaining = entry.getValue() - 1;
-									if (remaining <= 0)
-									{
-										cooldowns.remove(key);
-										player.sendMessage(prefix + FormatUtil.format(getMessage("ability_refreshed"), key));
-									}
-									else
-									{
-										cooldowns.put(entry.getKey(), remaining);
-									}
-								}
-							}
-						}
-						catch (Throwable ex)
-						{
-							data.setCooldowns(new HashMap<String, Long>());
-							logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "ticking cooldown for " + data.getLastKnownBy()));
-						}
+						experienceHandler.handleXpGain(player, onlineXpGain, "");
 					}
 				}
 			}
 
-			new CooldownTickTask().runTaskTimerAsynchronously(this, 2L, 1L);
-
-			/** Online XP Gain **/
-			final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
-			final long interval = TimeUtil.toTicks(60); // Minute
-
-			if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
-			{
-				class OnlineTimeTask extends BukkitRunnable
-				{
-					@Override
-					public void run()
-					{
-						for (Player player : Util.getOnlinePlayers())
-						{
-							experienceHandler.handleXpGain(player, onlineXpGain, "");
-						}
-					}
-				}
-
-				if (getConfig().getBoolean("levelingMethods.onlineTime.async", false))
-					new OnlineTimeTask().runTaskTimerAsynchronously(this, interval, interval);
-				else
-					new OnlineTimeTask().runTaskTimer(this, interval, interval);
-			}
-
-			log(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
+			if (getConfig().getBoolean("levelingMethods.onlineTime.async", false))
+				new OnlineTimeTask().runTaskTimerAsynchronously(this, interval, interval);
+			else
+				new OnlineTimeTask().runTaskTimer(this, interval, interval);
 		}
-		catch (final Throwable ex)
-		{
-			// Something happened when we tried to enable
-			getLogger().severe(Util.getUsefulStack(ex, "enabling SwornRPG"));
 
-			// Alert online OPs
-			for (Player player : Util.getOnlinePlayers())
-			{
-				if (player.isOp())
-					player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", ex));
-			}
-
-			// If an OP joins, alert them as well
-			getPluginManager().registerEvents(new Listener()
-			{
-				@EventHandler
-				public void onPlayerJoin(PlayerJoinEvent event)
-				{
-					Player player = event.getPlayer();
-					if (player.isOp())
-						player.sendMessage(prefix + FormatUtil.format("&4SwornRPG failed to load! Exception: &c{0}", ex));
-				}
-			}, this);
-
-			// Set the plugin as disabled
-			setEnabled(false);
-		}
+		log(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	@Override
@@ -356,15 +316,15 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	{
 		long start = System.currentTimeMillis();
 
-		/** Cancel tasks / services **/
+		// Cancel tasks and services
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
 
-		/** Save Data **/
+		// Save data
 		if (playerDataCache != null)
 			playerDataCache.save();
 
-		/** Clear Memory **/
+		// Clear memory
 		clearMemory();
 
 		log(getMessage("log_disabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
@@ -518,10 +478,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		}
 	}
 
-	/**
-	 * Update Block Drops
-	 */
-	public final void updateBlockDrops()
+	private final void updateBlockDrops()
 	{
 		blockDropsMap.clear();
 
@@ -573,9 +530,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		}
 	}
 
-	/**
-	 * Update Fish Drops
-	 */
 	private final void updateFishDrops()
 	{
 		fishDropsMap.clear();
@@ -626,9 +580,9 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Camping Check
+	 * Simple camping check
 	 */
-	public final boolean checkCamper(Player player)
+	public final boolean isCamping(Player player)
 	{
 		int radius = getConfig().getInt("campingRadius");
 		if (radius <= 0)
@@ -657,6 +611,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		return false;
 	}
 
+	/**
+	 * Gets a given player's killer.
+	 * 
+	 * @param killed Player who was killed
+	 * @return Killer, or null if not found
+	 */
 	public final Player getKiller(Player killed)
 	{
 		Entity attacker = killed.getKiller();

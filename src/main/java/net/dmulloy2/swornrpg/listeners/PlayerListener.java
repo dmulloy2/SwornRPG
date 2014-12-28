@@ -75,10 +75,7 @@ public class PlayerListener implements Listener, Reloadable
 		if (! salvagingEnabled || event.isCancelled())
 			return;
 
-		if (event.getAction() != Action.LEFT_CLICK_BLOCK)
-			return;
-
-		if (! event.hasBlock())
+		if (! event.hasBlock() || event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
 
 		Block block = event.getClickedBlock();
@@ -99,12 +96,12 @@ public class PlayerListener implements Listener, Reloadable
 
 		if (! blockType.isEmpty())
 		{
-			if ((block.getRelative(-1, 0, 0).getType() == Material.FURNACE) || (block.getRelative(1, 0, 0).getType() == Material.FURNACE)
-					|| (block.getRelative(0, 0, -1).getType() == Material.FURNACE)
-					|| (block.getRelative(0, 0, 1).getType() == Material.FURNACE))
+			if (block.getRelative(-1, 0, 0).getType() == Material.FURNACE
+					|| block.getRelative(1, 0, 0).getType() == Material.FURNACE
+					|| block.getRelative(0, 0, -1).getType() == Material.FURNACE
+					|| block.getRelative(0, 0, 1).getType() == Material.FURNACE)
 			{
 				ItemStack item = player.getItemInHand();
-
 				Material type = item.getType();
 
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
@@ -126,9 +123,8 @@ public class PlayerListener implements Listener, Reloadable
 						plural = "s";
 
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format(plugin.getMessage("salvage_success"),
-									article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("salvage_success"),
+							article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
 
 					plugin.log(plugin.getMessage("log_salvage"), player.getName(), itemName, amt, blockType.toLowerCase(),
 							materialExtension, plural);
@@ -165,7 +161,7 @@ public class PlayerListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getEntity();
-		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().checkFactions(player, true))
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(player, true))
 			return;
 
 		Location loc = player.getLocation();
@@ -173,6 +169,7 @@ public class PlayerListener implements Listener, Reloadable
 		int y = loc.getBlockY();
 		int z = loc.getBlockZ();
 
+		// Death coordinates
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isDeathCoordsEnabled())
 		{
@@ -186,20 +183,17 @@ public class PlayerListener implements Listener, Reloadable
 							killer.getName(), x, y, z, loc.getWorld().getName(), TimeUtil.getLongDateCurr());
 					handler.sendMail(player, mail);
 
-					player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format(plugin.getMessage("death_coords_mail")));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 				else
 				{
 					String world = player.getWorld().getName();
 
-					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"),
-							x, y, z, world, TimeUtil.getLongDateCurr());
+					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"), x, y, z, world, TimeUtil.getLongDateCurr());
 					handler.sendMail(player, mail);
 
-					player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format(plugin.getMessage("death_coords_mail")));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
 					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 			}
@@ -336,9 +330,8 @@ public class PlayerListener implements Listener, Reloadable
 		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
 			return;
 
-		/** Fishing XP Gain **/
-		String message = plugin.getPrefix() +
-				FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
+		// Fishing xp gain
+		String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
 		plugin.getExperienceHandler().handleXpGain(event.getPlayer(), fishingGain, message);
 
 		/** Fish Drops **/
@@ -395,20 +388,16 @@ public class PlayerListener implements Listener, Reloadable
 		if (plugin.isDisabledWorld(player))
 			return;
 
-		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().checkFactions(player, false))
+		if (! player.isSprinting() || player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
-		if (player.isSneaking() || player.getGameMode() != GameMode.SURVIVAL)
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(player, false))
 			return;
 
-		if (player.isSprinting())
+		if (Util.random(speedBoostOdds) == 0)
 		{
-			if (Util.random(speedBoostOdds) == 0)
-			{
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedBoostDuration, speedBoostStrength));
-				player.sendMessage(plugin.getPrefix() +
-						FormatUtil.format(plugin.getMessage("speed_boost")));
-			}
+			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedBoostDuration, speedBoostStrength));
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("speed_boost")));
 		}
 	}
 
@@ -462,8 +451,7 @@ public class PlayerListener implements Listener, Reloadable
 						break;
 					case ENDER_DRAGON:
 						clicked.setPassenger(player);
-						player.sendMessage(plugin.getPrefix() +
-								FormatUtil.format("&eYou are a Dragon Tamer, &b{0}&e!", player.getName()));
+						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&eYou are a Dragon Tamer, &b{0}&e!", player.getName()));
 					default:
 						break;
 				}

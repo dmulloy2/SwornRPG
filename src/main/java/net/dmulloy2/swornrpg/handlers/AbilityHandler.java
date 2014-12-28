@@ -33,6 +33,7 @@ public class AbilityHandler implements Reloadable
 	private int frenzyDuration;
 	private int frenzyLevelMultiplier;
 	private int frenzyCooldownMultiplier;
+	private List<PotionEffectType> frenzyEffects;
 
 	private boolean superPickaxeEnabled;
 	private int superPickaxeDuration;
@@ -57,7 +58,7 @@ public class AbilityHandler implements Reloadable
 		new CleanupTask().runTaskTimer(plugin, TimeUtil.toTicks(3), TimeUtil.toTicks(1));
 	}
 
-	// ---- Public Use Methods ---- //
+	// ---- Public Use Methods
 
 	public final void checkActivation(Player player, Action action)
 	{
@@ -189,12 +190,6 @@ public class AbilityHandler implements Reloadable
 		}
 	}
 
-	// TODO: Make this configurable
-	private final String[] frenzyTypes = new String[]
-	{
-			"SPEED", "INCREASE_DAMAGE", "REGENERATION", "JUMP", "FIRE_RESISTANCE", "DAMAGE_RESISTANCE"
-	};
-
 	private final void frenzy(final Player player)
 	{
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
@@ -208,13 +203,10 @@ public class AbilityHandler implements Reloadable
 		data.setFrenzyWaiting(false);
 		waiting.remove(player.getName());
 
-		List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
-		for (String type : frenzyTypes)
+		for (PotionEffectType type : frenzyEffects)
 		{
-			potionEffects.add(new PotionEffect(PotionEffectType.getByName(type), (int) duration, 1));
+			player.addPotionEffect(new PotionEffect(type, (int) duration, 1));
 		}
-
-		player.addPotionEffects(potionEffects);
 
 		plugin.debug(plugin.getMessage("log_frenzy_activate"), player.getName(), duration);
 
@@ -317,8 +309,7 @@ public class AbilityHandler implements Reloadable
 
 				if (data.getCooldowns().containsKey("superpick"))
 				{
-					sendpMessage(player, plugin.getMessage("superpick_cooldown"), 
-							TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
+					sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
 					return;
 				}
 
@@ -518,6 +509,32 @@ public class AbilityHandler implements Reloadable
 		return TimeUtil.toTicks(getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier);
 	}
 
+	private final List<PotionEffectType> parseFrenzyEffects()
+	{
+		List<PotionEffectType> types = new ArrayList<>();
+
+		for (String name : plugin.getConfig().getStringList("frenzy.effects"))
+		{
+			name = name.replaceAll(" ", "_").toUpperCase();
+			PotionEffectType type = PotionEffectType.getByName(name);
+			if (type != null)
+				types.add(type);
+		}
+
+		if (types.isEmpty())
+		{
+			// Default types
+			types.add(PotionEffectType.SPEED);
+			types.add(PotionEffectType.INCREASE_DAMAGE);
+			types.add(PotionEffectType.REGENERATION);
+			types.add(PotionEffectType.JUMP);
+			types.add(PotionEffectType.FIRE_RESISTANCE);
+			types.add(PotionEffectType.DAMAGE_RESISTANCE);
+		}
+
+		return types;
+	}
+
 	@Override
 	public void reload()
 	{
@@ -525,6 +542,7 @@ public class AbilityHandler implements Reloadable
 		this.frenzyDuration = plugin.getConfig().getInt("frenzy.baseDuration");
 		this.frenzyLevelMultiplier = plugin.getConfig().getInt("frenzy.levelMultiplier");
 		this.frenzyCooldownMultiplier = plugin.getConfig().getInt("frenzy.cooldownMultiplier");
+		this.frenzyEffects = parseFrenzyEffects();
 
 		this.superPickaxeEnabled = plugin.getConfig().getBoolean("superPickaxe.enabled");
 		this.superPickaxeDuration = plugin.getConfig().getInt("superPickaxe.baseDuration");
