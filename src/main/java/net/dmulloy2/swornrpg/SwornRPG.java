@@ -447,6 +447,10 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	public final void reload()
 	{
 		clearMemory();
+		salvageRef = new HashMap<>();
+		blockDropsMap = new HashMap<>();
+		fishDropsMap = new HashMap<>();
+
 		reloadConfig();
 		reloadListeners();
 		updateSalvageRef();
