@@ -12,6 +12,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -185,7 +186,6 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	/** Succor **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
@@ -194,14 +194,21 @@ public class EntityListener implements Listener, Reloadable
 		{
 			Player player = (Player) killer;
 			double health = player.getHealth();
-			if (health + 1.0D <= player.getMaxHealth())
+			double maxHealth = player.getMaxHealth();
+
+			if (health > 0.0D && health < maxHealth)
 			{
 				PlayerData data = plugin.getPlayerDataCache().getData(player);
-
 				int level = data.getLevel(25);
+
 				if (Util.random(75 / level) == 0)
 				{
-					player.setHealth(player.getHealth() + 1.0D);
+					// Life steal
+					player.setHealth(Math.min(health + 1.0D, maxHealth));
+
+					double heartsStolen = (player.getHealth() - health) / 2;
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("life_steal"),
+							heartsStolen, getName(event.getEntity())));
 				}
 			}
 		}
@@ -286,6 +293,34 @@ public class EntityListener implements Listener, Reloadable
 		{
 			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
 		}
+	}
+
+	// ---- Utility Methods
+
+	public static final String getName(Entity entity)
+	{
+		Player player = getPlayer(entity);
+		if (player != null)
+			return player.getName();
+
+		return FormatUtil.getFriendlyName(entity.getType());
+	}
+
+	public static final Player getPlayer(Entity entity)
+	{
+		if (entity instanceof Player)
+		{
+			return (Player) entity;
+		}
+
+		if (entity instanceof Projectile)
+		{
+			Projectile proj = (Projectile) entity;
+			if (proj.getShooter() instanceof Player)
+				return (Player) proj.getShooter();
+		}
+
+		return null;
 	}
 
 	@Override
