@@ -71,7 +71,8 @@ public class PlayerDataCache
 				if (data == null)
 				{
 					// Corrupt data :(
-					file.delete();
+					if (! file.renameTo(new File(folder, file.getName() + "_bad")))
+						file.delete();
 					return null;
 				}
 
@@ -163,7 +164,7 @@ public class PlayerDataCache
 			}
 		}
 
-		plugin.log("Players saved! [{0} ms]", System.currentTimeMillis() - start);
+		plugin.log("Players saved. Took {0} ms.", System.currentTimeMillis() - start);
 	}
 
 	public final void cleanupData()
