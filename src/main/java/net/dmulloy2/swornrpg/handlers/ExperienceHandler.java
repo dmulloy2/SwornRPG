@@ -1,3 +1,6 @@
+/**
+ * (c) 2015 dmulloy2
+ */
 package net.dmulloy2.swornrpg.handlers;
 
 import java.util.List;
@@ -42,26 +45,20 @@ public class ExperienceHandler implements Reloadable
 	 * @param xpGained Amount of xp gained
 	 * @param message Message to be sent to the player
 	 */
-	public void handleXpGain(Player player, int xpGained, String message)
+	public final void handleXpGain(Player player, int xpGained, String message)
 	{
-		/** Disabled World Check **/
-		if (plugin.isDisabledWorld(player))
-			return;
-
-		/** Send the Message **/
+		// Send the message
 		if (! message.isEmpty())
 			player.sendMessage(message);
 
-		/** Add the xp gained to their overall xp **/
+		// Add gained xp to their total xp
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		data.setPlayerxp(data.getPlayerxp() + xpGained);
 		data.setTotalxp(data.getTotalxp() + xpGained);
 
-		/** Levelup check **/
+		// Levelup check
 		if (data.getXpNeeded() - data.getPlayerxp() <= 0)
-		{
 			handleLevelUp(player);
-		}
 	}
 
 	/**
@@ -71,18 +68,14 @@ public class ExperienceHandler implements Reloadable
 	 */
 	public final void handleLevelUp(Player player)
 	{
-		/** Disabled World Check **/
-		if (plugin.isDisabledWorld(player))
-			return;
-
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
-		/** Prior Skill Data **/
+		// Old skill data
 		int oldFrenzy = TimeUtil.toSeconds(plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()));
 		int oldSuperPickaxe = TimeUtil.toSeconds(plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()));
 		int oldUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
-		/** Prepare data for the next level **/
+		// Increment level, reset needed xp
 		if (levelCap == -1 || data.getLevel() < levelCap)
 		{
 			data.setLevel(data.getLevel() + 1);
@@ -91,12 +84,12 @@ public class ExperienceHandler implements Reloadable
 
 		data.setPlayerxp(0);
 
-		/** New Skill Data **/
+		// New skill data
 		int newFrenzy = TimeUtil.toSeconds(plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()));
 		int newSuperPickaxe = TimeUtil.toSeconds(plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()));
 		int newUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
-		/** Send messages **/
+		// Send levelup message
 		int level = data.getLevel();
 		if (levelCap != -1 && level >= levelCap)
 		{
@@ -107,9 +100,9 @@ public class ExperienceHandler implements Reloadable
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup"), level));
 		}
 
-		plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
+		// plugin.debug(plugin.getMessage("log_levelup"), player.getName(), level);
 
-		/** Rewards **/
+		// Rewards
 		if (rewardsEnabled)
 		{
 			VaultHandler handler = plugin.getVaultHandler();
@@ -133,18 +126,18 @@ public class ExperienceHandler implements Reloadable
 			}
 		}
 
-		/** Tell Players if Skill(s) went up **/
-		double frenzy = newFrenzy - oldFrenzy;
-		double spick = newSuperPickaxe - oldSuperPickaxe;
-		double ammo = newUnlimitedAmmo - oldUnlimitedAmmo;
+		// Tell players which skills went up
+		int frenzy = newFrenzy - oldFrenzy;
+		int superPickaxe = newSuperPickaxe - oldSuperPickaxe;
+		int unlimitedAmmo = newUnlimitedAmmo - oldUnlimitedAmmo;
 
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_skills")));
 		if (frenzy > 0)
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_frenzy"), frenzy));
-		if (spick > 0)
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_spick"), spick));
-		if (ammo > 0)
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_ammo"), ammo));
+		if (superPickaxe > 0)
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_spick"), superPickaxe));
+		if (unlimitedAmmo > 0)
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_ammo"), unlimitedAmmo));
 	}
 
 	private final void giveLevelupCash(Player player, int level)

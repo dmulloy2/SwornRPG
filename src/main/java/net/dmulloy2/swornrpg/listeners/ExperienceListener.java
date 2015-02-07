@@ -1,3 +1,6 @@
+/**
+ * (c) 2015 dmulloy2
+ */
 package net.dmulloy2.swornrpg.listeners;
 
 import java.util.Arrays;
@@ -32,7 +35,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
@@ -70,147 +72,124 @@ public class ExperienceListener implements Listener, Reloadable
 		this.reload();
 	}
 
-	/** Rewards XP in PvP situations **/
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerDeath(PlayerDeathEvent event)
-	{
-		/** Configuration Check **/
-		if (! playerKillsEnabled)
-			return;
+	private static final List<String> tier3 = Arrays.asList(
+			"wither", "ender dragon");
+	private static final List<String> tier2 = Arrays.asList(
+			"creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime");
 
-		Player killed = event.getEntity();
-
-		/** Figure out the killer **/
-		Player killer = plugin.getKiller(killed);
-		if (killer != null)
-		{
-			/** Factions Checks **/
-			if (plugin.isSwornNationsEnabled() && (plugin.getSwornNationsHandler().isApplicable(killer, false)
-					|| plugin.getSwornNationsHandler().isApplicable(killed, false)))
-				return;
-
-			/** Suicide Check **/
-			if (killed.getName().equals(killer.getName()))
-				return;
-
-			PlayerData data = plugin.getPlayerDataCache().getData(killed);
-			if (System.currentTimeMillis() - data.getTimeOfLastDeath() <= 60L)
-				return;
-
-			data.setTimeOfLastDeath(System.currentTimeMillis());
-
-			/** Killer Xp Gain **/
-			String message = plugin.getPrefix() +
-					FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killerXpGain, killed.getName());
-			plugin.getExperienceHandler().handleXpGain(killer, killerXpGain, message);
-
-			/** Killed Xp Loss **/
-			int msgxp = Math.abs(-killedXpLoss);
-			message = plugin.getPrefix() +
-					FormatUtil.format(plugin.getMessage("pvp_death_msg"), msgxp, killer.getName());
-			plugin.getExperienceHandler().handleXpGain(killed, -killedXpLoss, message);
-
-			/** Debug Messages **/
-			plugin.debug(plugin.getMessage("log_pvp_killer"), killer.getName(), killerXpGain, killed.getName());
-			plugin.debug(plugin.getMessage("log_pvp_killed"), killed.getName(), msgxp, killer.getName());
-		}
-	}
-
-	/** Rewards XP in PvE situations **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		/** Configuration Check **/
-		if (! mobKillsEnabled)
+		LivingEntity died = event.getEntity();
+		if (plugin.isDisabledWorld(died))
 			return;
 
-		/** This is handled above **/
-		LivingEntity entity = event.getEntity();
-		if (entity instanceof Player)
-			return;
-
-		Player killer = entity.getKiller();
-		if (killer != null)
+		if (died instanceof Player)
 		{
-			/** Warzone and Safezone check **/
-			if (plugin.getSwornNationsHandler().isApplicable(killer, true))
+			if (! playerKillsEnabled)
 				return;
 
-			/** Camping Check **/
-			if (plugin.isCamping(killer))
-				return;
+			// Special handling for players
+			Player killed = (Player) died;
 
-			String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
+			// Figure out their killer
+			Player killer = plugin.getKiller(killed);
+			if (killer != null)
+			{
+				// Factions checks
+				if (plugin.isSwornNationsEnabled() && (plugin.getSwornNationsHandler().isApplicable(killer, false)
+						|| plugin.getSwornNationsHandler().isApplicable(killed, false)))
+					return;
 
-			/** XP gain calculation **/
-			List<String> tier3 = Arrays.asList(new String[]
-			{
-					"wither", "ender dragon"
-			});
+				// Suicide check
+				if (killed.getName().equals(killer.getName()))
+					return;
 
-			List<String> tier2 = Arrays.asList(new String[]
-			{
-					"creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime"
-			});
-			
-			int killxp = mobKillsGain;
-			if (tier3.contains(mobname.toLowerCase()))
-			{
-				killxp *= 3;
+				// Prevent multiple deaths
+				PlayerData data = plugin.getPlayerDataCache().getData(killed);
+				if (System.currentTimeMillis() - data.getTimeOfLastDeath() <= 60L)
+					return;
+
+				data.setTimeOfLastDeath(System.currentTimeMillis());
+
+				// Killer xp gain
+				String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("pvp_kill_msg"), killerXpGain, killed.getName());
+				plugin.getExperienceHandler().handleXpGain(killer, killerXpGain, message);
+
+				// Killed xp loss
+				message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("pvp_death_msg"), killedXpLoss, killer.getName());
+				plugin.getExperienceHandler().handleXpGain(killed, - killedXpLoss, message);
+
+				/* plugin.debug(plugin.getMessage("log_pvp_killer"), killer.getName(), killerXpGain, killed.getName());
+				plugin.debug(plugin.getMessage("log_pvp_killed"), killed.getName(), killedXpLoss, killer.getName()); */
 			}
-			else if (tier2.contains(mobname.toLowerCase()))
+		}
+		else if (mobKillsEnabled)
+		{
+			Player killer = died.getKiller();
+			if (killer != null)
 			{
-				killxp *= 2;
+				// Factions checks
+				if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(killer, true))
+					return;
+
+				// Camping check
+				if (plugin.isCamping(killer))
+					return;
+
+				String mobName = FormatUtil.getFriendlyName(event.getEntity().getType());
+
+				// Determine tier
+				int killxp = mobKillsGain;
+				if (tier3.contains(mobName.toLowerCase()))
+					killxp *= 3;
+				else if (tier2.contains(mobName.toLowerCase()))
+					killxp *= 2;
+
+				String article = FormatUtil.getArticle(mobName);
+				String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobName);
+				plugin.getExperienceHandler().handleXpGain(killer, killxp, message);
+
+				// plugin.debug(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobName);
 			}
-
-			/** Message **/
-			String article = FormatUtil.getArticle(mobname);
-			String message = plugin.getPrefix()
-					+ FormatUtil.format(plugin.getMessage("mob_kill"), killxp, article, mobname);
-
-			plugin.getExperienceHandler().handleXpGain(killer, killxp, message);
-
-			plugin.debug(plugin.getMessage("log_mob_kill"), killer.getName(), killxp, mobname);
 		}
 	}
 
-	/** Rewards XP on Minecraft xp levelup **/
-	// TODO: Maybe some optimization here?
-	// According to some timings, this can cause some lag
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 	{
-		/** Configuration Check **/
 		if (! mcXpEnabled)
 			return;
 
-		/** GameMode Check **/
+		// GameMode check
 		Player player = event.getPlayer();
 		if (player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
-		/** Factions Check **/
-		if (plugin.getSwornNationsHandler().isApplicable(player, true))
+		// Factions checks
+		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(player, true))
 			return;
 
-		/** Camping Check **/
+		// Disabled world check
+		if (plugin.isDisabledWorld(player))
+			return;
+
+		// Camping check
 		if (plugin.isCamping(player))
 			return;
 
-		/** Define Stuff **/
-		int oldlevel = event.getOldLevel();
-		int newlevel = event.getNewLevel();
-		if (newlevel - oldlevel != 1)
+		// Only give xp for single level changes
+		int oldLevel = event.getOldLevel();
+		int newLevel = event.getNewLevel();
+		if (newLevel - oldLevel != 1)
 			return;
 
-		String message = plugin.getPrefix() +
-				FormatUtil.format(plugin.getMessage("mc_xp_gain"), mcXpGain);
+		String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mc_xp_gain"), mcXpGain);
 		plugin.getExperienceHandler().handleXpGain(player, mcXpGain, message);
 
-		plugin.debug(plugin.getMessage("log_mcxpgain"), player.getName(), mcXpGain);
+		// plugin.debug(plugin.getMessage("log_mcxpgain"), player.getName(), mcXpGain);
 	}
 
-	/** Herbalism : Breaking **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onHerbalismBreak(BlockBreakEvent event)
 	{
@@ -220,15 +199,14 @@ public class ExperienceListener implements Listener, Reloadable
 		Player player = event.getPlayer();
 		if (plugin.isDisabledWorld(player))
 			return;
-		
+
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
-		
-		PlayerData data = plugin.getPlayerDataCache().getData(player);
-		int concurrentHerbalism = data.getConcurrentHerbalism();
 
 		if (herbalismNeeded(event.getBlock()))
 		{
+			PlayerData data = plugin.getPlayerDataCache().getData(player);
+			int concurrentHerbalism = data.getConcurrentHerbalism();
 			if (concurrentHerbalism >= 10)
 			{
 				int xp = herbalismGain * 10;
@@ -243,7 +221,6 @@ public class ExperienceListener implements Listener, Reloadable
 		}
 	}
 
-	/** Herbalism : Instant Growth **/
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHerbalismPlace(BlockPlaceEvent event)
 	{
@@ -344,8 +321,7 @@ public class ExperienceListener implements Listener, Reloadable
 	 * Returns whether or not a given {@link Block} is ripe or otherwise
 	 * farmable
 	 * 
-	 * @param block
-	 *        - {@link Block} to check
+	 * @param block {@link Block} to check
 	 */
 	private final boolean herbalismNeeded(Block block)
 	{
@@ -356,16 +332,12 @@ public class ExperienceListener implements Listener, Reloadable
 			case MELON_BLOCK:
 			case PUMPKIN:
 				return true;
-
 			case CROPS:
 				return ((Crops) blockState.getData()).getState() == CropState.RIPE;
-
 			case NETHER_WARTS:
 				return ((NetherWarts) blockState.getData()).getState() == NetherWartsState.RIPE;
-
 			case COCOA:
 				return ((CocoaPlant) blockState.getData()).getSize() == CocoaPlantSize.LARGE;
-
 			default:
 				return false;
 		}
@@ -374,8 +346,7 @@ public class ExperienceListener implements Listener, Reloadable
 	/**
 	 * Returns whether or not a given {@link Block} can be grown
 	 * 
-	 * @param block
-	 *        - {@link Block} to check
+	 * @param block {@link Block} to check
 	 */
 	private final boolean isGrowable(Block block)
 	{
@@ -389,7 +360,6 @@ public class ExperienceListener implements Listener, Reloadable
 		return material == Material.SAPLING || material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM;
 	}
 
-	/** Taming XP Gain **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityTame(EntityTameEvent event)
 	{
@@ -399,7 +369,7 @@ public class ExperienceListener implements Listener, Reloadable
 		if (event.getOwner() instanceof Player)
 		{
 			Player player = (Player) event.getOwner();
-			if (player != null)
+			if (! plugin.isDisabledWorld(player))
 			{
 				/** XP Gain **/
 				String mobname = FormatUtil.getFriendlyName(event.getEntity().getType());
@@ -468,7 +438,7 @@ public class ExperienceListener implements Listener, Reloadable
 			return;
 
 		Player player = event.getEnchanter();
-		if (player == null)
+		if (player == null || plugin.isDisabledWorld(player))
 			return;
 
 		int xp = (cost / 2) + enchantingGain;

@@ -248,10 +248,6 @@ public class AbilityHandler implements Reloadable
 
 		if (data.getCooldowns().containsKey("superpick"))
 		{
-			// Reduce cooldown spam
-			if (reduceCooldownSpam && data.getNextCooldownMessage() >= System.currentTimeMillis())
-				return;
-
 			sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
 			return;
 		}

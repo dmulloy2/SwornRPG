@@ -652,28 +652,34 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 	// ---- Disabled World Checks
 
-	public boolean isDisabledWorld(Player player)
-	{
-		return isDisabledWorld(player.getWorld());
-	}
-
 	public boolean isDisabledWorld(Entity entity)
 	{
-		return isDisabledWorld(entity.getWorld());
+		return isDisabledWorld(entity.getWorld().getName());
 	}
 
 	public boolean isDisabledWorld(Block block)
 	{
-		return isDisabledWorld(block.getWorld());
+		return isDisabledWorld(block.getWorld().getName());
+	}
+
+	public boolean isDisabledWorld(World world)
+	{
+		return isDisabledWorld(world.getName());
 	}
 
 	private List<String> disabledWorlds;
 
-	public boolean isDisabledWorld(World world)
+	public final boolean isDisabledWorld(String worldName)
 	{
 		if (disabledWorlds == null)
 			disabledWorlds = getConfig().getStringList("disabledWorlds");
 
-		return disabledWorlds.contains(world.getName());
+		for (String world : disabledWorlds)
+		{
+			if (world.equalsIgnoreCase(worldName))
+				return true;
+		}
+
+		return false;
 	}
 }
