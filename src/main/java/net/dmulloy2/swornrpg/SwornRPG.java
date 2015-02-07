@@ -580,13 +580,17 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	}
 
 	/**
-	 * Simple camping check
+	 * Not-so-simple camping check
+	 * TODO: Optimize this
 	 */
 	public final boolean isCamping(Player player)
 	{
-		int radius = getConfig().getInt("campingRadius");
+		int radius = getConfig().getInt("campingRadius", -1);
 		if (radius <= 0)
 			return false;
+
+		// Cap radius at 16, values too large cause lag
+		radius = Math.min(radius, 16);
 
 		Location loc = player.getLocation();
 		World world = loc.getWorld();
@@ -673,6 +677,9 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	{
 		if (disabledWorlds == null)
 			disabledWorlds = getConfig().getStringList("disabledWorlds");
+
+		if (disabledWorlds.isEmpty())
+			return false;
 
 		for (String world : disabledWorlds)
 		{

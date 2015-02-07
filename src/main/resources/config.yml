@@ -27,11 +27,10 @@ marriage: true
 
 # Mob Spawner Camping Radius (integer)
 # Set to -1 to disable
-campingRadius: 32
+campingRadius: -1
 
 # Worlds SwornRPG is disabled in (world)
 disabledWorlds:
-- disabled_world
 
 ##############################################
 #+------------------------------------------+#
