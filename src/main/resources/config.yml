@@ -63,8 +63,8 @@ autoSave:
 #+-----------------------------------------+#
 #############################################
   
-# Duration (in seconds) = baseduration + (levelmultiplier x level)
-# Cooldown (in seconds) = duration x cooldownmultiplier
+# Duration (in seconds) = baseDuration + (levelMultiplier x level)
+# Cooldown (in seconds) = duration x cooldownMultiplier
 # Inputs: enabled - boolean, rest - integer
 # Effects: list of PotionEffectTypes
 
@@ -95,6 +95,10 @@ unlimitedAmmo:
   baseDuration: 10
   levelMultiplier: 2
   cooldownMultiplier: 2
+
+# Reduce cooldown spam
+# input - boolean
+reduceCooldownSpam: true
 
 #############################################
 #+-----------------------------------------+#

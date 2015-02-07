@@ -1,3 +1,6 @@
+/**
+ * (c) 2015 dmulloy2
+ */
 package net.dmulloy2.swornrpg.handlers;
 
 import java.util.ArrayList;
@@ -45,6 +48,8 @@ public class AbilityHandler implements Reloadable
 	private int unlimitedAmmoLevelMultiplier;
 	private int unlimitedAmmoCooldownMultiplier;
 
+	private boolean reduceCooldownSpam;
+
 	private List<String> waiting;
 
 	private final SwornRPG plugin;
@@ -52,9 +57,9 @@ public class AbilityHandler implements Reloadable
 	{
 		this.plugin = plugin;
 		this.waiting = new ArrayList<String>();
-		this.reload(); // Load configuration
+		this.reload();
 
-		// Run the clean up task every 20 ticks (1 second)
+		// Run the clean up task every second
 		new CleanupTask().runTaskTimer(plugin, TimeUtil.toTicks(3), TimeUtil.toTicks(1));
 	}
 
@@ -63,7 +68,6 @@ public class AbilityHandler implements Reloadable
 	public final void checkActivation(Player player, Action action)
 	{
 		Material mat = player.getItemInHand().getType();
-
 		if (Ability.FRENZY.isValidMaterial(mat))
 		{
 			activateFrenzy(player, action);
@@ -92,30 +96,26 @@ public class AbilityHandler implements Reloadable
 
 	// ---- Internal Methods
 
-	private final void activateFrenzy(Player player)
+	private void activateFrenzy(Player player)
 	{
-		/** Enable Check **/
 		if (! frenzyEnabled)
 		{
 			sendpMessage(player, "&c" + plugin.getMessage("command_disabled"));
 			return;
 		}
 
-		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
 			sendpMessage(player, "&c" + plugin.getMessage("disabled_world"));
 			return;
 		}
 
-		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
 			sendpMessage(player, "&c" + plugin.getMessage("creative_ability"));
 			return;
 		}
 
-		/** Check for Frenzy In Progress **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isFrenzyEnabled())
 		{
@@ -123,7 +123,6 @@ public class AbilityHandler implements Reloadable
 			return;
 		}
 
-		/** Cooldown Check **/
 		if (data.getCooldowns().containsKey("frenzy"))
 		{
 			sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("frenzy")));
@@ -133,25 +132,13 @@ public class AbilityHandler implements Reloadable
 		frenzy(player);
 	}
 
-	private final void activateFrenzy(Player player, Action action)
+	private void activateFrenzy(Player player, Action action)
 	{
-		/** Enable Check **/
-		if (! frenzyEnabled)
-		{
+		if (! frenzyEnabled || plugin.isDisabledWorld(player))
 			return;
-		}
 
-		/** Disabled World Check **/
-		if (plugin.isDisabledWorld(player))
-		{
-			return;
-		}
-
-		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
-		{
 			return;
-		}
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isFrenzyWaiting())
@@ -174,6 +161,10 @@ public class AbilityHandler implements Reloadable
 
 				if (data.getCooldowns().containsKey("frenzy"))
 				{
+					// Reduce cooldown spam
+					if (reduceCooldownSpam && data.getNextCooldownMessage() >= System.currentTimeMillis())
+						return;
+
 					sendpMessage(player, plugin.getMessage("frenzy_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("frenzy")));
 					return;
 				}
@@ -190,7 +181,7 @@ public class AbilityHandler implements Reloadable
 		}
 	}
 
-	private final void frenzy(final Player player)
+	private void frenzy(final Player player)
 	{
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 
@@ -221,36 +212,33 @@ public class AbilityHandler implements Reloadable
 
 				data.setFrenzyEnabled(false);
 				data.getCooldowns().put("frenzy", cooldown);
+				data.setNextCooldownMessage(System.currentTimeMillis() + (cooldown / 4));
 
 				plugin.debug(plugin.getMessage("log_frenzy_cooldown"), player.getName(), TimeUtil.toSeconds(cooldown));
 			}
 		}.runTaskLater(plugin, duration);
 	}
 
-	private final void activateSuperPickaxe(Player player)
+	private void activateSuperPickaxe(Player player)
 	{
-		/** Enable Check **/
 		if (! superPickaxeEnabled)
 		{
 			sendpMessage(player, "&c" + plugin.getMessage("command_disabled"));
 			return;
 		}
 
-		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
 			sendpMessage(player, "&c" + plugin.getMessage("disabled_world"));
 			return;
 		}
 
-		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
 		{
 			sendpMessage(player, "&c" + plugin.getMessage("creative_ability"));
 			return;
 		}
 
-		/** Check for SuperPick in Progress **/
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSuperPickaxeEnabled())
 		{
@@ -258,9 +246,12 @@ public class AbilityHandler implements Reloadable
 			return;
 		}
 
-		/** Cooldown Check **/
 		if (data.getCooldowns().containsKey("superpick"))
 		{
+			// Reduce cooldown spam
+			if (reduceCooldownSpam && data.getNextCooldownMessage() >= System.currentTimeMillis())
+				return;
+
 			sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
 			return;
 		}
@@ -268,25 +259,13 @@ public class AbilityHandler implements Reloadable
 		superPickaxe(player);
 	}
 
-	private final void activateSuperPickaxe(Player player, Action action)
+	private void activateSuperPickaxe(Player player, Action action)
 	{
-		/** Enable Check **/
-		if (! superPickaxeEnabled)
-		{
+		if (! superPickaxeEnabled || plugin.isDisabledWorld(player))
 			return;
-		}
 
-		/** Disabled World Check **/
-		if (plugin.isDisabledWorld(player))
-		{
-			return;
-		}
-
-		/** GameMode check **/
 		if (player.getGameMode() == GameMode.CREATIVE)
-		{
 			return;
-		}
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSuperPickaxeWaiting())
@@ -309,6 +288,10 @@ public class AbilityHandler implements Reloadable
 
 				if (data.getCooldowns().containsKey("superpick"))
 				{
+					// Reduce cooldown spam
+					if (reduceCooldownSpam && data.getNextCooldownMessage() >= System.currentTimeMillis())
+						return;
+
 					sendpMessage(player, plugin.getMessage("superpick_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("superpick")));
 					return;
 				}
@@ -325,7 +308,7 @@ public class AbilityHandler implements Reloadable
 		}
 	}
 
-	private final void superPickaxe(final Player player)
+	private void superPickaxe(final Player player)
 	{
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 
@@ -354,15 +337,15 @@ public class AbilityHandler implements Reloadable
 
 				data.setSuperPickaxeEnabled(false);
 				data.getCooldowns().put("superpick", cooldown);
+				data.setNextCooldownMessage(System.currentTimeMillis() + (cooldown / 4));
 
 				plugin.debug(plugin.getMessage("log_superpick_cooldown"), player.getName(), TimeUtil.toSeconds(cooldown));
 			}
 		}.runTaskLater(plugin, duration);
 	}
 
-	private final void activateUnlimitedAmmo(final Player player)
+	private void activateUnlimitedAmmo(final Player player)
 	{
-		/** SwornGuns Enable Check **/
 		PluginManager pm = plugin.getServer().getPluginManager();
 		if (! pm.isPluginEnabled("SwornGuns"))
 		{
@@ -370,21 +353,18 @@ public class AbilityHandler implements Reloadable
 			return;
 		}
 
-		/** Enable Check **/
 		if (! unlimitedAmmoEnabled)
 		{
 			sendpMessage(player, plugin.getMessage("command_disabled"));
 			return;
 		}
 
-		/** Disabled World Check **/
 		if (plugin.isDisabledWorld(player))
 		{
 			sendpMessage(player, plugin.getMessage("disabled_world"));
 			return;
 		}
 
-		/** Check to see if they are already using Unlimited Ammo **/
 		final PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isUnlimitedAmmoEnabled())
 		{
@@ -392,7 +372,6 @@ public class AbilityHandler implements Reloadable
 			return;
 		}
 
-		/** Cooldown Check **/
 		if (data.getCooldowns().containsKey("ammo"))
 		{
 			sendpMessage(player, plugin.getMessage("ammo_cooldown"), TimeUtil.toSeconds(data.getCooldowns().get("ammo")));
@@ -424,14 +403,12 @@ public class AbilityHandler implements Reloadable
 		}.runTaskLater(plugin, duration);
 	}
 
-	/** Send prefixed message **/
-	protected final void sendpMessage(Player player, String msg, Object... args)
+	private void sendpMessage(Player player, String msg, Object... args)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(msg, args));
 	}
 
-	/** Cleanup Task **/
-	public final class CleanupTask extends BukkitRunnable
+	private class CleanupTask extends BukkitRunnable
 	{
 		@Override
 		public void run()
@@ -509,7 +486,7 @@ public class AbilityHandler implements Reloadable
 		return TimeUtil.toTicks(getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier);
 	}
 
-	private final List<PotionEffectType> parseFrenzyEffects()
+	private List<PotionEffectType> parseFrenzyEffects()
 	{
 		List<PotionEffectType> types = new ArrayList<>();
 
@@ -553,5 +530,7 @@ public class AbilityHandler implements Reloadable
 		this.unlimitedAmmoDuration = plugin.getConfig().getInt("unlimitedAmmo.baseDuration");
 		this.unlimitedAmmoLevelMultiplier = plugin.getConfig().getInt("unlimitedAmmo.levelMultiplier");
 		this.unlimitedAmmoCooldownMultiplier = plugin.getConfig().getInt("unlimitedAmmo.cooldownMultiplier");
+
+		this.reduceCooldownSpam = plugin.getConfig().getBoolean("reduceCooldownSpam", true);
 	}
 }

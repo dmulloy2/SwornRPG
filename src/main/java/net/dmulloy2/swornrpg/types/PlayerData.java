@@ -34,6 +34,7 @@ public class PlayerData implements ConfigurationSerializable
 	private transient boolean frenzyEnabled;
 	private transient boolean superPickaxeEnabled;
 	private transient boolean unlimitedAmmoEnabled;
+	private transient long nextCooldownMessage;
 
 	private Map<String, Long> cooldowns = new HashMap<>();
 
