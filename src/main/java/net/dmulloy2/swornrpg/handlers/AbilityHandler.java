@@ -12,7 +12,6 @@ import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
 
@@ -409,7 +408,7 @@ public class AbilityHandler implements Reloadable
 		@Override
 		public void run()
 		{
-			for (String wait : ListUtil.newList(waiting))
+			for (String wait : waiting.toArray(new String[0]))
 			{
 				Player player = Util.matchPlayer(wait);
 				if (player == null || ! player.isOnline())
