@@ -1,5 +1,7 @@
 package net.dmulloy2.swornrpg.commands;
 
+import java.util.HashSet;
+
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
@@ -7,6 +9,7 @@ import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 /**
@@ -22,17 +25,13 @@ public class CmdSitdown extends SwornRPGCommand
 		this.aliases.add("sit");
 		this.description = "Sit in a chair";
 		this.permission = Permission.SITDOWN;
-
 		this.mustBePlayer = true;
 	}
 
 	@Override
 	public void perform()
 	{
-		// TODO: There is no valid replacement for this.
-		// A method that ignores transparency would be wonderful...
-		@SuppressWarnings("deprecation")
-		Block block = player.getTargetBlock(null, 10);
+		Block block = getTargetBlock(player, 10);
 		if (block == null)
 		{
 			err(getMessage("chair_no_block"));
@@ -60,5 +59,13 @@ public class CmdSitdown extends SwornRPGCommand
 
 		sendpMessage(getMessage("chair_now_sitting"), seat);
 		sendpMessage(getMessage("chair_standup"), new CmdStandup(plugin).getUsageTemplate(false));
+	}
+
+	@SuppressWarnings("deprecation")
+	private static Block getTargetBlock(Player player, int maxDistance)
+	{
+		// TODO: LivingEntity#getTargetBlock(Set<Material>, int)
+		// was added, but it isn't showing up in Eclipse
+		return player.getTargetBlock((HashSet<Byte>) null, maxDistance);
 	}
 }
