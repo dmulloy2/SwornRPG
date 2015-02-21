@@ -1,12 +1,14 @@
 package net.dmulloy2.swornrpg.commands;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -64,8 +66,13 @@ public class CmdSitdown extends SwornRPGCommand
 	@SuppressWarnings("deprecation")
 	private static Block getTargetBlock(Player player, int maxDistance)
 	{
-		// TODO: LivingEntity#getTargetBlock(Set<Material>, int)
-		// was added, but it isn't showing up in Eclipse
-		return player.getTargetBlock((HashSet<Byte>) null, maxDistance);
+		try
+		{
+			return player.getTargetBlock((Set<Material>) null, maxDistance);
+		}
+		catch (Throwable ex)
+		{
+			return player.getTargetBlock((HashSet<Byte>) null, maxDistance);
+		}
 	}
 }
