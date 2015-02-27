@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.integration.EssentialsHandler;
@@ -75,10 +74,10 @@ public class PlayerListener implements Listener, Reloadable
 		if (! salvagingEnabled || event.isCancelled())
 			return;
 
-		if (! event.hasBlock() || event.getAction() != Action.LEFT_CLICK_BLOCK)
+		Block block = event.getClickedBlock();
+		if (block == null || event.getAction() != Action.LEFT_CLICK_BLOCK)
 			return;
 
-		Block block = event.getClickedBlock();
 		if (plugin.isDisabledWorld(block))
 			return;
 
@@ -112,17 +111,11 @@ public class PlayerListener implements Listener, Reloadable
 
 				if (amt > 0.0D)
 				{
-					String article = "a";
-					if (blockType == "Iron")
-						article = "an";
-					String materialExtension = " ingot";
-					if (blockType == "Diamond")
-						materialExtension = "";
-					String plural = "";
-					if (amt > 1.0D)
-						plural = "s";
-
+					String article = FormatUtil.getArticle(blockType);
+					String materialExtension = blockType.equals("Diamond") ? "" : " ingot";
+					String plural = amt > 1.0D ? "s" : "";
 					String itemName = FormatUtil.getFriendlyName(item.getType());
+
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("salvage_success"),
 							article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
 
@@ -147,8 +140,8 @@ public class PlayerListener implements Listener, Reloadable
 				else
 				{
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					player.sendMessage(plugin.getPrefix() +
-							FormatUtil.format(plugin.getMessage("not_salvagable"), itemName, blockType.toLowerCase()));
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("not_salvagable"), itemName,
+							blockType.toLowerCase()));
 				}
 			}
 		}
@@ -164,15 +157,15 @@ public class PlayerListener implements Listener, Reloadable
 		if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(player, true))
 			return;
 
-		Location loc = player.getLocation();
-		int x = loc.getBlockX();
-		int y = loc.getBlockY();
-		int z = loc.getBlockZ();
-
 		// Death coordinates
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isDeathCoordsEnabled())
 		{
+			Location loc = player.getLocation();
+			int x = loc.getBlockX();
+			int y = loc.getBlockY();
+			int z = loc.getBlockZ();
+
 			EssentialsHandler handler = plugin.getEssentialsHandler();
 			if (handler != null && handler.isEnabled())
 			{
@@ -236,14 +229,17 @@ public class PlayerListener implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		// Check for NaN
 		Player player = event.getPlayer();
-		Location location = player.getLocation();
-		if (Double.isNaN(location.getX()) || Double.isNaN(location.getY()) || Double.isNaN(location.getZ()))
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+		data.setSatRecently(false);
+
+		// This code shouldn't execute
+		/* Location location = player.getLocation();
+		if (isValid(location.getX()) && isValid(location.getY()) && isValid(location.getZ()))
 		{
 			player.teleport(player.getWorld().getSpawnLocation());
 			plugin.getLogHandler().log(Level.INFO, "Corrected invalid position for {0}", player.getName());
-		}
+		} */
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -281,32 +277,41 @@ public class PlayerListener implements Listener, Reloadable
 			data.setPreviousLocation(null);
 		}
 
-		// Attempts to correct invalid positioning with chairs. This works by
-		// first checking if the kick was invalid, then attempting to teleport
-		// the player to spawn. This only works on Spigot, since the messages in
-		// CraftBukkit are "Nope!" (which can be for multiple things)
-		if (event.getReason().equals("NaN in position (Hacking?)"))
+		// Attempt to prevent invalid kicks caused by sitting in chairs.
+		// This works by checking whether or not the player sat recently
+		// and whether or not the kick was valid.  This only works on Spigot,
+		// since the kick messages in CraftBukkit are "Nope", which can be for
+		// a variety of reasons.
+
+		if (data.isSatRecently() && event.getReason().equals("NaN in position (Hacking?)"))
 		{
+			// Check if their position is valid
 			Location location = player.getLocation();
-			if (! Double.isNaN(location.getX()) && ! Double.isNaN(location.getY()) && ! Double.isNaN(location.getZ()))
+			if (isValid(location.getX()) && isValid(location.getY()) && isValid(location.getZ()))
 			{
 				plugin.getLogHandler().log("Blocked invalid kick for {0}", player.getName());
 				event.setCancelled(true);
 				return;
 			}
 
-			// Attempt to correct the position
+			// Teleport them to spawn as a fallback
 			player.teleport(player.getWorld().getSpawnLocation());
 
 			// Were we successful?
 			location = player.getLocation();
-			if (! Double.isNaN(location.getX()) && ! Double.isNaN(location.getY()) && ! Double.isNaN(location.getZ()))
+			if (isValid(location.getX()) && isValid(location.getY()) && isValid(location.getZ()))
 			{
 				plugin.getLogHandler().log("Corrected invalid position for {0}", player.getName());
 				event.setCancelled(true);
 				return;
 			}
 		}
+	}
+
+	// Makes sure that 'number' is real and finite
+	private static boolean isValid(double number)
+	{
+		return Math.abs(number) <= Double.MAX_VALUE;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -334,18 +339,14 @@ public class PlayerListener implements Listener, Reloadable
 		String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fishing_gain"), fishingGain);
 		plugin.getExperienceHandler().handleXpGain(event.getPlayer(), fishingGain, message);
 
-		/** Fish Drops **/
-		if (! fishDropsEnabled)
-			return;
-
-		if (player.getGameMode() != GameMode.SURVIVAL)
+		// Fish drops
+		if (! fishDropsEnabled || player.getGameMode() != GameMode.SURVIVAL)
 			return;
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
-
 		int level = data.getLevel(10);
 
-		List<BlockDrop> drops = new ArrayList<BlockDrop>();
+		List<BlockDrop> drops = new ArrayList<>();
 		for (int i = 0; i < level; i++)
 		{
 			if (plugin.getFishDropsMap().containsKey(i))

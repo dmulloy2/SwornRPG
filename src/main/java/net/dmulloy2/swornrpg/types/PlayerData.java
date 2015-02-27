@@ -52,6 +52,7 @@ public class PlayerData implements ConfigurationSerializable
 
 	// ---- Chairs
 	private transient Location previousLocation;
+	private transient boolean satRecently;
 
 	// ---- Miscellaneous
 	private String tag;

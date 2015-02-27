@@ -8,11 +8,12 @@ import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 /**
  * @author dmulloy2
@@ -49,8 +50,14 @@ public class CmdSitdown extends SwornRPGCommand
 
 		PlayerData data = getPlayerData(player);
 		data.setPreviousLocation(player.getLocation().clone());
+		data.setSatRecently(true);
 
-		Arrow it = player.getWorld().spawnArrow(block.getLocation().add(0.5, 0, 0.5), new Vector(0, 0, 0), 0F, 0F);
+		Location location = block.getLocation().clone();
+		location.add(0.5D, 0.0D, 0.5D);
+		location.setPitch(0F);
+		location.setYaw(0F);
+
+		Arrow it = (Arrow) player.getWorld().spawnEntity(location, EntityType.ARROW);
 		if (! it.setPassenger(player))
 		{
 			it.remove();

@@ -31,15 +31,20 @@ public class CmdStandup extends SwornRPGCommand
 		// The previousLocation variable will only have a value if a player has recently sat
 		// It is always cleared when a player stands up or leaves/is kicked
 
+		Entity vehicle = player.getVehicle();
+
 		PlayerData data = getPlayerData(player);
 		if (data.getPreviousLocation() != null)
 		{
 			player.teleport(data.getPreviousLocation());
 			data.setPreviousLocation(null);
+
+			if (vehicle != null)
+				vehicle.remove();
+
 			return;
 		}
 
-		Entity vehicle = player.getVehicle();
 		if (vehicle == null || ! vehicle.isValid() || ! (vehicle instanceof Arrow))
 		{
 			err(getMessage("not_sitting"));

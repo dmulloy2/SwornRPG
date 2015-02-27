@@ -53,7 +53,6 @@ public class EntityListener implements Listener, Reloadable
 		this.reload(); // Load configuration
 	}
 
-	/** Axe blowback and Arrow fire **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageMonitor(EntityDamageByEntityEvent event)
 	{
@@ -65,6 +64,7 @@ public class EntityListener implements Listener, Reloadable
 		if (plugin.isDisabledWorld(damager))
 			return;
 
+		// Arrow fire
 		if (damager instanceof Arrow)
 		{
 			if (arrowFireEnabled)
@@ -94,7 +94,7 @@ public class EntityListener implements Listener, Reloadable
 			Player player = (Player) damager;
 			ItemStack inHand = player.getItemInHand();
 
-			/** Confusion **/
+			// Confusion
 			if (inHand == null || inHand.getType() == Material.AIR)
 			{
 				if (confusionEnabled)
@@ -111,7 +111,7 @@ public class EntityListener implements Listener, Reloadable
 				}
 			}
 
-			/** Axe Blowback **/
+			// Axe blowback
 			String type = FormatUtil.getFriendlyName(inHand.getType());
 			if (type.toLowerCase().contains("axe"))
 			{
@@ -161,7 +161,7 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	/** Graceful Roll **/
+	// Graceful roll
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageLowest(EntityDamageEvent event)
 	{
@@ -186,6 +186,7 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
+	// Life steal
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
@@ -203,7 +204,6 @@ public class EntityListener implements Listener, Reloadable
 
 				if (Util.random(75 / level) == 0)
 				{
-					// Life steal
 					player.setHealth(Math.min(health + 1.0D, maxHealth));
 
 					double heartsStolen = (player.getHealth() - health) / 2;
@@ -214,7 +214,7 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	/** Insta-Kill **/
+	// Instakill
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
@@ -237,7 +237,6 @@ public class EntityListener implements Listener, Reloadable
 				if (damaged instanceof LivingEntity)
 				{
 					LivingEntity lentity = (LivingEntity) damaged;
-
 					if (lentity.getMaxHealth() < 100.0D)
 					{
 						if (Util.random(instaKillOdds) == 0)
@@ -253,7 +252,6 @@ public class EntityListener implements Listener, Reloadable
 
 	// ---- Mob Health
 
-	/** Mob Health (Spawn) **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
@@ -267,7 +265,6 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	/** Mob Health (Damage) **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageMonitor(EntityDamageEvent event)
 	{
@@ -281,7 +278,6 @@ public class EntityListener implements Listener, Reloadable
 		}
 	}
 
-	/** Mob Health (Regain) **/
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event)
 	{
