@@ -33,12 +33,19 @@ public class CmdAddxp extends SwornRPGCommand
 			return;
 		}
 
+		if (args[1].equalsIgnoreCase("recalculate"))
+		{
+			plugin.getExperienceHandler().recalculate(target);
+			sendpMessage("&eYou have recalculated &b{0}&e''s level.", target.getName());
+			return;
+		}
+
 		int giveXP = argAsInt(1, true);
 		if (giveXP == -1)
 			return;
 
-		// FIXME: Possible issue: Multiple levelups not being counted
 		plugin.getExperienceHandler().handleXpGain(target, giveXP, "");
+		plugin.getExperienceHandler().recalculate(target);
 
 		if (target.getName().equals(player.getName()))
 		{

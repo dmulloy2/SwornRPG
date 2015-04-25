@@ -28,7 +28,7 @@ public class PlayerData implements ConfigurationSerializable
 	private int totalxp;
 	private int level;
 
-	private transient int concurrentHerbalism;
+	private transient int herbalism;
 
 	// ---- Abilities
 	private transient boolean frenzyEnabled;

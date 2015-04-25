@@ -57,8 +57,9 @@ public class ExperienceHandler implements Reloadable
 		data.setTotalxp(data.getTotalxp() + xpGained);
 
 		// Levelup check
-		if (data.getXpNeeded() - data.getPlayerxp() <= 0)
-			handleLevelUp(player);
+		int remaining = data.getXpNeeded() - data.getPlayerxp();
+		if (remaining <= 0)
+			handleLevelUp(player, remaining);
 	}
 
 	/**
@@ -66,7 +67,7 @@ public class ExperienceHandler implements Reloadable
 	 *
 	 * @param player {@link Player} to level up
 	 */
-	public final void handleLevelUp(Player player)
+	public final void handleLevelUp(Player player, int remaining)
 	{
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
@@ -82,7 +83,7 @@ public class ExperienceHandler implements Reloadable
 			data.setXpneeded(data.getXpNeeded() + (data.getXpNeeded() / 4));
 		}
 
-		data.setPlayerxp(0);
+		data.setPlayerxp(Math.abs(remaining));
 
 		// New skill data
 		int newFrenzy = TimeUtil.toSeconds(plugin.getAbilityHandler().getFrenzyDuration(data.getLevel()));
@@ -170,39 +171,31 @@ public class ExperienceHandler implements Reloadable
 	}
 
 	/**
-	 * Recalculates a player's statistics based upon the current xp gaining
-	 * algorithm. Currently not used and must be tweaked.
+	 * Recalculates a Player's level and experience based upon the current xp
+	 * gaining algorithm.
 	 *
-	 * @param player {@link Player} to recalculate stats for
+	 * @param player {@link Player} to recalculate level and xp for
 	 */
-	public final void recalculateStats(Player player)
+	public final void recalculate(Player player)
 	{
-		/* PlayerData data = plugin.getPlayerDataCache().getData(player);
+		PlayerData data = plugin.getPlayerDataCache().getData(player);
+
 		int totalXp = data.getTotalxp();
-
-		totalXp *= 4;
-
+		int remaining = totalXp;
 		int level = 0;
-		int xp = 0;
 		int xpNeeded = 100;
 
-		while (true)
+		while (remaining >= xpNeeded)
 		{
+			remaining -= xpNeeded;
+			xpNeeded = xpNeeded + (xpNeeded / 4);
 			level++;
-			totalXp -= xp;
-			xp += xpNeeded;
-			xpNeeded += (xpNeeded / 4);
-
-			if (totalXp <= 0)
-			{
-				break;
-			}
 		}
 
 		data.setLevel(level);
 		data.setTotalxp(totalXp);
 		data.setXpneeded(xpNeeded);
-		data.setPlayerxp(0); */
+		data.setPlayerxp(remaining);
 	}
 
 	@Override

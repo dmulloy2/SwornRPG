@@ -1,6 +1,6 @@
 /**
  * SwornRPG - a bukkit plugin
- * Copyright (C) 2013 - 2014 dmulloy2
+ * Copyright (C) 2013 - 2015 dmulloy2
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -69,8 +69,9 @@ import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
-import net.dmulloy2.swornrpg.listeners.ExperienceListener;
 import net.dmulloy2.swornrpg.listeners.PlayerListener;
+import net.dmulloy2.swornrpg.modules.Module;
+import net.dmulloy2.swornrpg.modules.ModuleHandler;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.MyMaterial;
@@ -78,7 +79,6 @@ import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.Location;
@@ -105,6 +105,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private @Getter HealthBarHandler healthBarHandler;
 	private @Getter ResourceHandler resourceHandler;
 	private @Getter AbilityHandler abilityHandler;
+	private @Getter ModuleHandler moduleHandler;
 
 	// Data cache
 	private @Getter PlayerDataCache playerDataCache;
@@ -119,8 +120,8 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Integer, List<BlockDrop>> fishDropsMap;
 
-	// Listeners, for reloading
 	private List<Listener> listeners;
+	private List<Module> modules;
 
 	// Global prefix
 	private final @Getter String prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
@@ -216,7 +217,9 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		registerListener(new PlayerListener(this));
 		registerListener(new EntityListener(this));
 		registerListener(new BlockListener(this));
-		registerListener(new ExperienceListener(this));
+
+		// Register modules
+		moduleHandler = new ModuleHandler(this);
 
 		// Integration
 		setupIntegration();
@@ -284,30 +287,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 
 		new CooldownTickTask().runTaskTimerAsynchronously(this, 2L, 1L);
 
-		// Online xp gain
-		if (getConfig().getBoolean("levelingMethods.onlineTime.enabled"))
-		{
-			final int onlineXpGain = getConfig().getInt("levelingMethods.onlineTime.xpgain");
-			final long interval = TimeUtil.toTicks(60); // Minute
-
-			class OnlineTimeTask extends BukkitRunnable
-			{
-				@Override
-				public void run()
-				{
-					for (Player player : Util.getOnlinePlayers())
-					{
-						experienceHandler.handleXpGain(player, onlineXpGain, "");
-					}
-				}
-			}
-
-			if (getConfig().getBoolean("levelingMethods.onlineTime.async", false))
-				new OnlineTimeTask().runTaskTimerAsynchronously(this, interval, interval);
-			else
-				new OnlineTimeTask().runTaskTimer(this, interval, interval);
-		}
-
 		log(getMessage("log_enabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
@@ -338,6 +317,8 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		fishDropsMap = null;
 		salvageRef.clear();
 		salvageRef = null;
+		modules.clear();
+		modules = null;
 	}
 
 	private final void setupIntegration()
@@ -412,6 +393,7 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		fishDropsMap = new HashMap<>();
 
 		reloadConfig();
+		reloadModules();
 		reloadListeners();
 		updateSalvageRef();
 		updateBlockDrops();
@@ -441,6 +423,14 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			{
 				((Reloadable) listener).reload();
 			}
+		}
+	}
+
+	private final void reloadModules()
+	{
+		for (Module module : modules)
+		{
+			module.loadSettings();
 		}
 	}
 
