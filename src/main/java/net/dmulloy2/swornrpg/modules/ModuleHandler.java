@@ -1,5 +1,19 @@
 /**
- * (c) 2015 dmulloy2
+ * SwornRPG - a Bukkit plugin
+ * Copyright (C) 2013 - 2015 dmulloy2
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.dmulloy2.swornrpg.modules;
 
@@ -48,19 +62,21 @@ public class ModuleHandler implements Reloadable
 		for (Module module : modules)
 		{
 			if (module.isEnabled() && module instanceof TickableModule)
-			{
-				TickableModule tickable = (TickableModule) module;
-				int interval = tickable.getInterval();
-
-				BukkitTask task;
-				if (tickable.isAsync())
-					task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, tickable, interval, interval);
-				else
-					task = plugin.getServer().getScheduler().runTaskTimer(plugin, tickable, interval, interval);
-
-				tickable.setTaskId(task.getTaskId());
-			}
+				scheduleModule((TickableModule) module);
 		}
+	}
+
+	private void scheduleModule(TickableModule tickable)
+	{
+		int interval = tickable.getInterval();
+
+		BukkitTask task;
+		if (tickable.isAsync())
+			task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, tickable, interval, interval);
+		else
+			task = plugin.getServer().getScheduler().runTaskTimer(plugin, tickable, interval, interval);
+
+		tickable.setTaskId(task.getTaskId());
 	}
 
 	@Override
@@ -74,8 +90,11 @@ public class ModuleHandler implements Reloadable
 			if (module instanceof TickableModule)
 			{
 				TickableModule tickable = (TickableModule) module;
-				if (tickable.isScheduled() && ! tickable.isEnabled())
+				if (tickable.isScheduled())
 					tickable.cancel();
+
+				if (tickable.isEnabled())
+					scheduleModule(tickable);
 			}
 		}
 	}

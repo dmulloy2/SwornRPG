@@ -1,19 +1,19 @@
 /**
- * SwornRPG - a bukkit plugin
+ * SwornRPG - a Bukkit plugin
  * Copyright (C) 2013 - 2015 dmulloy2
  *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.dmulloy2.swornrpg;
 
@@ -70,7 +70,6 @@ import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
 import net.dmulloy2.swornrpg.listeners.PlayerListener;
-import net.dmulloy2.swornrpg.modules.Module;
 import net.dmulloy2.swornrpg.modules.ModuleHandler;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
@@ -115,13 +114,11 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 	private @Getter EssentialsHandler essentialsHandler;
 	private @Getter VaultHandler vaultHandler;
 
-	// Maps
 	private @Getter Map<String, Map<Material, Integer>> salvageRef;
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Integer, List<BlockDrop>> fishDropsMap;
 
 	private List<Listener> listeners;
-	private List<Module> modules;
 
 	// Global prefix
 	private final @Getter String prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
@@ -317,8 +314,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		fishDropsMap = null;
 		salvageRef.clear();
 		salvageRef = null;
-		modules.clear();
-		modules = null;
 	}
 
 	private final void setupIntegration()
@@ -393,12 +388,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 		fishDropsMap = new HashMap<>();
 
 		reloadConfig();
-		reloadModules();
 		reloadListeners();
 		updateSalvageRef();
 		updateBlockDrops();
 		updateFishDrops();
 
+		moduleHandler.reload();
 		abilityHandler.reload();
 		healthBarHandler.reload();
 		experienceHandler.reload();
@@ -423,14 +418,6 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 			{
 				((Reloadable) listener).reload();
 			}
-		}
-	}
-
-	private final void reloadModules()
-	{
-		for (Module module : modules)
-		{
-			module.loadSettings();
 		}
 	}
 
