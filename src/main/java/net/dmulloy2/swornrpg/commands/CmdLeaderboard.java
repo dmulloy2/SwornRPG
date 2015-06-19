@@ -99,7 +99,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 		if (index > pageCount)
 		{
-			sendMessage(sender, "&cError: &4" + getMessage("error_no_page_with_index"), args[0]);
+			err(sender, getMessage("error_no_page_with_index"), args[0]);
 			return;
 		}
 
@@ -208,14 +208,14 @@ public class CmdLeaderboard extends SwornRPGCommand
 				try
 				{
 					PlayerData data = sortedEntries.get(i).getKey();
-
-					String space = "";
 					String name = data.getLastKnownBy();
-					for (int ii = name.length(); ii < 19; ii++)
-						space = space + " ";
-					name = name + space;
 
-					leaderboard.add(FormatUtil.format(format, i + 1, name, data.getLevel(), data.getTotalxp()));
+					int spaces = 20 - name.length();
+					StringBuilder space = new StringBuilder();
+					for (int s = 0; s < spaces; s++)
+						space.append(" ");
+
+					leaderboard.add(FormatUtil.format(format, i + 1, name + space, data.getLevel(), data.getTotalxp()));
 				} catch (Throwable ex) { }
 			}
 
@@ -226,7 +226,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			lastUpdateTime = System.currentTimeMillis();
 			updating = false;
 
-			plugin.log("Leaderboard updated! [{0}ms]", System.currentTimeMillis() - start);
+			plugin.log("Leaderboard updated! Took {0} ms!", System.currentTimeMillis() - start);
 
 			// Save the data
 			plugin.getPlayerDataCache().save();
@@ -272,7 +272,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			{
 				CommandSender sender = getSender(senderName);
 				if (sender != null)
-					sendMessage(sender, "&cError: &4Failed to update leaderboard: &c{0}", ex);
+					err(sender, "Failed to update leaderboard: &c{0}", ex);
 
 				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "updating leaderboard"));
 			}
