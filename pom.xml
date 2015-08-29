@@ -22,7 +22,7 @@
     </repository>
     <repository>
       <id>vault-repo</id>
-      <url>http://nexus.theyeticave.net/content/groups/public/</url>
+      <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
     </repository>
   </repositories>
 
@@ -36,7 +36,6 @@
       <url>http://repo.dmulloy2.net/content/repositories/snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
 
   <profiles>
     <profile>
@@ -133,7 +132,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>0.12.0</version>
+      <version>1.16.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -149,7 +148,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.5.0</version>
+      <version>1.5.6</version>
     </dependency>
   </dependencies>
 </project>
