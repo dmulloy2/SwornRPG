@@ -19,8 +19,8 @@ package net.dmulloy2.swornrpg.handlers;
 
 import java.util.List;
 
+import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
@@ -169,19 +169,32 @@ public class ExperienceHandler implements Reloadable
 			{
 				if (handler.has(serverAccount, money))
 				{
-					handler.withdraw(serverAccount, money);
-					plugin.getLogHandler().log("{0} withdrawn from account {1} for {2}.", money, serverAccount, player.getName());
+					String response = handler.withdraw(serverAccount, money);
+					if (response == null)
+					{
+						plugin.getLogHandler().log("{0} has been withdrawn from account {1} for {2}.", money, serverAccount, player.getName());
+					}
+					else
+					{
+						plugin.getLogHandler().log("Failed to withdraw from account {0}: {1}", serverAccount, response);
+						player.sendMessage(FormatUtil.format("&cError: &4Failed to withdraw from account &c{0}&4: &c{1}", serverAccount, response));
+						return;
+					}
 				}
 				else
 				{
-					player.sendMessage(FormatUtil.format("&cError: &4The server account does not have enough money!"));
+					plugin.getLogHandler().log("The account {0} does not have enough money!", serverAccount);
+					player.sendMessage(FormatUtil.format("&cError: &4The account &c{0} &4does not have enough money!", serverAccount));
 					return;
 				}
 			}
 		}
 
-		handler.depositPlayer(player, money);
-		player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), handler.format(money)));
+		String response = handler.depositPlayer(player, money);
+		if (response == null)
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_money"), handler.format(money)));
+		else
+			player.sendMessage(FormatUtil.format(plugin.getMessage("error"), response));
 	}
 
 	/**
