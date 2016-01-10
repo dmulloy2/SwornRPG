@@ -97,7 +97,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
-public class SwornRPG extends SwornPlugin implements Reloadable
+public class SwornRPG extends SwornPlugin
 {
 	// Handlers
 	private @Getter ExperienceHandler experienceHandler;
@@ -491,15 +491,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					chance = NumberUtil.toInt(ss[1]);
 				}
 
-				if (type != null && chance > 0)
-				{
-					boolean ignoreData = data == -1;
-					if (data < 0)
-						data = 0;
+				boolean ignoreData = data == -1;
+				if (data < 0)
+					data = 0;
 
-					MyMaterial material = new MyMaterial(type, data, ignoreData);
-					blockDrops.add(new BlockDrop(material, chance));
-				}
+				MyMaterial material = new MyMaterial(type, data, ignoreData);
+				blockDrops.add(new BlockDrop(material, chance));
 			}
 
 			Material material = key.equals("*") ? Material.AIR : MaterialUtil.getMaterial(key);
@@ -541,15 +538,12 @@ public class SwornRPG extends SwornPlugin implements Reloadable
 					chance = NumberUtil.toInt(ss[1]);
 				}
 
-				if (type != null && chance != -1)
-				{
-					boolean ignoreData = data == -1;
-					if (data < 0)
-						data = 0;
+				boolean ignoreData = data == -1;
+				if (data < 0)
+					data = 0;
 
-					MyMaterial material = new MyMaterial(type, data, ignoreData);
-					fishDrops.add(new BlockDrop(material, chance));
-				}
+				MyMaterial material = new MyMaterial(type, data, ignoreData);
+				fishDrops.add(new BlockDrop(material, chance));
 			}
 
 			fishDropsMap.put(NumberUtil.toInt(entry.getKey()), fishDrops);

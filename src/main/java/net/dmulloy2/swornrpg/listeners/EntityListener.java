@@ -126,6 +126,8 @@ public class EntityListener implements Listener, Reloadable
 						}
 					}
 				}
+
+				return;
 			}
 
 			// Axe blowback

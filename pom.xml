@@ -84,6 +84,8 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <minimizeJar>true</minimizeJar>
               <artifactSet>
                 <includes>
                   <include>net.dmulloy2:swornapi*</include>

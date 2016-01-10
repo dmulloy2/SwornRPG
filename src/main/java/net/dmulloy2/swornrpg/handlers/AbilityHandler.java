@@ -104,6 +104,8 @@ public class AbilityHandler implements Reloadable
 			case UNLIMITED_AMMO:
 				activateUnlimitedAmmo(player);
 				break;
+			default:
+				throw new IllegalArgumentException("Unsupported ability: " + ability);
 		}
 	}
 

@@ -86,9 +86,8 @@ public class CmdDeny extends SwornRPGCommand
 			if (target != null)
 			{
 				sendpMessage(target, getMessage("deny_rejcted"), player.getName());
+				sendpMessage(getMessage("deny_sender"), target.getName() + "''s proposal");
 			}
-
-			sendpMessage(getMessage("deny_sender"), target.getName() + "''s proposal");
 		}
 	}
 }

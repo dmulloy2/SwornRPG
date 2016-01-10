@@ -158,6 +158,9 @@ public class Herbalism extends Module
 					case REDWOOD:
 						type = TreeType.REDWOOD;
 						break;
+					default:
+						type = TreeType.TREE;
+						break;
 				}
 
 				block.setType(Material.AIR);
