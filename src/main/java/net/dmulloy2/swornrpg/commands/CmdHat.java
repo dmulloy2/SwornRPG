@@ -85,6 +85,7 @@ public class CmdHat extends SwornRPGCommand
 						hand.setAmount(1);
 						inv.remove(hand);
 						inv.setHelmet(hand);
+						//inv.setItemInMainHand(head);
 						inv.setItemInHand(head);
 						sendpMessage(plugin.getMessage("hat_success"));
 					}
