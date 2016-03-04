@@ -109,7 +109,7 @@ public class EntityListener implements Listener, Reloadable
 		else if (damager instanceof Player)
 		{
 			Player player = (Player) damager;
-			ItemStack inHand = player.getItemInHand();
+			ItemStack inHand = player.getInventory().getItemInMainHand();
 
 			// Confusion
 			if (inHand == null || inHand.getType() == Material.AIR)

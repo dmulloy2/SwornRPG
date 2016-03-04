@@ -63,9 +63,9 @@ public class CmdHat extends SwornRPGCommand
 		}
 		else
 		{
-			if (player.getItemInHand().getType() != Material.AIR)
+			ItemStack hand = player.getInventory().getItemInMainHand();
+			if (hand.getType() != Material.AIR)
 			{
-				ItemStack hand = player.getItemInHand();
 				if (hand.getType().getMaxDurability() == 0)
 				{
 					PlayerInventory inv = player.getInventory();
@@ -85,8 +85,7 @@ public class CmdHat extends SwornRPGCommand
 						hand.setAmount(1);
 						inv.remove(hand);
 						inv.setHelmet(hand);
-						//inv.setItemInMainHand(head);
-						inv.setItemInHand(head);
+						inv.setItemInMainHand(head);
 						sendpMessage(plugin.getMessage("hat_success"));
 					}
 				}

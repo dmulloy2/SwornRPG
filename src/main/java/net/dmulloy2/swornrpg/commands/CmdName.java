@@ -45,7 +45,7 @@ public class CmdName extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = player.getInventory().getItemInMainHand();
 		if (inHand == null || inHand.getType() == Material.AIR)
 		{
 			err("You must have an item in your hand to do this!");

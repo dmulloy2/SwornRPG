@@ -80,7 +80,7 @@ public class AbilityHandler implements Reloadable
 
 	public final void checkActivation(Player player, Action action)
 	{
-		Material mat = player.getItemInHand().getType();
+		Material mat = player.getInventory().getItemInMainHand().getType();
 		if (Ability.FRENZY.isValidMaterial(mat))
 		{
 			activateFrenzy(player, action);
@@ -184,7 +184,7 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
+				String inHand = FormatUtil.getFriendlyName(player.getInventory().getItemInMainHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 
 				data.setItemName(inHand);
@@ -307,7 +307,7 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = FormatUtil.getFriendlyName(player.getItemInHand().getType());
+				String inHand = FormatUtil.getFriendlyName(player.getInventory().getItemInMainHand().getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 
 				data.setItemName(inHand);
