@@ -20,6 +20,7 @@ package net.dmulloy2.swornrpg.listeners;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
@@ -109,7 +110,7 @@ public class EntityListener implements Listener, Reloadable
 		else if (damager instanceof Player)
 		{
 			Player player = (Player) damager;
-			ItemStack inHand = player.getInventory().getItemInMainHand();
+			ItemStack inHand = CompatUtil.getItemInMainHand(player);
 
 			// Confusion
 			if (inHand == null || inHand.getType() == Material.AIR)

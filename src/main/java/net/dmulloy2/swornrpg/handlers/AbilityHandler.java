@@ -25,6 +25,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
@@ -80,7 +81,7 @@ public class AbilityHandler implements Reloadable
 
 	public final void checkActivation(Player player, Action action)
 	{
-		Material mat = player.getInventory().getItemInMainHand().getType();
+		Material mat = CompatUtil.getItemInMainHand(player).getType();
 		if (Ability.FRENZY.isValidMaterial(mat))
 		{
 			activateFrenzy(player, action);
@@ -184,7 +185,7 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = FormatUtil.getFriendlyName(player.getInventory().getItemInMainHand().getType());
+				String inHand = FormatUtil.getFriendlyName(CompatUtil.getItemInMainHand(player).getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 
 				data.setItemName(inHand);
@@ -307,7 +308,7 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = FormatUtil.getFriendlyName(player.getInventory().getItemInMainHand().getType());
+				String inHand = FormatUtil.getFriendlyName(CompatUtil.getItemInMainHand(player).getType());
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 
 				data.setItemName(inHand);

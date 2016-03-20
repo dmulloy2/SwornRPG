@@ -18,6 +18,7 @@
 package net.dmulloy2.swornrpg.modules;
 
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 
@@ -78,7 +79,7 @@ public class Salvaging extends Module
 					|| block.getRelative(0, 0, -1).getType() == Material.FURNACE
 					|| block.getRelative(0, 0, 1).getType() == Material.FURNACE)
 			{
-				ItemStack item = player.getInventory().getItemInMainHand();
+				ItemStack item = CompatUtil.getItemInMainHand(player);
 				Material type = item.getType();
 
 				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
