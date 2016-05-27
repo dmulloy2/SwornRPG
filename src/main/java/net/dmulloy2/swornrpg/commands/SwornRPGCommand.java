@@ -53,13 +53,13 @@ public abstract class SwornRPGCommand extends Command
 	protected final OfflinePlayer getTarget(int arg, boolean others)
 	{
 		OfflinePlayer target = null;
-		if (args.length == 1 && others)
+		if (args.length > arg && others)
 		{
 			target = Util.matchPlayer(args[arg]);
 			if (target == null)
 			{
 				target = Util.matchOfflinePlayer(args[arg]);
-				if (target == null)
+				if (target == null || ! target.hasPlayedBefore())
 				{
 					err(getMessage("player_not_found"), args[arg]);
 					return null;

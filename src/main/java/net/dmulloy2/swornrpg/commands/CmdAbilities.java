@@ -49,6 +49,13 @@ public class CmdAbilities extends SwornRPGCommand
 		if (target == null)
 			return;
 
+		PlayerData data = getPlayerData(target);
+		if (data == null)
+		{
+			err(plugin.getMessage("missing_data"), target.getName());
+			return;
+		}
+
 		if (sender.getName().equals(target.getName()))
 		{
 			sendMessage(plugin.getMessage("ability_header_self"));
@@ -59,8 +66,6 @@ public class CmdAbilities extends SwornRPGCommand
 		}
 
 		AbilityHandler abilityHandler = plugin.getAbilityHandler();
-
-		PlayerData data = getPlayerData(target);
 		if (abilityHandler.isFrenzyEnabled())
 		{
 			StringBuilder line = new StringBuilder();
