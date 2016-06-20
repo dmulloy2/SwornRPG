@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Guardian;
 import org.bukkit.entity.LivingEntity;
@@ -110,7 +111,7 @@ public class MobKills extends Module
 				if (xp == 0) return;
 
 				String article = FormatUtil.getArticle(mobName);
-				String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, mobName);
+				String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, WordUtils.capitalize(mobName));
 				plugin.getExperienceHandler().handleXpGain(killer, xp, message);
 			}
 		}
