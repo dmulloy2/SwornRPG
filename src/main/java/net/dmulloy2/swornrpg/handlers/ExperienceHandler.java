@@ -136,7 +136,8 @@ public class ExperienceHandler implements Reloadable
 					InventoryUtil.giveItem(player, item);
 
 					String itemName = FormatUtil.getFriendlyName(item.getType());
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_items"), item.getAmount(), itemName));
+					String suffix = FormatUtil.getPlural(itemName, item.getAmount());
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_items"), item.getAmount(), itemName, suffix));
 				}
 			}
 		}

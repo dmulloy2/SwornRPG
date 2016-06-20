@@ -56,9 +56,8 @@ public class CmdLore extends SwornRPGCommand
 		}
 
 		// Join and fix spacing
-		String str = FormatUtil.join(" ", args);
-		str = str.replaceAll("_", " ");
-		str = str.replaceAll("\"", "");
+		String str = FormatUtil.join(" ", args)
+				.replace("\"", "");
 
 		String[] split = str.split("\\|");
 		List<String> lore = new ArrayList<>();

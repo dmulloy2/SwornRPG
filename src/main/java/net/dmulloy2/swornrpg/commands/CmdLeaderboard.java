@@ -73,6 +73,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		if (System.currentTimeMillis() - lastUpdateTime > 600000L)
 		{
 			sendMessage(plugin.getMessage("leaderboard_wait"));
+			leaderboard.clear();
 			this.updating = true;
 			new BuildLeaderboardThread();
 		}

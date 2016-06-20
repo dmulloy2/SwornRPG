@@ -82,7 +82,7 @@ public class Herbalism extends Module
 				int xp = xpGain * 10;
 				String message = FormatUtil.format(plugin.getPrefix() + plugin.getMessage("herbalism_gain"), xp);
 				plugin.getExperienceHandler().handleXpGain(player, xp, message);
-				data.setHerbalism(0);
+				data.setHerbalism(herbalism - 10);
 			}
 			else
 			{
@@ -108,8 +108,8 @@ public class Herbalism extends Module
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
-		int level = data.getLevel(75);
-		if (Util.random(100 - level) == 0)
+		int level = data.getLevel(100);
+		if (Util.random(200 / level) == 0)
 		{
 			boolean message = false;
 			BlockState state = block.getState();

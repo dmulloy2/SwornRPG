@@ -54,9 +54,8 @@ public class CmdName extends SwornRPGCommand
 		}
 
 		// Join and fix spacing
-		String name = FormatUtil.join(" ", args);
-		name = name.replaceAll("_", " ");
-		name = name.replaceAll("\"", "");
+		String name = FormatUtil.join(" ", args)
+				.replace("\"", "");
 
 		// Format
 		name = FormatUtil.format(name);

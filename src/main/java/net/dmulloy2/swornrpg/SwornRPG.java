@@ -146,7 +146,7 @@ public class SwornRPG extends SwornPlugin
 		}
 		else
 		{
-			if (! getConfig().isSet("disabledWorlds"))
+			if (getConfig().get("frenzy.effects", null) == null)
 			{
 				conf.renameTo(new File(getDataFolder(), "oldConfig.yml"));
 				log(getMessage("log_config_outdated"));

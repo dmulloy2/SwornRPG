@@ -74,7 +74,7 @@ public class CmdAbilities extends SwornRPGCommand
 
 			if (data.getCooldowns().containsKey("frenzy"))
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", TimeUtil.toSeconds(data.getCooldowns().get("frenzy"))));
+				line.append(FormatUtil.format(" &c(Cooldown: {0}s)", TimeUtil.toSeconds(data.getCooldowns().get("frenzy"))));
 			}
 
 			sendMessage(line.toString());
@@ -88,7 +88,7 @@ public class CmdAbilities extends SwornRPGCommand
 
 			if (data.getCooldowns().containsKey("superpick"))
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", TimeUtil.toSeconds(data.getCooldowns().get("superpick"))));
+				line.append(FormatUtil.format(" &c(Cooldown: {0}s)", TimeUtil.toSeconds(data.getCooldowns().get("superpick"))));
 			}
 
 			sendMessage(line.toString());
@@ -102,7 +102,7 @@ public class CmdAbilities extends SwornRPGCommand
 
 			if (data.getCooldowns().containsKey("ammo"))
 			{
-				line.append(FormatUtil.format(" &c(Cooldown: {0})", TimeUtil.toSeconds(data.getCooldowns().get("ammo"))));
+				line.append(FormatUtil.format(" &c(Cooldown: {0}s)", TimeUtil.toSeconds(data.getCooldowns().get("ammo"))));
 			}
 
 			sendMessage(line.toString());

@@ -43,7 +43,7 @@ import net.dmulloy2.util.ListUtil;
 public class MobKills extends Module
 {
 	private int xpGain;
-	private Map<Integer, List<String>> tiers = new HashMap<>();
+	private Map<Integer, List<String>> tiers;
 
 	public MobKills(SwornRPG plugin)
 	{
@@ -55,7 +55,8 @@ public class MobKills extends Module
 	{
 		setEnabled(plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled", true));
 		this.xpGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain", 5);
-
+		this.tiers = new HashMap<>();
+		
 		if (plugin.getConfig().isSet("mobTiers"))
 		{
 			Set<String> keys = plugin.getConfig().getConfigurationSection("mobTiers").getKeys(false);
@@ -95,7 +96,7 @@ public class MobKills extends Module
 					return;
 
 				// Determine the correct tier
-				String mobName = FormatUtil.getFriendlyName(died.getType());
+				String mobName = died.getType().toString().replace("_", " ").toLowerCase();
 				if (isElder(died)) mobName = "elder " + mobName;
 
 				int multiplier = 1;
