@@ -100,7 +100,8 @@ _Development Builds can be found at our Continuous Integration server. These bui
 When reporting bugs (in a ticket), please follow this template:
 * Provide any relevant stack traces (Use pastie or pastebin)
 * Provide the version of both CraftBukkit/Spigot and SwornRPG (found with /version and /srpg v, respectively)
-* Provide a detailed description of the problem and how it came about, as well as all (if any) steps taken to remedy the problem 
+* Provide a detailed description of the problem and how it came about, as well as all (if any) steps taken to remedy the problem
+
 #### Notes
 * Support will not be given for either of the following: Offline Servers and Servers running ancient versions of either Bukkit/Spigot or Java.
 * SwornRPG has been fully tested (as well as built with) with the latest builds of both Java and Bukkit.
