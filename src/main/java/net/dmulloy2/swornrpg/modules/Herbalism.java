@@ -40,7 +40,7 @@ import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.Crops;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.NetherWarts;
-import org.bukkit.material.Tree;
+import org.bukkit.material.Sapling;
 
 /**
  * @author dmulloy2
@@ -108,72 +108,73 @@ public class Herbalism extends Module
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
-		int level = data.getLevel(150);
-		if (Util.random(200 - level) == 0)
+		int level = data.getLevel(75);
+		if (Util.random(100 - level) == 0)
 		{
 			boolean message = false;
-			BlockState blockState = block.getState();
-			Material mat = blockState.getType();
-			MaterialData dat = blockState.getData();
+			BlockState state = block.getState();
+			Material type = state.getType();
+			MaterialData dat = state.getData();
 			if (dat instanceof NetherWarts)
 			{
 				((NetherWarts) dat).setState(NetherWartsState.RIPE);
-				blockState.update();
+				state.update();
 				message = true;
 			}
 			else if (dat instanceof Crops)
 			{
 				((Crops) dat).setState(CropState.RIPE);
-				blockState.update();
+				state.update();
 				message = true;
 			}
 			else if (dat instanceof CocoaPlant)
 			{
 				((CocoaPlant) dat).setSize(CocoaPlantSize.LARGE);
-				blockState.update();
+				state.update();
 				message = true;
 			}
-			else if (mat == Material.SAPLING)
+			else if (type == Material.SAPLING)
 			{
-				Tree tree = (Tree) block.getState().getData();
-				TreeSpecies species = tree.getSpecies();
-				TreeType type = TreeType.TREE;
+				Sapling sapling = (Sapling) block.getState().getData();
+				TreeSpecies species = sapling.getSpecies();
+				TreeType tree = TreeType.TREE;
 				switch (species)
 				{
 					case ACACIA:
-						type = TreeType.ACACIA;
+						tree = TreeType.ACACIA;
 						break;
 					case BIRCH:
-						type = TreeType.BIRCH;
+						tree = Util.random(3) == 0 ? TreeType.TALL_BIRCH : TreeType.BIRCH;
 						break;
 					case DARK_OAK:
-						type = TreeType.DARK_OAK;
+						tree = TreeType.DARK_OAK;
 						break;
 					case GENERIC:
-						type = TreeType.TREE;
+						tree = Util.random(3) == 0 ? TreeType.BIG_TREE : TreeType.TREE;
 						break;
 					case JUNGLE:
-						type = TreeType.JUNGLE;
+						tree = Util.random(3) == 0 ? TreeType.COCOA_TREE : TreeType.SMALL_JUNGLE;
 						break;
 					case REDWOOD:
-						type = TreeType.REDWOOD;
+						tree = Util.random(5) == 0 ? TreeType.MEGA_REDWOOD : 
+							   Util.random(3) == 0 ? TreeType.TALL_REDWOOD : TreeType.REDWOOD;
 						break;
 					default:
-						type = TreeType.TREE;
+						tree = TreeType.TREE;
 						break;
 				}
 
 				block.setType(Material.AIR);
-				block.getWorld().generateTree(block.getLocation(), type);
+				block.getWorld().generateTree(block.getLocation(), tree);
 				message = true;
 			}
-			else if (mat == Material.RED_MUSHROOM)
+			else if (type == Material.RED_MUSHROOM)
 			{
 				block.setType(Material.AIR);
 				block.getWorld().generateTree(block.getLocation(), TreeType.RED_MUSHROOM);
 				message = true;
 			}
-			else if (mat == Material.BROWN_MUSHROOM)
+			else if (type == Material.BROWN_MUSHROOM)
 			{
 				block.setType(Material.AIR);
 				block.getWorld().generateTree(block.getLocation(), TreeType.BROWN_MUSHROOM);

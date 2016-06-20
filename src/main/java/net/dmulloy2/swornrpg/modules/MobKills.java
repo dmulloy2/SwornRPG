@@ -17,18 +17,24 @@
  */
 package net.dmulloy2.swornrpg.modules;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.util.FormatUtil;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.ListUtil;
 
 /**
  * @author dmulloy2
@@ -37,12 +43,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class MobKills extends Module
 {
 	private int xpGain;
-
-	// TODO: Move this to configuration
-	private static final List<String> tier3 = Arrays.asList(
-			"wither", "ender dragon");
-	private static final List<String> tier2 = Arrays.asList(
-			"creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider", "ghast", "magma cube", "witch", "slime");
+	private Map<Integer, List<String>> tiers = new HashMap<>();
 
 	public MobKills(SwornRPG plugin)
 	{
@@ -53,37 +54,81 @@ public class MobKills extends Module
 	public void loadSettings()
 	{
 		setEnabled(plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled", true));
-		this.xpGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain");
+		this.xpGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain", 5);
+
+		if (plugin.getConfig().isSet("mobTiers"))
+		{
+			Set<String> keys = plugin.getConfig().getConfigurationSection("mobTiers").getKeys(false);
+			for (String key : keys)
+			{
+				try
+				{
+					int tier = Integer.parseInt(key);
+					List<String> names = plugin.getConfig().getStringList("mobTiers." + tier);
+					tiers.put(tier, names);
+				}
+				catch (NumberFormatException ex)
+				{
+					plugin.getLogHandler().log(Level.WARNING, "\"{0}\" is not a number in mobTiers");
+				}
+			}
+		}
+		else
+		{
+			tiers.put(3, ListUtil.toList("wither", "ender dragon", "elder guardian"));
+			tiers.put(2, ListUtil.toList("creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider",
+					"ghast", "magma cube", "witch", "guardian", "shulker"));
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		Entity died = event.getEntity();
-		if (died instanceof LivingEntity && ! (died instanceof Player))
+		if (died instanceof LivingEntity && ! (died instanceof Player)) // Players are handled separately
 		{
 			Player killer = ((LivingEntity) died).getKiller();
 			if (killer != null)
 			{
-				if (plugin.isSwornNationsEnabled() && plugin.getSwornNationsHandler().isApplicable(killer, true))
+				// Applicability checks
+				if (isFactionsApplicable(killer, true) || plugin.isDisabledWorld(killer) || plugin.isCamping(killer))
 					return;
 
-				if (plugin.isDisabledWorld(killer) || plugin.isCamping(killer))
-					return;
+				// Determine the correct tier
+				String mobName = FormatUtil.getFriendlyName(died.getType());
+				if (isElder(died)) mobName = "elder " + mobName;
 
-				String mobName = FormatUtil.getFriendlyName(event.getEntity().getType());
+				int multiplier = 1;
+				for (Entry<Integer, List<String>> entry : tiers.entrySet())
+				{
+					if (entry.getValue().contains(mobName))
+						multiplier = entry.getKey();
+				}
 
-				// Determine tier
-				int xp = xpGain;
-				if (tier3.contains(mobName.toLowerCase()))
-					xp *= 3;
-				else if (tier2.contains(mobName.toLowerCase()))
-					xp *= 2;
+				int xp = xpGain * multiplier;
+				if (xp == 0) return;
 
 				String article = FormatUtil.getArticle(mobName);
 				String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, mobName);
 				plugin.getExperienceHandler().handleXpGain(killer, xp, message);
 			}
 		}
+	}
+
+	/**
+	 * Whether or not an Entity is in an elevated state. Currently this only
+	 * checks for elder guardians
+	 * 
+	 * @param entity Entity to check
+	 * @return True if it is, false if not
+	 */
+	private boolean isElder(Entity entity)
+	{
+		if (entity instanceof Guardian)
+		{
+			return ((Guardian) entity).isElder();
+		}
+
+		return false;
 	}
 }

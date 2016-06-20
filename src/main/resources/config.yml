@@ -149,6 +149,32 @@ levelingMethods:
 # Set to -1 to disable
 levelCap: -1
 
+# Mob Tiers
+# XP is calculated by multiplying the xp (above) by the tier multiplier
+# Unlisted mobs default to 1. Set to 0 to disable for that type
+
+# Format:
+#   multiplier:
+#     - "entity type"
+mobTiers:
+  3:
+    - "wither"
+    - "ender dragon"
+    - "elder guardian"
+  2:
+    - "creeper"
+    - "enderman"
+    - "iron golem"
+    - "skeleton"
+    - "blaze"
+    - "zombie"
+    - "spider"
+    - "ghast"
+    - "magma cube"
+    - "witch"
+    - "guardian"
+    - "shulker"
+
 #############################################
 #+-----------------------------------------+#
 #|                Rewards                  |#

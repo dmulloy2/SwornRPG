@@ -43,8 +43,6 @@ public abstract class Module implements Listener
 	public Module(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-
-		// Load settings
 		loadSettings();
 	}
 
