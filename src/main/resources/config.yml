@@ -282,6 +282,11 @@ deathCoordinateMessages: true
 # Enabled (boolean)
 blockDropsEnabled: true 
 
+# Whether or not to track and block broken blocks and prevent farming
+# Memory and performance may be affected
+# Input - true/false, defaults to false
+trackBlockDrops: false
+
 # Items Dropped
 # Format: 
 #  <blockType>:

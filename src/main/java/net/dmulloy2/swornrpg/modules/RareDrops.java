@@ -21,7 +21,10 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.util.Util;
 
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -29,12 +32,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 /**
  * @author dmulloy2
  */
 
 public class RareDrops extends Module
 {
+	private Cache<Location, Boolean> tracked;
+
 	public RareDrops(SwornRPG plugin)
 	{
 		super(plugin);
@@ -44,6 +52,11 @@ public class RareDrops extends Module
 	public void loadSettings()
 	{
 		setEnabled(plugin.getConfig().getBoolean("blockDropsEnabled", true));
+		if (plugin.getConfig().getBoolean("trackBlockDrops", false))
+			tracked = CacheBuilder.newBuilder()
+				.expireAfterWrite(5, TimeUnit.MINUTES)
+				.build();
+		
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -57,6 +70,12 @@ public class RareDrops extends Module
 		if (plugin.isDisabledWorld(block) || isFactionsApplicable(player, true))
 			return;
 
+		Location location = block.getLocation();
+		if (tracked != null && tracked.getIfPresent(location) != null)
+			return;
+
+		boolean dropped = false;
+
 		Material type = block.getType();
 		if (plugin.getBlockDropsMap().containsKey(type))
 		{
@@ -65,6 +84,7 @@ public class RareDrops extends Module
 				if (Util.random(blockDrop.getChance()) == 0)
 				{
 					block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getMaterial().newItemStack(1));
+					dropped = true;
 				}
 			}
 
@@ -75,9 +95,13 @@ public class RareDrops extends Module
 					if (Util.random(blockDrop.getChance()) == 0)
 					{
 						block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getMaterial().newItemStack(1));
+						dropped = true;
 					}
 				}
 			}
 		}
+
+		if (dropped && tracked != null)
+			tracked.put(location, true);
 	}
 }
