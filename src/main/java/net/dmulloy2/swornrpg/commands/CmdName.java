@@ -21,6 +21,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -65,6 +66,6 @@ public class CmdName extends SwornRPGCommand
 		meta.setDisplayName(name);
 		inHand.setItemMeta(meta);
 
-		sendpMessage("&eYou have set your &b{0}&e''s name to \"&r{1}&e\"", FormatUtil.getFriendlyName(inHand.getType()), name);
+		sendpMessage("&eYou have set your &b{0}&e''s name to \"&r{1}&e\"", MaterialUtil.getName(inHand), name);
 	}
 }

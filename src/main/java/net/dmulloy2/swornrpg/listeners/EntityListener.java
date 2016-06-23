@@ -22,6 +22,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.GameMode;
@@ -132,7 +133,7 @@ public class EntityListener implements Listener, Reloadable
 			}
 
 			// Axe blowback
-			String type = FormatUtil.getFriendlyName(inHand.getType());
+			String type = MaterialUtil.getName(inHand);
 			if (type.toLowerCase().contains("axe"))
 			{
 				if (axeKnockbackEnabled)

@@ -27,6 +27,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.TimeUtil;
 import net.dmulloy2.util.Util;
 
@@ -185,7 +186,7 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = FormatUtil.getFriendlyName(CompatUtil.getItemInMainHand(player).getType());
+				String inHand = MaterialUtil.getName(CompatUtil.getItemInMainHand(player));
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 
 				data.setItemName(inHand);
@@ -308,7 +309,7 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = FormatUtil.getFriendlyName(CompatUtil.getItemInMainHand(player).getType());
+				String inHand = MaterialUtil.getName(CompatUtil.getItemInMainHand(player));
 				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
 
 				data.setItemName(inHand);

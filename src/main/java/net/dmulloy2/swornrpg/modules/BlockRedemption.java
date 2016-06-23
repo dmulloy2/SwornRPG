@@ -84,7 +84,7 @@ public class BlockRedemption extends Module
 
 			InventoryUtil.giveItem(player, itemStack);
 
-			String itemName = FormatUtil.getFriendlyName(itemStack.getType());
+			String itemName = MaterialUtil.getName(itemStack);
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
 		}
 	}

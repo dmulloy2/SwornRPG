@@ -26,6 +26,7 @@ import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
 import net.dmulloy2.util.ItemUtil;
+import net.dmulloy2.util.MaterialUtil;
 import net.dmulloy2.util.TimeUtil;
 
 import org.bukkit.entity.Player;
@@ -135,7 +136,7 @@ public class ExperienceHandler implements Reloadable
 
 					InventoryUtil.giveItem(player, item);
 
-					String itemName = FormatUtil.getFriendlyName(item.getType());
+					String itemName = MaterialUtil.getName(item);
 					String plural = FormatUtil.getPlural(itemName, item.getAmount());
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_items"), item.getAmount(), plural));
 				}

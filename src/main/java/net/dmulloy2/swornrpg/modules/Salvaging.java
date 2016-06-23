@@ -21,6 +21,7 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.util.CompatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.InventoryUtil;
+import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -93,7 +94,7 @@ public class Salvaging extends Module
 					String article = FormatUtil.getArticle(blockType);
 					String materialExtension = blockType.equals("Diamond") ? "" : " ingot";
 					String plural = amt > 1.0D ? "s" : "";
-					String itemName = FormatUtil.getFriendlyName(item.getType());
+					String itemName = MaterialUtil.getName(item);
 
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("salvage_success"),
 							article, itemName, amt, blockType.toLowerCase(), materialExtension, plural));
@@ -118,7 +119,7 @@ public class Salvaging extends Module
 				}
 				else
 				{
-					String itemName = FormatUtil.getFriendlyName(item.getType());
+					String itemName = MaterialUtil.getName(item);
 					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("not_salvagable"), itemName,
 							blockType.toLowerCase()));
 				}
