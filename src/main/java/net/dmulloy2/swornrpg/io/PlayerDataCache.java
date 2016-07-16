@@ -82,7 +82,7 @@ public class PlayerDataCache
 			File file = new File(folder, getFileName(key));
 			if (file.exists())
 			{
-				data = loadData(key);
+				data = loadData(file, true);
 				if (data == null)
 				{
 					// Corrupt data :(
@@ -145,18 +145,15 @@ public class PlayerDataCache
 		return newData(getKey(player));
 	}
 
-	private final PlayerData loadData(String key)
+	private final PlayerData loadData(File file, boolean exists)
 	{
-		File file = new File(folder, getFileName(key));
-
 		try
 		{
-			PlayerData data = FileSerialization.load(file, PlayerData.class);
-			return data;
+			return FileSerialization.load(file, PlayerData.class, exists);
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "loading data for {0}", key));
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "loading data from {0}", file.getName()));
 			return null;
 		}
 	}
@@ -184,19 +181,17 @@ public class PlayerDataCache
 
 	public final void cleanupData()
 	{
-		// Get all online players into an array list
+		// Get all online players into a  list
 		List<String> online = new ArrayList<>();
 		for (Player player : Util.getOnlinePlayers())
-			online.add(player.getName());
+			online.add(getKey(player));
 
 		// Actually cleanup the data
 		for (String key : getAllLoadedPlayerData().keySet())
 			if (! online.contains(key))
 				cache.remove(key);
 
-		// Clear references
 		online.clear();
-		online = null;
 	}
 
 	// ---- Mass Getters
@@ -216,15 +211,19 @@ public class PlayerDataCache
 			@Override
 			public boolean accept(File file)
 			{
-				return file.getName().contains(extension);
+				return file.getName().endsWith(extension);
 			}
 		});
 
 		for (File file : files)
 		{
 			String fileName = IOUtil.trimFileExtension(file, extension);
-			if (! isFileLoaded(fileName))
-				data.put(fileName, loadData(fileName));
+			if (isFileLoaded(fileName))
+				continue;
+
+			PlayerData loaded = loadData(file, true);
+			if (loaded != null)
+				data.put(fileName, loaded);
 		}
 
 		return Collections.unmodifiableMap(data);
@@ -331,7 +330,7 @@ public class PlayerDataCache
 		for (File file : files)
 		{
 			String fileName = IOUtil.trimFileExtension(file, extension);
-			PlayerData loaded = loadData(fileName);
+			PlayerData loaded = loadData(file, true);
 			loaded.setLastKnownBy(fileName);
 			data.put(fileName, loaded);
 		}
