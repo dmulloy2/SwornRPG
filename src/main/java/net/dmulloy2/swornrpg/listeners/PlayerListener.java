@@ -34,12 +34,14 @@ import net.dmulloy2.util.Util;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -243,11 +245,23 @@ public class PlayerListener implements Listener, Reloadable
 		return Math.abs(number) <= Double.MAX_VALUE;
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onAbilityActivate(PlayerInteractEvent event)
 	{
+		Action action = event.getAction();
+		if (! event.hasItem() || action == Action.PHYSICAL)
+			return;
+
+		Block clicked = event.getClickedBlock();
+		if (clicked != null)
+		{
+			// If it's a tile entity, don't try to activate abilities
+			if (! clicked.getState().getClass().getName().equals("CraftBlockState"))
+				return;
+		}
+
 		// Check ability activation
-		plugin.getAbilityHandler().checkActivation(event.getPlayer(), event.getAction());
+		plugin.getAbilityHandler().checkActivation(event.getPlayer(), action);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
