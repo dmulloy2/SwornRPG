@@ -24,18 +24,18 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
+import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.types.SpecialEntities;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.ListUtil;
+
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Guardian;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
-
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.ListUtil;
 
 /**
  * @author dmulloy2
@@ -98,7 +98,8 @@ public class MobKills extends Module
 
 				// Determine the correct tier
 				String mobName = died.getType().toString().replace("_", " ").toLowerCase();
-				if (isElder(died)) mobName = "elder " + mobName;
+				if (SpecialEntities.isElderGuardian(died))
+					mobName = "elder " + mobName;
 
 				int multiplier = 1;
 				for (Entry<Integer, List<String>> entry : tiers.entrySet())
@@ -115,22 +116,5 @@ public class MobKills extends Module
 				plugin.getExperienceHandler().handleXpGain(killer, xp, message);
 			}
 		}
-	}
-
-	/**
-	 * Whether or not an Entity is in an elevated state. Currently this only
-	 * checks for elder guardians
-	 * 
-	 * @param entity Entity to check
-	 * @return True if it is, false if not
-	 */
-	private boolean isElder(Entity entity)
-	{
-		if (entity instanceof Guardian)
-		{
-			return ((Guardian) entity).isElder();
-		}
-
-		return false;
 	}
 }
