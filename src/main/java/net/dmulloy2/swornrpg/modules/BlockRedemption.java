@@ -35,6 +35,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -59,7 +60,7 @@ public class BlockRedemption extends Module
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
@@ -77,15 +78,25 @@ public class BlockRedemption extends Module
 		int level = data.getLevel(100);
 		if (Util.random(300 / level) == 0)
 		{
-			ItemStack itemStack = new ItemStack(material);
+			final ItemStack itemStack = new ItemStack(material);
 			MaterialData materialData = block.getState().getData();
 			if (materialData != null)
 				itemStack.setData(materialData);
 
-			InventoryUtil.giveItem(player, itemStack);
+			class DelayedGiveTask extends BukkitRunnable
+			{
+				@Override
+				public void run()
+				{
+					InventoryUtil.giveItem(player, itemStack);
 
-			String itemName = MaterialUtil.getName(itemStack);
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
+					String itemName = MaterialUtil.getName(itemStack);
+					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("building_redeem"), itemName));
+				}
+			}
+
+			// Run the next tick to hopefully fix duplication
+			new DelayedGiveTask().runTaskLater(plugin, 20L);
 		}
 	}
 }
