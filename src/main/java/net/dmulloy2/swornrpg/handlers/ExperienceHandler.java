@@ -21,6 +21,7 @@ import java.util.List;
 
 import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.swornrpg.SwornRPG;
+import net.dmulloy2.swornrpg.event.SwornRPGLevelupEvent;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
@@ -92,12 +93,17 @@ public class ExperienceHandler implements Reloadable
 		int oldSuperPickaxe = TimeUtil.toSeconds(plugin.getAbilityHandler().getSuperPickaxeDuration(data.getLevel()));
 		int oldUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
+		int oldLevel = data.getLevel();
+
 		// Increment level, reset needed xp
 		if (levelCap == -1 || data.getLevel() < levelCap)
 		{
 			data.setLevel(data.getLevel() + 1);
 			data.setXpneeded(data.getXpNeeded() + (data.getXpNeeded() / 4));
 		}
+
+		int level = data.getLevel();
+		plugin.getPluginManager().callEvent(new SwornRPGLevelupEvent(player, oldLevel, level));
 
 		data.setPlayerxp(remaining);
 
@@ -107,7 +113,6 @@ public class ExperienceHandler implements Reloadable
 		int newUnlimitedAmmo = TimeUtil.toSeconds(plugin.getAbilityHandler().getUnlimitedAmmoDuration(data.getLevel()));
 
 		// Send levelup message
-		int level = data.getLevel();
 		if (levelCap != -1 && level >= levelCap)
 		{
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("level_cap")));
