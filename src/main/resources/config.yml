@@ -553,3 +553,8 @@ redemptionBlacklist:
 - crops
 - fire
 - soil
+
+# A universal chance for block redemption
+# 1 out of X
+# Set to -1 to disable
+redemptionChance: -1

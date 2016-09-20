@@ -44,6 +44,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class BlockRedemption extends Module
 {
 	private List<Material> redemptionBlacklist;
+	private int universalChance;
 
 	public BlockRedemption(SwornRPG plugin)
 	{
@@ -55,6 +56,7 @@ public class BlockRedemption extends Module
 	{
 		setEnabled(plugin.getConfig().getBoolean("redemptionEnabled", true));
 		this.redemptionBlacklist = MaterialUtil.fromStrings(plugin.getConfig().getStringList("redemptionBlacklist"));
+		this.universalChance = plugin.getConfig().getInt("redemptionChance", -1);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -74,9 +76,8 @@ public class BlockRedemption extends Module
 
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
-		// Block redemption
-		int level = data.getLevel(100);
-		if (Util.random(300 / level) == 0)
+		int chance = universalChance != -1 ? universalChance : 300 / data.getLevel(100);
+		if (Util.random(chance) == 0)
 		{
 			final ItemStack itemStack = new ItemStack(material);
 			MaterialData materialData = block.getState().getData();
