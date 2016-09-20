@@ -41,6 +41,7 @@ import org.bukkit.inventory.ItemStack;
 public class ExperienceHandler implements Reloadable
 {
 	private List<ItemStack> rewardItems;
+	private boolean constantRewards;
 	private boolean rewardsEnabled;
 	private String serverAccount;
 	private double rewardMoney;
@@ -132,7 +133,9 @@ public class ExperienceHandler implements Reloadable
 				for (ItemStack item : rewardItems)
 				{
 					item = item.clone();
-					item.setAmount(item.getAmount() * level);
+
+					if (! constantRewards)
+						item.setAmount(item.getAmount() * level);
 
 					InventoryUtil.giveItem(player, item);
 
@@ -162,7 +165,7 @@ public class ExperienceHandler implements Reloadable
 		if (! plugin.isVaultEnabled())
 			return;
 
-		double money = rewardMoney * level;
+		double money = constantRewards ? rewardMoney : rewardMoney * level;
 
 		VaultHandler handler = plugin.getVaultHandler();
 		if (! serverAccount.isEmpty())
@@ -232,7 +235,8 @@ public class ExperienceHandler implements Reloadable
 	{
 		this.rewardItems = ItemUtil.readItems(plugin.getConfig().getStringList("levelingRewards.items"), plugin);
 		this.serverAccount = plugin.getConfig().getString("levelingRewards.serverAccount", "");
-		this.rewardsEnabled = plugin.getConfig().getBoolean("levelingRewards.enabled");
+		this.constantRewards = plugin.getConfig().getBoolean("levelingRewards.constant", false);
+		this.rewardsEnabled = plugin.getConfig().getBoolean("levelingRewards.enabled", true);
 		this.rewardMoney = plugin.getConfig().getDouble("levelingRewards.money");
 		this.levelCap = plugin.getConfig().getInt("levelCap", -1);
 	}

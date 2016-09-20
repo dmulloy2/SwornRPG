@@ -182,12 +182,14 @@ mobTiers:
 #############################################
 
 # Levelup Rewards
-# Enabled - boolean
-# Money - integer
-# Items - List<Item>
+# Enabled - boolean, whether or not to give awards
+# Constant - boolean, give the same amount each time
+# Money - integer, how much money to give
+# Items - List<Item>, items to give
 
 levelingRewards:
   enabled: true
+  constant: false
   money: 250
   items:
     - "diamond, 1"
