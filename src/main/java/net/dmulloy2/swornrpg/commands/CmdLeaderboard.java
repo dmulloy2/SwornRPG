@@ -18,17 +18,15 @@
 package net.dmulloy2.swornrpg.commands;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
+import net.dmulloy2.types.Sorter;
+import net.dmulloy2.types.Sorter.SortCriteria;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
@@ -86,6 +84,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 		CommandSender sender = getSender(senderName);
 		if (sender == null)
 			return;
+
+		if (leaderboard.isEmpty())
+		{
+			err(sender, "No players with experience found!");
+			return;
+		}
 
 		int index = 1;
 
@@ -173,44 +177,19 @@ public class CmdLeaderboard extends SwornRPGCommand
 			long start = System.currentTimeMillis();
 
 			Map<String, PlayerData> allData = plugin.getPlayerDataCache().getAllPlayerData();
-			Map<PlayerData, Integer> experienceMap = new HashMap<>();
-
-			for (Entry<String, PlayerData> entry : allData.entrySet())
-			{
-				PlayerData value = entry.getValue();
-				if (value.getTotalxp() > 0)
-					experienceMap.put(value, value.getTotalxp());
-			}
-
-			if (experienceMap.isEmpty())
-			{
-				err("No players with XP found");
-				return;
-			}
-
-			List<Entry<PlayerData, Integer>> sortedEntries = new ArrayList<>(experienceMap.entrySet());
-			Collections.sort(sortedEntries, new Comparator<Entry<PlayerData, Integer>>()
-			{
-				@Override
-				public int compare(Entry<PlayerData, Integer> entry1, Entry<PlayerData, Integer> entry2)
-				{
-					return -entry1.getValue().compareTo(entry2.getValue());
-				}
-			});
-
-			// Clear the map
-			experienceMap.clear();
-			experienceMap = null;
+			List<PlayerData> sorted = xpSorter().sort(allData.values());
 
 			String format = getMessage("leaderboard_format");
 
-			for (int i = 0; i < sortedEntries.size(); i++)
+			for (int i = 0; i < sorted.size(); i++)
 			{
 				try
 				{
-					PlayerData data = sortedEntries.get(i).getKey();
-					String name = data.getLastKnownBy();
+					PlayerData data = sorted.get(i);
+					int xp = data.getTotalxp();
+					if (xp == 0) continue;
 
+					String name = data.getLastKnownBy();
 					int spaces = 20 - name.length();
 					StringBuilder space = new StringBuilder();
 					for (int s = 0; s < spaces; s++)
@@ -220,9 +199,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 				} catch (Throwable ex) { }
 			}
 
-			// Clear the entries
-			sortedEntries.clear();
-			sortedEntries = null;
+			sorted.clear();
 
 			lastUpdateTime = System.currentTimeMillis();
 			updating = false;
@@ -286,5 +263,19 @@ public class CmdLeaderboard extends SwornRPGCommand
 			return plugin.getServer().getConsoleSender();
 		else
 			return Util.matchPlayer(name);
+	}
+
+	private final Sorter<PlayerData, Integer> xpSorter()
+	{
+		return new Sorter<>(new SortCriteria<PlayerData, Integer>()
+		{
+			@Override
+			public Integer getValue(PlayerData key)
+			{
+				// Filter out 0 values
+				int value = key.getTotalxp();
+				return value > 0 ? value : null;
+			}	
+		});
 	}
 }
