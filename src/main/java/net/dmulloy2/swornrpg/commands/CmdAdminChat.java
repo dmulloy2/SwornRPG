@@ -40,7 +40,7 @@ public class CmdAdminChat extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		String name = getName(sender);
+		String name = getName(sender, null, true);
 		String message = FormatUtil.join(" ", args);
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
 		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("admin_chat"), name, message), node);

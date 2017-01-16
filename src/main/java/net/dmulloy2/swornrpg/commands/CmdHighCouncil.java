@@ -40,7 +40,7 @@ public class CmdHighCouncil extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		String name = getName(sender);
+		String name = getName(sender, null, true);
 		String message = FormatUtil.join(" ", args);
 		String node = plugin.getPermissionHandler().getPermissionString(permission);
 		plugin.getServer().broadcast(FormatUtil.format(plugin.getMessage("council_chat"), name, message), node);
