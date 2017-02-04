@@ -64,7 +64,7 @@ public class CmdAddxp extends SwornRPGCommand
 		plugin.getExperienceHandler().handleXpGain(target, giveXP, "");
 		plugin.getExperienceHandler().recalculate(target);
 
-		if (target.getName().equals(player.getName()))
+		if (target.equals(sender))
 		{
 			sendpMessage(plugin.getMessage("addxp_self"), giveXP);
 		}
