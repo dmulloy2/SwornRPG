@@ -75,7 +75,7 @@ public class CmdSitdown extends SwornRPGCommand
 		location.setYaw(0F);
 
 		Arrow it = (Arrow) player.getWorld().spawnEntity(location, EntityType.ARROW);
-		if (! it.setPassenger(player))
+		if (! it.addPassenger(player))
 		{
 			it.remove();
 			data.setPreviousLocation(null);

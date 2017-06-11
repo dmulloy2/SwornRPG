@@ -62,11 +62,11 @@ public class CmdRide extends SwornRPGCommand
 			return;
 		}
 
-		if (target.getPassenger() != null)
+		/* if (target.getPassenger() != null)
 		{
 			err(getMessage("ride_vehicle"));
 			return;
-		}
+		} */
 
 		if (target.getVehicle() != null)
 		{
@@ -81,7 +81,7 @@ public class CmdRide extends SwornRPGCommand
 			@Override
 			public void run()
 			{
-				target.setPassenger(player);
+				target.addPassenger(player);
 
 				sendpMessage(getMessage("ride_now_riding"), target.getName());
 			}

@@ -27,6 +27,7 @@ import net.dmulloy2.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -216,7 +217,7 @@ public class EntityListener implements Listener, Reloadable
 		{
 			Player player = (Player) killer;
 			double health = player.getHealth();
-			double maxHealth = player.getMaxHealth();
+			double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
 			if (health > 0.0D && health < maxHealth)
 			{
@@ -258,7 +259,7 @@ public class EntityListener implements Listener, Reloadable
 				if (damaged instanceof LivingEntity)
 				{
 					LivingEntity lentity = (LivingEntity) damaged;
-					if (lentity.getMaxHealth() < 100.0D)
+					if (lentity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() < 100.0D)
 					{
 						if (Util.random(instaKillOdds) == 0)
 						{

@@ -294,7 +294,7 @@ public class PlayerListener implements Listener, Reloadable
 		if (event.isCancelled() || player == null)
 			return;
 
-		if (! player.isInsideVehicle() && player.getPassenger() == null)
+		if (! player.isInsideVehicle() && player.getPassengers().isEmpty())
 		{
 			PlayerData data = plugin.getPlayerDataCache().getData(player);
 			if (data.isRideWaiting() && (System.currentTimeMillis() - data.getRideWaitingTime()) <= 200L)
@@ -329,14 +329,14 @@ public class PlayerListener implements Listener, Reloadable
 					case WITHER:
 					case WOLF:
 					case ZOMBIE:
-						clicked.setPassenger(player);
+						clicked.addPassenger(player);
 
 						String name = FormatUtil.getFriendlyName(type);
 						player.sendMessage(plugin.getPrefix() +
 								FormatUtil.format("&eYou are now riding {0} &b{1}", FormatUtil.getArticle(name), name));
 						break;
 					case ENDER_DRAGON:
-						clicked.setPassenger(player);
+						clicked.addPassenger(player);
 						player.sendMessage(plugin.getPrefix() + FormatUtil.format("&eYou are a Dragon Tamer, &b{0}&e!", player.getName()));
 					default:
 						break;

@@ -43,33 +43,35 @@ public class CmdEject extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		Entity passenger = player.getPassenger();
-		if (passenger == null)
+		if (player.getPassengers().isEmpty())
 		{
 			err(getMessage("no_passenger"));
 			return;
 		}
-		
-		String name = "";
-		if (passenger instanceof Player)
-		{
-			name = ((Player) passenger).getName();
-		}
-		else
-		{
-			String type = FormatUtil.getFriendlyName(passenger.getType());
-			String article = FormatUtil.getArticle(type);
-			
-			name = article + " " + type;
-		}
 
-		if (player.eject())
+		for (Entity passenger : player.getPassengers())
 		{
-			sendMessage(getMessage("eject_successful"), name);
-		}
-		else
-		{
-			err(getMessage("eject_error"), name);
+			String name = "";
+			if (passenger instanceof Player)
+			{
+				name = ((Player) passenger).getName();
+			}
+			else
+			{
+				String type = FormatUtil.getFriendlyName(passenger.getType());
+				String article = FormatUtil.getArticle(type);
+
+				name = article + " " + type;
+			}
+
+			if (player.eject())
+			{
+				sendMessage(getMessage("eject_successful"), name);
+			}
+			else
+			{
+				err(getMessage("eject_error"), name);
+			}
 		}
 	}
 }
