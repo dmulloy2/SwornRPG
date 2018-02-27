@@ -17,20 +17,15 @@
  */
 package net.dmulloy2.swornrpg.commands;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -51,7 +46,7 @@ public class CmdSitdown extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		Block block = getTargetBlock(player, 10);
+		Block block = player.getTargetBlock(null, 10);
 		if (block == null)
 		{
 			err(getMessage("chair_no_block"));
@@ -85,18 +80,5 @@ public class CmdSitdown extends SwornRPGCommand
 
 		sendpMessage(getMessage("chair_now_sitting"), seat);
 		sendpMessage(getMessage("chair_standup"), new CmdStandup(plugin).getUsageTemplate(false));
-	}
-
-	@SuppressWarnings("deprecation")
-	private static Block getTargetBlock(Player player, int maxDistance)
-	{
-		try
-		{
-			return player.getTargetBlock((Set<Material>) null, maxDistance);
-		}
-		catch (Throwable ex)
-		{
-			return player.getTargetBlock((HashSet<Byte>) null, maxDistance);
-		}
 	}
 }
