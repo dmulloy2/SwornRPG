@@ -84,7 +84,7 @@ public class ExperienceHandler implements Reloadable
 	 *
 	 * @param player {@link Player} to level up
 	 */
-	public final void handleLevelUp(Player player, int remaining)
+	private void handleLevelUp(Player player, int remaining)
 	{
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 
@@ -165,7 +165,7 @@ public class ExperienceHandler implements Reloadable
 			player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("levelup_ammo"), unlimitedAmmo));
 	}
 
-	private final void giveLevelupCash(Player player, int level)
+	private void giveLevelupCash(Player player, int level)
 	{
 		if (! plugin.isVaultEnabled())
 			return;

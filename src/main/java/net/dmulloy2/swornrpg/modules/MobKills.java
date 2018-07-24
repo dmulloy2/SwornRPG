@@ -30,7 +30,6 @@ import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ListUtil;
 
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,8 +53,9 @@ public class MobKills extends Module
 	@Override
 	public void loadSettings()
 	{
-		setEnabled(plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled", true));
 		this.xpGain = plugin.getConfig().getInt("levelingMethods.mobKills.xpgain", 5);
+		setEnabled(xpGain != 0 && plugin.getConfig().getBoolean("levelingMethods.mobKills.enabled", true));
+
 		this.tiers = new HashMap<>();
 		
 		if (plugin.getConfig().isSet("mobTiers"))
@@ -78,43 +78,42 @@ public class MobKills extends Module
 		else
 		{
 			tiers.put(3, ListUtil.toList("wither", "ender dragon", "elder guardian"));
-			tiers.put(2, ListUtil.toList("creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie", "spider",
-					"ghast", "magma cube", "witch", "guardian", "shulker"));
+			tiers.put(2, ListUtil.toList("creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie",
+					"spider", "ghast", "magma cube", "witch", "guardian", "shulker"));
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		Entity died = event.getEntity();
-		if (died instanceof LivingEntity && ! (died instanceof Player)) // Players are handled separately
+		LivingEntity died = event.getEntity();
+		if (died instanceof Player)
+			return;
+
+		Player killer = died.getKiller();
+		if (killer == null)
+			return;
+
+		// Applicability checks
+		if (isFactionsApplicable(killer, true) || plugin.isDisabledWorld(killer) || plugin.isCamping(killer))
+			return;
+
+		// Determine the correct tier
+		String mobName = died.getType().toString().replace("_", " ").toLowerCase();
+		if (SpecialEntities.isElderGuardian(died))
+			mobName = "elder " + mobName;
+
+		int multiplier = 1;
+		for (Entry<Integer, List<String>> entry : tiers.entrySet())
 		{
-			Player killer = ((LivingEntity) died).getKiller();
-			if (killer != null)
-			{
-				// Applicability checks
-				if (isFactionsApplicable(killer, true) || plugin.isDisabledWorld(killer) || plugin.isCamping(killer))
-					return;
-
-				// Determine the correct tier
-				String mobName = died.getType().toString().replace("_", " ").toLowerCase();
-				if (SpecialEntities.isElderGuardian(died))
-					mobName = "elder " + mobName;
-
-				int multiplier = 1;
-				for (Entry<Integer, List<String>> entry : tiers.entrySet())
-				{
-					if (entry.getValue().contains(mobName))
-						multiplier = entry.getKey();
-				}
-
-				int xp = xpGain * multiplier;
-				if (xp == 0) return;
-
-				String article = FormatUtil.getArticle(mobName);
-				String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, WordUtils.capitalize(mobName));
-				plugin.getExperienceHandler().handleXpGain(killer, xp, message);
-			}
+			if (entry.getValue().contains(mobName))
+				multiplier = entry.getKey();
 		}
+
+		int xp = xpGain * multiplier;
+
+		String article = FormatUtil.getArticle(mobName);
+		String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, WordUtils.capitalize(mobName));
+		plugin.getExperienceHandler().handleXpGain(killer, xp, message);
 	}
 }

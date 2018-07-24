@@ -71,7 +71,7 @@ public class AbilityHandler implements Reloadable
 	public AbilityHandler(SwornRPG plugin)
 	{
 		this.plugin = plugin;
-		this.waiting = new ArrayList<String>();
+		this.waiting = new ArrayList<>();
 		this.reload();
 
 		// Run the clean up task every second
@@ -166,7 +166,6 @@ public class AbilityHandler implements Reloadable
 					return;
 
 				frenzy(player);
-				return;
 			}
 		}
 		else
@@ -289,7 +288,6 @@ public class AbilityHandler implements Reloadable
 					return;
 
 				superPickaxe(player);
-				return;
 			}
 		}
 		else
@@ -474,7 +472,7 @@ public class AbilityHandler implements Reloadable
 		return TimeUtil.toTicks(frenzyDuration + (level * frenzyLevelMultiplier));
 	}
 
-	public final long getFrenzyCooldown(int level)
+	private long getFrenzyCooldown(int level)
 	{
 		return TimeUtil.toTicks(getFrenzyDuration(level) * frenzyCooldownMultiplier);
 	}
@@ -484,7 +482,7 @@ public class AbilityHandler implements Reloadable
 		return TimeUtil.toTicks(superPickaxeDuration + (level * superPickaxeLevelMultiplier));
 	}
 
-	public final long getSuperPickaxeCooldown(int level)
+	private long getSuperPickaxeCooldown(int level)
 	{
 		return TimeUtil.toTicks(getSuperPickaxeDuration(level) * superPickaxeCooldownMultiplier);
 	}
@@ -494,7 +492,7 @@ public class AbilityHandler implements Reloadable
 		return TimeUtil.toTicks(unlimitedAmmoDuration + (level * unlimitedAmmoLevelMultiplier));
 	}
 
-	public final long getUnlimitedAmmoCooldown(int level)
+	private long getUnlimitedAmmoCooldown(int level)
 	{
 		return TimeUtil.toTicks(getUnlimitedAmmoDuration(level) * unlimitedAmmoCooldownMultiplier);
 	}

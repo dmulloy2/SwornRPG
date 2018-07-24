@@ -61,7 +61,7 @@ public class BlockListener implements Listener, Reloadable
 			return;
 
 		// Iron door protection
-		if (block.getType() == Material.IRON_DOOR_BLOCK)
+		if (block.getType() == Material.IRON_DOOR)
 		{
 			event.setCancelled(true);
 

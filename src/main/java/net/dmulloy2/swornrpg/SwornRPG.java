@@ -118,7 +118,7 @@ public class SwornRPG extends SwornPlugin
 	private @Getter Map<Material, List<BlockDrop>> blockDropsMap;
 	private @Getter Map<Integer, List<BlockDrop>> fishDropsMap;
 
-	private List<Listener> listeners;
+	private List<Reloadable> listeners;
 
 	// Global prefix
 	private final @Getter String prefix = FormatUtil.format("&3[&eSwornRPG&3]&e ");
@@ -210,7 +210,7 @@ public class SwornRPG extends SwornPlugin
 		commandHandler.registerCommand(new CmdUnlimitedAmmo(this));
 
 		// Register listeners
-		listeners = new ArrayList<Listener>();
+		listeners = new ArrayList<>();
 		registerListener(new PlayerListener(this));
 		registerListener(new EntityListener(this));
 		registerListener(new BlockListener(this));
@@ -275,7 +275,7 @@ public class SwornRPG extends SwornPlugin
 					}
 					catch (Throwable ex)
 					{
-						data.setCooldowns(new HashMap<String, Long>());
+						data.setCooldowns(new HashMap<>());
 						logHandler.log(Level.WARNING, Util.getUsefulStack(ex, "ticking cooldown for " + data.getLastKnownBy()));
 					}
 				}
@@ -306,7 +306,7 @@ public class SwornRPG extends SwornPlugin
 		log(getMessage("log_disabled"), getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
-	private final void clearMemory()
+	private void clearMemory()
 	{
 		blockDropsMap.clear();
 		blockDropsMap = null;
@@ -316,7 +316,7 @@ public class SwornRPG extends SwornPlugin
 		salvageRef = null;
 	}
 
-	private final void setupIntegration()
+	private void setupIntegration()
 	{
 		try
 		{
@@ -399,9 +399,11 @@ public class SwornRPG extends SwornPlugin
 		experienceHandler.reload();
 	}
 
-	private final void registerListener(Listener listener)
+	private void registerListener(Listener listener)
 	{
-		listeners.add(listener);
+		if (listener instanceof Reloadable)
+			listeners.add((Reloadable) listener);
+
 		getPluginManager().registerEvents(listener, this);
 	}
 
@@ -412,12 +414,9 @@ public class SwornRPG extends SwornPlugin
 
 	private final void reloadListeners()
 	{
-		for (Listener listener : listeners)
+		for (Reloadable listener : listeners)
 		{
-			if (listener instanceof Reloadable)
-			{
-				((Reloadable) listener).reload();
-			}
+			listener.reload();
 		}
 	}
 
@@ -427,9 +426,9 @@ public class SwornRPG extends SwornPlugin
 		{
 			String salvage = getConfig().getString("salvage");
 
-			salvageRef.put("iron", new HashMap<Material, Integer>());
-			salvageRef.put("gold", new HashMap<Material, Integer>());
-			salvageRef.put("diamond", new HashMap<Material, Integer>());
+			salvageRef.put("iron", new HashMap<>());
+			salvageRef.put("gold", new HashMap<>());
+			salvageRef.put("diamond", new HashMap<>());
 			String[] salvageArray = salvage.split("; ");
 			for (String s : salvageArray)
 			{
@@ -455,7 +454,7 @@ public class SwornRPG extends SwornPlugin
 		}
 	}
 
-	private final void updateBlockDrops()
+	private void updateBlockDrops()
 	{
 		blockDropsMap.clear();
 
@@ -480,7 +479,7 @@ public class SwornRPG extends SwornPlugin
 				}
 
 				short data = -1;
-				int chance = 0;
+				int chance;
 				if (ss.length == 3)
 				{
 					data = NumberUtil.toShort(ss[1]);
@@ -504,7 +503,7 @@ public class SwornRPG extends SwornPlugin
 		}
 	}
 
-	private final void updateFishDrops()
+	private void updateFishDrops()
 	{
 		fishDropsMap.clear();
 
@@ -573,7 +572,7 @@ public class SwornRPG extends SwornPlugin
 				for (int dz = -radius; dz <= radius; dz++)
 				{
 					Material mat = world.getBlockAt(loc.getBlockX() + dx, loc.getBlockY() + dy, loc.getBlockZ() + dz).getType();
-					if (mat == Material.MOB_SPAWNER)
+					if (mat == Material.SPAWNER)
 					{
 						if (! isDisabledWorld(player))
 							player.sendMessage(FormatUtil.format(prefix + getMessage("spawner_camper")));

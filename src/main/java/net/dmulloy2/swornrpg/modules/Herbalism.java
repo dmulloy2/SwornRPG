@@ -22,24 +22,18 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
-import org.bukkit.CropState;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.NetherWartsState;
 import org.bukkit.TreeSpecies;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.material.CocoaPlant;
-import org.bukkit.material.CocoaPlant.CocoaPlantSize;
-import org.bukkit.material.Crops;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.NetherWarts;
 import org.bukkit.material.Sapling;
 
 /**
@@ -112,32 +106,19 @@ public class Herbalism extends Module
 		if (Util.random(200 / level) == 0)
 		{
 			boolean message = false;
-			BlockState state = block.getState();
-			Material type = state.getType();
-			MaterialData dat = state.getData();
-			if (dat instanceof NetherWarts)
+			Material type = block.getType();
+			BlockData dat = block.getBlockData();
+			if (dat instanceof Ageable)
 			{
-				((NetherWarts) dat).setState(NetherWartsState.RIPE);
-				state.update();
-				message = true;
+				Ageable crops = (Ageable) dat;
+				crops.setAge(crops.getMaximumAge());
 			}
-			else if (dat instanceof Crops)
-			{
-				((Crops) dat).setState(CropState.RIPE);
-				state.update();
-				message = true;
-			}
-			else if (dat instanceof CocoaPlant)
-			{
-				((CocoaPlant) dat).setSize(CocoaPlantSize.LARGE);
-				state.update();
-				message = true;
-			}
-			else if (type == Material.SAPLING)
+			else if (type.name().contains("SAPLING"))
 			{
 				Sapling sapling = (Sapling) block.getState().getData();
 				TreeSpecies species = sapling.getSpecies();
-				TreeType tree = TreeType.TREE;
+				TreeType tree;
+
 				switch (species)
 				{
 					case ACACIA:
@@ -188,31 +169,23 @@ public class Herbalism extends Module
 
 	private boolean isApplicable(Block block)
 	{
-		BlockState state = block.getState();
-		switch (state.getType())
+		BlockData data = block.getBlockData();
+		if (data instanceof Ageable)
 		{
-			case CACTUS:
-			case MELON_BLOCK:
-			case PUMPKIN:
-				return true;
-			case CROPS:
-				return ((Crops) state.getData()).getState() == CropState.RIPE;
-			case NETHER_WARTS:
-				return ((NetherWarts) state.getData()).getState() == NetherWartsState.RIPE;
-			case COCOA:
-				return ((CocoaPlant) state.getData()).getSize() == CocoaPlantSize.LARGE;
-			default:
-				return false;
+			Ageable crop = (Ageable) data;
+			return crop.getAge() == crop.getMaximumAge();
 		}
+
+		return block.getType() == Material.CACTUS || block.getType() == Material.MELON
+		       || block.getType() == Material.PUMPKIN;
 	}
 
 	private boolean isGrowable(Block block)
 	{
-		BlockState state = block.getState();
 		Material material = block.getType();
-		MaterialData data = state.getData();
+		BlockData data = block.getBlockData();
 
-		return data instanceof NetherWarts || data instanceof Crops || data instanceof CocoaPlant
-				|| material == Material.SAPLING || material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM;
+		return data instanceof Ageable || material.name().contains("SAPLING")
+		       || material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM;
 	}
 }

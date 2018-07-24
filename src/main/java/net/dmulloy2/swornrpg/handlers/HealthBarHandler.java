@@ -25,6 +25,7 @@ import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -257,11 +258,11 @@ public class HealthBarHandler implements Reloadable
 					return;
 				}
 
+				int maxHealth = (int) Math.round(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / 2);
 				int health = (int) Math.round(entity.getHealth() / 2);
-				int maxhealth = (int) Math.round(entity.getMaxHealth() / 2);
-				int hearts = Math.round((health * 10) / maxhealth);
+				int hearts = Math.round((health * 10) / maxHealth);
 
-				if (health == maxhealth)
+				if (health == maxHealth)
 				{
 					entity.setCustomNameVisible(false);
 					return;
