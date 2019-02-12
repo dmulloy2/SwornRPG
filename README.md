@@ -92,7 +92,7 @@ _These plugins are not required but add some functionality to SwornRPG._
 ### Development Builds
 _Development Builds can be found at our Continuous Integration server. These builds are not approved by the BukkitDev staff and are to be used at your own risk_
 
-[http://ci.dmulloy2/job/SwornRPG/](http://ci.dmulloy2/job/SwornRPG/)
+[http://ci.dmulloy2.net/job/SwornRPG/](http://ci.dmulloy2.net/job/SwornRPG/)
 
 ----
 
