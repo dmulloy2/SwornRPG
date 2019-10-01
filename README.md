@@ -1,16 +1,7 @@
-![](http://shadowvolt.com/media/SwornRPGBanner.jpg)
-## SwornRPG
+# SwornRPG
 SwornRPG is a lightweight and fully-featured alternative to mcMMO. It is based upon a leveling system in which daily tasks such as farming, fighting players and mobs, enchanting, taming, and being on the server yield experience. As with any good leveling system, SwornRPG awards players with items and money (both of which are configurable) each time they gain enough experience to level up! Players also receive increased ability times and greater chances for many of SwornRPG's extra features! Players can check their xp and level using ````/level```` and check the leaderboard with ````/srpg top````.
 
 **Thanks for over 12,000 downloads!!!** 
-
-----
-
-### Official Servers
-_Try out SwornRPG here_
-
-![http://shadowvolt.com/](http://shadowvolt.com/images/OfficialGIF.gif)
-![http://minesworn.com/](http://minesworn.com/images/Minestatussworn.gif)
 
 ----
 
@@ -36,6 +27,7 @@ _Try out SwornRPG here_
 |/match|Match a string with a player||
 |/staff|List online staff with permission srpg.staff||
 |Marriage|See [here](http://dev.bukkit.org/bukkit-plugins/swornrpg/pages/marriage/)|
+
 ----
 
 ### Salvaging
