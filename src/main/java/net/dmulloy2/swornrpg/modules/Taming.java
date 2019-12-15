@@ -24,13 +24,7 @@ import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Tameable;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityTameEvent;
@@ -83,10 +77,10 @@ public class Taming extends Module
 						Wolf wolf = (Wolf) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.WOLF);
 						wolf.setOwner(player);
 					}
-					else if (event.getEntity() instanceof Ocelot)
+					else if (event.getEntity() instanceof Cat)
 					{
-						Ocelot ocelot = (Ocelot) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.OCELOT);
-						ocelot.setOwner(player);
+						Cat cat = (Cat) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.CAT);
+						cat.setOwner(player);
 					}
 				}
 
