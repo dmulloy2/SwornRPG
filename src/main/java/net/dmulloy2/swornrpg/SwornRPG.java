@@ -412,7 +412,7 @@ public class SwornRPG extends SwornPlugin
 		return getServer().getPluginManager();
 	}
 
-	private final void reloadListeners()
+	private void reloadListeners()
 	{
 		for (Reloadable listener : listeners)
 		{
@@ -420,7 +420,7 @@ public class SwornRPG extends SwornPlugin
 		}
 	}
 
-	private final void updateSalvageRef()
+	private void updateSalvageRef()
 	{
 		try
 		{

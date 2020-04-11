@@ -49,7 +49,7 @@ public class SwornNationsHandler extends DependencyProvider<SwornNations>
 		return safeZoneCheck ? isSafeZone(location) || isWarZone(location) : isWarZone(location);
 	}
 
-	private final boolean isWarZone(Location location)
+	private boolean isWarZone(Location location)
 	{
 		if (! isEnabled())
 			return false;
@@ -67,7 +67,7 @@ public class SwornNationsHandler extends DependencyProvider<SwornNations>
 		return false;
 	}
 
-	private final boolean isSafeZone(Location location)
+	private boolean isSafeZone(Location location)
 	{
 		if (! isEnabled())
 			return false;

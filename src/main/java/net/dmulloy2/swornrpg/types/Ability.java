@@ -33,7 +33,7 @@ public enum Ability
 	UNLIMITED_AMMO;
 
 	private final Material[] materials;
-	private Ability(Material... materials)
+	Ability(Material... materials)
 	{
 		this.materials = materials;
 	}

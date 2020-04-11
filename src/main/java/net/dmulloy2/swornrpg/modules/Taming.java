@@ -93,7 +93,7 @@ public class Taming extends Module
 					{
 						for (Entity entity : entities)
 						{
-							if (entity != null && entity instanceof Tameable)
+							if (entity instanceof Tameable)
 							{
 								Tameable tameable = (Tameable) entity;
 								if (! tameable.isTamed())

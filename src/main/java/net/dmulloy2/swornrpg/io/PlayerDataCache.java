@@ -221,6 +221,6 @@ public class PlayerDataCache
 
 	private boolean isFileLoaded(String fileName)
 	{
-		return cache.keySet().contains(fileName);
+		return cache.containsKey(fileName);
 	}
 }

@@ -115,6 +115,8 @@ public class Herbalism extends Module
 			}
 			else if (type.name().contains("SAPLING"))
 			{
+				// TODO this will probably get removed at some point
+				// but there isn't a great way to go from material -> tree type
 				Sapling sapling = (Sapling) block.getState().getData();
 				TreeSpecies species = sapling.getSpecies();
 				TreeType tree;

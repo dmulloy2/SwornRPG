@@ -68,7 +68,7 @@ public enum Permission implements IPermission
 	;
 
 	private String node;
-	private Permission(boolean command)
+	Permission(boolean command)
 	{
 		this.node = toString().toLowerCase().replaceAll("_", ".");
 		
@@ -76,7 +76,7 @@ public enum Permission implements IPermission
 			node = "cmd." + node;
 	}
 
-	private Permission()
+	Permission()
 	{
 		this(true);
 	}

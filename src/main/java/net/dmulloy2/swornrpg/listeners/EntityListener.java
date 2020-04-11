@@ -212,24 +212,23 @@ public class EntityListener implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
-		Entity killer = event.getEntity().getKiller();
-		if (killer instanceof Player)
+		Player killer = event.getEntity().getKiller();
+		if (killer != null)
 		{
-			Player player = (Player) killer;
-			double health = player.getHealth();
-			double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			double health = killer.getHealth();
+			double maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
 			if (health > 0.0D && health < maxHealth)
 			{
-				PlayerData data = plugin.getPlayerDataCache().getData(player);
+				PlayerData data = plugin.getPlayerDataCache().getData(killer);
 				int level = data.getLevel(25);
 
 				if (Util.random(75 / level) == 0)
 				{
-					player.setHealth(Math.min(health + 1.0D, maxHealth));
+					killer.setHealth(Math.min(health + 1.0D, maxHealth));
 
-					double heartsStolen = (player.getHealth() - health) / 2;
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("life_steal"),
+					double heartsStolen = (killer.getHealth() - health) / 2;
+					killer.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("life_steal"),
 							heartsStolen, getName(event.getEntity())));
 				}
 			}
@@ -315,7 +314,7 @@ public class EntityListener implements Listener, Reloadable
 
 	// ---- Utility Methods
 
-	public static final String getName(Entity entity)
+	public static String getName(Entity entity)
 	{
 		Player player = getPlayer(entity);
 		if (player != null)
@@ -324,7 +323,7 @@ public class EntityListener implements Listener, Reloadable
 		return FormatUtil.getFriendlyName(entity.getType());
 	}
 
-	public static final Player getPlayer(Entity entity)
+	public static Player getPlayer(Entity entity)
 	{
 		if (entity instanceof Player)
 		{

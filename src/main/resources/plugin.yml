@@ -4,6 +4,7 @@ version: ${project.version}${project.build.number}
 author: dmulloy2
 description: The fully featured mcMMO Alternative
 softdepend: [Essentials, Factions, SwornNations, Vault]
+api-version: "1.13"
 commands:
   abilities:
     description: Check SwornRPG ability levels

@@ -72,10 +72,10 @@ _These plugins are not required but add some functionality to SwornRPG._
 
 | Name | Functionality | Link |
 |------|---------------|------|
-| SwornGuns | Unlimited ammo ability | [Link](http://ci.dmulloy2.net/job/SwornGuns/) |
+| SwornGuns | Unlimited ammo ability | [Link](https://ci.dmulloy2.net/job/SwornGuns/) |
 | Essentials | Mail messages with death coordinates | [Link](http://dev.bukkit.org/bukkit-plugins/essentials/) |
 | Vault | Cash rewards on level-up | [Link](http://dev.bukkit.org/bukkit-plugins/vault/) |
-| SwornNations* | SafeZone and WarZone checks | [Link](http://ci.dmulloy2.net/job/SwornNations/) 
+| SwornNations* | SafeZone and WarZone checks | [Link](https://ci.dmulloy2.net/job/SwornNations/) 
 
 *_Also works with Factions 1.6.x_
 
@@ -84,7 +84,7 @@ _These plugins are not required but add some functionality to SwornRPG._
 ### Development Builds
 _Development Builds can be found at our Continuous Integration server. These builds are not approved by the BukkitDev staff and are to be used at your own risk_
 
-[http://ci.dmulloy2.net/job/SwornRPG/](http://ci.dmulloy2.net/job/SwornRPG/)
+[http://ci.dmulloy2.net/job/SwornRPG/](https://ci.dmulloy2.net/job/SwornRPG/)
 
 ----
 

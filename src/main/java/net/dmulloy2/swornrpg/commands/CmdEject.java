@@ -51,10 +51,10 @@ public class CmdEject extends SwornRPGCommand
 
 		for (Entity passenger : player.getPassengers())
 		{
-			String name = "";
+			String name;
 			if (passenger instanceof Player)
 			{
-				name = ((Player) passenger).getName();
+				name = passenger.getName();
 			}
 			else
 			{

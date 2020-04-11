@@ -106,9 +106,6 @@ public class PlayerListener implements Listener, Reloadable
 					String mail = FormatUtil.format(plugin.getMessage("mail_pvp_format"),
 							killer.getName(), x, y, z, loc.getWorld().getName(), TimeUtil.getLongDateCurr());
 					handler.sendMail(player, mail);
-
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
 				else
 				{
@@ -116,10 +113,10 @@ public class PlayerListener implements Listener, Reloadable
 
 					String mail = FormatUtil.format(plugin.getMessage("mail_pve_format"), x, y, z, world, TimeUtil.getLongDateCurr());
 					handler.sendMail(player, mail);
-
-					player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
-					plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 				}
+
+				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("death_coords_mail")));
+				plugin.debug(plugin.getMessage("log_death_coords"), player.getName(), "sent", "mail message");
 			}
 			else
 			{
@@ -234,7 +231,6 @@ public class PlayerListener implements Listener, Reloadable
 			{
 				plugin.getLogHandler().log("Corrected invalid position for {0}", player.getName());
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}

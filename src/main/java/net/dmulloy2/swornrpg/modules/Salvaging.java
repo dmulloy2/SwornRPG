@@ -33,6 +33,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * @author dmulloy2
@@ -83,7 +85,18 @@ public class Salvaging extends Module
 				ItemStack item = CompatUtil.getItemInMainHand(player);
 				Material type = item.getType();
 
-				double mult = 1.0D - ((double) item.getDurability() / item.getType().getMaxDurability());
+				double mult;
+
+				ItemMeta meta = item.getItemMeta();
+				if (meta instanceof Damageable)
+				{
+					mult = 1.0D - ((double) ((Damageable) meta).getDamage() / item.getType().getMaxDurability());
+				}
+				else
+				{
+					mult = 0.0D;
+				}
+
 				double amt = 0.0D;
 
 				if (plugin.getSalvageRef().get(blockType.toLowerCase()).containsKey(type))
@@ -106,11 +119,11 @@ public class Salvaging extends Module
 					inv.removeItem(item);
 
 					Material give = null;
-					if (blockType == "Iron")
+					if (blockType.equals("Iron"))
 						give = Material.IRON_INGOT;
-					if (blockType == "Gold")
+					if (blockType.equals("Gold"))
 						give = Material.GOLD_INGOT;
-					if (blockType == "Diamond")
+					if (blockType.equals("Diamond"))
 						give = Material.DIAMOND;
 
 					ItemStack salvaged = new ItemStack(give, (int) amt);

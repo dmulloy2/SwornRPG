@@ -186,6 +186,6 @@ public class PlayerData implements ConfigurationSerializable
 	 */
 	public final int getLevel(int max)
 	{
-		return level > max ? max : level < 1 ? 1 : level;
+		return level > max ? max : Math.max(level, 1);
 	}
 }

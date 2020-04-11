@@ -53,7 +53,7 @@ public class HealthBarHandler implements Reloadable
 		this.reload();
 	}
 
-	private final void setupScoreboard()
+	private void setupScoreboard()
 	{
 		if (isEnabled())
 		{
@@ -130,7 +130,7 @@ public class HealthBarHandler implements Reloadable
 		unregisterObjectives();
 	}
 
-	private final void unregisterTeams()
+	private void unregisterTeams()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -141,7 +141,7 @@ public class HealthBarHandler implements Reloadable
 		}
 	}
 
-	private final void unregisterObjectives()
+	private void unregisterObjectives()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -156,7 +156,7 @@ public class HealthBarHandler implements Reloadable
 		}
 	}
 
-	private final void standardizeInvisibilities()
+	private void standardizeInvisibilities()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -167,7 +167,7 @@ public class HealthBarHandler implements Reloadable
 		}
 	}
 
-	private final void setupObjective()
+	private void setupObjective()
 	{
 		Scoreboard board = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
@@ -206,7 +206,7 @@ public class HealthBarHandler implements Reloadable
 	}
 
 	@SuppressWarnings("deprecation")
-	private final void updatePlayerHealth(Player player)
+	private void updatePlayerHealth(Player player)
 	{
 		if (isEnabled())
 		{
@@ -235,10 +235,8 @@ public class HealthBarHandler implements Reloadable
 		{
 			if (plugin.getConfig().getBoolean("mobHealthBars.enabled", true))
 			{
-				List<EntityType> blockedTypes = Arrays.asList(new EntityType[]
-				{
-						EntityType.VILLAGER, EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.HORSE
-				});
+				List<EntityType> blockedTypes = Arrays.asList(EntityType.VILLAGER, EntityType.ENDER_DRAGON, EntityType.WITHER,
+						EntityType.HORSE);
 
 				if (blockedTypes.contains(entity.getType()))
 				{

@@ -34,7 +34,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -80,9 +79,6 @@ public class BlockRedemption extends Module
 		if (Util.random(chance) == 0)
 		{
 			final ItemStack itemStack = new ItemStack(material);
-			MaterialData materialData = block.getState().getData();
-			if (materialData != null)
-				itemStack.setData(materialData);
 
 			class DelayedGiveTask extends BukkitRunnable
 			{

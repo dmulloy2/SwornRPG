@@ -257,7 +257,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 		}
 	}
 
-	private final CommandSender getSender(String name)
+	private CommandSender getSender(String name)
 	{
 		if (name.equalsIgnoreCase("CONSOLE"))
 			return plugin.getServer().getConsoleSender();
@@ -265,17 +265,12 @@ public class CmdLeaderboard extends SwornRPGCommand
 			return Util.matchPlayer(name);
 	}
 
-	private final Sorter<PlayerData, Integer> xpSorter()
+	private Sorter<PlayerData, Integer> xpSorter()
 	{
-		return new Sorter<>(new SortCriteria<PlayerData, Integer>()
-		{
-			@Override
-			public Integer getValue(PlayerData key)
-			{
-				// Filter out 0 values
-				int value = key.getTotalxp();
-				return value > 0 ? value : null;
-			}	
+		return new Sorter<>(key -> {
+			// Filter out 0 values
+			int value = key.getTotalxp();
+			return value > 0 ? value : null;
 		});
 	}
 }
