@@ -143,7 +143,7 @@ public class PlayerData implements ConfigurationSerializable
 				}
 				else if (field.getType().isAssignableFrom(String.class))
 				{
-					if (((String) field.get(this)) != null)
+					if (field.get(this) != null)
 						data.put(field.getName(), field.get(this));
 				}
 				else if (field.getType().isAssignableFrom(Map.class))

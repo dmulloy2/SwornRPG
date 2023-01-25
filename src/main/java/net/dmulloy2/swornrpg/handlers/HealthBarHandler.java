@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;

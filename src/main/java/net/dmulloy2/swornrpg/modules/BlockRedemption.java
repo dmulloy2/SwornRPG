@@ -21,10 +21,10 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.MaterialUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.InventoryUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;

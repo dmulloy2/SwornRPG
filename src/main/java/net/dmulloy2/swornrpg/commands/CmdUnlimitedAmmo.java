@@ -27,7 +27,7 @@ import net.dmulloy2.swornrpg.types.Permission;
 
 public class CmdUnlimitedAmmo extends AbstractAbilityCommand
 {
-	public CmdUnlimitedAmmo(SwornRPG plugin) 
+	public CmdUnlimitedAmmo(SwornRPG plugin)
 	{
 		super(plugin, Ability.UNLIMITED_AMMO);
 		this.name = "unlimitedammo";

@@ -25,8 +25,8 @@ import java.util.Map.Entry;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
@@ -66,7 +66,7 @@ public class CmdStaffList extends SwornRPGCommand
 					{
 						if (! staffMap.containsKey(group))
 						{
-							staffMap.put(group, new ArrayList<String>());
+							staffMap.put(group, new ArrayList<>());
 						}
 
 						staffMap.get(group).add((player.isOp() ? "&b" : "&e") + player.getName());
@@ -76,7 +76,7 @@ public class CmdStaffList extends SwornRPGCommand
 				{
 					if (! staffMap.containsKey("staff"))
 					{
-						staffMap.put("staff", new ArrayList<String>());
+						staffMap.put("staff", new ArrayList<>());
 					}
 
 					staffMap.get("staff").add(player.isOp() ? "&b" : "&e" + player.getName());
@@ -86,7 +86,7 @@ public class CmdStaffList extends SwornRPGCommand
 			}
 		}
 
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		StringBuilder line = new StringBuilder();
 		line.append(FormatUtil.format(getMessage("stafflist_header"), total, plugin.getServer().getMaxPlayers()));
@@ -103,11 +103,11 @@ public class CmdStaffList extends SwornRPGCommand
 		if (staffMap.containsKey(group))
 		{
 			line = new StringBuilder();
-			line.append("&3" + WordUtils.capitalize(group) + "&e: ");
+			line.append("&3").append(WordUtils.capitalize(group)).append("&e: ");
 
 			for (String player : staffMap.get(group))
 			{
-				line.append("&e" + player + "&b, ");
+				line.append("&e").append(player).append("&b, ");
 			}
 
 			if (line.lastIndexOf("&b, ") >= 0)
@@ -128,11 +128,11 @@ public class CmdStaffList extends SwornRPGCommand
 		for (Entry<String, List<String>> entry : staffMap.entrySet())
 		{
 			line = new StringBuilder();
-			line.append("&3" + WordUtils.capitalize(entry.getKey()) + "&e: ");
+			line.append("&3").append(WordUtils.capitalize(entry.getKey())).append("&e: ");
 
 			for (String player : entry.getValue())
 			{
-				line.append("&e" + player + "&b, ");
+				line.append("&e").append(player).append("&b, ");
 			}
 
 			if (line.lastIndexOf("&b, ") >= 0)

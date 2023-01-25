@@ -24,12 +24,12 @@ import lombok.Getter;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.CompatUtil;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.MaterialUtil;
-import net.dmulloy2.util.TimeUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.CompatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.TimeUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -95,19 +95,11 @@ public class AbilityHandler implements Reloadable
 
 	public final void commandActivation(Player player, Ability ability)
 	{
-		switch (ability)
-		{
-			case FRENZY:
-				activateFrenzy(player);
-				break;
-			case SUPER_PICKAXE:
-				activateSuperPickaxe(player);
-				break;
-			case UNLIMITED_AMMO:
-				activateUnlimitedAmmo(player);
-				break;
-			default:
-				throw new IllegalArgumentException("Unsupported ability: " + ability);
+		switch (ability) {
+			case FRENZY -> activateFrenzy(player);
+			case SUPER_PICKAXE -> activateSuperPickaxe(player);
+			case UNLIMITED_AMMO -> activateUnlimitedAmmo(player);
+			default -> throw new IllegalArgumentException("Unsupported ability: " + ability);
 		}
 	}
 

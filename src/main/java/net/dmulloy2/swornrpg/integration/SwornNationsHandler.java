@@ -17,7 +17,7 @@
  */
 package net.dmulloy2.swornrpg.integration;
 
-import net.dmulloy2.integration.DependencyProvider;
+import net.dmulloy2.swornapi.integration.DependencyProvider;
 import net.dmulloy2.swornnations.SwornNations;
 import net.dmulloy2.swornrpg.SwornRPG;
 

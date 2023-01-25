@@ -25,11 +25,11 @@ import java.util.Map;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.integration.EssentialsHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.TimeUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.InventoryUtil;
+import net.dmulloy2.swornapi.util.TimeUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -126,7 +126,7 @@ public class PlayerListener implements Listener, Reloadable
 				meta.setTitle(FormatUtil.format("&eDeath Coords"));
 				meta.setAuthor(FormatUtil.format("&bSwornRPG"));
 
-				List<String> pages = new ArrayList<String>();
+				List<String> pages = new ArrayList<>();
 				pages.add(FormatUtil.format(plugin.getMessage("book_format"), player.getName(), x, y, z));
 				meta.setPages(pages);
 
@@ -287,7 +287,7 @@ public class PlayerListener implements Listener, Reloadable
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)
 	{
 		Player player = event.getPlayer();
-		if (event.isCancelled() || player == null)
+		if (event.isCancelled())
 			return;
 
 		if (! player.isInsideVehicle() && player.getPassengers().isEmpty())
@@ -312,7 +312,6 @@ public class PlayerListener implements Listener, Reloadable
 					case MUSHROOM_COW:
 					case OCELOT:
 					case PIG:
-					case PIG_ZOMBIE:
 					case SHEEP:
 					case SILVERFISH:
 					case SKELETON:

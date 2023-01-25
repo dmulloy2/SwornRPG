@@ -81,16 +81,10 @@ public class CmdLevel extends SwornRPGCommand
 
 		int scale = 20;
 		int bars = Math.round(scale - ((xptonext * scale) / data.getXpNeeded()));
-		for (int i = 0; i < bars; i++)
-		{
-			bar.append("&b=");
-		}
+		bar.append("&b=".repeat(Math.max(0, bars)));
 		
 		int left = scale - bars;
-		for (int ii = 0; ii < left; ii++)
-		{
-			bar.append("&e=");
-		}
+		bar.append("&e=".repeat(Math.max(0, left)));
 
 		bar.append("&3]");
 

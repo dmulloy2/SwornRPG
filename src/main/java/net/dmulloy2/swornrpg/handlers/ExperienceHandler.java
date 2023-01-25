@@ -19,16 +19,16 @@ package net.dmulloy2.swornrpg.handlers;
 
 import java.util.List;
 
-import net.dmulloy2.integration.VaultHandler;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.event.SwornRPGLevelupEvent;
+import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.InventoryUtil;
-import net.dmulloy2.util.ItemUtil;
-import net.dmulloy2.util.MaterialUtil;
-import net.dmulloy2.util.TimeUtil;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.InventoryUtil;
+import net.dmulloy2.swornapi.util.ItemUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.TimeUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

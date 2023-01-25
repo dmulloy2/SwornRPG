@@ -18,7 +18,7 @@
 package net.dmulloy2.swornrpg.modules;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -24,11 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
-import net.dmulloy2.io.FileSerialization;
-import net.dmulloy2.io.IOUtil;
+import net.dmulloy2.swornapi.io.FileSerialization;
+import net.dmulloy2.swornapi.io.IOUtil;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -189,8 +189,7 @@ public class PlayerDataCache
 
 	public final Map<String, PlayerData> getAllPlayerData()
 	{
-		Map<String, PlayerData> data = new HashMap<String, PlayerData>();
-		data.putAll(cache);
+		Map<String, PlayerData> data = new HashMap<>(cache);
 
 		File[] files = folder.listFiles(file -> file.getName().endsWith(extension));
 		for (File file : files)

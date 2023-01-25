@@ -19,11 +19,11 @@ package net.dmulloy2.swornrpg.listeners;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.CompatUtil;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.MaterialUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.CompatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -94,24 +94,21 @@ public class EntityListener implements Listener, Reloadable
 					Entity defender = event.getEntity();
 					defender.setFireTicks(5 * 20);
 
-					if (defender instanceof Player)
+					if (defender instanceof Player player)
 					{
-						Player player = (Player) defender;
 						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
 					}
 
 					Arrow arrow = (Arrow) damager;
-					if (arrow.getShooter() instanceof Player)
+					if (arrow.getShooter() instanceof Player player)
 					{
-						Player player = (Player) arrow.getShooter();
 						player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fire_damage")));
 					}
 				}
 			}
 		}
-		else if (damager instanceof Player)
+		else if (damager instanceof Player player)
 		{
-			Player player = (Player) damager;
 			ItemStack inHand = CompatUtil.getItemInMainHand(player);
 
 			// Confusion
@@ -122,9 +119,8 @@ public class EntityListener implements Listener, Reloadable
 					if (Util.random(20) == 0)
 					{
 						Entity defender = event.getEntity();
-						if (defender instanceof Player)
+						if (defender instanceof Player confused)
 						{
-							Player confused = (Player) defender;
 							confused.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, confusionDuration, confusionStrength));
 						}
 					}
@@ -163,9 +159,8 @@ public class EntityListener implements Listener, Reloadable
 						defender.setVelocity(v2.multiply(0.8D));
 
 						String defenderName;
-						if (defender instanceof Player)
+						if (defender instanceof Player blownBack)
 						{
-							Player blownBack = (Player) defender;
 							blownBack.sendMessage(plugin.getPrefix() +
 									FormatUtil.format(plugin.getMessage("axe_blowbackee"), player.getName(), type));
 							defenderName = blownBack.getName();
@@ -216,7 +211,9 @@ public class EntityListener implements Listener, Reloadable
 		if (killer != null)
 		{
 			double health = killer.getHealth();
-			double maxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+
+			var attribute = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			double maxHealth = attribute != null ? attribute.getValue() : -1.0D;
 
 			if (health > 0.0D && health < maxHealth)
 			{
@@ -249,16 +246,15 @@ public class EntityListener implements Listener, Reloadable
 		if (! (damaged instanceof Player))
 		{
 			Entity damager = event.getDamager();
-			if (damager instanceof Player)
+			if (damager instanceof Player player)
 			{
-				Player player = (Player) damager;
 				if (player.getGameMode() == GameMode.CREATIVE)
 					return;
 
-				if (damaged instanceof LivingEntity)
+				if (damaged instanceof LivingEntity lentity)
 				{
-					LivingEntity lentity = (LivingEntity) damaged;
-					if (lentity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() < 100.0D)
+					var attribute = lentity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+					if (attribute != null && attribute.getValue() < 100.0D)
 					{
 						if (Util.random(instaKillOdds) == 0)
 						{
@@ -279,11 +275,8 @@ public class EntityListener implements Listener, Reloadable
 		if (event.isCancelled())
 			return;
 
-		Entity entity = event.getEntity();
-		if (entity instanceof LivingEntity)
-		{
-			plugin.getHealthBarHandler().updateHealth((LivingEntity) entity);
-		}
+		LivingEntity entity = event.getEntity();
+		plugin.getHealthBarHandler().updateHealth(entity);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -330,9 +323,8 @@ public class EntityListener implements Listener, Reloadable
 			return (Player) entity;
 		}
 
-		if (entity instanceof Projectile)
+		if (entity instanceof Projectile proj)
 		{
-			Projectile proj = (Projectile) entity;
 			if (proj.getShooter() instanceof Player)
 				return (Player) proj.getShooter();
 		}

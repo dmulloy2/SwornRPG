@@ -17,18 +17,17 @@
  */
 package net.dmulloy2.swornrpg.types;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import net.dmulloy2.types.MyMaterial;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import org.bukkit.Material;
 
 /**
  * @author dmulloy2
  */
 
-@Data
-@AllArgsConstructor
-public class BlockDrop
+public record BlockDrop(Material material, int chance)
 {
-	private final MyMaterial material;
-	private final int chance;
+	public String getMaterialName()
+	{
+		return FormatUtil.getFriendlyName(material.name());
+	}
 }

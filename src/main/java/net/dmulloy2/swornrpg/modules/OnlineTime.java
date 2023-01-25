@@ -19,7 +19,7 @@ package net.dmulloy2.swornrpg.modules;
 
 import lombok.Getter;
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.entity.Player;
 

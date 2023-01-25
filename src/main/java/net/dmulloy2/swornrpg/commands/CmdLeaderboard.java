@@ -25,10 +25,9 @@ import java.util.logging.Level;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.types.Sorter;
-import net.dmulloy2.types.Sorter.SortCriteria;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Sorter;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -112,7 +111,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 			sendMessage(sender, s);
 	}
 
-	private int linesPerPage = 10;
+	private final int linesPerPage = 10;
 
 	public int getPageCount()
 	{
@@ -126,7 +125,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 	public List<String> getPage(int index)
 	{
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		StringBuilder line = new StringBuilder();
 		line.append(getHeader(index));
@@ -151,7 +150,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 	public List<String> getLines(int startIndex, int endIndex)
 	{
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		for (int i = startIndex; i < endIndex && i < getListSize(); i++)
 		{
 			lines.add(leaderboard.get(i));
@@ -191,12 +190,9 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 					String name = data.getLastKnownBy();
 					int spaces = 20 - name.length();
-					StringBuilder space = new StringBuilder();
-					for (int s = 0; s < spaces; s++)
-						space.append(" ");
 
-					leaderboard.add(FormatUtil.format(format, i + 1, name + space, data.getLevel(), data.getTotalxp()));
-				} catch (Throwable ex) { }
+					leaderboard.add(FormatUtil.format(format, i + 1, name + " ".repeat(Math.max(0, spaces)), data.getLevel(), data.getTotalxp()));
+				} catch (Throwable ignored) { }
 			}
 
 			sorted.clear();

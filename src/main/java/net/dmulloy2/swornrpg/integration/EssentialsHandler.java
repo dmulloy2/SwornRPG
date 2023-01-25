@@ -19,9 +19,9 @@ package net.dmulloy2.swornrpg.integration;
 
 import java.util.logging.Level;
 
-import net.dmulloy2.integration.DependencyProvider;
+import net.dmulloy2.swornapi.integration.DependencyProvider;
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.entity.Player;
 

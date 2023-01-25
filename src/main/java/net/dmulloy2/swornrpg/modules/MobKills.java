@@ -25,9 +25,9 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.types.SpecialEntities;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.ListUtil;
+import net.dmulloy2.swornapi.types.SpecialEntities;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.ListUtil;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.LivingEntity;

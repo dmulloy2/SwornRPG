@@ -20,7 +20,7 @@ package net.dmulloy2.swornrpg.modules;
 import lombok.Getter;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
@@ -105,9 +105,8 @@ public abstract class Module implements Listener
 			return (Player) entity;
 		}
 
-		if (entity instanceof Projectile)
+		if (entity instanceof Projectile proj)
 		{
-			Projectile proj = (Projectile) entity;
 			if (proj.getShooter() instanceof Player)
 				return (Player) proj.getShooter();
 		}

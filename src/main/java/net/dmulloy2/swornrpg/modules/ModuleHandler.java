@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.types.Reloadable;
 
 import org.bukkit.scheduler.BukkitTask;
 
@@ -87,9 +87,8 @@ public class ModuleHandler implements Reloadable
 			module.loadSettings();
 
 			// Special case for tickable modules
-			if (module instanceof TickableModule)
+			if (module instanceof TickableModule tickable)
 			{
-				TickableModule tickable = (TickableModule) module;
 				if (tickable.isScheduled())
 					tickable.cancel();
 

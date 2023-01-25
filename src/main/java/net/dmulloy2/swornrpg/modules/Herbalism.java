@@ -19,8 +19,8 @@ package net.dmulloy2.swornrpg.modules;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -108,9 +108,8 @@ public class Herbalism extends Module
 			boolean message = false;
 			Material type = block.getType();
 			BlockData dat = block.getBlockData();
-			if (dat instanceof Ageable)
+			if (dat instanceof Ageable crops)
 			{
-				Ageable crops = (Ageable) dat;
 				crops.setAge(crops.getMaximumAge());
 			}
 			else if (type.name().contains("SAPLING"))
@@ -119,33 +118,16 @@ public class Herbalism extends Module
 				// but there isn't a great way to go from material -> tree type
 				Sapling sapling = (Sapling) block.getState().getData();
 				TreeSpecies species = sapling.getSpecies();
-				TreeType tree;
-
-				switch (species)
-				{
-					case ACACIA:
-						tree = TreeType.ACACIA;
-						break;
-					case BIRCH:
-						tree = Util.random(3) == 0 ? TreeType.TALL_BIRCH : TreeType.BIRCH;
-						break;
-					case DARK_OAK:
-						tree = TreeType.DARK_OAK;
-						break;
-					case GENERIC:
-						tree = Util.random(3) == 0 ? TreeType.BIG_TREE : TreeType.TREE;
-						break;
-					case JUNGLE:
-						tree = Util.random(3) == 0 ? TreeType.COCOA_TREE : TreeType.SMALL_JUNGLE;
-						break;
-					case REDWOOD:
-						tree = Util.random(5) == 0 ? TreeType.MEGA_REDWOOD : 
-							   Util.random(3) == 0 ? TreeType.TALL_REDWOOD : TreeType.REDWOOD;
-						break;
-					default:
-						tree = TreeType.TREE;
-						break;
-				}
+				TreeType tree = switch (species) {
+					case ACACIA -> TreeType.ACACIA;
+					case BIRCH -> Util.random(3) == 0 ? TreeType.TALL_BIRCH : TreeType.BIRCH;
+					case DARK_OAK -> TreeType.DARK_OAK;
+					case GENERIC -> Util.random(3) == 0 ? TreeType.BIG_TREE : TreeType.TREE;
+					case JUNGLE -> Util.random(3) == 0 ? TreeType.COCOA_TREE : TreeType.SMALL_JUNGLE;
+					case REDWOOD -> Util.random(5) == 0 ? TreeType.MEGA_REDWOOD :
+							Util.random(3) == 0 ? TreeType.TALL_REDWOOD : TreeType.REDWOOD;
+					default -> TreeType.TREE;
+				};
 
 				block.setType(Material.AIR);
 				block.getWorld().generateTree(block.getLocation(), tree);
@@ -172,9 +154,8 @@ public class Herbalism extends Module
 	private boolean isApplicable(Block block)
 	{
 		BlockData data = block.getBlockData();
-		if (data instanceof Ageable)
+		if (data instanceof Ageable crop)
 		{
-			Ageable crop = (Ageable) data;
 			return crop.getAge() == crop.getMaximumAge();
 		}
 

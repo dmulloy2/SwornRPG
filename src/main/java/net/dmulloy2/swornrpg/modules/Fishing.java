@@ -23,8 +23,8 @@ import java.util.List;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author dmulloy2
@@ -85,7 +86,7 @@ public class Fishing extends Module
 			{
 				for (BlockDrop fishDrop : plugin.getFishDropsMap().get(i))
 				{
-					if (fishDrop.getMaterial() != null && Util.random(fishDrop.getChance()) == 0)
+					if (fishDrop.material() != null && Util.random(fishDrop.chance()) == 0)
 						drops.add(fishDrop);
 				}
 			}
@@ -97,9 +98,10 @@ public class Fishing extends Module
 			BlockDrop fishDrop = drops.get(rand);
 			if (fishDrop != null)
 			{
-				caught.getWorld().dropItemNaturally(caught.getLocation(), fishDrop.getMaterial().newItemStack(1));
+				ItemStack dropStack = new ItemStack(fishDrop.material(), 1);
+				caught.getWorld().dropItemNaturally(caught.getLocation(), dropStack);
 
-				String name = fishDrop.getMaterial().getName();
+				String name = fishDrop.getMaterialName();
 				String article = FormatUtil.getArticle(name);
 				player.sendMessage(plugin.getPrefix() + FormatUtil.format(plugin.getMessage("fishing_drop"), article, name));
 			}

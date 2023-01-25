@@ -19,7 +19,7 @@ package net.dmulloy2.swornrpg.modules;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.BlockDrop;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -81,9 +82,9 @@ public class RareDrops extends Module
 		{
 			for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(type))
 			{
-				if (Util.random(blockDrop.getChance()) == 0)
+				if (Util.random(blockDrop.chance()) == 0)
 				{
-					block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getMaterial().newItemStack(1));
+					block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockDrop.material()));
 					dropped = true;
 				}
 			}
@@ -92,9 +93,9 @@ public class RareDrops extends Module
 			{
 				for (BlockDrop blockDrop : plugin.getBlockDropsMap().get(Material.AIR))
 				{
-					if (Util.random(blockDrop.getChance()) == 0)
+					if (Util.random(blockDrop.chance()) == 0)
 					{
-						block.getWorld().dropItemNaturally(block.getLocation(), blockDrop.getMaterial().newItemStack(1));
+						block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(blockDrop.material()));
 						dropped = true;
 					}
 				}

@@ -21,8 +21,8 @@ import java.util.List;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -53,9 +53,8 @@ public class Taming extends Module
 	public void onEntityTame(EntityTameEvent event)
 	{
 		AnimalTamer owner = event.getOwner();
-		if (owner instanceof Player)
+		if (owner instanceof Player player)
 		{
-			Player player = (Player) owner;
 			if (! plugin.isDisabledWorld(player))
 			{
 				// XP Gain
@@ -93,9 +92,8 @@ public class Taming extends Module
 					{
 						for (Entity entity : entities)
 						{
-							if (entity instanceof Tameable)
+							if (entity instanceof Tameable tameable)
 							{
-								Tameable tameable = (Tameable) entity;
 								if (! tameable.isTamed())
 								{
 									tameable.setOwner(player);

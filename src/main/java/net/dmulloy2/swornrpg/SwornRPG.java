@@ -18,6 +18,7 @@
 package net.dmulloy2.swornrpg;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +27,12 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
-import net.dmulloy2.SwornPlugin;
-import net.dmulloy2.commands.CmdHelp;
-import net.dmulloy2.handlers.CommandHandler;
-import net.dmulloy2.handlers.LogHandler;
-import net.dmulloy2.handlers.PermissionHandler;
-import net.dmulloy2.handlers.ResourceHandler;
-import net.dmulloy2.integration.VaultHandler;
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.commands.CmdHelp;
+import net.dmulloy2.swornapi.handlers.CommandHandler;
+import net.dmulloy2.swornapi.handlers.LogHandler;
+import net.dmulloy2.swornapi.handlers.PermissionHandler;
+import net.dmulloy2.swornapi.handlers.ResourceHandler;
 import net.dmulloy2.swornrpg.commands.CmdAbilities;
 import net.dmulloy2.swornrpg.commands.CmdAddxp;
 import net.dmulloy2.swornrpg.commands.CmdAdminChat;
@@ -66,6 +66,7 @@ import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
 import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
 import net.dmulloy2.swornrpg.integration.EssentialsHandler;
 import net.dmulloy2.swornrpg.integration.SwornNationsHandler;
+import net.dmulloy2.swornrpg.integration.VaultHandler;
 import net.dmulloy2.swornrpg.io.PlayerDataCache;
 import net.dmulloy2.swornrpg.listeners.BlockListener;
 import net.dmulloy2.swornrpg.listeners.EntityListener;
@@ -73,17 +74,17 @@ import net.dmulloy2.swornrpg.listeners.PlayerListener;
 import net.dmulloy2.swornrpg.modules.ModuleHandler;
 import net.dmulloy2.swornrpg.types.BlockDrop;
 import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.types.MyMaterial;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.MaterialUtil;
-import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -214,6 +215,7 @@ public class SwornRPG extends SwornPlugin
 		registerListener(new PlayerListener(this));
 		registerListener(new EntityListener(this));
 		registerListener(new BlockListener(this));
+		registerSwornGunsListener();
 
 		// Register modules
 		moduleHandler = new ModuleHandler(this);
@@ -321,17 +323,17 @@ public class SwornRPG extends SwornPlugin
 		try
 		{
 			essentialsHandler = new EssentialsHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 
 		try
 		{
 			swornNationsHandler = new SwornNationsHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 
 		try
 		{
 			vaultHandler = new VaultHandler(this);
-		} catch (Throwable ex) { }
+		} catch (Throwable ignored) { }
 	}
 
 	public final boolean isEssentialsHandler()
@@ -399,6 +401,14 @@ public class SwornRPG extends SwornPlugin
 		experienceHandler.reload();
 	}
 
+	private void registerSwornGunsListener()
+	{
+		if (getPluginManager().isPluginEnabled("SwornGuns"))
+		{
+			registerListener(new net.dmulloy2.swornrpg.listeners.SwornGunsListener(this));
+		}
+	}
+
 	private void registerListener(Listener listener)
 	{
 		if (listener instanceof Reloadable)
@@ -433,7 +443,7 @@ public class SwornRPG extends SwornPlugin
 			for (String s : salvageArray)
 			{
 				String[] subset = s.split(", ");
-				Material mat = MaterialUtil.getMaterial(subset[0]);
+				Material mat = Material.matchMaterial(subset[0]);
 				int amt = NumberUtil.toInt(subset[2]);
 				if (mat != null && amt != -1)
 				{
@@ -458,48 +468,89 @@ public class SwornRPG extends SwornPlugin
 	{
 		blockDropsMap.clear();
 
-		Map<String, Object> map = getConfig().getConfigurationSection("blockDropItems").getValues(true);
+		boolean saveRequired = false;
 
-		for (Entry<String, Object> entry : map.entrySet())
+		ConfigurationSection section = getConfig().getConfigurationSection("blockDropItems");
+		Map<String, Object> sectionData = section.getValues(true);
+		for (Entry<String, Object> entry : sectionData.entrySet())
 		{
 			String key = entry.getKey();
 
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
 
-			List<BlockDrop> blockDrops = new ArrayList<BlockDrop>();
+			boolean sectionChanged = false;
+			List<String> newValues = new ArrayList<>();
+
+			List<BlockDrop> blockDrops = new ArrayList<>();
 			for (String value : values)
 			{
-				String[] ss = value.split(":");
-				Material type = MaterialUtil.getMaterial(ss[0]);
-				if (type == null)
+				int lastColon = value.lastIndexOf(":");
+				if (lastColon == -1)
 				{
-					logHandler.log(Level.WARNING, getMessage("log_null_material"), ss[0], "block drops");
+					logHandler.log(Level.WARNING, "Block drop \"{0}\" has an invalid format. Should be <material>:<chance>", value);
 					continue;
 				}
 
-				short data = -1;
-				int chance;
-				if (ss.length == 3)
+				int chance = NumberUtil.toInt(value.substring(lastColon + 1));
+				if (chance == -1)
 				{
-					data = NumberUtil.toShort(ss[1]);
-					chance = NumberUtil.toInt(ss[2]);
+					logHandler.log(Level.WARNING, "Block drop \"{0}\" has an invalid chance", value);
+					continue;
+				}
+
+				Material type;
+				String materialStr = value.substring(0, lastColon);
+				if (materialStr.contains(":") || NumberUtil.isInt(materialStr))
+				{
+					logHandler.log(Level.WARNING, "Block drop \"{0}\" uses a legacy material format. Attempting to migrate", value);
+					type = MaterialUtil.convertFromLegacy(materialStr);
+
+					String newFormat = FormatUtil.format("{0}:{1}", type.name(), chance);
+					newValues.add(newFormat);
+
+					saveRequired = true;
+					sectionChanged = true;
 				}
 				else
 				{
-					chance = NumberUtil.toInt(ss[1]);
+					type = Material.matchMaterial(materialStr);
+					newValues.add(value);
 				}
 
-				boolean ignoreData = data == -1;
-				if (data < 0)
-					data = 0;
+				if (type == null)
+				{
+					logHandler.log(Level.WARNING, getMessage("log_null_material"), materialStr, "block drops");
+					continue;
+				}
 
-				MyMaterial material = new MyMaterial(type, data, ignoreData);
-				blockDrops.add(new BlockDrop(material, chance));
+				blockDrops.add(new BlockDrop(type, chance));
 			}
 
-			Material material = key.equals("*") ? Material.AIR : MaterialUtil.getMaterial(key);
+			if (sectionChanged)
+			{
+				section.set(key, newValues);
+			}
+
+			Material material = key.equals("*") ? Material.AIR : Material.matchMaterial(key);
+			if (material == null)
+			{
+				logHandler.log(Level.WARNING, "Block drop category \"{0}\" was invalid", key);
+				continue;
+			}
+
 			blockDropsMap.put(material, blockDrops);
+
+			if (saveRequired)
+			{
+				try
+				{
+					getConfig().save(new File(getDataFolder(), "config.yml"));
+				} catch (IOException ex)
+				{
+					getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "saving config"));
+				}
+			}
 		}
 	}
 
@@ -514,35 +565,19 @@ public class SwornRPG extends SwornPlugin
 			@SuppressWarnings("unchecked") // No way to check this :I
 			List<String> values = (List<String>) entry.getValue();
 
-			List<BlockDrop> fishDrops = new ArrayList<BlockDrop>();
+			List<BlockDrop> fishDrops = new ArrayList<>();
 			for (String value : values)
 			{
 				String[] ss = value.split(":");
-				Material type = MaterialUtil.getMaterial(ss[0]);
+				Material type = Material.matchMaterial(ss[0]);
 				if (type == null)
 				{
 					logHandler.log(Level.WARNING, getMessage("log_null_material"), ss[0], "fish drops");
 					continue;
 				}
 
-				short data = -1;
-				int chance = 0;
-				if (ss.length == 3)
-				{
-					data = NumberUtil.toShort(ss[1]);
-					chance = NumberUtil.toInt(ss[2]);
-				}
-				else
-				{
-					chance = NumberUtil.toInt(ss[1]);
-				}
-
-				boolean ignoreData = data == -1;
-				if (data < 0)
-					data = 0;
-
-				MyMaterial material = new MyMaterial(type, data, ignoreData);
-				fishDrops.add(new BlockDrop(material, chance));
+				int chance = NumberUtil.toInt(ss[1]);
+				fishDrops.add(new BlockDrop(type, chance));
 			}
 
 			fishDropsMap.put(NumberUtil.toInt(entry.getKey()), fishDrops);
@@ -597,9 +632,8 @@ public class SwornRPG extends SwornPlugin
 		if (attacker == null)
 		{
 			EntityDamageEvent ed = killed.getLastDamageCause();
-			if (ed instanceof EntityDamageByEntityEvent)
+			if (ed instanceof EntityDamageByEntityEvent ede)
 			{
-				EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ed;
 				attacker = ede.getDamager();
 			}
 		}
@@ -611,9 +645,8 @@ public class SwornRPG extends SwornPlugin
 			{
 				killer = (Player) attacker;
 			}
-			else if (attacker instanceof Projectile)
+			else if (attacker instanceof Projectile proj)
 			{
-				Projectile proj = (Projectile) attacker;
 				if (proj.getShooter() instanceof Player)
 				{
 					killer = (Player) proj.getShooter();
