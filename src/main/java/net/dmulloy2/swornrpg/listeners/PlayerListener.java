@@ -309,14 +309,14 @@ public class PlayerListener implements Listener, Reloadable
 					case GIANT:
 					case IRON_GOLEM:
 					case MAGMA_CUBE:
-					case MUSHROOM_COW:
+					case MOOSHROOM:
 					case OCELOT:
 					case PIG:
 					case SHEEP:
 					case SILVERFISH:
 					case SKELETON:
 					case SLIME:
-					case SNOWMAN:
+					case SNOW_GOLEM:
 					case SPIDER:
 					case SQUID:
 					case VILLAGER:

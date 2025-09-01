@@ -19,7 +19,6 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.InventoryUtil;
 
 import org.bukkit.Material;
@@ -64,7 +63,7 @@ public class CmdHat extends SwornRPGCommand
 		}
 		else
 		{
-			ItemStack hand = CompatUtil.getItemInMainHand(player);
+			ItemStack hand = player.getInventory().getItemInMainHand();
 			if (hand.getType() != Material.AIR)
 			{
 				if (hand.getType().getMaxDurability() == 0)
@@ -86,7 +85,7 @@ public class CmdHat extends SwornRPGCommand
 						hand.setAmount(1);
 						inv.remove(hand);
 						inv.setHelmet(hand);
-						CompatUtil.setItemInMainHand(player, hand);
+						inv.setItemInMainHand(new ItemStack(Material.AIR));
 						sendpMessage(plugin.getMessage("hat_success"));
 					}
 				}

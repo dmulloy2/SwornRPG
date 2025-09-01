@@ -20,6 +20,7 @@ package net.dmulloy2.swornrpg.commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornrpg.SwornRPG;
@@ -175,7 +176,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			long start = System.currentTimeMillis();
 
-			Map<String, PlayerData> allData = plugin.getPlayerDataCache().getAllPlayerData();
+			Map<UUID, PlayerData> allData = plugin.getPlayerDataCache().getAllData();
 			List<PlayerData> sorted = xpSorter().sort(allData.values());
 
 			String format = getMessage("leaderboard_format");
@@ -202,18 +203,7 @@ public class CmdLeaderboard extends SwornRPGCommand
 
 			plugin.log("Leaderboard updated! Took {0} ms!", System.currentTimeMillis() - start);
 
-			// Save the data
-			plugin.getPlayerDataCache().save();
-
-			// Clean up the data
-			new BukkitRunnable()
-			{
-				@Override
-				public void run()
-				{
-					plugin.getPlayerDataCache().cleanupData();
-				}
-			}.runTaskLater(plugin, 2L);
+			allData.clear();
 		}
 	}
 

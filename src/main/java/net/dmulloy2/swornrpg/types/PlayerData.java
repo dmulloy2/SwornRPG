@@ -17,27 +17,28 @@
  */
 package net.dmulloy2.swornrpg.types;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import lombok.*;
 
-import lombok.Data;
+import java.util.*;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.dizitart.no2.index.IndexType;
+import org.dizitart.no2.repository.annotations.Entity;
+import org.dizitart.no2.repository.annotations.Index;
+
+import net.dmulloy2.swornapi.io.AbstractPlayerData;
 
 /**
  * @author dmulloy2
  */
 
-@Data
-public class PlayerData implements ConfigurationSerializable
+@Entity(
+	indices = {
+		@Index(fields = "totalxp", type = IndexType.NON_UNIQUE)
+	}
+)
+@Getter @Setter
+public class PlayerData extends AbstractPlayerData
 {
 	// ---- Experience
 	private int playerxp;
@@ -83,85 +84,14 @@ public class PlayerData implements ConfigurationSerializable
 	// ---- UUID Stuff
 	private String lastKnownBy;
 
-	public PlayerData() { }
+	public PlayerData()
+	{
+		super();
+	}
 
 	public PlayerData(Map<String, Object> args)
 	{
-		for (Entry<String, Object> entry : args.entrySet())
-		{
-			try
-			{
-				for (Field field : getClass().getDeclaredFields())
-				{
-					if (field.getName().equals(entry.getKey()))
-					{
-						boolean accessible = field.isAccessible();
-						field.setAccessible(true);
-						field.set(this, entry.getValue());
-						field.setAccessible(accessible);
-					}
-				}
-			} catch (Throwable ex) { }
-		}
-	}
-
-	@Override
-	public Map<String, Object> serialize()
-	{
-		Map<String, Object> data = new LinkedHashMap<>();
-
-		for (Field field : getClass().getDeclaredFields())
-		{
-			if (Modifier.isTransient(field.getModifiers()))
-				continue;
-
-			try
-			{
-				boolean accessible = field.isAccessible();
-
-				field.setAccessible(true);
-
-				if (field.getType().equals(Integer.TYPE))
-				{
-					if (field.getInt(this) != 0)
-						data.put(field.getName(), field.getInt(this));
-				}
-				else if (field.getType().equals(Long.TYPE))
-				{
-					if (field.getLong(this) != 0)
-						data.put(field.getName(), field.getLong(this));
-				}
-				else if (field.getType().equals(Boolean.TYPE))
-				{
-					if (field.getBoolean(this))
-						data.put(field.getName(), field.getBoolean(this));
-				}
-				else if (field.getType().isAssignableFrom(Collection.class))
-				{
-					if (! ((Collection<?>) field.get(this)).isEmpty())
-						data.put(field.getName(), field.get(this));
-				}
-				else if (field.getType().isAssignableFrom(String.class))
-				{
-					if (field.get(this) != null)
-						data.put(field.getName(), field.get(this));
-				}
-				else if (field.getType().isAssignableFrom(Map.class))
-				{
-					if (! ((Map<?, ?>) field.get(this)).isEmpty())
-						data.put(field.getName(), field.get(this));
-				}
-				else
-				{
-					if (field.get(this) != null)
-						data.put(field.getName(), field.get(this));
-				}
-
-				field.setAccessible(accessible);
-			} catch (Throwable ex) { }
-		}
-
-		return data;
+		super(args);
 	}
 
 	/**
@@ -187,5 +117,23 @@ public class PlayerData implements ConfigurationSerializable
 	public final int getLevel(int max)
 	{
 		return level > max ? max : Math.max(level, 1);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return o instanceof PlayerData other && id.equals(other.id);
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("PlayerData[id=%s,name=%s]", id, lastKnownBy);
 	}
 }

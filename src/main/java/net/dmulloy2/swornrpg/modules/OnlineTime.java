@@ -52,7 +52,7 @@ public class OnlineTime extends TickableModule
 	@Override
 	public void run()
 	{
-		for (Player player : Util.getOnlinePlayers())
+		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
 			plugin.getExperienceHandler().handleXpGain(player, xpGain, "");
 		}

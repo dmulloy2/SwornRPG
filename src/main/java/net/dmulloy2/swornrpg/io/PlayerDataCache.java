@@ -18,208 +18,43 @@
 package net.dmulloy2.swornrpg.io;
 
 import java.io.File;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-
-import net.dmulloy2.swornapi.io.FileSerialization;
-import net.dmulloy2.swornapi.io.IOUtil;
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.io.NitriteDataCache;
+import net.dmulloy2.swornrpg.types.PlayerData;
 
 /**
  * @author dmulloy2
  */
 
-public class PlayerDataCache
+public class PlayerDataCache extends NitriteDataCache<PlayerData>
 {
-	private final File folder;
-	private final String extension = ".dat";
-	private final String folderName = "players";
-
-	private final ConcurrentMap<String, PlayerData> cache;
-
-	private final SwornRPG plugin;
-	public PlayerDataCache(SwornRPG plugin)
+	public PlayerDataCache(SwornPlugin plugin)
 	{
-		this.folder = new File(plugin.getDataFolder(), folderName);
-		if (! folder.exists())
-			folder.mkdirs();
-
-		this.cache = new ConcurrentHashMap<>(64, 0.75F, 64);
-		this.plugin = plugin;
+		super(
+			plugin,
+			new File(plugin.getDataFolder(), "players.db"),
+			PlayerData.class
+		);
 	}
 
-	// ---- Data Getters
-
-	private PlayerData getData(String key)
+	@Override
+	public PlayerData newData(OfflinePlayer player)
 	{
-		// Check cache first
-		PlayerData data = cache.get(key);
-		if (data == null)
-		{
-			// Attempt to load it
-			File file = new File(folder, getFileName(key));
-			if (file.exists())
-			{
-				data = loadData(file);
-				if (data == null)
-				{
-					// Corrupt data :(
-					if (! file.renameTo(new File(folder, file.getName() + "_bad")))
-						file.delete();
-					return null;
-				}
-
-				// Cache it
-				cache.put(key, data);
-			}
-		}
-
-		return data;
-	}
-
-	public final PlayerData getData(Player player)
-	{
-		PlayerData data = getData(getKey(player));
-
-		// Online players always have data
-		if (data == null)
-			data = newData(player);
-
-		// Update last known by
-		data.setLastKnownBy(player.getName());
-
-		// Return
-		return data;
-	}
-
-	public final PlayerData getData(OfflinePlayer player)
-	{
-		// Slightly different handling for Players
-		if (player.isOnline())
-			return getData(player.getPlayer());
-
-		// Attempt to get by name
-		return getData(getKey(player));
-	}
-
-	// ---- Data Management
-
-	private PlayerData newData(String key)
-	{
-		// Construct
 		PlayerData data = new PlayerData();
 
-		// Default values
+		// Defaults
 		data.setDeathCoordsEnabled(true);
 		data.setXpneeded(100);
 
-		// Cache and return
-		cache.put(key, data);
 		return data;
 	}
 
-	private PlayerData newData(Player player)
+	@Override
+	protected void onDataLoad(PlayerData data, OfflinePlayer player)
 	{
-		return newData(getKey(player));
-	}
-
-	private PlayerData loadData(File file)
-	{
-		try
-		{
-			return FileSerialization.load(file, PlayerData.class, true);
-		}
-		catch (Throwable ex)
-		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "loading data from {0}", file.getName()));
-			return null;
-		}
-	}
-
-	public final void save()
-	{
-		long start = System.currentTimeMillis();
-		plugin.log("Saving players to disk...");
-
-		for (Entry<String, PlayerData> entry : getAllLoadedPlayerData().entrySet())
-		{
-			try
-			{
-				File file = new File(folder, getFileName(entry.getKey()));
-				FileSerialization.save(entry.getValue(), file);
-			}
-			catch (Throwable ex)
-			{
-				plugin.log(Level.WARNING, Util.getUsefulStack(ex, "saving data for {0}", entry.getKey()));
-			}
-		}
-
-		plugin.log("Players saved. Took {0} ms.", System.currentTimeMillis() - start);
-	}
-
-	public final void cleanupData()
-	{
-		// Get all online players into a  list
-		List<String> online = new ArrayList<>();
-		for (Player player : Util.getOnlinePlayers())
-			online.add(getKey(player));
-
-		// Actually cleanup the data
-		for (String key : getAllLoadedPlayerData().keySet())
-			if (! online.contains(key))
-				cache.remove(key);
-
-		online.clear();
-	}
-
-	// ---- Mass Getters
-
-	private Map<String, PlayerData> getAllLoadedPlayerData()
-	{
-		return Collections.unmodifiableMap(cache);
-	}
-
-	public final Map<String, PlayerData> getAllPlayerData()
-	{
-		Map<String, PlayerData> data = new HashMap<>(cache);
-
-		File[] files = folder.listFiles(file -> file.getName().endsWith(extension));
-		for (File file : files)
-		{
-			String fileName = IOUtil.trimFileExtension(file, extension);
-			if (isFileLoaded(fileName))
-				continue;
-
-			PlayerData loaded = loadData(file);
-			if (loaded != null)
-				data.put(fileName, loaded);
-		}
-
-		return Collections.unmodifiableMap(data);
-	}
-
-	// ---- Util
-
-	private String getKey(OfflinePlayer player)
-	{
-		return player.getUniqueId().toString();
-	}
-
-	private String getFileName(String key)
-	{
-		return key + extension;
-	}
-
-	private boolean isFileLoaded(String fileName)
-	{
-		return cache.containsKey(fileName);
+		data.setLastKnownBy(player.getName());
 	}
 }

@@ -89,7 +89,7 @@ public class HealthBarHandler implements Reloadable
 
 	public final void refreshBoard()
 	{
-		for (Player player : Util.getOnlinePlayers())
+		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
 			refreshBoard(player);
 		}
@@ -199,7 +199,7 @@ public class HealthBarHandler implements Reloadable
 
 	public final void updatePlayerHealth()
 	{
-		for (Player player : Util.getOnlinePlayers())
+		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
 			updatePlayerHealth(player);
 		}
@@ -256,7 +256,7 @@ public class HealthBarHandler implements Reloadable
 					return;
 				}
 
-				int maxHealth = (int) Math.round(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / 2);
+				int maxHealth = (int) Math.round(entity.getAttribute(Attribute.MAX_HEALTH).getValue() / 2);
 				int health = (int) Math.round(entity.getHealth() / 2);
 				int hearts = Math.round((health * 10) / maxHealth);
 

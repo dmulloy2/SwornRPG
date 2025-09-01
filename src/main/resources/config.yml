@@ -452,7 +452,7 @@ blockDropItems:
     - "VINE:5"
     - "RAW_FISH:150"
     - "PUMPKIN_SEEDS:25"
-  "NETHER_WARTS":
+  "NETHER_WART":
     - "BLAZE_ROD:250"
     - "NETHER_STALK:5"
     - "GHAST_TEAR:250"
@@ -468,7 +468,7 @@ blockDropItems:
     - "CARROT:100"
   "POTATO":
     - "POTATO:100"
-    - "POTATO_ITEM:5"
+    - "POTATO:5"
     - "POISONOUS_POTATO:50"
     - "BAKED_POTATO:25"
 
@@ -546,10 +546,10 @@ redemptionBlacklist:
 - potatoes
 - potato_item
 - carrots
-- carrot_item
-- crops
 - fire
-- soil
+- wheat_seeds
+- wheat
+- farmland
 
 # A universal chance for block redemption
 # 1 out of X

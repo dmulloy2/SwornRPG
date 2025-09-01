@@ -24,17 +24,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornapi.types.SpecialEntities;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.ListUtil;
-
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornrpg.SwornRPG;
 
 /**
  * @author dmulloy2
@@ -77,8 +74,8 @@ public class MobKills extends Module
 		}
 		else
 		{
-			tiers.put(3, ListUtil.toList("wither", "ender dragon", "elder guardian"));
-			tiers.put(2, ListUtil.toList("creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie",
+			tiers.put(3, List.of("wither", "ender dragon", "elder guardian"));
+			tiers.put(2, List.of("creeper", "enderman", "iron golem", "skeleton", "blaze", "zombie",
 					"spider", "ghast", "magma cube", "witch", "guardian", "shulker"));
 		}
 	}
@@ -100,8 +97,6 @@ public class MobKills extends Module
 
 		// Determine the correct tier
 		String mobName = died.getType().toString().replace("_", " ").toLowerCase();
-		if (SpecialEntities.isElderGuardian(died))
-			mobName = "elder " + mobName;
 
 		int multiplier = 1;
 		for (Entry<Integer, List<String>> entry : tiers.entrySet())
@@ -113,7 +108,7 @@ public class MobKills extends Module
 		int xp = xpGain * multiplier;
 
 		String article = FormatUtil.getArticle(mobName);
-		String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, WordUtils.capitalize(mobName));
+		String message = plugin.getPrefix() + FormatUtil.format(plugin.getMessage("mob_kill"), xp, article, FormatUtil.capitalize(mobName));
 		plugin.getExperienceHandler().handleXpGain(killer, xp, message);
 	}
 }

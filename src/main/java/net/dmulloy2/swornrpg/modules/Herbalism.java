@@ -114,19 +114,14 @@ public class Herbalism extends Module
 			}
 			else if (type.name().contains("SAPLING"))
 			{
-				// TODO this will probably get removed at some point
-				// but there isn't a great way to go from material -> tree type
-				Sapling sapling = (Sapling) block.getState().getData();
-				TreeSpecies species = sapling.getSpecies();
-				TreeType tree = switch (species) {
-					case ACACIA -> TreeType.ACACIA;
-					case BIRCH -> Util.random(3) == 0 ? TreeType.TALL_BIRCH : TreeType.BIRCH;
-					case DARK_OAK -> TreeType.DARK_OAK;
-					case GENERIC -> Util.random(3) == 0 ? TreeType.BIG_TREE : TreeType.TREE;
-					case JUNGLE -> Util.random(3) == 0 ? TreeType.COCOA_TREE : TreeType.SMALL_JUNGLE;
-					case REDWOOD -> Util.random(5) == 0 ? TreeType.MEGA_REDWOOD :
-							Util.random(3) == 0 ? TreeType.TALL_REDWOOD : TreeType.REDWOOD;
-					default -> TreeType.TREE;
+				TreeType tree = switch(type) {
+					case ACACIA_SAPLING -> TreeType.ACACIA;
+					case BIRCH_SAPLING -> Util.random(3) == 0 ? TreeType.TALL_BIRCH : TreeType.BIRCH;
+					case DARK_OAK_SAPLING -> TreeType.DARK_OAK;
+					case JUNGLE_SAPLING -> Util.random(3) == 0 ? TreeType.COCOA_TREE : TreeType.SMALL_JUNGLE;
+					case CHERRY_SAPLING -> TreeType.CHERRY;
+					case MANGROVE_PROPAGULE -> TreeType.MANGROVE;
+					default -> Util.random(3) == 0 ? TreeType.BIG_TREE : TreeType.TREE;
 				};
 
 				block.setType(Material.AIR);

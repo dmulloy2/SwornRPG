@@ -28,7 +28,6 @@ import net.dmulloy2.swornrpg.types.Permission;
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.Util;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
 
 /**
@@ -55,7 +54,7 @@ public class CmdStaffList extends SwornRPGCommand
 
 		int total = 0;
 
-		for (Player player : Util.getOnlinePlayers())
+		for (Player player : plugin.getServer().getOnlinePlayers())
 		{
 			if (plugin.getPermissionHandler().hasPermission(player, Permission.STAFF))
 			{
@@ -103,7 +102,7 @@ public class CmdStaffList extends SwornRPGCommand
 		if (staffMap.containsKey(group))
 		{
 			line = new StringBuilder();
-			line.append("&3").append(WordUtils.capitalize(group)).append("&e: ");
+			line.append("&3").append(FormatUtil.capitalize(group)).append("&e: ");
 
 			for (String player : staffMap.get(group))
 			{
@@ -128,7 +127,7 @@ public class CmdStaffList extends SwornRPGCommand
 		for (Entry<String, List<String>> entry : staffMap.entrySet())
 		{
 			line = new StringBuilder();
-			line.append("&3").append(WordUtils.capitalize(entry.getKey())).append("&e: ");
+			line.append("&3").append(FormatUtil.capitalize(entry.getKey())).append("&e: ");
 
 			for (String player : entry.getValue())
 			{

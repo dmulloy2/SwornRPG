@@ -17,6 +17,8 @@
  */
 package net.dmulloy2.swornrpg;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,60 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
-import lombok.Getter;
-import net.dmulloy2.swornapi.SwornPlugin;
-import net.dmulloy2.swornapi.commands.CmdHelp;
-import net.dmulloy2.swornapi.handlers.CommandHandler;
-import net.dmulloy2.swornapi.handlers.LogHandler;
-import net.dmulloy2.swornapi.handlers.PermissionHandler;
-import net.dmulloy2.swornapi.handlers.ResourceHandler;
-import net.dmulloy2.swornrpg.commands.CmdAbilities;
-import net.dmulloy2.swornrpg.commands.CmdAddxp;
-import net.dmulloy2.swornrpg.commands.CmdAdminChat;
-import net.dmulloy2.swornrpg.commands.CmdAdminSay;
-import net.dmulloy2.swornrpg.commands.CmdCoordsToggle;
-import net.dmulloy2.swornrpg.commands.CmdDeny;
-import net.dmulloy2.swornrpg.commands.CmdDivorce;
-import net.dmulloy2.swornrpg.commands.CmdEject;
-import net.dmulloy2.swornrpg.commands.CmdFrenzy;
-import net.dmulloy2.swornrpg.commands.CmdHat;
-import net.dmulloy2.swornrpg.commands.CmdHighCouncil;
-import net.dmulloy2.swornrpg.commands.CmdLeaderboard;
-import net.dmulloy2.swornrpg.commands.CmdLevel;
-import net.dmulloy2.swornrpg.commands.CmdLore;
-import net.dmulloy2.swornrpg.commands.CmdMarry;
-import net.dmulloy2.swornrpg.commands.CmdName;
-import net.dmulloy2.swornrpg.commands.CmdPropose;
-import net.dmulloy2.swornrpg.commands.CmdReload;
-import net.dmulloy2.swornrpg.commands.CmdResetLevel;
-import net.dmulloy2.swornrpg.commands.CmdRide;
-import net.dmulloy2.swornrpg.commands.CmdSitdown;
-import net.dmulloy2.swornrpg.commands.CmdSpouse;
-import net.dmulloy2.swornrpg.commands.CmdStaffList;
-import net.dmulloy2.swornrpg.commands.CmdStandup;
-import net.dmulloy2.swornrpg.commands.CmdSuperPickaxe;
-import net.dmulloy2.swornrpg.commands.CmdUnlimitedAmmo;
-import net.dmulloy2.swornrpg.commands.CmdUnride;
-import net.dmulloy2.swornrpg.commands.CmdVersion;
-import net.dmulloy2.swornrpg.handlers.AbilityHandler;
-import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
-import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
-import net.dmulloy2.swornrpg.integration.EssentialsHandler;
-import net.dmulloy2.swornrpg.integration.SwornNationsHandler;
-import net.dmulloy2.swornrpg.integration.VaultHandler;
-import net.dmulloy2.swornrpg.io.PlayerDataCache;
-import net.dmulloy2.swornrpg.listeners.BlockListener;
-import net.dmulloy2.swornrpg.listeners.EntityListener;
-import net.dmulloy2.swornrpg.listeners.PlayerListener;
-import net.dmulloy2.swornrpg.modules.ModuleHandler;
-import net.dmulloy2.swornrpg.types.BlockDrop;
-import net.dmulloy2.swornrpg.types.PlayerData;
-import net.dmulloy2.swornapi.types.Reloadable;
-import net.dmulloy2.swornapi.util.FormatUtil;
-import net.dmulloy2.swornapi.util.MaterialUtil;
-import net.dmulloy2.swornapi.util.NumberUtil;
-import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -93,6 +41,32 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.commands.CmdHelp;
+import net.dmulloy2.swornapi.handlers.CommandHandler;
+import net.dmulloy2.swornapi.handlers.LogHandler;
+import net.dmulloy2.swornapi.handlers.PermissionHandler;
+import net.dmulloy2.swornapi.handlers.ResourceHandler;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.MaterialUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
+import net.dmulloy2.swornrpg.commands.*;
+import net.dmulloy2.swornrpg.handlers.AbilityHandler;
+import net.dmulloy2.swornrpg.handlers.ExperienceHandler;
+import net.dmulloy2.swornrpg.handlers.HealthBarHandler;
+import net.dmulloy2.swornrpg.integration.EssentialsHandler;
+import net.dmulloy2.swornrpg.integration.SwornNationsHandler;
+import net.dmulloy2.swornrpg.integration.VaultHandler;
+import net.dmulloy2.swornrpg.io.PlayerDataCache;
+import net.dmulloy2.swornrpg.listeners.BlockListener;
+import net.dmulloy2.swornrpg.listeners.EntityListener;
+import net.dmulloy2.swornrpg.listeners.PlayerListener;
+import net.dmulloy2.swornrpg.modules.ModuleHandler;
+import net.dmulloy2.swornrpg.types.BlockDrop;
+import net.dmulloy2.swornrpg.types.PlayerData;
 
 /**
  * @author dmulloy2
@@ -237,7 +211,7 @@ public class SwornRPG extends SwornPlugin
 				{
 					// Save and cleanup
 					playerDataCache.save();
-					playerDataCache.cleanupData();
+					playerDataCache.purgeCache();
 				}
 			}
 
@@ -250,7 +224,7 @@ public class SwornRPG extends SwornPlugin
 			@Override
 			public void run()
 			{
-				for (Player player : Util.getOnlinePlayers())
+				for (Player player : getServer().getOnlinePlayers())
 				{
 					PlayerData data = playerDataCache.getData(player);
 

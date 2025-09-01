@@ -19,7 +19,6 @@ package net.dmulloy2.swornrpg.commands;
 
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Permission;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.MaterialUtil;
 
@@ -47,8 +46,8 @@ public class CmdName extends SwornRPGCommand
 	@Override
 	public void perform()
 	{
-		ItemStack inHand = CompatUtil.getItemInMainHand(player);
-		if (inHand == null || inHand.getType() == Material.AIR)
+		ItemStack inHand = player.getInventory().getItemInMainHand();
+		if (inHand.getType() == Material.AIR)
 		{
 			err("You must have an item in your hand to do this!");
 			return;

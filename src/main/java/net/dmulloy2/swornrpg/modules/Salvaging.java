@@ -18,7 +18,6 @@
 package net.dmulloy2.swornrpg.modules;
 
 import net.dmulloy2.swornrpg.SwornRPG;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.InventoryUtil;
 import net.dmulloy2.swornapi.util.MaterialUtil;
@@ -67,6 +66,10 @@ public class Salvaging extends Module
 		if (plugin.isDisabledWorld(block))
 			return;
 
+		ItemStack item = player.getActiveItem();
+		if (item.getType() == Material.AIR)
+			return;
+
 		String blockType = "";
 		if (block.getType() == Material.IRON_BLOCK)
 			blockType = "Iron";
@@ -82,7 +85,6 @@ public class Salvaging extends Module
 					|| block.getRelative(0, 0, -1).getType() == Material.FURNACE
 					|| block.getRelative(0, 0, 1).getType() == Material.FURNACE)
 			{
-				ItemStack item = CompatUtil.getItemInMainHand(player);
 				Material type = item.getType();
 
 				double mult;

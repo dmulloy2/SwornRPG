@@ -25,7 +25,6 @@ import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.Ability;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornapi.types.Reloadable;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.MaterialUtil;
 import net.dmulloy2.swornapi.util.TimeUtil;
@@ -35,6 +34,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -82,7 +82,7 @@ public class AbilityHandler implements Reloadable
 
 	public final void checkActivation(Player player, Action action)
 	{
-		Material mat = CompatUtil.getItemInMainHand(player).getType();
+		Material mat = player.getActiveItem().getType();
 		if (Ability.FRENZY.isValidMaterial(mat))
 		{
 			activateFrenzy(player, action);
@@ -149,6 +149,10 @@ public class AbilityHandler implements Reloadable
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
+		ItemStack inUse = player.getActiveItem();
+		if (inUse.getType() == Material.AIR)
+			return;
+
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isFrenzyWaiting())
 		{
@@ -177,10 +181,10 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = MaterialUtil.getName(CompatUtil.getItemInMainHand(player));
-				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
+				String inUseName = MaterialUtil.getName(inUse.getType());
+				sendpMessage(player, plugin.getMessage("ability_ready"), inUseName);
 
-				data.setItemName(inHand);
+				data.setItemName(inUseName);
 				data.setFrenzyWaiting(true);
 				data.setFrenzyReadyTime(3); // 3 seconds
 
@@ -271,6 +275,10 @@ public class AbilityHandler implements Reloadable
 		if (player.getGameMode() == GameMode.CREATIVE)
 			return;
 
+		ItemStack inUse = player.getActiveItem();
+		if (inUse.getType() == Material.AIR)
+			return;
+
 		PlayerData data = plugin.getPlayerDataCache().getData(player);
 		if (data.isSuperPickaxeWaiting())
 		{
@@ -299,10 +307,10 @@ public class AbilityHandler implements Reloadable
 					return;
 				}
 
-				String inHand = MaterialUtil.getName(CompatUtil.getItemInMainHand(player));
-				sendpMessage(player, plugin.getMessage("ability_ready"), inHand);
+				String inUseName = MaterialUtil.getName(inUse.getType());
+				sendpMessage(player, plugin.getMessage("ability_ready"), inUseName);
 
-				data.setItemName(inHand);
+				data.setItemName(inUseName);
 				data.setSuperPickaxeWaiting(true);
 				data.setSuperPickaxeReadyTime(3); // 3 seconds
 
@@ -324,7 +332,7 @@ public class AbilityHandler implements Reloadable
 		data.setSuperPickaxeWaiting(false);
 		waiting.remove(player.getName());
 
-		player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, (int) duration, 1), true);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, (int) duration, 1), true);
 
 		plugin.debug(plugin.getMessage("log_superpick_activate"), player.getName(), duration);
 
@@ -336,7 +344,7 @@ public class AbilityHandler implements Reloadable
 				long cooldown = getSuperPickaxeCooldown(level);
 
 				sendpMessage(player, plugin.getMessage("superpick_wearoff"), TimeUtil.toSeconds(cooldown));
-				player.removePotionEffect(PotionEffectType.FAST_DIGGING);
+				player.removePotionEffect(PotionEffectType.HASTE);
 
 				data.setSuperPickaxeEnabled(false);
 				data.getCooldowns().put("superpick", cooldown);
@@ -505,11 +513,11 @@ public class AbilityHandler implements Reloadable
 		{
 			// Default types
 			types.add(PotionEffectType.SPEED);
-			types.add(PotionEffectType.INCREASE_DAMAGE);
+			types.add(PotionEffectType.STRENGTH);
 			types.add(PotionEffectType.REGENERATION);
-			types.add(PotionEffectType.JUMP);
+			types.add(PotionEffectType.JUMP_BOOST);
 			types.add(PotionEffectType.FIRE_RESISTANCE);
-			types.add(PotionEffectType.DAMAGE_RESISTANCE);
+			types.add(PotionEffectType.RESISTANCE);
 		}
 
 		return types;

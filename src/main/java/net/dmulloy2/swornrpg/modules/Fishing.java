@@ -61,7 +61,7 @@ public class Fishing extends Module
 	public void onPlayerFish(PlayerFishEvent event)
 	{
 		Entity caught = event.getCaught();
-		if (caught == null || caught.getType() != EntityType.DROPPED_ITEM)
+		if (caught == null || caught.getType() != EntityType.ITEM)
 			return;
 
 		Player player = event.getPlayer();

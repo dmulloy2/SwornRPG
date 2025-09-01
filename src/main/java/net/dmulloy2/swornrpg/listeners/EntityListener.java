@@ -20,7 +20,6 @@ package net.dmulloy2.swornrpg.listeners;
 import net.dmulloy2.swornrpg.SwornRPG;
 import net.dmulloy2.swornrpg.types.PlayerData;
 import net.dmulloy2.swornapi.types.Reloadable;
-import net.dmulloy2.swornapi.util.CompatUtil;
 import net.dmulloy2.swornapi.util.FormatUtil;
 import net.dmulloy2.swornapi.util.MaterialUtil;
 import net.dmulloy2.swornapi.util.Util;
@@ -109,10 +108,10 @@ public class EntityListener implements Listener, Reloadable
 		}
 		else if (damager instanceof Player player)
 		{
-			ItemStack inHand = CompatUtil.getItemInMainHand(player);
+			ItemStack inHand = player.getActiveItem();
 
 			// Confusion
-			if (inHand == null || inHand.getType() == Material.AIR)
+			if (inHand.getType() == Material.AIR)
 			{
 				if (confusionEnabled)
 				{
@@ -121,7 +120,7 @@ public class EntityListener implements Listener, Reloadable
 						Entity defender = event.getEntity();
 						if (defender instanceof Player confused)
 						{
-							confused.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, confusionDuration, confusionStrength));
+							confused.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, confusionDuration, confusionStrength));
 						}
 					}
 				}
@@ -212,7 +211,7 @@ public class EntityListener implements Listener, Reloadable
 		{
 			double health = killer.getHealth();
 
-			var attribute = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			var attribute = killer.getAttribute(Attribute.MAX_HEALTH);
 			double maxHealth = attribute != null ? attribute.getValue() : -1.0D;
 
 			if (health > 0.0D && health < maxHealth)
@@ -253,7 +252,7 @@ public class EntityListener implements Listener, Reloadable
 
 				if (damaged instanceof LivingEntity lentity)
 				{
-					var attribute = lentity.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+					var attribute = lentity.getAttribute(Attribute.MAX_HEALTH);
 					if (attribute != null && attribute.getValue() < 100.0D)
 					{
 						if (Util.random(instaKillOdds) == 0)
